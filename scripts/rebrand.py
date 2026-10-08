@@ -84,6 +84,8 @@ REPLACEMENTS = [
     ("<TargetName>weasel$(Platform)</TargetName>", "<TargetName>yiwei$(Platform)</TargetName>"),
     ("output\\weasel$(TargetExt)", "output\\yiwei$(TargetExt)"),
     ("output\\weasel$(Platform)$(TargetExt)", "output\\yiwei$(Platform)$(TargetExt)"),
+    ("      ShowBalloon(info, get_weasel_ime_name().c_str());",
+     "      (void)info;  // 一维输入法：换皮肤等重新部署时不弹「维护中」系统通知"),
     ('"WeaselRoot"', '"YiweiRoot"'), ('L"WeaselRoot"', 'L"YiweiRoot"'),
     ('#define WEASEL_CODE_NAME "Weasel"', '#define WEASEL_CODE_NAME "Yiwei"'),
     ('L"WeaselSetup"', 'L"' + NAME + '"'),
@@ -198,7 +200,7 @@ def main():
             if os.path.splitext(fn)[1].lower() not in TEXT_EXT or fn == "CHANGELOG.md" or fn.endswith(".md"):
                 continue
             text, _, _ = read(os.path.join(dirpath, fn))
-            if text and ("小狼毫" in text or "A3F4CDED" in text.upper() or "WeaselNamedPipe" in text
+            if text and ("小狼毫" in text or "A3F4CDED" in text.upper() or "WeaselNamedPipe" in text or "ShowBalloon(info" in text
                          or re.search(r"Weasel(Server|Deployer|Setup)\.exe|weasel(x64|ARM64X?|ARM)?\.dll", text)):
                 leftovers.append(os.path.join(dirpath, fn))
     print("rebranded %d files" % changed)
