@@ -366,8 +366,7 @@ namespace Yiwei
                 foreach (var d in new[] { false, true })
                     P("preset_color_schemes/" + Brand.SchemeId(b.Id, d), Brand.WeaselScheme(b, d));
             P("global_ascii", B(s.GlobalAscii));
-            foreach (var kv in s.AppAscii)
-                P("app_options/" + kv.Key.ToLowerInvariant().Replace("/", "_"), "{ascii_mode: " + B(kv.Value) + "}");
+            AppModes.WritePatches(s, P); // app_options/<exe>: {ascii_mode, vim_mode}
             var themes = new Dictionary<string, Dictionary<string, string>>(s.ImportedThemes);
             if (s.CustomTheme != null) themes["yiwei_custom"] = s.CustomTheme;
             foreach (var t in themes)

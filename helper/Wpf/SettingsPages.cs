@@ -40,6 +40,8 @@ namespace Yiwei
             p.Children.Add(K.Card("重新部署", "手动修改 YAML 后让配置生效；平时修改设置会自动部署",
                 K.Btn("重新部署", () => Rime.ApplySoon(50)), Ui.SymbolRegular.ArrowSync24));
 
+            AddSyncSection(p);
+
             p.Children.Add(K.Section("危险操作"));
             p.Children.Add(Danger("重置设置", "所有设置恢复默认（常用语、统计和词库不受影响）", "重置…", () =>
             {
@@ -373,12 +375,6 @@ namespace Yiwei
 
         // ================= 应用规则 =================
 
-        static readonly string[] Recommended =
-        {
-            "windowsterminal.exe", "cmd.exe", "powershell.exe", "pwsh.exe", "code.exe", "cursor.exe", "windsurf.exe",
-            "idea64.exe", "pycharm64.exe", "webstorm64.exe", "devenv.exe", "everything.exe", "powertoys.powerlauncher.exe",
-        };
-
         StackPanel PageApps()
         {
             var p = new StackPanel();
@@ -386,54 +382,7 @@ namespace Yiwei
             p.Children.Add(K.Card("所有应用共用中英文状态", "关闭时，每个应用各自记住自己的中英文状态",
                 K.Toggle(S.GlobalAscii, v => { S.GlobalAscii = v; Save(true); }), Ui.SymbolRegular.Apps24));
 
-            if (!S.AppsScanned)
-            {
-                foreach (var r in Recommended) if (!S.AppAscii.ContainsKey(r)) S.AppAscii[r] = true;
-                S.AppsScanned = true; S.Save();
-            }
-            var list = new StackPanel();
-            void Fill(bool scan)
-            {
-                list.Children.Clear();
-                var names = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                foreach (var r in Recommended) names[r] = "推荐";
-                foreach (var kv in S.AppAscii) names[kv.Key] = names.ContainsKey(kv.Key) ? names[kv.Key] : "已设置";
-                if (scan)
-                    foreach (var pr in Process.GetProcesses())
-                    {
-                        try { var n = (pr.ProcessName + ".exe").ToLowerInvariant(); if (pr.MainWindowHandle != IntPtr.Zero && !names.ContainsKey(n)) names[n] = "正在运行"; }
-                        catch { }
-                        finally { pr.Dispose(); }
-                    }
-                foreach (var kv in names)
-                {
-                    var name = kv.Key.ToLowerInvariant();
-                    bool on = S.AppAscii.TryGetValue(name, out var v) && v;
-                    var cb = new CheckBox { Content = name + "　（" + kv.Value + "）", IsChecked = on, Margin = new Thickness(0, 2, 0, 2) };
-                    cb.Checked += (s, e) => { S.AppAscii[name] = true; Save(true); };
-                    cb.Unchecked += (s, e) =>
-                    {
-                        if (Recommended.Contains(name) || name == "conhost.exe") S.AppAscii[name] = false; // override shipped defaults
-                        else S.AppAscii.Remove(name);
-                        Save(true);
-                    };
-                    list.Children.Add(cb);
-                }
-            }
-            Fill(false);
-            var add = new Ui.TextBox { PlaceholderText = "例如 wechat.exe", MinWidth = 220 };
-            void AddApp()
-            {
-                var n = add.Text.Trim().ToLowerInvariant(); if (n.Length == 0) return; if (!n.EndsWith(".exe")) n += ".exe";
-                S.AppAscii[n] = true; add.Text = ""; Save(true); Fill(false);
-            }
-            add.KeyDown += (s, e) => { if (e.Key == System.Windows.Input.Key.Enter) AddApp(); };
-            var body = new StackPanel();
-            body.Children.Add(new ScrollViewer { Content = list, MaxHeight = 340, VerticalScrollBarVisibility = ScrollBarVisibility.Auto });
-            var row = K.Row(add, K.Btn("添加", AddApp), K.Btn("扫描正在运行的应用", () => Fill(true)));
-            row.Margin = new Thickness(0, 10, 0, 0);
-            body.Children.Add(row);
-            p.Children.Add(K.Block("切换过去时自动用英文", "勾选的应用（终端、编辑器…）获得焦点时进入英文状态", body, Ui.SymbolRegular.AppsList24));
+            p.Children.Add(AppModesBlock());
             return p;
         }
 

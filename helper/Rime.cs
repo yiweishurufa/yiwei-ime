@@ -207,7 +207,7 @@ namespace Yiwei
 
         static void WriteSnapshot(Dictionary<string, string> entries)
         {
-            var dir = System.IO.Path.Combine(Paths.UserDir, "sync", "yiwei-import");
+            var dir = System.IO.Path.Combine(Sync.EffectiveDir, "yiwei-import"); // 跟随 installation.yaml 的 sync_dir
             Directory.CreateDirectory(dir);
             var path = System.IO.Path.Combine(dir, "rime_ice.userdb.txt");
             var existing = new Dictionary<string, string>();

@@ -73,6 +73,8 @@ namespace Yiwei
                 };
                 Stats.StartAppTracking();
                 DictUpdater.StartDaily();
+                Sync.StartScheduler();
+                AppModes.UpgradeIfNeeded();
                 FirstRun();
                 StartPipeServer();
                 ImeModeWatcher.Start(chinese => { Tray.SetMode(chinese); _toast.Flash(chinese); });
