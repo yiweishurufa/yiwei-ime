@@ -349,6 +349,7 @@ namespace Yiwei
             var dark = DarkSchemeFor(s);
             P("style/color_scheme", Q(s.FollowSystemDark && sysDark ? dark : light));
             P("style/color_scheme_dark", Q(dark));
+            P("style/display_tray_icon", "false"); // 托盘只显示一维助手的合并图标
             P("style/horizontal", B(s.Horizontal));
             P("style/vertical_text", B(s.VerticalText));
             P("style/candidate_list_layout", Q(s.Horizontal ? "linear" : "stacked"));

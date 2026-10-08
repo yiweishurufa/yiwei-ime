@@ -45,7 +45,7 @@ STYLE = {
     "color_scheme": "yiwei_qingbi", "color_scheme_dark": "yiwei_qingbi_dark",
     "font_face": '"Microsoft YaHei UI"', "label_font_face": '"Segoe UI"', "comment_font_face": '"Microsoft YaHei UI"',
     "font_point": "14", "label_font_point": "11", "comment_font_point": "11",
-    "horizontal": "true", "inline_preedit": "true", "label_format": '"%s"', "display_tray_icon": "true",
+    "horizontal": "true", "inline_preedit": "true", "label_format": '"%s"', "display_tray_icon": "false",
 }
 LAYOUT = {"border_width": "1", "margin_x": "10", "margin_y": "8", "spacing": "8", "candidate_spacing": "10",
           "hilite_spacing": "4", "hilite_padding": "4", "round_corner": "6", "corner_radius": "10",

@@ -75,7 +75,7 @@ namespace Yiwei
                 DictUpdater.StartDaily();
                 FirstRun();
                 StartPipeServer();
-                ImeModeWatcher.Start(chinese => _toast.Flash(chinese));
+                ImeModeWatcher.Start(chinese => { Tray.SetMode(chinese); _toast.Flash(chinese); });
 
                 if (command.Length > 0 && command != "/background") Ui.BeginInvoke(new Action(() => Execute(command)));
                 else if (!Settings.Current.FirstRunDone) Ui.BeginInvoke(new Action(() => Execute("/wizard")));
@@ -129,6 +129,7 @@ namespace Yiwei
                 {
                     var m = command.Substring(6).Trim();
                     bool zh = m == "中" || m.Equals("zh", StringComparison.OrdinalIgnoreCase) || m.Equals("cn", StringComparison.OrdinalIgnoreCase);
+                    Tray.SetMode(zh);
                     _toast.Flash(zh);
                     return;
                 }
@@ -230,6 +231,8 @@ namespace Yiwei
             menu.Items.Add(themes);
             menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add("重新部署", null, (s, e) => Rime.ApplySoon(50));
+            menu.Items.Add("同步用户数据", null, (s, e) => System.Threading.Tasks.Task.Run(() => Deploy.Run("/sync", false)));
+            menu.Items.Add("用户文件夹", null, (s, e) => { try { System.Diagnostics.Process.Start("explorer.exe", "\"" + Paths.UserDir + "\""); } catch { } });
             menu.Items.Add("设置", null, (s, e) => Program.ShowSettings());
             menu.Items.Add("首次引导", null, (s, e) => Program.ShowWizard());
             menu.Items.Add(new ToolStripSeparator());
@@ -256,15 +259,72 @@ namespace Yiwei
                     themes.DropDownItems.Add(new ToolStripMenuItem(kv.Value, null, (x, y) => UseTheme(id)) { Checked = st.ColorScheme == id });
                 }
             };
-            _icon = new NotifyIcon { Icon = Program.AppIcon, Text = "一维输入法 · 长按 Alt+1 常用语，Alt+空格 AI", ContextMenuStrip = menu, Visible = true };
+            _icon = new NotifyIcon { Icon = ModeIcon(true), Text = "一维输入法 · 中文", ContextMenuStrip = menu, Visible = true };
             _icon.DoubleClick += (s, e) => Program.ShowSettings();
         }
+
+        static bool? _zh;
+        static IntPtr _hicon;
+
+        /// <summary>
+        /// The one tray icon for the whole IME (like 搜狗 / 微信输入法): a brand-colour tile
+        /// showing 中 or 英. Weasel's own tray icon is turned off (style/display_tray_icon: false).
+        /// </summary>
+        public static void SetMode(bool chinese)
+        {
+            if (_icon == null || _zh == chinese) return;
+            try
+            {
+                _icon.Icon = ModeIcon(chinese);
+                _icon.Text = chinese ? "一维输入法 · 中文" : "一维输入法 · 英文";
+            }
+            catch (Exception e) { Log.Write("tray icon: " + e.Message); }
+        }
+
+        /// <summary>Repaint after a theme change so the tile follows the accent colour.</summary>
+        public static void Repaint() { var z = _zh ?? true; _zh = null; SetMode(z); }
+
+        static Icon ModeIcon(bool chinese)
+        {
+            _zh = chinese;
+            int size = Math.Max(16, System.Windows.Forms.SystemInformation.SmallIconSize.Width * 2);
+            uint rgb = chinese ? Brand.Current.Rgb : 0x6B7280;
+            using (var bmp = new Bitmap(size, size))
+            {
+                using (var g = Graphics.FromImage(bmp))
+                using (var br = new SolidBrush(Color.FromArgb((int)(0xFF000000 | rgb))))
+                using (var path = new System.Drawing.Drawing2D.GraphicsPath())
+                {
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+                    float r = size * 0.28f, w = size - 1;
+                    path.AddArc(0, 0, r, r, 180, 90); path.AddArc(w - r, 0, r, r, 270, 90);
+                    path.AddArc(w - r, w - r, r, r, 0, 90); path.AddArc(0, w - r, r, r, 90, 90);
+                    path.CloseFigure();
+                    g.FillPath(br, path);
+                    using (var font = new Font("Microsoft YaHei UI", size * 0.56f, FontStyle.Bold, GraphicsUnit.Pixel))
+                    using (var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+                        g.DrawString(chinese ? "中" : "英", font, Brushes.White, new RectangleF(0, size * 0.03f, size, size), sf);
+                }
+                var h = bmp.GetHicon();
+                var icon = (Icon)Icon.FromHandle(h).Clone();
+                if (_hicon != IntPtr.Zero) DestroyIcon(_hicon);
+                _hicon = h;
+                return icon;
+            }
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern bool DestroyIcon(IntPtr h);
 
         static void UseTheme(string id)
         {
             var s = Settings.Current;
             s.ColorScheme = id;
+            var b = Brand.FromScheme(id);
+            if (b != null) s.Accent = b.Id;
             Rime.ApplySoon(100);
+            Repaint();
         }
 
         static Bitmap Swatch(uint rgb)
