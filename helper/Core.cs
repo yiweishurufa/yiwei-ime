@@ -43,8 +43,11 @@ namespace Yiwei
                         using (var b = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view))
                         using (var k = b.OpenSubKey(RegKey))
                         {
-                            var v = k?.GetValue("WeaselRoot") as string;
-                            if (!string.IsNullOrWhiteSpace(v) && Directory.Exists(v)) return v;
+                            foreach (var name in new[] { "YiweiRoot", "WeaselRoot" })
+                            {
+                                var v = k?.GetValue(name) as string;
+                                if (!string.IsNullOrWhiteSpace(v) && Directory.Exists(v)) return v;
+                            }
                         }
                     }
                     catch { }
@@ -59,8 +62,19 @@ namespace Yiwei
         public static string SnippetsFile => Path.Combine(YiweiDir, "snippets.json");
         public static string StatsFlag => Path.Combine(YiweiDir, "stats.enabled");
         public static string WeaselCustom => Path.Combine(UserDir, "weasel.custom.yaml");
-        public static string Deployer => Path.Combine(InstallDir, "WeaselDeployer.exe");
-        public static string Server => Path.Combine(InstallDir, "WeaselServer.exe");
+        public static string DefaultCustom => Path.Combine(UserDir, "default.custom.yaml");
+        public static string Deployer => Pick("YiweiDeployer.exe", "WeaselDeployer.exe");
+        public static string Server => Pick("YiweiServer.exe", "WeaselServer.exe");
+
+        /// <summary>The renamed executable when it exists, otherwise the original Weasel name.</summary>
+        static string Pick(string preferred, string legacy)
+        {
+            var dir = InstallDir;
+            var p = Path.Combine(dir, preferred);
+            if (File.Exists(p)) return p;
+            var l = Path.Combine(dir, legacy);
+            return File.Exists(l) ? l : p;
+        }
         public static string LegacyWeaselUserDir
         {
             get
@@ -149,19 +163,40 @@ namespace Yiwei
         public string AiKeyProtected { get; set; } = "";
         public List<AiAction> AiActions { get; set; } = DefaultActions();
 
+        public bool AiEnabled { get; set; } = false;
+        /// <summary>Instruction typed for the 自定义 mode last time.</summary>
+        public string AiCustomPrompt { get; set; } = "";
+
+        // 版本与首次引导
+        public int SettingsVersion { get; set; } = 0;
+        public bool FirstRunDone { get; set; } = false;
+
+        // 常规
+        public bool ImeToast { get; set; } = true;
+        public bool ImeToastPolling { get; set; } = false;
+
+        // 输入方案（雾凇拼音 schema id）
+        public string Schema { get; set; } = "rime_ice";
+
         // 快捷键
+        public bool AltHotkeys { get; set; } = true;
         public int HoldMs { get; set; } = 300;
         public bool SnippetsHotkey { get; set; } = true;
         public bool AiHotkey { get; set; } = true;
+        public List<string> AltBlocklist { get; set; } = DefaultBlocklist();
+        public bool AltSkipBorderlessFullscreen { get; set; } = false;
 
         // 外观
-        public string ColorScheme { get; set; } = "yiwei_light";
-        public string ColorSchemeDark { get; set; } = "yiwei_dark";
+        public string Accent { get; set; } = "qingbi";
+        public bool FollowSystemDark { get; set; } = true;
+        public int CandidateCount { get; set; } = 5;
+        public string ColorScheme { get; set; } = "yiwei_qingbi";
+        public string ColorSchemeDark { get; set; } = "yiwei_qingbi_dark";
         public bool Horizontal { get; set; } = true;
         public bool VerticalText { get; set; } = false;
         public int FontPoint { get; set; } = 14;
         public string FontFace { get; set; } = "Microsoft YaHei UI";
-        public int CornerRadius { get; set; } = 10;
+        public int CornerRadius { get; set; } = 8;
         public int HilitedCornerRadius { get; set; } = 6;
         public bool InlinePreedit { get; set; } = true;
 
@@ -181,6 +216,13 @@ namespace Yiwei
         // 主题导入
         public Dictionary<string, Dictionary<string, string>> ImportedThemes { get; set; } = new Dictionary<string, Dictionary<string, string>>();
         public Dictionary<string, string> CustomTheme { get; set; } = null;
+
+        public static List<string> DefaultBlocklist() => new List<string>
+        {
+            "mstsc.exe", "vmconnect.exe", "vmware.exe", "vmware-vmx.exe", "virtualboxvm.exe", "parsecd.exe", "moonlight.exe",
+            "anydesk.exe", "teamviewer.exe", "todesk.exe", "sunloginclient.exe",
+            "steam.exe", "steamwebhelper.exe", "epicgameslauncher.exe", "battle.net.exe", "riotclientservices.exe", "eadesktop.exe", "wegame.exe",
+        };
 
         public static List<AiAction> DefaultActions() => new List<AiAction>
         {
@@ -206,9 +248,51 @@ namespace Yiwei
         }
 
         static Settings _current;
-        public static Settings Current => _current ?? (_current = Json.Load<Settings>(Paths.SettingsFile));
+        static readonly object Gate = new object();
+        public static Settings Current
+        {
+            get
+            {
+                if (_current != null) return _current;
+                lock (Gate)
+                {
+                    if (_current != null) return _current;
+                    bool existed = File.Exists(Paths.SettingsFile);
+                    var s = Json.Load<Settings>(Paths.SettingsFile);
+                    if (s.SettingsVersion < 2)
+                    {
+                        // Settings written by 0.1: the user has used the helper already, keep AI on if it was set up.
+                        if (existed)
+                        {
+                            s.FirstRunDone = true;
+                            s.AiEnabled = !string.IsNullOrEmpty(s.AiKeyProtected) || (s.AiBaseUrl ?? "").Contains("localhost") || (s.AiBaseUrl ?? "").Contains("127.0.0.1");
+                        }
+                        s.SettingsVersion = 2;
+                        if (existed) try { s.Save(); } catch { }
+                    }
+                    if (s.AltBlocklist == null) s.AltBlocklist = DefaultBlocklist();
+                    if (s.AiActions == null || s.AiActions.Count == 0) s.AiActions = DefaultActions();
+                    if (s.AppAscii == null) s.AppAscii = new Dictionary<string, bool>();
+                    if (s.ImportedThemes == null) s.ImportedThemes = new Dictionary<string, Dictionary<string, string>>();
+                    if (s.CandidateCount != 5 && s.CandidateCount != 7 && s.CandidateCount != 9) s.CandidateCount = 5;
+                    if (Brand.Find(s.Accent) == null) s.Accent = "qingbi";
+                    return _current = s;
+                }
+            }
+        }
         public static void Reload() { _current = null; }
-        public void Save() => Json.Save(Paths.SettingsFile, this);
+        public void Save() { lock (Gate) Json.Save(Paths.SettingsFile, this); }
+
+        /// <summary>Back to defaults, keeping the encrypted key out of it (the user asked for a reset).</summary>
+        public static void Reset()
+        {
+            lock (Gate)
+            {
+                var s = new Settings { SettingsVersion = 2, FirstRunDone = true };
+                s.Save();
+                _current = s;
+            }
+        }
 
         public bool StatsEnabled
         {
@@ -220,15 +304,25 @@ namespace Yiwei
     /// <summary>Runs the RIME deployer so a changed configuration takes effect.</summary>
     public static class Deploy
     {
-        public static void Run(bool wait = false)
+        /// <summary>Raised (on a worker thread) when a deployment starts / finishes: (finished, ok).</summary>
+        public static event Action<bool, bool> StateChanged;
+
+        public static void Run(bool wait = false) => Run("/deploy", wait);
+
+        public static void Run(string args, bool wait)
         {
             try
             {
-                var p = Process.Start(new ProcessStartInfo(Paths.Deployer, "/deploy") { UseShellExecute = false, CreateNoWindow = true });
-                if (wait) p?.WaitForExit(120000);
+                var p = Process.Start(new ProcessStartInfo(Paths.Deployer, args) { UseShellExecute = false, CreateNoWindow = true });
+                if (p == null) return;
+                Fire(false, true);
+                if (wait) { bool ok = p.WaitForExit(120000); Fire(true, ok); }
+                else System.Threading.Tasks.Task.Run(() => { bool ok = false; try { ok = p.WaitForExit(120000); } catch { } Fire(true, ok); });
             }
-            catch (Exception e) { Log.Write("deploy: " + e.Message); }
+            catch (Exception e) { Log.Write("deploy: " + e.Message); Fire(true, false); }
         }
+
+        static void Fire(bool finished, bool ok) { try { StateChanged?.Invoke(finished, ok); } catch { } }
     }
 
     /// <summary>
@@ -250,10 +344,15 @@ namespace Yiwei
             y.AppendLine(Marker + "，手动修改会被覆盖。需要额外补丁请写在 yiwei.custom.yaml 之外的方案文件里。");
             y.AppendLine("patch:");
             void P(string key, string value) => y.Append("  \"").Append(key).Append("\": ").AppendLine(value);
-            P("style/color_scheme", Q(s.ColorScheme));
-            P("style/color_scheme_dark", Q(s.ColorSchemeDark));
+            bool sysDark = SystemTheme.IsDark;
+            var light = s.ColorScheme;
+            var dark = DarkSchemeFor(s);
+            P("style/color_scheme", Q(s.FollowSystemDark && sysDark ? dark : light));
+            P("style/color_scheme_dark", Q(dark));
             P("style/horizontal", B(s.Horizontal));
             P("style/vertical_text", B(s.VerticalText));
+            P("style/candidate_list_layout", Q(s.Horizontal ? "linear" : "stacked"));
+            P("style/text_orientation", Q(s.VerticalText ? "vertical" : "horizontal"));
             P("style/inline_preedit", B(s.InlinePreedit));
             P("style/font_point", s.FontPoint.ToString());
             P("style/label_font_point", Math.Max(8, s.FontPoint - 3).ToString());
@@ -262,6 +361,9 @@ namespace Yiwei
             P("style/comment_font_face", Q(s.FontFace));
             P("style/layout/corner_radius", s.CornerRadius.ToString());
             P("style/layout/round_corner", s.HilitedCornerRadius.ToString());
+            foreach (var b in Brand.Palette)
+                foreach (var d in new[] { false, true })
+                    P("preset_color_schemes/" + Brand.SchemeId(b.Id, d), Brand.WeaselScheme(b, d));
             P("global_ascii", B(s.GlobalAscii));
             foreach (var kv in s.AppAscii)
                 P("app_options/" + kv.Key.ToLowerInvariant().Replace("/", "_"), "{ascii_mode: " + B(kv.Value) + "}");
@@ -282,6 +384,21 @@ namespace Yiwei
             // Simplified / Traditional default for rime-ice schemas
             WriteSchemaPatch("rime_ice", s.Traditional);
         }
+
+        /// <summary>The scheme used in dark mode: the brand's dark variant when following the system, else the chosen one.</summary>
+        public static string DarkSchemeFor(Settings s)
+        {
+            if (s.FollowSystemDark)
+            {
+                var b = Brand.FromScheme(s.ColorScheme);
+                if (b != null) return Brand.SchemeId(b.Id, true);
+                if (s.ColorScheme == "yiwei_light") return "yiwei_dark";
+            }
+            return string.IsNullOrEmpty(s.ColorSchemeDark) ? "yiwei_dark" : s.ColorSchemeDark;
+        }
+
+        /// <summary>The candidate-window scheme that is showing right now.</summary>
+        public static string ActiveScheme(Settings s) => s.FollowSystemDark && SystemTheme.IsDark ? DarkSchemeFor(s) : s.ColorScheme;
 
         static void WriteSchemaPatch(string schema, bool traditional)
         {
@@ -319,7 +436,15 @@ namespace Yiwei
                 }
             }
             catch (Exception e) { Log.Write("schemes: " + e.Message); }
-            if (list.Count == 0) list.Add(new KeyValuePair<string, string>("yiwei_light", "一维 · 浅色"));
+            if (list.Count == 0) { list.Add(new KeyValuePair<string, string>("yiwei_light", "一维 · 浅色")); list.Add(new KeyValuePair<string, string>("yiwei_dark", "一维 · 深色")); }
+            list.RemoveAll(kv => Brand.FromScheme(kv.Key) != null);
+            var brand = new List<KeyValuePair<string, string>>();
+            foreach (var b in Brand.Palette)
+            {
+                brand.Add(new KeyValuePair<string, string>(Brand.SchemeId(b.Id, false), "一维 · " + b.Name));
+                brand.Add(new KeyValuePair<string, string>(Brand.SchemeId(b.Id, true), "一维 · " + b.Name + "（深色）"));
+            }
+            list.InsertRange(0, brand);
             foreach (var t in Settings.Current.ImportedThemes)
                 list.Add(new KeyValuePair<string, string>(t.Key, (t.Value.TryGetValue("name", out var n) ? n : t.Key) + "（导入）"));
             if (Settings.Current.CustomTheme != null) list.Add(new KeyValuePair<string, string>("yiwei_custom", "我的配色"));
@@ -330,6 +455,8 @@ namespace Yiwei
         public static Dictionary<string, uint> SchemeColors(string id)
         {
             var d = new Dictionary<string, uint>();
+            var brand = Brand.FromScheme(id);
+            if (brand != null) return Brand.SchemeArgb(brand, id.EndsWith("_dark"));
             if (Settings.Current.ImportedThemes.TryGetValue(id, out var imp) || (id == "yiwei_custom" && (imp = Settings.Current.CustomTheme) != null))
             {
                 foreach (var kv in imp) if (TryColor(kv.Value, out var c)) d[kv.Key] = c;

@@ -44,6 +44,7 @@ namespace Yiwei
         {
             public long Characters, Commits;
             public long Today, ThisWeek, ThisYear;
+            public long CjkChars, PhraseSelectionsSaved;
             public long[] ByHour = new long[24];
             public SortedDictionary<DateTime, long> ByDay = new SortedDictionary<DateTime, long>();
             public List<KeyValuePair<string, long>> TopApps = new List<KeyValuePair<string, long>>();
@@ -95,12 +96,25 @@ namespace Yiwei
                     r.ByDay.TryGetValue(when.Date, out var d); r.ByDay[when.Date] = d + n;
                     var app = AppAt(apps, t);
                     if (app != null) { appCount.TryGetValue(app, out var a); appCount[app] = a + n; }
+                    int cjk = text.Count(c => c >= 0x3400 && c <= 0x9FFF);
+                    r.CjkChars += cjk;
+                    if (cjk >= 2) r.PhraseSelectionsSaved += cjk - 1; // one selection for the phrase instead of one per character
                     if (n >= 2 && n <= 8 && text.Any(c => c >= 0x4E00 && c <= 0x9FFF))
                     { words.TryGetValue(text, out var w); words[text] = w + 1; }
                 }
             r.TopApps = appCount.OrderByDescending(x => x.Value).Take(8).ToList();
             r.TopWords = words.OrderByDescending(x => x.Value).Take(20).ToList();
             return r;
+        }
+
+        /// <summary>
+        /// Estimated keystrokes saved compared with typing every character in full pinyin and picking it on its own:
+        /// one selection per extra character of each phrase, plus ~1.3 keys per character with a double-pinyin schema.
+        /// </summary>
+        public static long KeystrokesSaved(Report r, string schema)
+        {
+            double perChar = schema != null && schema.StartsWith("double_pinyin") ? 1.3 : 0;
+            return r.PhraseSelectionsSaved + (long)(r.CjkChars * perChar);
         }
 
         static string AppAt(List<KeyValuePair<long, string>> apps, long t)

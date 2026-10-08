@@ -126,7 +126,7 @@ def mount_into_schemas():
         text = open(path, encoding="utf-8").read()
         if "table_translator@custom_phrase" not in text:
             continue  # only full pinyin / double pinyin schemas of rime-ice
-        text = re.sub(r"(\n  processors:\n)", r"\1    - lua_processor@*yiwei_stats  # 一维输入法：输入统计（默认关闭）\n", text, count=1)
+        text = re.sub(r"(\n  processors:\n)", r"\1    - lua_processor@*yiwei_stats  # 一维输入法：输入统计（默认关闭）\n    - lua_processor@*yiwei_toast  # 一维输入法：中/英切换提示\n", text, count=1)
         text = re.sub(r"(\n(\s+)- table_translator@custom_phrase[^\n]*\n)",
                       r"\1\2- table_translator@yiwei_tech     # 一维输入法：科技与互联网词库\n", text, count=1)
         text = text.rstrip("\n") + "\n" + TECH_BLOCK

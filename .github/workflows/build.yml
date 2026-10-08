@@ -222,6 +222,36 @@ jobs:
           if (-not (Get-Process YiweiServer -ErrorAction SilentlyContinue)) { throw "YiweiServer 没有启动" }
           if (-not (Get-Process YiweiHelper -ErrorAction SilentlyContinue)) { throw "YiweiHelper 启动后退出了" }
           Write-Host "自检通过"
+      - name: 界面截图
+        if: always()
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          New-Item -ItemType Directory -Force screens | Out-Null
+          function Shot($name) {
+            $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+            $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+            $g = [System.Drawing.Graphics]::FromImage($bmp); $g.CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
+            $bmp.Save("screens\$name.png", [System.Drawing.Imaging.ImageFormat]::Png); $g.Dispose(); $bmp.Dispose()
+          }
+          $root = (Get-ItemProperty 'HKLM:\SOFTWARE\WOW6432Node\Yiwei\YiweiIME' -ErrorAction SilentlyContinue).YiweiRoot
+          if (-not $root) { $root = (Get-ItemProperty 'HKLM:\SOFTWARE\Yiwei\YiweiIME').YiweiRoot }
+          $h = Join-Path $root 'YiweiHelper.exe'
+          foreach ($pg in '常规','外观','快捷键','常用语','AI','统计','关于') {
+            Start-Process $h -ArgumentList '/settings', $pg; Start-Sleep 5; Shot "settings-$pg"
+          }
+          Get-Process YiweiHelper -ErrorAction SilentlyContinue | Stop-Process -Force
+          Start-Process $h -ArgumentList '/wizard'; Start-Sleep 6; Shot 'wizard-1'
+          Add-Type -AssemblyName Microsoft.VisualBasic
+          for ($i = 2; $i -le 7; $i++) { [System.Windows.Forms.SendKeys]::SendWait('{ENTER}'); Start-Sleep 2; Shot "wizard-$i" }
+          Get-ChildItem "$env:APPDATA\YiweiIME" -Filter '*.log' -Recurse -ErrorAction SilentlyContinue | Copy-Item -Destination screens
+          Get-ChildItem "$env:LOCALAPPDATA" -Filter 'Yiwei*' -Directory -ErrorAction SilentlyContinue | ForEach-Object { Get-ChildItem $_.FullName -Filter *.log -Recurse | Copy-Item -Destination screens }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screens
+          path: screens
+          if-no-files-found: ignore
       - name: 收集自检日志
         if: always()
         shell: pwsh
@@ -294,6 +324,22 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -m "更新自动更新清单 ${ver} [skip ci]"
           git push origin HEAD:main
+
+  screens:
+    needs: smoke
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: 把截图写进 ci-shots 分支
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir s && cd s
+          gh run download $GITHUB_RUN_ID -R $GITHUB_REPOSITORY -n screens -D . || exit 0
+          git init -q -b ci-shots && git config user.name ci && git config user.email ci@users.noreply.github.com
+          echo "run $GITHUB_RUN_ID $GITHUB_SHA" > README.txt; ls > index.txt
+          git add -A && git commit -qm "screens $GITHUB_RUN_ID"
+          git push -f "https://x-access-token:${GH_TOKEN}@github.com/$GITHUB_REPOSITORY.git" ci-shots
 
   report:
     needs: [build, smoke]

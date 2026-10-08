@@ -53,6 +53,108 @@ namespace Yiwei
         [DllImport("user32.dll")] public static extern bool GetCursorPos(out POINT p);
         [DllImport("user32.dll")] public static extern short GetAsyncKeyState(int vk);
         [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr hWnd, out RECT r);
+        [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hWnd);
+        [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr hWnd);
+        [DllImport("user32.dll")] public static extern IntPtr GetShellWindow();
+        [DllImport("user32.dll")] public static extern IntPtr GetDesktopWindow();
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)] public static extern int GetClassName(IntPtr hWnd, StringBuilder sb, int max);
+        [DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr hWnd, IntPtr after, int x, int y, int cx, int cy, uint flags);
+        [DllImport("user32.dll", EntryPoint = "GetWindowLong")] public static extern int GetWindowLong(IntPtr hWnd, int index);
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong")] public static extern int SetWindowLong(IntPtr hWnd, int index, int value);
+        [DllImport("user32.dll")] public static extern IntPtr MonitorFromWindow(IntPtr hWnd, uint flags);
+        [DllImport("user32.dll")] public static extern IntPtr MonitorFromPoint(POINT pt, uint flags);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)] public static extern bool GetMonitorInfo(IntPtr mon, ref MONITORINFO info);
+        [DllImport("shell32.dll")] public static extern int SHQueryUserNotificationState(out int state);
+        [DllImport("kernel32.dll")] public static extern IntPtr OpenProcess(uint access, bool inherit, uint pid);
+        [DllImport("kernel32.dll")] public static extern bool CloseHandle(IntPtr h);
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)] public static extern bool QueryFullProcessImageName(IntPtr h, int flags, StringBuilder sb, ref int size);
+        [DllImport("imm32.dll")] public static extern IntPtr ImmGetDefaultIMEWnd(IntPtr hWnd);
+        [DllImport("user32.dll")] public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, uint flags, uint timeout, out IntPtr result);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MONITORINFO { public int cbSize; public RECT rcMonitor, rcWork; public uint dwFlags; }
+
+        public const int GWL_EXSTYLE = -20;
+        public const uint SWP_NOSIZE = 0x1, SWP_NOZORDER = 0x4, SWP_NOACTIVATE = 0x10, SWP_SHOWWINDOW = 0x40;
+        public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+        public const int WS_EX_TRANSPARENT = 0x20, WS_EX_LAYERED = 0x80000;
+
+        /// <summary>Executable name (lower case, with .exe) of a process id, cached; cheap enough for the keyboard hook.</summary>
+        static readonly System.Collections.Generic.Dictionary<uint, string> _names = new System.Collections.Generic.Dictionary<uint, string>();
+        public static string ProcessName(uint pid)
+        {
+            if (pid == 0) return "";
+            lock (_names)
+            {
+                if (_names.TryGetValue(pid, out var cached)) return cached;
+                string name = "";
+                var h = OpenProcess(0x1000 /* QUERY_LIMITED_INFORMATION */, false, pid);
+                if (h != IntPtr.Zero)
+                {
+                    try
+                    {
+                        var sb = new StringBuilder(1024); int size = sb.Capacity;
+                        if (QueryFullProcessImageName(h, 0, sb, ref size)) name = System.IO.Path.GetFileName(sb.ToString()).ToLowerInvariant();
+                    }
+                    finally { CloseHandle(h); }
+                }
+                if (_names.Count > 512) _names.Clear();
+                _names[pid] = name;
+                return name;
+            }
+        }
+
+        public static string ForegroundExe()
+        {
+            GetWindowThreadProcessId(GetForegroundWindow(), out var pid);
+            return ProcessName(pid);
+        }
+
+        /// <summary>A Direct3D exclusive full-screen app or presentation mode is running.</summary>
+        public static bool ExclusiveFullscreen()
+        {
+            try { return SHQueryUserNotificationState(out var st) == 0 && (st == 3 || st == 4); }
+            catch { return false; }
+        }
+
+        /// <summary>The foreground window covers its whole monitor (borderless full screen), and is not the desktop.</summary>
+        public static bool ForegroundCoversMonitor()
+        {
+            var fg = GetForegroundWindow();
+            if (fg == IntPtr.Zero || fg == GetShellWindow() || fg == GetDesktopWindow()) return false;
+            var cls = new StringBuilder(64); GetClassName(fg, cls, 64);
+            var c = cls.ToString();
+            if (c == "Progman" || c == "WorkerW" || c == "Shell_TrayWnd") return false;
+            if (!GetWindowRect(fg, out var r)) return false;
+            var mi = new MONITORINFO { cbSize = Marshal.SizeOf(typeof(MONITORINFO)) };
+            if (!GetMonitorInfo(MonitorFromWindow(fg, 2), ref mi)) return false;
+            return r.Left <= mi.rcMonitor.Left && r.Top <= mi.rcMonitor.Top && r.Right >= mi.rcMonitor.Right && r.Bottom >= mi.rcMonitor.Bottom;
+        }
+
+        /// <summary>Caret rectangle in screen pixels, or null when the app does not expose a caret.</summary>
+        public static RECT? CaretRect()
+        {
+            var fg = GetForegroundWindow();
+            var tid = GetWindowThreadProcessId(fg, out _);
+            var info = new GUITHREADINFO { cbSize = Marshal.SizeOf(typeof(GUITHREADINFO)) };
+            if (GetGUIThreadInfo(tid, ref info) && info.hwndCaret != IntPtr.Zero)
+            {
+                var a = new POINT { X = info.rcCaret.Left, Y = info.rcCaret.Top };
+                var b = new POINT { X = info.rcCaret.Right, Y = info.rcCaret.Bottom };
+                ClientToScreen(info.hwndCaret, ref a); ClientToScreen(info.hwndCaret, ref b);
+                if (a.X != 0 || a.Y != 0) return new RECT { Left = a.X, Top = a.Y, Right = Math.Max(b.X, a.X + 1), Bottom = Math.Max(b.Y, a.Y + 16) };
+            }
+            return null;
+        }
+
+        /// <summary>Work area (pixels) of the monitor containing a point.</summary>
+        public static RECT WorkArea(int x, int y)
+        {
+            var mi = new MONITORINFO { cbSize = Marshal.SizeOf(typeof(MONITORINFO)) };
+            if (GetMonitorInfo(MonitorFromPoint(new POINT { X = x, Y = y }, 2), ref mi)) return mi.rcWork;
+            var wa = Screen.PrimaryScreen.WorkingArea;
+            return new RECT { Left = wa.Left, Top = wa.Top, Right = wa.Right, Bottom = wa.Bottom };
+        }
 
         public static string ForegroundProcessName()
         {
@@ -208,8 +310,9 @@ namespace Yiwei
         bool _altUsed;        // another key was pressed while Alt was down
         bool _swallowedChord; // we consumed a chord; mask the Alt release
 
-        public Func<Keys, bool> PanelKey;            // returns true when the panel consumed the key
+        public Func<Keys, bool, bool> PanelKey;      // (key, alt held) → true when the panel consumed the key
         public Func<bool> PanelOpen;
+        public Action ClosePanel;
         public Action<int> OnSnippets;               // category index
         public Action OnAi;
 
@@ -239,6 +342,22 @@ namespace Yiwei
             return Native.CallNextHookEx(_hook, nCode, wParam, lParam);
         }
 
+        static bool IsDown(Keys k) => (Native.GetAsyncKeyState((int)k) & 0x8000) != 0;
+        static bool CtrlOrWinDown() => IsDown(Keys.LControlKey) || IsDown(Keys.RControlKey) || IsDown(Keys.LWin) || IsDown(Keys.RWin);
+
+        /// <summary>Alt gestures are off in blocked apps, exclusive full screen, and (optionally) borderless full screen.</summary>
+        static bool GestureBlocked(Settings s)
+        {
+            if (!s.AltHotkeys) return true;
+            if (Native.ExclusiveFullscreen()) return true;
+            if (s.AltSkipBorderlessFullscreen && Native.ForegroundCoversMonitor()) return true;
+            var exe = Native.ForegroundExe();
+            if (exe.Length > 0 && s.AltBlocklist != null)
+                foreach (var b in s.AltBlocklist)
+                    if (string.Equals(b?.Trim(), exe, StringComparison.OrdinalIgnoreCase)) return true;
+            return false;
+        }
+
         bool Handle(Keys vk, bool down)
         {
             bool isAlt = vk == Keys.LMenu || vk == Keys.RMenu || vk == Keys.Menu;
@@ -252,32 +371,37 @@ namespace Yiwei
                 }
                 return false;
             }
+            bool modifier = vk == Keys.LShiftKey || vk == Keys.RShiftKey || vk == Keys.LControlKey || vk == Keys.RControlKey
+                            || vk == Keys.LWin || vk == Keys.RWin || vk == Keys.ShiftKey || vk == Keys.ControlKey;
 
-            // An open panel takes the keyboard (except modifiers).
+            // An open panel takes the keyboard, but never system chords (Alt+Tab, Alt+F4, Ctrl/Win combos).
             if (PanelOpen != null && PanelOpen())
             {
-                if (vk == Keys.LShiftKey || vk == Keys.RShiftKey || vk == Keys.LControlKey || vk == Keys.RControlKey) return false;
+                if (modifier) return false;
+                if (CtrlOrWinDown()) return false;
+                if (_altDownAt != 0 && (vk == Keys.Tab || vk == Keys.F4 || vk == Keys.Escape))
+                {
+                    _swallowedChord = false;
+                    if (down) Program.Ui.BeginInvoke(new Action(() => ClosePanel?.Invoke()));
+                    return false;
+                }
                 if (!down) return true;
-                bool used = PanelKey != null && PanelKey(vk);
-                if (_altDownAt != 0) _swallowedChord = true;
+                bool used = PanelKey != null && PanelKey(vk, _altDownAt != 0);
+                if (_altDownAt != 0 && used) _swallowedChord = true;
                 return used;
             }
 
             if (_altDownAt != 0 && down)
             {
+                if (modifier || CtrlOrWinDown() || IsDown(Keys.LShiftKey) || IsDown(Keys.RShiftKey)) { _altUsed = true; return false; }
                 var s = Settings.Current;
                 bool held = unchecked(Environment.TickCount - _altDownAt) >= s.HoldMs && !_altUsed;
-                if (held && s.SnippetsHotkey && vk >= Keys.D1 && vk <= Keys.D9)
+                bool wanted = held && ((s.SnippetsHotkey && vk >= Keys.D1 && vk <= Keys.D9) || (s.AiHotkey && vk == Keys.Space));
+                if (wanted && !GestureBlocked(s))
                 {
                     _swallowedChord = true; _altUsed = true;
-                    int cat = vk - Keys.D1;
-                    Program.Ui.BeginInvoke(new Action(() => OnSnippets?.Invoke(cat)));
-                    return true;
-                }
-                if (held && s.AiHotkey && vk == Keys.Space)
-                {
-                    _swallowedChord = true; _altUsed = true;
-                    Program.Ui.BeginInvoke(new Action(() => OnAi?.Invoke()));
+                    if (vk == Keys.Space) Program.Ui.BeginInvoke(new Action(() => OnAi?.Invoke()));
+                    else { int cat = vk - Keys.D1; Program.Ui.BeginInvoke(new Action(() => OnSnippets?.Invoke(cat))); }
                     return true;
                 }
                 _altUsed = true;

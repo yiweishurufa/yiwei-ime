@@ -13,6 +13,7 @@ namespace Yiwei
         public string Code { get; set; } = "";
     }
 
+    /// <summary>A group of snippets: a tab in the Alt panel (hold Alt + its number opens it).</summary>
     public class SnippetCategory
     {
         public string Name { get; set; } = "";
@@ -85,7 +86,9 @@ namespace Yiwei
                         sb.Append(s.Text.Replace("\t", " ").Replace("\r", "").Replace("\n", " ")).Append('\t')
                           .Append(s.Code.Trim().ToLowerInvariant()).Append("\t100\n");
                 if (sb.Length == 0 && b < 0) return;
-                File.WriteAllText(user, baseText + Begin + "\n" + sb + End + "\n", new UTF8Encoding(false));
+                var content = baseText + Begin + "\n" + sb + End + "\n";
+                if (File.Exists(user) && File.ReadAllText(user, Encoding.UTF8) == content) return; // nothing new for RIME
+                File.WriteAllText(user, content, new UTF8Encoding(false));
                 Deploy.Run();
             }
             catch (Exception ex) { Log.Write("custom phrase: " + ex.Message); }
