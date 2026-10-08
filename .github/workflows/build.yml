@@ -1,0 +1,174 @@
+name: 构建一维输入法
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+    paths-ignore: ['**.md', 'PROGRESS.md', 'update/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  WEASEL_REPO: https://github.com/rime/weasel.git
+  WEASEL_SHA: d73f6295e8252ed2f7b9c12bae32e9001b1afdaa
+  VERSION_MAJOR: '0'
+  VERSION_MINOR: '1'
+  VERSION_PATCH: '0'
+
+jobs:
+  build:
+    runs-on: windows-2022
+    env:
+      boost_version: 1.84.0
+      BOOST_ROOT: ${{ github.workspace }}\weasel\deps\boost_1_84_0
+      SDKVER: 10.0.19041.0
+    steps:
+      - name: 检出一维输入法
+        uses: actions/checkout@v4
+
+      - name: 获取小狼毫源码（固定版本）
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          git clone $env:WEASEL_REPO weasel
+          cd weasel
+          git checkout $env:WEASEL_SHA
+          git submodule update --init --recursive
+          git fetch --tags
+
+      - name: 改名为一维输入法
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python scripts/rebrand.py weasel
+          Copy-Item assets\yiwei.ico weasel\resource\weasel.ico -Force
+          Copy-Item weasel\env.vs2022.bat weasel\env.bat
+
+      - name: 缓存 Boost
+        id: cache-boost
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.BOOST_ROOT }}
+          key: ${{ runner.os }}-boost-${{ env.boost_version }}-x86x64
+
+      - name: 安装 Boost
+        if: steps.cache-boost.outputs.cache-hit != 'true'
+        shell: bash
+        working-directory: weasel
+        run: |
+          ./install_boost.bat
+          ./build.bat boost
+
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          sdk: ${{ env.SDKVER }}
+
+      - name: 缓存 WinSparkle
+        id: cache-winsparkle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}\winsparkle\x64\Release\WinSparkle.dll
+            ${{ github.workspace }}\winsparkle\x64\Release\WinSparkle.lib
+            ${{ github.workspace }}\winsparkle\Release\WinSparkle.dll
+            ${{ github.workspace }}\winsparkle\Release\WinSparkle.lib
+          key: ${{ runner.os }}-winsparkle-v0.9.2-bundled
+
+      - name: 编译 WinSparkle
+        if: steps.cache-winsparkle.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (Test-Path winsparkle) { Remove-Item -Recurse -Force winsparkle }
+          git clone https://github.com/vslavik/winsparkle.git -b v0.9.2 --depth 1
+          cd winsparkle
+          git submodule update --init --recursive
+          copy ..\weasel\bundled_winsparkle.patch .
+          git apply bundled_winsparkle.patch
+          nuget restore
+          msbuild -m -t:Build -p:Configuration=Release -p:Platform=x64 WinSparkle.sln
+          msbuild -m -t:Build -p:Configuration=Release -p:Platform=Win32 WinSparkle.sln
+
+      - name: 放置 WinSparkle
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          copy .\winsparkle\x64\Release\WinSparkle.dll .\weasel\output\
+          copy .\winsparkle\x64\Release\WinSparkle.lib .\weasel\lib64\
+          copy .\winsparkle\Release\WinSparkle.dll .\weasel\output\Win32\
+          copy .\winsparkle\Release\WinSparkle.lib .\weasel\lib\
+
+      - name: 获取 RIME 引擎
+        shell: pwsh
+        working-directory: weasel
+        run: |
+          $ErrorActionPreference = 'Stop'
+          .\get-rime.ps1 -use dev
+
+      - name: 准备基础数据
+        shell: pwsh
+        working-directory: weasel
+        run: |
+          $ErrorActionPreference = 'Stop'
+          .\build.bat data
+
+      - name: 雾凇拼音、配色与扩展
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $rel = Invoke-RestMethod -Headers @{ Authorization = "Bearer $env:GH_TOKEN" } https://api.github.com/repos/iDvel/rime-ice/releases/latest
+          $asset = $rel.assets | Where-Object { $_.name -eq 'full.zip' }
+          Invoke-WebRequest $asset.browser_download_url -OutFile rime-ice-full.zip
+          $hash = (Get-FileHash rime-ice-full.zip -Algorithm SHA256).Hash.ToLower()
+          if ($asset.digest -and ("sha256:" + $hash) -ne $asset.digest) { throw "rime-ice checksum mismatch" }
+          Write-Host "rime-ice $($rel.tag_name) $hash"
+          python scripts/customize_data.py weasel rime-ice-full.zip
+
+      - name: 编译一维助手
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          dotnet build helper\YiweiHelper.csproj -c Release -o helper-out
+          Copy-Item helper-out\YiweiHelper.exe weasel\output\ -Force
+          if (Test-Path helper-out\YiweiHelper.exe.config) { Copy-Item helper-out\YiweiHelper.exe.config weasel\output\ -Force }
+
+      - name: 编译输入法并打包
+        shell: pwsh
+        working-directory: weasel
+        env:
+          RELEASE_BUILD: ${{ startsWith(github.ref, 'refs/tags/') && '1' || '' }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          .\build.bat installer
+          if ($LASTEXITCODE -ne 0) { throw "build failed" }
+          Get-ChildItem output\archives
+
+      - name: 上传安装包
+        uses: actions/upload-artifact@v4
+        with:
+          name: yiwei-ime-installer
+          if-no-files-found: error
+          path: weasel\output\archives\yiwei-ime*.exe
+
+      - name: 发布测试版
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: nightly
+          name: 一维输入法 测试版
+          prerelease: true
+          make_latest: false
+          body: |
+            一维输入法 Windows 测试版（自动构建，提交 ${{ github.sha }}）。
+            下载 yiwei-ime-*-installer.exe，双击安装。支持 Windows 10/11（x64 / x86）。
+          files: weasel\output\archives\yiwei-ime*.exe
+
+      - name: 发布正式版
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: weasel\output\archives\yiwei-ime*.exe

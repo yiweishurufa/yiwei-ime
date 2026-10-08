@@ -1,0 +1,9 @@
+helper/bin/
+helper/obj/
+helper-out/
+weasel/
+winsparkle/
+*.zip
+PROGRESS.md
+helper/obj/
+helper/bin/
