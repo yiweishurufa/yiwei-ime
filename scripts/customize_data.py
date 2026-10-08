@@ -151,6 +151,7 @@ NSI_DATA = r'''
   SetOutPath $INSTDIR
   File "YiweiHelper.exe"
   File /nonfatal "YiweiHelper.exe.config"
+  File /nonfatal "helperlibs\*.dll"
 '''
 
 NSI_HELPER_RUN = r'''
@@ -190,7 +191,7 @@ def patch_installer():
     assert anchor in t, "nsi: preview anchor missing"
     t = t.replace(anchor, anchor + NSI_DATA, 1)
 
-    anchor = '  Exec "$INSTDIR\\WeaselServer.exe"\n'
+    anchor = '  Exec "$INSTDIR\\YiweiServer.exe"\n'
     assert anchor in t, "nsi: server exec anchor missing"
     t = t.replace(anchor, anchor + NSI_HELPER_RUN, 1)
 
@@ -198,14 +199,14 @@ def patch_installer():
     assert m, "nsi: settings shortcut anchor missing"
     t = t[:m.start()] + NSI_SHORTCUT + t[m.start():]
 
-    anchor = "  ExecWait '\"$INSTDIR\\WeaselSetup.exe\" /u'\n"
+    anchor = "  ExecWait '\"$INSTDIR\\YiweiSetup.exe\" /u'\n"
     idx = t.rfind(anchor)
     assert idx > 0, "nsi: uninstall anchor missing"
     t = t[:idx + len(anchor)] + NSI_UNINSTALL + t[idx + len(anchor):]
 
     # before upgrading, stop the running helper as well
-    t = t.replace("  ExecWait '\"$R1\\WeaselServer.exe\" /quit'\n",
-                  "  ExecWait '\"$R1\\WeaselServer.exe\" /quit'\n  ExecWait 'taskkill /f /im YiweiHelper.exe'\n", 1)
+    t = t.replace("  ExecWait '\"$R1\\YiweiServer.exe\" /quit'\n",
+                  "  ExecWait '\"$R1\\YiweiServer.exe\" /quit'\n  ExecWait 'taskkill /f /im YiweiHelper.exe'\n", 1)
     out = t.replace("\n", nl)
     open(path, "wb").write((b"\xef\xbb\xbf" if bom else b"") + out.encode("utf-8"))
 

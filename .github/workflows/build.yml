@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 env:
   WEASEL_REPO: https://github.com/rime/weasel.git
@@ -26,7 +27,7 @@ jobs:
       SDKVER: 10.0.19041.0
     steps:
       - name: 检出一维输入法
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 获取小狼毫源码（固定版本）
         shell: pwsh
@@ -135,12 +136,16 @@ jobs:
           dotnet build helper\YiweiHelper.csproj -c Release -o helper-out
           Copy-Item helper-out\YiweiHelper.exe weasel\output\ -Force
           if (Test-Path helper-out\YiweiHelper.exe.config) { Copy-Item helper-out\YiweiHelper.exe.config weasel\output\ -Force }
+          New-Item -ItemType Directory -Force weasel\output\helperlibs | Out-Null
+          Get-ChildItem helper-out -Filter *.dll -ErrorAction SilentlyContinue | Copy-Item -Destination weasel\output\helperlibs\ -Force
+          Get-ChildItem weasel\output\helperlibs
 
       - name: 编译输入法并打包
         shell: pwsh
         working-directory: weasel
         env:
-          RELEASE_BUILD: ${{ startsWith(github.ref, 'refs/tags/') && '1' || '' }}
+          RELEASE_BUILD: '1'
+          WEASEL_BUILD: ${{ github.run_number }}
         run: |
           $ErrorActionPreference = 'Stop'
           .\build.bat installer
@@ -154,21 +159,143 @@ jobs:
           if-no-files-found: error
           path: weasel\output\archives\yiwei-ime*.exe
 
+
+  smoke:
+    needs: build
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: yiwei-ime-installer
+          path: dist
+      - name: 静默安装并自检
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $exe = Get-ChildItem dist -Filter 'yiwei-ime*.exe' | Select-Object -First 1
+          Write-Host "installer: $($exe.Name)"
+          $p = Start-Process $exe.FullName -ArgumentList '/S' -PassThru
+          if (-not $p.WaitForExit(600000)) { $p.Kill(); throw "安装超时（可能弹出了对话框）" }
+          Write-Host "installer exit code $($p.ExitCode)"
+          $root = $null
+          foreach ($k in 'HKLM:\SOFTWARE\Yiwei\YiweiIME','HKLM:\SOFTWARE\WOW6432Node\Yiwei\YiweiIME') {
+            if (Test-Path $k) { $v = (Get-ItemProperty $k).YiweiRoot; if ($v) { $root = $v } }
+          }
+          if (-not $root) { throw "注册表里没有 YiweiRoot" }
+          Write-Host "YiweiRoot = $root"
+          foreach ($f in 'YiweiServer.exe','YiweiDeployer.exe','YiweiSetup.exe','YiweiHelper.exe','rime.dll','data\rime_ice.schema.yaml','data\lua\yiwei_stats.lua') {
+            if (-not (Test-Path (Join-Path $root $f))) { throw "缺少文件 $f" }
+          }
+          $sys = "$env:WINDIR\System32"
+          if (-not ((Test-Path "$sys\yiwei.dll") -or (Test-Path "$sys\yiweix64.dll"))) { Get-ChildItem $sys -Filter 'yiwei*' ; throw "系统目录里没有 yiwei 输入法模块" }
+          $tip = 'HKLM:\SOFTWARE\Microsoft\CTF\TIP\{54C92C2A-5FE9-43A0-A9EC-D05B42C996D4}'
+          if (-not (Test-Path $tip)) { throw "TSF 输入法没有注册：$tip" }
+          if (Test-Path 'HKLM:\SOFTWARE\Microsoft\CTF\TIP\{A3F4CDED-B1E9-41EE-9CA6-7B4D0DE6CB0A}') { throw "注册了小狼毫的 CLSID，改名不彻底" }
+          # 部署词库
+          $d = Start-Process (Join-Path $root 'YiweiDeployer.exe') -ArgumentList '/deploy' -PassThru
+          if (-not $d.WaitForExit(600000)) { $d.Kill(); throw "部署超时" }
+          $user = Join-Path $env:APPDATA 'YiweiIME'
+          Write-Host "user dir: $user"
+          Get-ChildItem (Join-Path $user 'build') -ErrorAction SilentlyContinue | Select-Object Name, Length | Format-Table | Out-String | Write-Host
+          if (-not (Test-Path (Join-Path $user 'build\rime_ice.prism.bin'))) { throw "雾凇拼音没有部署成功" }
+          # 输入法服务与助手能否启动
+          Start-Process (Join-Path $root 'YiweiServer.exe')
+          Start-Process (Join-Path $root 'YiweiHelper.exe') -ArgumentList '/background'
+          Start-Sleep 8
+          if (-not (Get-Process YiweiServer -ErrorAction SilentlyContinue)) { throw "YiweiServer 没有启动" }
+          if (-not (Get-Process YiweiHelper -ErrorAction SilentlyContinue)) { throw "YiweiHelper 启动后退出了" }
+          Write-Host "自检通过"
+      - name: 收集自检日志
+        if: always()
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force smoke-logs | Out-Null
+          Get-ChildItem $env:TEMP -Directory -Filter 'rime*' -ErrorAction SilentlyContinue | ForEach-Object { Copy-Item $_.FullName smoke-logs -Recurse -Force }
+          Copy-Item "$env:APPDATA\YiweiIME\*.yaml" smoke-logs -ErrorAction SilentlyContinue
+          Get-ChildItem smoke-logs -Recurse | Select-Object FullName, Length | Format-Table | Out-String | Write-Host
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-logs
+          path: smoke-logs
+          if-no-files-found: ignore
+
+  release:
+    needs: [build, smoke]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          name: yiwei-ime-installer
+          path: dist
       - name: 发布测试版
         if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: nightly
-          name: 一维输入法 测试版
-          prerelease: true
-          make_latest: false
-          body: |
-            一维输入法 Windows 测试版（自动构建，提交 ${{ github.sha }}）。
-            下载 yiwei-ime-*-installer.exe，双击安装。支持 Windows 10/11（x64 / x86）。
-          files: weasel\output\archives\yiwei-ime*.exe
-
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          f=$(ls dist/yiwei-ime*.exe | head -1)
+          gh release delete nightly --cleanup-tag -y || true
+          git push origin :refs/tags/nightly || true
+          gh release create nightly "$f" --target "$GITHUB_SHA" --prerelease --latest=false \
+            --title "一维输入法 测试版" \
+            --notes "一维输入法 Windows 测试版（自动构建 #${{ github.run_number }}，提交 ${GITHUB_SHA::7}）。下载 $(basename "$f")，双击安装。支持 Windows 10/11。"
       - name: 发布正式版
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: weasel\output\archives\yiwei-ime*.exe
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          f=$(ls dist/yiwei-ime*.exe | head -1)
+          gh release create "$GITHUB_REF_NAME" "$f" --title "一维输入法 $GITHUB_REF_NAME" --generate-notes || gh release upload "$GITHUB_REF_NAME" "$f" --clobber
+      - name: 更新自动更新清单
+        run: |
+          set -e
+          f=$(ls dist/yiwei-ime*.exe | head -1); name=$(basename "$f"); size=$(stat -c %s "$f")
+          ver=$(echo "$name" | sed -E 's/yiwei-ime-([0-9.]+)-installer.exe/\1/')
+          tag=$([ "${GITHUB_REF_TYPE}" = tag ] && echo "$GITHUB_REF_NAME" || echo nightly)
+          url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${tag}/${name}"
+          mkdir -p update
+          cat > update/appcast.xml <<XML
+          <?xml version="1.0" encoding="utf-8"?>
+          <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+            <channel>
+              <title>一维输入法 更新</title>
+              <link>https://github.com/${GITHUB_REPOSITORY}</link>
+              <item>
+                <title>一维输入法 ${ver}</title>
+                <pubDate>$(date -R)</pubDate>
+                <sparkle:releaseNotesLink>https://github.com/${GITHUB_REPOSITORY}/releases/tag/${tag}</sparkle:releaseNotesLink>
+                <enclosure url="${url}" sparkle:version="${ver}" sparkle:shortVersionString="${ver}" sparkle:os="windows" length="${size}" type="application/octet-stream"/>
+              </item>
+            </channel>
+          </rss>
+          XML
+          sed -i 's/^          //' update/appcast.xml
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add update/appcast.xml
+          git diff --cached --quiet && exit 0
+          git commit -m "更新自动更新清单 ${ver} [skip ci]"
+          git push origin HEAD:main
+
+  report:
+    needs: [build, smoke]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: 把失败日志写进 ci-logs 分支
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -x
+          mkdir logs && cd logs
+          for id in $(gh api repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs --jq '.jobs[] | select(.conclusion=="failure") | .id'); do
+            gh api repos/$GITHUB_REPOSITORY/actions/jobs/$id/logs > job-$id.log || true
+            grep -n -iE "error|fail|throw|exception|缺少|没有|超时" job-$id.log | tail -200 > job-$id.errors.txt || true
+          done
+          gh api repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs --jq '.jobs[] | {name, conclusion, steps: [.steps[] | select(.conclusion=="failure") | .name]}' > summary.json
+          git init -q -b ci-logs && git config user.name ci && git config user.email ci@users.noreply.github.com
+          echo "run $GITHUB_RUN_ID $GITHUB_SHA" > README.txt
+          git add -A && git commit -qm "logs for run $GITHUB_RUN_ID"
+          git push -f "https://x-access-token:${GH_TOKEN}@github.com/$GITHUB_REPOSITORY.git" ci-logs

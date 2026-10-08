@@ -20,7 +20,7 @@ EN_NAME = "Yiwei IME"
 
 SKIP_DIRS = {".git", "librime", "plum", "boost", "winsparkle", "deps", "test"}
 TEXT_EXT = {".cpp", ".h", ".hpp", ".c", ".rc", ".nsi", ".bat", ".txt", ".js",
-            ".lua", ".props", ".ps1", ".template", ".md", ".xml"}
+            ".lua", ".props", ".ps1", ".template", ".md", ".xml", ".def", ".vcxproj"}
 
 GUIDS = {
     # old -> new
@@ -68,7 +68,30 @@ REPLACEMENTS = [
     ('archives\\weasel-${PRODUCT_VERSION}-installer.exe', 'archives\\yiwei-ime-${PRODUCT_VERSION}-installer.exe'),
     ('"Publisher" "式恕堂"', '"Publisher" "' + NAME + '"'),
     ('"CheckForUpdates" "1"', '"CheckForUpdates" "0"'),
+    # executable / module file names (so Task Manager, the install folder and
+    # every runtime lookup say Yiwei, not Weasel)
+    ("WeaselServer.exe", "YiweiServer.exe"), ("weaselserver.exe", "yiweiserver.exe"),
+    ("WeaselDeployer.exe", "YiweiDeployer.exe"), ("WeaselDeployer.pdb", "YiweiDeployer.pdb"),
+    ("WeaselServer.pdb", "YiweiServer.pdb"),
+    ("WeaselSetupx64.exe", "YiweiSetupx64.exe"), ("WeaselSetup.exe", "YiweiSetup.exe"),
+    ("WeaselSetup.pdb", "YiweiSetup.pdb"),
+    ("weaselARM64X.dll", "yiweiARM64X.dll"), ("weaselARM64.dll", "yiweiARM64.dll"),
+    ("weaselARM.dll", "yiweiARM.dll"), ("weaselx64.dll", "yiweix64.dll"),
+    ("weaselx64.pdb", "yiweix64.pdb"), ("weasel.dll", "yiwei.dll"), ("weasel.ime", "yiwei.ime"),
+    ('L"weaselARM64X"', 'L"yiweiARM64X"'), ('L"\\\\weasel"', 'L"\\\\yiwei"'),
+    ('srcFileName = L"weasel"', 'srcFileName = L"yiwei"'),
+    ("<TargetName>weasel</TargetName>", "<TargetName>yiwei</TargetName>"),
+    ("<TargetName>weasel$(Platform)</TargetName>", "<TargetName>yiwei$(Platform)</TargetName>"),
+    ('"WeaselRoot"', '"YiweiRoot"'), ('L"WeaselRoot"', 'L"YiweiRoot"'),
+    ('#define WEASEL_CODE_NAME "Weasel"', '#define WEASEL_CODE_NAME "Yiwei"'),
+    ('L"WeaselSetup"', 'L"' + NAME + '"'),
+    ('"Software\\Rime\\Weasel\\Updates"', '"Software\\Yiwei\\YiweiIME\\Updates"'),
 ]
+
+# exe projects whose output file name is their project name: pin a Yiwei name
+EXE_TARGETS = {"WeaselServer.vcxproj": "YiweiServer",
+               "WeaselDeployer.vcxproj": "YiweiDeployer",
+               "WeaselSetup.vcxproj": "YiweiSetup"}
 
 NSI_EN = [
     ('"Weasel"', '"' + EN_NAME + '"'),
@@ -133,6 +156,9 @@ def transform(path, text):
     if base == "WeaselServer.rc":
         text = re.sub(r"(FEEDURL|MANUALUPDATEFEEDURL|TESTINGFEEDURL|TESTINGMANUALUPDATEFEEDURL)\s+APPCAST\s*\r?\nBEGIN.*?END\r?\n",
                       lambda m: appcast_block(m.group(1)).replace("\n", "\r\n"), text, flags=re.S)
+    if base in EXE_TARGETS and "<TargetName>%s</TargetName>" % EXE_TARGETS[base] not in text:
+        imp = '<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.targets" />'
+        text = text.replace(imp, "<PropertyGroup>\r\n    <TargetName>%s</TargetName>\r\n  </PropertyGroup>\r\n  %s" % (EXE_TARGETS[base], imp), 1)
     if base.endswith(".rc"):
         text = text.replace('"Weasel Server"', '"%s"' % NAME)
         text = text.replace('VALUE "ProductName", "Weasel"', 'VALUE "ProductName", "%s"' % NAME)
@@ -168,7 +194,8 @@ def main():
             if os.path.splitext(fn)[1].lower() not in TEXT_EXT or fn == "CHANGELOG.md" or fn.endswith(".md"):
                 continue
             text, _, _ = read(os.path.join(dirpath, fn))
-            if text and ("小狼毫" in text or "A3F4CDED" in text.upper() or "WeaselNamedPipe" in text):
+            if text and ("小狼毫" in text or "A3F4CDED" in text.upper() or "WeaselNamedPipe" in text
+                         or re.search(r"Weasel(Server|Deployer|Setup)\.exe|weasel(x64|ARM64X?|ARM)?\.dll", text)):
                 leftovers.append(os.path.join(dirpath, fn))
     print("rebranded %d files" % changed)
     if leftovers:
