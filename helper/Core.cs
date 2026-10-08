@@ -213,6 +213,9 @@ namespace Yiwei
         // 简繁
         public bool Traditional { get; set; } = false;
 
+        // 快捷输入、模糊音、生僻字（Features/RimeFeatures.cs）
+        public RimeFeatureSettings Features { get; set; } = new RimeFeatureSettings();
+
         // 主题导入
         public Dictionary<string, Dictionary<string, string>> ImportedThemes { get; set; } = new Dictionary<string, Dictionary<string, string>>();
         public Dictionary<string, string> CustomTheme { get; set; } = null;
@@ -358,8 +361,8 @@ namespace Yiwei
             P("style/font_point", s.FontPoint.ToString());
             P("style/label_font_point", Math.Max(8, s.FontPoint - 3).ToString());
             P("style/comment_font_point", Math.Max(8, s.FontPoint - 3).ToString());
-            P("style/font_face", Q(s.FontFace));
-            P("style/comment_font_face", Q(s.FontFace));
+            P("style/font_face", Q(RimeFeatures.FontFaceChain(s)));
+            P("style/comment_font_face", Q(RimeFeatures.FontFaceChain(s)));
             P("style/layout/corner_radius", s.CornerRadius.ToString());
             P("style/layout/round_corner", s.HilitedCornerRadius.ToString());
             foreach (var b in Brand.Palette)
@@ -381,8 +384,9 @@ namespace Yiwei
             }
             File.WriteAllText(path, y.ToString(), new UTF8Encoding(false));
 
-            // Simplified / Traditional default for rime-ice schemas
-            WriteSchemaPatch("rime_ice", s.Traditional);
+            // Simplified / Traditional default + 快捷输入 / 模糊音 / 大字表 for rime-ice schemas
+            RimeFeatures.EnsureBigDict(s);
+            foreach (var schema in RimeFeatures.PatchedSchemas) WriteSchemaPatch(schema, s);
         }
 
         /// <summary>The scheme used in dark mode: the brand's dark variant when following the system, else the chosen one.</summary>
@@ -400,11 +404,11 @@ namespace Yiwei
         /// <summary>The candidate-window scheme that is showing right now.</summary>
         public static string ActiveScheme(Settings s) => s.FollowSystemDark && SystemTheme.IsDark ? DarkSchemeFor(s) : s.ColorScheme;
 
-        static void WriteSchemaPatch(string schema, bool traditional)
+        static void WriteSchemaPatch(string schema, Settings s)
         {
             var path = Path.Combine(Paths.UserDir, schema + ".custom.yaml");
             if (File.Exists(path) && !File.ReadAllText(path).Contains(Marker)) return; // user owns it
-            var y = Marker + "\npatch:\n  \"switches/@2/reset\": " + (traditional ? "1" : "0") + "\n";
+            var y = Marker + "\npatch:\n  \"switches/@2/reset\": " + (s.Traditional ? "1" : "0") + "\n" + RimeFeatures.PatchLines(schema, s);
             File.WriteAllText(path, y, new UTF8Encoding(false));
         }
 

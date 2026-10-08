@@ -11,7 +11,7 @@
 | *(none)* | start tray; a second launch opens settings |
 | `/background` | start tray only (autostart); first ever start still shows the wizard |
 | `/wizard` | open the first-run wizard (starts tray if not running, else forwarded over the pipe) |
-| `/settings [页面]` | open settings, optionally on a page: 常规 输入方案 外观 快捷键 常用语 AI 词库 应用规则 统计 关于 |
+| `/settings [页面]` | open settings, optionally on a page: 常规 输入方案 快捷输入 外观 快捷键 常用语 AI 词库 应用规则 统计 关于 |
 | `/deploy` | rewrite weasel.custom.yaml / default.custom.yaml and redeploy in the background |
 | `/quit` | exit |
 | `toast:中` / `toast:A` | show the 中/英 bubble at the caret (~600 ms). Also accepts `toast:zh` / `toast:cn` for 中 |
@@ -32,5 +32,9 @@ There is also an experimental IMM poller (设置 → 常规 → 从输入法状�
   (colors in Weasel abgr `0xAABBGGRR`), imported themes, app_options.
 - `default.custom.yaml` (owned, a pre-existing user file is backed up to `.bak-<time>` first): `schema_list` with the chosen schema first
   (rime_ice / double_pinyin_flypy / double_pinyin / double_pinyin_mspy) and `menu/page_size`.
+- `<schema>.custom.yaml` for rime_ice / double_pinyin_flypy / double_pinyin / double_pinyin_mspy (owned unless a user file without our
+  marker exists): 简繁 default, 快捷输入 switches (disabled triggers are neutralised: empty trigger keys / recognizer pattern `^$`),
+  大字表 (`translator/dictionary: yiwei_ice_big`, `translator/user_dict: rime_ice`), 模糊音 (`speller/algebra/+`, full pinyin only).
+- `yiwei_ice_big.dict.yaml` (only when 大字表 is on): rime_ice tables + `cn_dicts/41448`.
 - `user.yaml` `var/previously_selected_schema`.
 - `sync/yiwei-import/rime_ice.userdb.txt`: words imported from 搜狗/微软拼音 text exports, merged with `WeaselDeployer /sync`.

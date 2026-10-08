@@ -45,6 +45,7 @@ namespace Yiwei
 
             Add("常规", Ui.SymbolRegular.Settings24, PageGeneral);
             Add("输入方案", Ui.SymbolRegular.Keyboard24, PageSchema);
+            Add("快捷输入", Ui.SymbolRegular.Flash24, PageFeatures);
             Add("外观", Ui.SymbolRegular.PaintBrush24, PageAppearance);
             Add("快捷键", Ui.SymbolRegular.KeyboardShift24, PageHotkeys);
             Add("常用语", Ui.SymbolRegular.TextBulletListSquare24, PageSnippets);
