@@ -82,6 +82,8 @@ REPLACEMENTS = [
     ('srcFileName = L"weasel"', 'srcFileName = L"yiwei"'),
     ("<TargetName>weasel</TargetName>", "<TargetName>yiwei</TargetName>"),
     ("<TargetName>weasel$(Platform)</TargetName>", "<TargetName>yiwei$(Platform)</TargetName>"),
+    ("output\\weasel$(TargetExt)", "output\\yiwei$(TargetExt)"),
+    ("output\\weasel$(Platform)$(TargetExt)", "output\\yiwei$(Platform)$(TargetExt)"),
     ('"WeaselRoot"', '"YiweiRoot"'), ('L"WeaselRoot"', 'L"YiweiRoot"'),
     ('#define WEASEL_CODE_NAME "Weasel"', '#define WEASEL_CODE_NAME "Yiwei"'),
     ('L"WeaselSetup"', 'L"' + NAME + '"'),
