@@ -27,7 +27,8 @@ namespace Yiwei
             public bool Ascii = true;
         }
 
-        static App A(string exe, string name, string group, bool vim = false) => new App { Exe = exe, Name = name, Group = group, Vim = vim };
+        // 游戏默认保持中文（游戏内聊天常打中文），用户可在应用规则页手动勾选英文
+        static App A(string exe, string name, string group, bool vim = false) => new App { Exe = exe, Name = name, Group = group, Vim = vim, Ascii = group != "游戏" };
 
         /// <summary>内置推荐：默认英文。终端和编辑器同时默认开启 vim_mode。</summary>
         public static readonly App[] Catalog =
@@ -160,14 +161,15 @@ namespace Yiwei
         {
             exe = Norm(exe);
             if (s.AppAscii != null && s.AppAscii.TryGetValue(exe, out var v)) return v;
-            return Find(exe) != null;
+            var app = Find(exe);
+            return app != null && app.Ascii;
         }
 
         public static void SetAscii(Settings s, string exe, bool on)
         {
             exe = Norm(exe); if (exe.Length == 0) return;
             if (s.AppAscii == null) s.AppAscii = new Dictionary<string, bool>();
-            bool shippedOn = Find(exe) != null || exe == "conhost.exe" || exe == "cmd.exe"; // weasel.yaml 也默认 cmd/conhost 英文
+            bool shippedOn = (Find(exe)?.Ascii ?? false) || exe == "conhost.exe" || exe == "cmd.exe"; // weasel.yaml 也默认 cmd/conhost 英文
             if (on) s.AppAscii[exe] = true;
             else if (shippedOn) s.AppAscii[exe] = false;   // 显式覆盖默认
             else s.AppAscii.Remove(exe);
