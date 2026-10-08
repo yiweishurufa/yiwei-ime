@@ -42,7 +42,7 @@ ASCII_APPS = ["cmd.exe", "conhost.exe", "WindowsTerminal.exe", "OpenConsole.exe"
               "devenv.exe", "WindowsPowerShell_ISE.exe", "PowerToys.PowerLauncher.exe", "Everything.exe"]
 
 STYLE = {
-    "color_scheme": "yiwei_light", "color_scheme_dark": "yiwei_dark",
+    "color_scheme": "yiwei_qingbi", "color_scheme_dark": "yiwei_qingbi_dark",
     "font_face": '"Microsoft YaHei UI"', "label_font_face": '"Segoe UI"', "comment_font_face": '"Microsoft YaHei UI"',
     "font_point": "14", "label_font_point": "11", "comment_font_point": "11",
     "horizontal": "true", "inline_preedit": "true", "label_format": '"%s"', "display_tray_icon": "true",
@@ -77,6 +77,12 @@ def customize_weasel_yaml():
         schemes += '  %s:\n    name: "%s"\n    author: "一维输入法"\n    color_format: argb\n' % (sid, name)
         schemes += "".join("    %s: 0x%s\n" % (k, v) for k, v in zip(KEYS, c))
         schemes += "    shadow_color: 0x1A000000\n"
+    # 五个品牌色及深色版（默认青碧）
+    sys.path.insert(0, HERE)
+    from brand_schemes import all_schemes
+    for sid, name, cols in all_schemes():
+        schemes += '  %s:\n    name: "%s"\n    author: "一维输入法"\n    color_format: argb\n' % (sid, name)
+        schemes += "".join("    %s: 0x%08X\n" % (k, v) for k, v in cols.items())
     if "preset_color_schemes:" not in text:
         raise SystemExit("weasel.yaml: preset_color_schemes not found")
     text = text.replace("preset_color_schemes:\n", "preset_color_schemes:\n" + schemes, 1)
