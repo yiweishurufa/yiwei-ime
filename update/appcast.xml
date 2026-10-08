@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
   <channel>
-    <title>一维输入法</title>
+    <title>一维输入法 更新</title>
     <link>https://github.com/yiweishurufa/yiwei-ime</link>
-    <description>一维输入法更新</description>
-    <language>zh</language>
+    <item>
+      <title>一维输入法 0.1.0.4</title>
+      <pubDate>Thu, 08 Oct 2026 13:03:13 +0000</pubDate>
+      <sparkle:releaseNotesLink>https://github.com/yiweishurufa/yiwei-ime/releases/tag/nightly</sparkle:releaseNotesLink>
+      <enclosure url="https://github.com/yiweishurufa/yiwei-ime/releases/download/nightly/yiwei-ime-0.1.0.4-installer.exe" sparkle:version="0.1.0.4" sparkle:shortVersionString="0.1.0.4" sparkle:os="windows" length="23954654" type="application/octet-stream"/>
+    </item>
   </channel>
 </rss>
