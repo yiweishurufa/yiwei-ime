@@ -86,3 +86,13 @@
 - 万象拼音 v17：https://newreleases.io/project/github/amzxyz/rime-wanxiang/release/v17.7.0
 - 小狼毫无障碍：https://nvdacn.com/index.php/archives/1517/
 - 离线语音：https://github.com/vorojar/VoiceSnap ；https://github.com/dapanggougou/sensevox ；https://github.com/melody0709/VoxType ；https://github.com/k2-fsa/sherpa-onnx
+
+## 六、为安卓版做准备（现在就要守的规矩）
+
+- **底座选型**：同文 Trime（GPL-3，RIME 官方安卓前端）或 fcitx5-android（LGPL/GPL）；两者都能直接吃 RIME 方案，雾凇、语法模型、大字表可原样复用。倾向 fcitx5-android（键盘与插件体系更现代），需再评估。
+- **数据层平台无关**：`overlay/data` 只放 RIME 标准 YAML / 词库 / Lua，不夹 Windows 专属字段；Windows 专属配置只进 `weasel.custom.yaml`。
+- **皮肤单一来源**：`scripts/brand_schemes.py` 作为五色主题的唯一定义，后续同时生成小狼毫配色和 Trime/fcitx5 主题。
+- **用户数据可互通**：常用语、AI 动作、应用规则改为平台无关的 JSON（带版本号），网盘同步目录结构与 RIME `sync_dir` 一致，手机端用同一网盘即可互通词频。
+- **核心逻辑可移植**：常用语、AI 请求、词库更新/校验、语法模型下载的逻辑写清接口与测试用例，安卓端用 Kotlin 重写时照着测。
+- **语音选型兼容**：离线语音统一选 sherpa-onnx（Windows/Android 都有官方支持），模型同一份。
+- **品牌与标识**：提前占好包名（如 `cc.yiwei.ime`）与应用商店名称。
