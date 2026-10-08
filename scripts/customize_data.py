@@ -44,7 +44,7 @@ ASCII_APPS = ["cmd.exe", "conhost.exe", "WindowsTerminal.exe", "OpenConsole.exe"
 STYLE = {
     "color_scheme": "yiwei_qingbi", "color_scheme_dark": "yiwei_qingbi_dark",
     "font_face": '"Microsoft YaHei UI"', "label_font_face": '"Segoe UI"', "comment_font_face": '"Microsoft YaHei UI"',
-    "font_point": "14", "label_font_point": "11", "comment_font_point": "11",
+    "font_point": "12", "label_font_point": "10", "comment_font_point": "10",
     "horizontal": "true", "inline_preedit": "true", "label_format": '"%s"', "display_tray_icon": "false",
 }
 LAYOUT = {"border_width": "1", "margin_x": "10", "margin_y": "8", "spacing": "8", "candidate_spacing": "10",
