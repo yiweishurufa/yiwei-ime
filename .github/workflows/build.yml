@@ -203,6 +203,10 @@ jobs:
           foreach ($f in 'YiweiServer.exe','YiweiDeployer.exe','YiweiSetup.exe','YiweiHelper.exe','rime.dll','data\rime_ice.schema.yaml','data\lua\yiwei_stats.lua') {
             if (-not (Test-Path (Join-Path $root $f))) { throw "缺少文件 $f" }
           }
+          # 语法模型依赖 librime-octagram（librime 官方发行包静态链接了 lua / octagram / predict）
+          $rimeText = [Text.Encoding]::ASCII.GetString([IO.File]::ReadAllBytes((Join-Path $root 'rime.dll')))
+          if (-not $rimeText.Contains('octagram')) { throw "rime.dll 不含 librime-octagram 插件，语法模型将不可用" }
+          if (-not $rimeText.Contains('lua_processor')) { Write-Host "警告：rime.dll 里没找到 librime-lua" }
           $sys = "$env:WINDIR\System32"
           if (-not ((Test-Path "$sys\yiwei.dll") -or (Test-Path "$sys\yiweix64.dll"))) { Get-ChildItem $sys -Filter 'yiwei*' ; throw "系统目录里没有 yiwei 输入法模块" }
           $tip = 'HKLM:\SOFTWARE\Microsoft\CTF\TIP\{54C92C2A-5FE9-43A0-A9EC-D05B42C996D4}'

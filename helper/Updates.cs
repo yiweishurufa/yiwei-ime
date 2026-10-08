@@ -11,75 +11,7 @@ using System.Windows.Forms;
 
 namespace Yiwei
 {
-    /// <summary>Daily 雾凇拼音 dictionary update: download, verify SHA-256, then install into the user folder and redeploy.</summary>
-    public static class DictUpdater
-    {
-        const string Api = "https://api.github.com/repos/iDvel/rime-ice/releases/latest";
-        static Timer _timer;
-
-        public static void StartDaily()
-        {
-            _timer = new Timer { Interval = 60 * 60 * 1000 };
-            _timer.Tick += (s, e) => MaybeCheck();
-            _timer.Start();
-            Task.Delay(90 * 1000).ContinueWith(_ => Program.Ui.BeginInvoke(new Action(MaybeCheck)));
-        }
-
-        static void MaybeCheck()
-        {
-            var s = Settings.Current;
-            if (!s.DictAutoUpdate) return;
-            if (DateTime.TryParse(s.DictCheckedAt, out var last) && (DateTime.Now - last).TotalHours < 23) return;
-            Check(false).ContinueWith(t => { if (t.IsFaulted) Log.Write("dict update: " + t.Exception.GetBaseException().Message); });
-        }
-
-        public class Result { public bool Updated; public string Tag; public string Message; }
-
-        public static Task<Result> Check(bool force) => Task.Run(() =>
-        {
-            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-            var s = Settings.Current;
-            var wc = new WebClient { Encoding = Encoding.UTF8 };
-            wc.Headers[HttpRequestHeader.UserAgent] = "YiweiIME/0.1";
-            var rel = Json.Parse(wc.DownloadString(Api)) as Dictionary<string, object>;
-            var assets = (rel["assets"] as object[]).Cast<Dictionary<string, object>>();
-            var asset = assets.FirstOrDefault(a => (a["name"] as string) == "full.zip") ?? throw new Exception("找不到 full.zip");
-            var updated = (asset.TryGetValue("updated_at", out var u) ? u as string : "") ?? "";
-            var tag = (rel["tag_name"] as string) + "@" + updated;
-            s.DictCheckedAt = DateTime.Now.ToString("o");
-            if (!force && tag == s.DictTag) { s.Save(); return new Result { Tag = tag, Message = "词库已是最新" }; }
-
-            var digest = asset.TryGetValue("digest", out var dg) ? (dg as string ?? "") : "";
-            if (!digest.StartsWith("sha256:")) throw new Exception("发布没有提供 SHA-256 校验值，已跳过本次更新");
-            var tmp = Path.Combine(Path.GetTempPath(), "yiwei-rime-ice-" + Guid.NewGuid().ToString("N") + ".zip");
-            wc.DownloadFile(asset["browser_download_url"] as string, tmp);
-            try
-            {
-                string hash;
-                using (var sha = SHA256.Create()) using (var f = File.OpenRead(tmp))
-                    hash = BitConverter.ToString(sha.ComputeHash(f)).Replace("-", "").ToLowerInvariant();
-                if (hash != digest.Substring(7).ToLowerInvariant()) throw new Exception("校验失败（SHA-256 不一致），未安装");
-
-                var user = Paths.UserDir;
-                using (var zip = ZipFile.OpenRead(tmp))
-                {
-                    foreach (var e in zip.Entries)
-                    {
-                        var n = e.FullName.Replace('\\', '/');
-                        bool dict = n.StartsWith("cn_dicts/") || n.StartsWith("en_dicts/") || n == "rime_ice.dict.yaml" || n == "melt_eng.dict.yaml";
-                        if (!dict || n.EndsWith("/") || n.Contains("..")) continue;
-                        var dest = Path.Combine(user, n.Replace('/', Path.DirectorySeparatorChar));
-                        Directory.CreateDirectory(Path.GetDirectoryName(dest));
-                        e.ExtractToFile(dest, true);
-                    }
-                }
-                s.DictTag = tag; s.Save();
-                Deploy.Run(true);
-                return new Result { Updated = true, Tag = tag, Message = "词库已更新到 " + rel["tag_name"] };
-            }
-            finally { try { File.Delete(tmp); } catch { } }
-        });
-    }
+    // 词库自动更新已移到 Features/DictUpdate.cs（DictUpdater）。
 
     /// <summary>yiwei-ime://theme?v=2&amp;d=&lt;base64url JSON&gt; links (same package format as AIME themes).</summary>
     public static class ThemeLinks

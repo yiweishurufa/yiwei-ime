@@ -260,20 +260,8 @@ namespace Yiwei
         {
             var p = new StackPanel();
             p.Children.Add(K.PageTitle("词库"));
-            var info = K.Text(DictInfo(), 12, true);
-            p.Children.Add(K.Card("每天自动更新雾凇拼音词库", "每天检查一次，SHA-256 校验通过后才安装并重新部署",
-                K.Toggle(S.DictAutoUpdate, v => { S.DictAutoUpdate = v; Save(); }), Ui.SymbolRegular.ArrowDownload24));
-            Ui.Button now = null;
-            now = K.Btn("立即检查", async () =>
-            {
-                now.IsEnabled = false; info.Text = "正在检查…";
-                try { var r = await DictUpdater.Check(false); info.Text = r.Message; Toast(r.Message); }
-                catch (Exception ex) { info.Text = "更新失败：" + ex.GetBaseException().Message; }
-                now.IsEnabled = true;
-            });
-            var card = K.Card("词库版本", "", now, Ui.SymbolRegular.BookOpen24);
-            ((StackPanel)((Grid)card.Child).Children[1]).Children.Add(info);
-            p.Children.Add(card);
+            AddDictUpdateCards(p);   // Wpf/DictFeaturesUi.cs
+            AddGrammarCards(p);
             p.Children.Add(K.Card("用户词典管理", "导出、导入或备份 RIME 用户词典", K.Btn("打开", () => Dialogs.Open(Paths.Deployer, "/dict")), Ui.SymbolRegular.Book24));
 
             p.Children.Add(K.Section("导入旧习惯"));
@@ -285,8 +273,6 @@ namespace Yiwei
             p.Children.Add(K.Card("从文本词库导入", "搜狗、微软拼音等导出的 .txt 词库（每行一个词和拼音）", K.Btn("选择文件…", ImportTextDict), Ui.SymbolRegular.Document24));
             return p;
         }
-
-        string DictInfo() => string.IsNullOrEmpty(S.DictTag) ? "当前：随安装包附带的版本" : "当前：" + S.DictTag.Split('@')[0] + (DateTime.TryParse(S.DictCheckedAt, out var t) ? "（" + t.ToString("M月d日 HH:mm") + " 检查）" : "");
 
         void ImportTextDict()
         {
