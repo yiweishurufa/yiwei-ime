@@ -106,10 +106,19 @@ jobs:
 
       - name: 获取 RIME 引擎
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: weasel
         run: |
           $ErrorActionPreference = 'Stop'
-          .\get-rime.ps1 -use dev
+          # 带令牌访问 GitHub API，避免共享 IP 触发 403 限流；失败重试 3 次
+          $authorization = $env:GH_TOKEN
+          for ($i = 1; $i -le 3; $i++) {
+            .\get-rime.ps1 -use dev
+            if (Test-Path .\include\rime_api.h) { break }
+            Write-Host "get-rime 第 $i 次失败，30 秒后重试"; Start-Sleep 30
+          }
+          if (-not (Test-Path .\include\rime_api.h)) { throw "获取 RIME 引擎失败" }
 
       - name: 准备基础数据
         shell: pwsh
