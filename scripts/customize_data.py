@@ -179,6 +179,19 @@ NSI_UNINSTALL = r'''
 '''
 
 
+NSI_PAGES = r'''!define MUI_WELCOMEPAGE_TITLE "欢迎使用 一维输入法"
+!define MUI_WELCOMEPAGE_TEXT "中文常新，自在表达。$\r$\n$\r$\n一维输入法基于 RIME / 小狼毫，词库默认用雾凇拼音，支持全拼与双拼、AI 翻译润色、常用语和多套配色。除非你主动使用 AI，所有输入都只在本机处理。$\r$\n$\r$\n点「下一步」开始安装，大约 1 分钟。本软件以 GPL-3.0 协议开源。"
+!insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_INSTFILES
+!define MUI_FINISHPAGE_TITLE "装好了"
+!define MUI_FINISHPAGE_TEXT "按 Win + 空格 切换到「一维输入法」就能打字。$\r$\n首次引导会帮你选拼音方案和外观，只要一分钟。"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\YiweiHelper.exe"
+!define MUI_FINISHPAGE_RUN_PARAMETERS "/wizard"
+!define MUI_FINISHPAGE_RUN_TEXT "立即体验（打开首次引导）"
+!insertmacro MUI_PAGE_FINISH
+'''
+
+
 def patch_installer():
     path = os.path.join(W, "output", "install.nsi")
     raw = open(path, "rb").read()
@@ -204,6 +217,20 @@ def patch_installer():
     assert idx > 0, "nsi: uninstall anchor missing"
     t = t[:idx + len(anchor)] + NSI_UNINSTALL + t[idx + len(anchor):]
 
+    # branded, near one-click installer: welcome -> install -> finish (launch the wizard)
+    pages_old = ('!insertmacro MUI_PAGE_LICENSE "LICENSE.txt"\n'
+                 '!insertmacro MUI_PAGE_DIRECTORY\n'
+                 '!insertmacro MUI_PAGE_INSTFILES\n'
+                 '!insertmacro MUI_PAGE_FINISH\n')
+    assert pages_old in t, "nsi: pages anchor missing"
+    t = t.replace(pages_old, NSI_PAGES, 1)
+    t = t.replace("!define MUI_ICON ..\\resource\\weasel.ico\n",
+                  "!define MUI_ICON ..\\resource\\weasel.ico\n!define MUI_UNICON ..\\resource\\weasel.ico\n"
+                  "!define MUI_WELCOMEFINISHPAGE_BITMAP ..\\resource\\installer-welcome.bmp\n"
+                  "!define MUI_UNWELCOMEFINISHPAGE_BITMAP ..\\resource\\installer-welcome.bmp\n"
+                  "!define MUI_HEADERIMAGE\n!define MUI_HEADERIMAGE_RIGHT\n"
+                  "!define MUI_HEADERIMAGE_BITMAP ..\\resource\\installer-header.bmp\n"
+                  "!define MUI_ABORTWARNING\nBrandingText \"一维输入法\"\n", 1)
     # before upgrading, stop the running helper as well
     t = t.replace("  ExecWait '\"$R1\\YiweiServer.exe\" /quit'\n",
                   "  ExecWait '\"$R1\\YiweiServer.exe\" /quit'\n  ExecWait 'taskkill /f /im YiweiHelper.exe'\n", 1)

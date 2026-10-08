@@ -45,6 +45,9 @@ jobs:
           $ErrorActionPreference = 'Stop'
           python scripts/rebrand.py weasel
           Copy-Item assets\yiwei.ico weasel\resource\weasel.ico -Force
+          Copy-Item assets\installer-*.bmp weasel\resource\ -Force
+          Copy-Item assets\zh.ico weasel\resource\zh.ico -Force
+          Copy-Item assets\en.ico weasel\resource\en.ico -Force
           Copy-Item weasel\env.vs2022.bat weasel\env.bat
 
       - name: 缓存 Boost
