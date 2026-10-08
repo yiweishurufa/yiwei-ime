@@ -136,7 +136,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          dotnet build helper\YiweiHelper.csproj -c Release -o helper-out
+          dotnet build helper\YiweiHelper.csproj -c Release -o helper-out -p:Version=${{ env.VERSION_MAJOR }}.${{ env.VERSION_MINOR }}.${{ env.VERSION_PATCH }}.${{ github.run_number }}
           Copy-Item helper-out\YiweiHelper.exe weasel\output\ -Force
           if (Test-Path helper-out\YiweiHelper.exe.config) { Copy-Item helper-out\YiweiHelper.exe.config weasel\output\ -Force }
           New-Item -ItemType Directory -Force weasel\output\helperlibs | Out-Null

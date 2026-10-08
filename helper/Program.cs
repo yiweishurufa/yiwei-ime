@@ -73,6 +73,7 @@ namespace Yiwei
                 };
                 Stats.StartAppTracking();
                 DictUpdater.StartDaily();
+                AppUpdate.StartDaily();
                 Sync.StartScheduler();
                 AppModes.UpgradeIfNeeded();
                 FirstRun();
@@ -140,6 +141,7 @@ namespace Yiwei
                     case "/quit": Quit(); return;
                     case "/background": return;
                     case "/deploy": Rime.ApplySoon(100); return;
+                    case "/update": _ = AppUpdate.CheckAsync(true); return;
                     case "/wizard": ShowWizard(); return;
                 }
                 if (command.StartsWith("/settings") || command.Length == 0)
@@ -236,6 +238,7 @@ namespace Yiwei
             menu.Items.Add("同步用户数据", null, (s, e) => System.Threading.Tasks.Task.Run(() => Deploy.Run("/sync", false)));
             menu.Items.Add("用户文件夹", null, (s, e) => { try { System.Diagnostics.Process.Start("explorer.exe", "\"" + Paths.UserDir + "\""); } catch { } });
             menu.Items.Add("设置", null, (s, e) => Program.ShowSettings());
+            menu.Items.Add("检查更新", null, (s, e) => { _ = AppUpdate.CheckAsync(true); });
             menu.Items.Add("首次引导", null, (s, e) => Program.ShowWizard());
             menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add("退出", null, (s, e) => Program.Quit());
@@ -263,6 +266,7 @@ namespace Yiwei
             };
             _icon = new NotifyIcon { Icon = ModeIcon(true), Text = "一维输入法 · 中文", ContextMenuStrip = menu, Visible = true };
             _icon.DoubleClick += (s, e) => Program.ShowSettings();
+            _icon.BalloonTipClicked += (s, e) => AppUpdate.OnBalloonClicked();
         }
 
         static bool? _zh;
@@ -342,5 +346,10 @@ namespace Yiwei
         }
 
         public static void Hide() { if (_icon != null) _icon.Visible = false; }
+
+        public static void Balloon(string title, string text)
+        {
+            try { _icon?.ShowBalloonTip(4000, title, text, ToolTipIcon.Info); } catch { }
+        }
     }
 }

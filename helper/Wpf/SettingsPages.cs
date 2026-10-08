@@ -392,8 +392,10 @@ namespace Yiwei
         {
             var p = new StackPanel();
             p.Children.Add(K.PageTitle("关于"));
-            var ver = typeof(SettingsWindow).Assembly.GetName().Version;
-            p.Children.Add(K.Card("一维输入法 " + ver.ToString(3), "中文常新，自在表达。开源，注重隐私，基于 RIME。", K.Btn("检查更新", CheckAppUpdate, Ui.ControlAppearance.Primary), Ui.SymbolRegular.Info24));
+            var ver = AppUpdate.Current;
+            p.Children.Add(K.Card("一维输入法 " + ver, "中文常新，自在表达。开源，注重隐私，基于 RIME。", K.Btn("检查更新", CheckAppUpdate, Ui.ControlAppearance.Primary), Ui.SymbolRegular.Info24));
+            p.Children.Add(K.Card("自动检查更新", "每天检查一次新版本，有更新时在托盘提示，点一下就能升级（只访问 GitHub）",
+                K.Toggle(S.AppAutoUpdate, v => { S.AppAutoUpdate = v; Save(); }), Ui.SymbolRegular.ArrowSync24));
             p.Children.Add(K.Card("打开用户文件夹", Paths.UserDir, K.Btn("打开", () => { Directory.CreateDirectory(Paths.UserDir); Dialogs.Open(Paths.UserDir); }), Ui.SymbolRegular.FolderOpen24));
             p.Children.Add(K.Card("编辑 YAML", "用记事本打开 default.custom.yaml（高级；一维生成的文件会被设置覆盖）", K.Btn("编辑", EditYaml), Ui.SymbolRegular.DocumentEdit24));
             p.Children.Add(K.Card("项目主页", "源代码、问题反馈与更新日志", K.Row(
@@ -443,27 +445,7 @@ namespace Yiwei
         async void CheckAppUpdate()
         {
             Toast("正在检查更新…");
-            try
-            {
-                var latest = await System.Threading.Tasks.Task.Run(() =>
-                {
-                    System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
-                    using (var wc = new System.Net.WebClient { Encoding = System.Text.Encoding.UTF8 })
-                    {
-                        wc.Headers[System.Net.HttpRequestHeader.UserAgent] = "YiweiIME/0.2";
-                        var rel = Json.Parse(wc.DownloadString("https://api.github.com/repos/yiweishurufa/yiwei-ime/releases/latest")) as Dictionary<string, object>;
-                        return rel?["tag_name"] as string ?? "";
-                    }
-                });
-                var cur = typeof(SettingsWindow).Assembly.GetName().Version;
-                if (Version.TryParse(latest.TrimStart('v', 'V'), out var v) && v > cur)
-                {
-                    if (Dialogs.Confirm("有新版本 " + latest + "（当前 " + cur.ToString(3) + "）。打开下载页面？", "检查更新"))
-                        Dialogs.Open("https://github.com/yiweishurufa/yiwei-ime/releases/latest");
-                }
-                else Toast("已是最新版本");
-            }
-            catch (Exception e) { Toast("检查失败：" + e.GetBaseException().Message); }
+            await AppUpdate.CheckAsync(true);
         }
     }
 }

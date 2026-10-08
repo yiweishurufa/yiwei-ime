@@ -88,6 +88,8 @@ REPLACEMENTS = [
      "      (void)info;  // 一维输入法：换皮肤等重新部署时不弹「维护中」系统通知"),
     ("      !state.disabled)  // display notification when deploying",
      "      true)  // 一维：托盘只保留一维助手的一个图标（中/英状态也显示在那里）"),
+    ("  win_sparkle_init();",
+     "  win_sparkle_set_automatic_check_for_updates(0);  // 一维：由一维助手统一检查更新\r\n  win_sparkle_init();"),
     ('"WeaselRoot"', '"YiweiRoot"'), ('L"WeaselRoot"', 'L"YiweiRoot"'),
     ('#define WEASEL_CODE_NAME "Weasel"', '#define WEASEL_CODE_NAME "Yiwei"'),
     ('L"WeaselSetup"', 'L"' + NAME + '"'),
@@ -202,7 +204,7 @@ def main():
             if os.path.splitext(fn)[1].lower() not in TEXT_EXT or fn == "CHANGELOG.md" or fn.endswith(".md"):
                 continue
             text, _, _ = read(os.path.join(dirpath, fn))
-            if text and ("小狼毫" in text or "A3F4CDED" in text.upper() or "WeaselNamedPipe" in text or "ShowBalloon(info" in text or "display notification when deploying" in text
+            if text and ("小狼毫" in text or "A3F4CDED" in text.upper() or "WeaselNamedPipe" in text or "ShowBalloon(info" in text or "display notification when deploying" in text or "win_sparkle_init();" in text
                          or re.search(r"Weasel(Server|Deployer|Setup)\.exe|weasel(x64|ARM64X?|ARM)?\.dll", text)):
                 leftovers.append(os.path.join(dirpath, fn))
     print("rebranded %d files" % changed)

@@ -207,6 +207,7 @@ namespace Yiwei
 
         // 词库
         public bool DictAutoUpdate { get; set; } = true;
+        public bool AppAutoUpdate { get; set; } = true;
         public string DictTag { get; set; } = "";
         public string DictCheckedAt { get; set; } = "";
 
