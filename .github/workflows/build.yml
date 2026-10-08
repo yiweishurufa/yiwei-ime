@@ -155,6 +155,19 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "build failed" }
           Get-ChildItem output\archives
 
+      - name: 收集编译日志
+        if: failure()
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force build-logs | Out-Null
+          Get-ChildItem weasel -Filter *.log -ErrorAction SilentlyContinue | Copy-Item -Destination build-logs
+          Get-ChildItem weasel\output -Recurse -Include *.exe,*.dll -ErrorAction SilentlyContinue | Select-Object FullName | Out-File build-logs\output-files.txt
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: build-logs
+          path: build-logs
+          if-no-files-found: ignore
       - name: 上传安装包
         uses: actions/upload-artifact@v4
         with:
@@ -294,10 +307,14 @@ jobs:
           set -x
           mkdir logs && cd logs
           for id in $(gh api repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs --jq '.jobs[] | select(.conclusion=="failure") | .id'); do
-            gh api repos/$GITHUB_REPOSITORY/actions/jobs/$id/logs > job-$id.log || true
+            for t in 1 2 3 4 5 6; do curl -sSL -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/jobs/$id/logs" -o job-$id.log; [ -s job-$id.log ] && ! grep -q '"message"' job-$id.log && break; sleep 20; done
             grep -n -iE "error|fail|throw|exception|缺少|没有|超时" job-$id.log | tail -200 > job-$id.errors.txt || true
           done
           gh api repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs --jq '.jobs[] | {name, conclusion, steps: [.steps[] | select(.conclusion=="failure") | .name]}' > summary.json
+          sleep 20
+          gh run download $GITHUB_RUN_ID -R $GITHUB_REPOSITORY -D artifacts -n build-logs || true
+          gh run download $GITHUB_RUN_ID -R $GITHUB_REPOSITORY -D artifacts -n smoke-logs || true
+          for f in $(find artifacts -name '*.log' 2>/dev/null); do grep -n -E " error |error [A-Z]+[0-9]+|: error|Error:|MSB[0-9]+" "$f" | grep -v warning | head -100 > "$(basename $f).errors.txt" || true; done
           git init -q -b ci-logs && git config user.name ci && git config user.email ci@users.noreply.github.com
           echo "run $GITHUB_RUN_ID $GITHUB_SHA" > README.txt
           git add -A && git commit -qm "logs for run $GITHUB_RUN_ID"

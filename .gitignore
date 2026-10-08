@@ -7,3 +7,4 @@ winsparkle/
 PROGRESS.md
 helper/obj/
 helper/bin/
+__pycache__/

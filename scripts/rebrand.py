@@ -156,6 +156,8 @@ def transform(path, text):
     if base == "WeaselServer.rc":
         text = re.sub(r"(FEEDURL|MANUALUPDATEFEEDURL|TESTINGFEEDURL|TESTINGMANUALUPDATEFEEDURL)\s+APPCAST\s*\r?\nBEGIN.*?END\r?\n",
                       lambda m: appcast_block(m.group(1)).replace("\n", "\r\n"), text, flags=re.S)
+    if base in EXE_TARGETS:
+        text = re.sub(r"(<OutputFile>[^<]*)\$\(ProjectName\)", r"\1$(TargetName)", text)
     if base in EXE_TARGETS and "<TargetName>%s</TargetName>" % EXE_TARGETS[base] not in text:
         imp = '<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.targets" />'
         text = text.replace(imp, "<PropertyGroup>\r\n    <TargetName>%s</TargetName>\r\n  </PropertyGroup>\r\n  %s" % (EXE_TARGETS[base], imp), 1)
