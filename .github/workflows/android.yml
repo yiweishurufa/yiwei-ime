@@ -58,17 +58,6 @@ jobs:
       - name: 安装 CMake
         run: sdkmanager --install "cmake;3.31.6"
 
-      - name: 计算原生库缓存键
-        id: hash
-        working-directory: trime
-        run: ./gradlew -q :app:calculateNativeCacheHash
-
-      - name: 原生库缓存
-        uses: actions/cache@v4
-        with:
-          path: trime/app/prebuilt
-          key: yiwei-trime-jni-${{ env.TRIME_TAG }}-${{ env.BUILD_ABI }}-${{ steps.hash.outputs.native-cache-hash }}
-
       - name: 签名配置
         working-directory: trime
         env:
@@ -89,7 +78,6 @@ jobs:
         run: |
           git apply --directory=app/src/main/jni/librime-lua-deps patches/lua.patch || true
           ./gradlew --no-daemon :app:assembleRelease
-          mkdir -p app/prebuilt && cp -R app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib/. app/prebuilt/ 2>/dev/null || true
           ls -la app/build/outputs/apk/release/
 
       - name: 整理安装包
