@@ -285,6 +285,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       - uses: actions/download-artifact@v5
         with:
           name: yiwei-ime-installer
@@ -336,7 +338,12 @@ jobs:
           git add update/appcast.xml
           git diff --cached --quiet && exit 0
           git commit -m "更新自动更新清单 ${ver} [skip ci]"
-          git push origin HEAD:main
+          # main may have moved while this run was building: rebase onto it and retry
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
 
   screens:
     needs: smoke
