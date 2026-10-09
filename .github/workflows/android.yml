@@ -3,7 +3,7 @@ name: 构建一维输入法（安卓）
 on:
   push:
     branches: [main]
-    paths: ['android/**', 'overlay/**', 'scripts/customize_data.py', 'scripts/brand_schemes.py', 'scripts/design/icon.py', '.github/workflows/android.yml']
+    paths: ['android/**', 'overlay/**', 'scripts/customize_data.py', 'scripts/brand_schemes.py', 'scripts/design/**', '.github/workflows/android.yml']
   workflow_dispatch:
 
 permissions:

@@ -21,6 +21,9 @@ sys.path.insert(0, os.path.join(REPO, "scripts", "design"))
 
 import customize_data as cd  # noqa: E402
 from brand_schemes import BRANDS, scheme, mix  # noqa: E402
+sys.path.insert(0, HERE)
+import skins  # noqa: E402
+import layouts  # noqa: E402
 
 T, ICE_ZIP, VERSION = sys.argv[1], sys.argv[2], sys.argv[3]
 MAIN = os.path.join(T, "app", "src", "main")
@@ -59,7 +62,7 @@ def install_data():
     shutil.rmtree(os.path.join(SHARED, "preview"), ignore_errors=True)
 
 
-# ---------- colours ----------
+# ---------- colours, keyboards ----------
 
 def hx(argb):
     """Trime colours: 0xRRGGBB, or 0xAARRGGBB when not opaque."""
@@ -67,58 +70,97 @@ def hx(argb):
     return "0x%08x" % argb if a != 255 else "0x%06x" % (argb & 0xFFFFFF)
 
 
-def trime_scheme(bid, name, rgb, dark):
-    s = scheme(bid, rgb, dark)
-    acc = 0xFF000000 | rgb
-    if dark:
-        kb, key, keyfg, sym, keyhi = 0xFF141716, 0xFF262B28, 0xFFE8ECE9, 0xFF8F9893, 0xFF39403C
-        on_bg, on_fg = mix(0xFF1B1F1D, acc, .45), 0xFFFFFFFF
-    else:
-        kb, key, keyfg, sym, keyhi = 0xFFE9ECE8, 0xFFFBFCFA, 0xFF1F2421, 0xFF6A736E, 0xFFD5DAD6
-        on_bg, on_fg = acc, 0xFFFFFFFF
-    c = dict(
-        back_color=s["back_color"], border_color=s["border_color"], candidate_separator_color=s["border_color"],
-        candidate_text_color=s["candidate_text_color"], comment_text_color=s["comment_text_color"],
-        hilited_back_color=s["hilited_back_color"], hilited_candidate_back_color=s["hilited_candidate_back_color"],
-        hilited_candidate_text_color=s["hilited_candidate_text_color"],
-        hilited_comment_text_color=s["hilited_comment_text_color"], hilited_text_color=s["hilited_text_color"],
-        text_color=s["text_color"], text_back_color=s["back_color"], label_color=s["label_color"],
-        keyboard_back_color=kb, key_back_color=key, key_text_color=keyfg, key_symbol_color=sym,
-        hilited_key_back_color=keyhi, hilited_key_text_color=keyfg, hilited_key_symbol_color=sym,
-        off_key_back_color=key, off_key_text_color=keyfg, hilited_off_key_back_color=keyhi, hilited_off_key_text_color=keyfg,
-        on_key_back_color=on_bg, on_key_text_color=on_fg, hilited_on_key_back_color=on_bg, hilited_on_key_text_color=on_fg,
-        preview_back_color=key, preview_text_color=acc if not dark else 0xFFE8ECE9, shadow_color=0x00000000,
-    )
-    out = ["    name: \"一维 · %s%s\"" % (name, "（深色）" if dark else ""), "    author: 一维输入法"]
-    out += ["    %s: %s" % (k, hx(v)) for k, v in c.items()]
-    return out
+DEFAULT_SKIN = "yiwei_moblue"  # 墨蓝
 
 
-def install_colours():
+def colour_block():
     lines = []
-    for i, (bid, name, rgb) in enumerate(BRANDS):
-        for dark in (False, True):
-            sid = "yiwei_%s%s" % (bid, "_dark" if dark else "")
-            body = trime_scheme(bid, name, rgb, dark)
-            if not dark:
-                body.append("    dark_scheme: yiwei_%s_dark" % bid)
-            lines.append("  %s:" % sid)
+    for sid, name, c, dark in skins.all_skins():
+        body = ["    name: \"%s\"" % name, "    author: 一维输入法"]
+        body += ["    %s: %s" % (k, hx(v)) for k, v in c.items()]
+        if dark:
+            body.append("    dark_scheme: %s" % dark)
+        lines.append("  %s:" % sid)
+        lines += body
+        if sid == DEFAULT_SKIN:  # Trime falls back to `default`
+            lines.append("  default:")
             lines += body
-            if bid == "qingbi" and not dark:  # Trime falls back to `default`: make that 青碧
-                lines.append("  default:")
-                lines += body
-    block = "\n".join(lines) + "\n\n"
+    return "\n".join(lines) + "\n"
 
+
+def set_style(t, key, value):
+    pat = re.compile(r"^(  %s:)[ \t]*[^\n#]*" % re.escape(key), re.M)
+    if pat.search(t):
+        return pat.sub(lambda m: m.group(1) + " " + value + " ", t, count=1)
+    return t.replace("\nstyle:\n", "\nstyle:\n  %s: %s\n" % (key, value), 1)
+
+
+def install_theme():
     def patch(t):
-        # drop Trime's own `default` scheme (ours replaces it), keep the rest selectable
-        t = re.sub(r"(\npreset_color_schemes:\n)  default:\n(?:    [^\n]*\n|\n)*?(?=  \w+:\n)", r"\1", t, count=1)
-        t, n = re.subn(r"\npreset_color_schemes:\n", lambda m: m.group(0) + block, t, count=1)
+        # our skins replace every stock colour scheme
+        i = t.index("\npreset_color_schemes:\n") + len("\npreset_color_schemes:\n")
+        m = re.compile(r"^\S", re.M).search(t, i)
+        t = t[:i] + colour_block() + "\n" + t[m.start():]
+        for k, v in layouts.STYLE.items():
+            t = set_style(t, k, v)
+        t, n = re.subn(r"\npreset_keys:\n", lambda m: m.group(0) + layouts.PRESET_KEYS.lstrip("\n"), t, count=1)
         if n != 1:
-            raise SystemExit("trime.yaml: preset_color_schemes not found")
-        t = re.sub(r"^name: .*$", "name: 一维 · 墨线", t, count=1, flags=re.M)
+            raise SystemExit("trime.yaml: preset_keys not found")
+        t, n = re.subn(r"\npreset_keyboards:\n", lambda m: m.group(0) + layouts.keyboards(), t, count=1)
+        if n != 1:
+            raise SystemExit("trime.yaml: preset_keyboards not found")
+        # stock boards that our aliases replace
+        for a in layouts.QWERTY_ALIASES:
+            t = re.sub(r"\n  %s:\n(?:    [^\n]*\n|      [^\n]*\n|\n)*?(?=  \w+:\n|\Z)" % re.escape(a),
+                       lambda m: "\n" if "import_preset: yw_qwerty" not in m.group(0) else m.group(0), t)
+        t = t.rstrip("\n") + "\n" + layouts.TOOL_BAR
+        t = re.sub(r"^name: .*$", "name: 一维", t, count=1, flags=re.M)
         t = re.sub(r"^author: .*$", "author: 一维输入法（基于同文 Trime 默认主题）", t, count=1, flags=re.M)
         return t
     edit(os.path.join(SHARED, "trime.yaml"), patch)
+
+
+def install_t9():
+    """rime-ice's t9 schema targets Hamster / Yuanshu: drop their private processor, show pinyin instead of digits."""
+    def patch(t):
+        t, n = re.subn(r"\n    - t9_processor[^\n]*", "", t, count=1)
+        if n != 1:
+            raise SystemExit("t9.schema.yaml: t9_processor not found")
+        t, n = re.subn(r"(\n    - uniquifier[^\n]*\n)", r"\1    - lua_filter@*t9_preedit  # 一维输入法：输入框显示拼音而不是数字\n", t, count=1)
+        if n != 1:
+            raise SystemExit("t9.schema.yaml: uniquifier not found")
+        return t
+    edit(os.path.join(SHARED, "t9.schema.yaml"), patch)
+
+
+def install_code():
+    """Small Trime source patches: a key command to switch schema (九键 ⇄ 26 键)."""
+    f = os.path.join(MAIN, "java", "com", "osfans", "trime", "ime", "keyboard", "CommonKeyboardActionListener.kt")
+
+    def patch(t):
+        t, n = re.subn(r'(\n(\s+)"select_candidate" -> handleSelectCandidate\(arg\)\n)',
+                       r'\1\2"select_schema" -> handleSelectSchema(arg)\n', t, count=1)
+        if n != 1:
+            raise SystemExit("CommonKeyboardActionListener: select_candidate not found")
+        fn = """
+            // 一维输入法：select_schema 选项为 "a|b" 时在两个方案间来回切换（九键 ⇄ 26 键）
+            private fun handleSelectSchema(arg: String) {
+                val ids = arg.split('|').map { it.trim() }.filter { it.isNotEmpty() }
+                if (ids.isEmpty()) return
+                rime.launchOnReady { api ->
+                    service.lifecycleScope.launch {
+                        val current = api.statusCached.schemaId
+                        val target = if (ids.size > 1 && current == ids[0]) ids[1] else ids[0]
+                        api.selectSchema(target)
+                    }
+                }
+            }
+"""
+        t, n = re.subn(r"(\n(\s+)private fun handleSelectCandidate\(arg: String\) \{)", fn.rstrip("\n") + r"\n\1", t, count=1)
+        if n != 1:
+            raise SystemExit("CommonKeyboardActionListener: handleSelectCandidate not found")
+        return t
+    edit(f, patch)
 
 
 # ---------- brand ----------
@@ -145,32 +187,24 @@ def install_brand():
 
 
 def icons():
-    from PIL import Image, ImageDraw
-    import icon
+    import logo_min
     res = os.path.join(MAIN, "res")
     for dpi, px in (("mdpi", 48), ("hdpi", 72), ("xhdpi", 96), ("xxhdpi", 144), ("xxxhdpi", 192)):
-        im = icon.app_icon(px)
-        for n in ("ic_app_icon.png", "ic_app_icon_round.png"):
-            im.save(os.path.join(res, "mipmap-" + dpi, n))
-    # adaptive icon: ink background colour + paper stroke and seal on a transparent 108dp layer
+        logo_min.tile(px).save(os.path.join(res, "mipmap-" + dpi, "ic_app_icon.png"))
+        logo_min.tile(px, radius=0.5).save(os.path.join(res, "mipmap-" + dpi, "ic_app_icon_round.png"))
     edit(os.path.join(res, "values", "ic_app_icon_background.xml"),
-         lambda t: re.sub(r"#[0-9A-Fa-f]{6}", "#%02X%02X%02X" % icon.INK, t, count=1))
+         lambda t: re.sub(r"#[0-9A-Fa-f]{6}", "#%02X%02X%02X" % logo_min.BLUE, t, count=1))
     fg = os.path.join(res, "drawable", "ic_app_icon_foreground.xml")
     if os.path.exists(fg):
         os.remove(fg)
-    S = 4; N = 432 * S
-    im = Image.new("RGBA", (N, N), (0, 0, 0, 0)); dr = ImageDraw.Draw(im)
-    w = N * 0.42; sc = 1.4
-    icon.PTS[:] = [(x, y * sc) for x, y in icon.BASE]
-    icon.stroke(dr, S, ((N - w) / 2, N * 0.47 - w * 0.09 * sc, (N + w) / 2, 0), icon.PAPER + (255,))
-    s = N * 0.07; x = N * 0.60; y = N * 0.60
-    dr.rounded_rectangle((x, y, x + s, y + s), s * 0.18, fill=icon.SEAL + (255,))
     d = os.path.join(res, "drawable-xxxhdpi"); os.makedirs(d, exist_ok=True)
-    im.resize((432, 432), Image.LANCZOS).save(os.path.join(d, "ic_app_icon_foreground.png"))
-
+    logo_min.adaptive_foreground(432).save(os.path.join(d, "ic_app_icon_foreground.png"))
+    shutil.copyfile(os.path.join(res, "mipmap-xxxhdpi", "ic_app_icon.png"), os.path.join(MAIN, "ic_app_icon-playstore.png"))
 
 if __name__ == "__main__":
     install_data()
-    install_colours()
+    install_t9()
+    install_theme()
+    install_code()
     install_brand()
     print("trime → 一维输入法 %s" % VERSION)
