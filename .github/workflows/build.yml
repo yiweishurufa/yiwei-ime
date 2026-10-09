@@ -283,6 +283,7 @@ jobs:
   release:
     needs: [build, smoke]
     runs-on: ubuntu-latest
+    concurrency: { group: release-nightly, cancel-in-progress: false }  # one publish at a time
     steps:
       - uses: actions/checkout@v5
         with:
@@ -334,13 +335,16 @@ jobs:
           </rss>
           XML
           sed -i 's/^          //' update/appcast.xml
+          cp update/appcast.xml /tmp/appcast.xml
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add update/appcast.xml
-          git diff --cached --quiet && exit 0
-          git commit -m "更新自动更新清单 ${ver} [skip ci]"
-          # main may have moved while this run was building: rebase onto it and retry
+          # main may have moved (or another run wrote the manifest) while this run built: start from the newest main each try
           for i in 1 2 3 4 5; do
-            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            git fetch -q origin main && git reset -q --hard origin/main
+            cp /tmp/appcast.xml update/appcast.xml
+            git add update/appcast.xml
+            git diff --cached --quiet && exit 0
+            git commit -qm "更新自动更新清单 ${ver} [skip ci]"
+            git push origin HEAD:main && exit 0
             sleep $((i * 5))
           done
           exit 1
