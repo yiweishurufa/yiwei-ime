@@ -62,6 +62,7 @@ namespace Yiwei
         public static string SnippetsFile => Path.Combine(YiweiDir, "snippets.json");
         public static string StatsFlag => Path.Combine(YiweiDir, "stats.enabled");
         public static string AutoPairOff => Path.Combine(YiweiDir, "autopair.disabled");
+        public static string PanguFlag => Path.Combine(YiweiDir, "pangu.enabled");
         public static string WeaselCustom => Path.Combine(UserDir, "weasel.custom.yaml");
         public static string DefaultCustom => Path.Combine(UserDir, "default.custom.yaml");
         public static string Deployer => Pick("YiweiDeployer.exe", "WeaselDeployer.exe");
@@ -311,6 +312,13 @@ namespace Yiwei
         {
             get => !File.Exists(Paths.AutoPairOff);
             set { if (!value) { Directory.CreateDirectory(Paths.YiweiDir); File.WriteAllText(Paths.AutoPairOff, "1"); } else if (File.Exists(Paths.AutoPairOff)) File.Delete(Paths.AutoPairOff); }
+        }
+
+        /// <summary>中英之间自动加空格（yiwei_pangu*.lua 读这个标记文件，默认关闭）。</summary>
+        public bool PanguSpacing
+        {
+            get => File.Exists(Paths.PanguFlag);
+            set { if (value) File.WriteAllText(Paths.PanguFlag, "1"); else if (File.Exists(Paths.PanguFlag)) File.Delete(Paths.PanguFlag); }
         }
 
         public bool StatsEnabled

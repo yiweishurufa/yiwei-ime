@@ -29,6 +29,8 @@ namespace Yiwei
             p.Children.Add(K.PageTitle("常规"));
             p.Children.Add(K.Card("括号自动配对", "中文标点下输入（ 【 《 「 “ ‘ 时自动补上右半边，光标停在中间；终端、代码编辑器和游戏里不配对",
                 K.Toggle(S.AutoPair, v => { S.AutoPair = v; }), Ui.SymbolRegular.Document24));
+            p.Children.Add(K.Card("中英之间自动加空格", "打「用 Windows 写代码」这类中英混排时，自动在中文和英文、数字之间留一个空格",
+                K.Toggle(S.PanguSpacing, v => { S.PanguSpacing = v; }), Ui.SymbolRegular.TextGrammarWand24));
             p.Children.Add(K.Card("中/英切换提示", "切换中英文时，在光标旁短暂显示「中」或「A」",
                 K.Toggle(S.ImeToast, v => { S.ImeToast = v; Save(); }), Ui.SymbolRegular.Chat24));
             p.Children.Add(K.Card("从输入法状态检测切换（实验）", "部分应用里输入法不会主动通知时，靠轮询检测中英状态；可能有误报",

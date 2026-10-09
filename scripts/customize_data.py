@@ -145,9 +145,13 @@ def mount_into_schemas():
         text = re.sub(r"(\n  processors:\n)", r"\1    - lua_processor@*yiwei_stats  # 一维输入法：输入统计（默认关闭）\n    - lua_processor@*yiwei_toast  # 一维输入法：中/英切换提示\n", text, count=1)
         # after ascii_composer, so a swallowed Shift+( never looks like a lone Shift tap
         text, n = re.subn(r"(\n(\s+)- ascii_composer[^\n]*\n)",
-                          r"\1\2- lua_processor@*yiwei_autopair  # 一维输入法：括号自动配对\n", text, count=1)
+                          r"\1\2- lua_processor@*yiwei_autopair  # 一维输入法：括号自动配对\n"
+                          r"\2- lua_processor@*yiwei_pangu  # 一维输入法：中英之间自动加空格（默认关闭）\n", text, count=1)
         if n != 1:
             raise SystemExit("%s: ascii_composer not found" % fn)
+        text, n = re.subn(r"(\n  filters:\n(?:    [^\n]*\n)*)", r"\1    - lua_filter@*yiwei_pangu_filter  # 一维输入法：中英之间自动加空格\n", text, count=1)
+        if n != 1:
+            raise SystemExit("%s: filters not found" % fn)
         text = re.sub(r"(\n(\s+)- table_translator@custom_phrase[^\n]*\n)",
                       r"\1\2- table_translator@yiwei_tech     # 一维输入法：科技与互联网词库\n", text, count=1)
         text = text.rstrip("\n") + "\n" + TECH_BLOCK
