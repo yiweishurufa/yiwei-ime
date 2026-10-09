@@ -2,13 +2,15 @@
 
 <img src="docs/images/banner.png" alt="一维输入法" width="100%">
 
-**中文常新，自在表达。** 开源、本地、无广告的 Windows 输入法，基于 RIME。
+**中文常新，自在表达。** 开源、本地、无广告的 Windows 与 Android 输入法，基于 RIME。
 
-[![下载最新版](https://img.shields.io/badge/下载-最新安装包-0E9F8A?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/yiweishurufa/yiwei-ime/releases/tag/nightly)
+[![Windows 版](https://img.shields.io/badge/Windows-下载安装包-2B5BD7?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/yiweishurufa/yiwei-ime/releases/tag/nightly)
+[![Android 版](https://img.shields.io/badge/Android-下载%20APK-2B5BD7?style=for-the-badge&logo=android&logoColor=white)](https://github.com/yiweishurufa/yiwei-ime/releases/tag/android-nightly)
 
 [![构建](https://img.shields.io/github/actions/workflow/status/yiweishurufa/yiwei-ime/build.yml?branch=main&label=构建&style=flat-square)](https://github.com/yiweishurufa/yiwei-ime/actions)
-[![协议](https://img.shields.io/badge/协议-GPL--3.0-blue?style=flat-square)](LICENSE)
-![系统](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?style=flat-square&logo=windows)
+[![协议](https://img.shields.io/badge/协议-GPL--3.0-2B5BD7?style=flat-square)](LICENSE)
+![系统](https://img.shields.io/badge/Windows-10%20%7C%2011-2B5BD7?style=flat-square&logo=windows)
+![安卓](https://img.shields.io/badge/Android-5.0+-2B5BD7?style=flat-square&logo=android&logoColor=white)
 ![内核](https://img.shields.io/badge/内核-RIME%20%2F%20小狼毫-555?style=flat-square)
 ![隐私](https://img.shields.io/badge/遥测-无-success?style=flat-square)
 
@@ -32,6 +34,8 @@
 3. 以后有新版本，托盘会提示，点一下即可静默升级，设置和词库都会保留。
 
 > 可以和小狼毫同时安装，互不干扰。支持 Windows 10 / 11。
+
+**Android**：打开 [安卓测试版页面](https://github.com/yiweishurufa/yiwei-ime/releases/tag/android-nightly)，大多数手机下载 `arm64-v8a` 版本。安装后在系统设置 → 语言和输入法里启用「一维输入法」，第一次打开会部署词库，需要一两分钟。支持 26 键与九键，十一套皮肤跟随系统深色模式。
 
 ## 🧩 功能
 
