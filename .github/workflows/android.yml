@@ -101,8 +101,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -e
-          gh release delete android-nightly --cleanup-tag -y || true
-          git push origin :refs/tags/android-nightly || true
-          gh release create android-nightly dist/*.apk --target "$GITHUB_SHA" --prerelease --latest=false \
-            --title "一维输入法 安卓测试版" \
-            --notes "一维输入法 Android 测试版 ${VERSION}（基于同文输入法 Trime ${TRIME_TAG}，提交 ${GITHUB_SHA::7}）。大多数手机下载 arm64-v8a 版本。安装后在系统设置里启用「一维输入法」，首次打开会部署词库，需要一两分钟。"
+          # move the tag and refresh the release in place (deleting and re-creating races with GitHub and can leave no release at all)
+          git tag -f android-nightly "$GITHUB_SHA" && git push -f origin "refs/tags/android-nightly"
+          if gh release view android-nightly >/dev/null 2>&1; then
+            for a in $(gh release view android-nightly --json assets --jq '.assets[].name'); do gh release delete-asset android-nightly "$a" -y; done
+            gh release upload android-nightly dist/*.apk --clobber
+            gh release edit android-nightly --prerelease --latest=false --title "一维输入法 安卓测试版" --notes "一维输入法 Android 测试版 ${VERSION}（基于同文输入法 Trime ${TRIME_TAG}，提交 ${GITHUB_SHA::7}）。大多数手机下载 arm64-v8a 版本。安装后在系统设置里启用「一维输入法」，首次打开会部署词库，需要一两分钟。"
+          else
+            gh release create android-nightly dist/*.apk --verify-tag --prerelease --latest=false --title "一维输入法 安卓测试版" --notes "一维输入法 Android 测试版 ${VERSION}（基于同文输入法 Trime ${TRIME_TAG}，提交 ${GITHUB_SHA::7}）。大多数手机下载 arm64-v8a 版本。安装后在系统设置里启用「一维输入法」，首次打开会部署词库，需要一两分钟。"
+          fi

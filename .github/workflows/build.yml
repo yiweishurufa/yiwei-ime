@@ -299,11 +299,15 @@ jobs:
         run: |
           set -e
           f=$(ls dist/yiwei-ime*.exe | head -1)
-          gh release delete nightly --cleanup-tag -y || true
-          git push origin :refs/tags/nightly || true
-          gh release create nightly "$f" --target "$GITHUB_SHA" --prerelease --latest=false \
-            --title "一维输入法 测试版" \
-            --notes "一维输入法 Windows 测试版（自动构建 #${{ github.run_number }}，提交 ${GITHUB_SHA::7}）。下载 $(basename "$f")，双击安装。支持 Windows 10/11。"
+          # move the tag and refresh the release in place (deleting and re-creating races with GitHub and can leave no release at all)
+          git tag -f nightly "$GITHUB_SHA" && git push -f origin "refs/tags/nightly"
+          if gh release view nightly >/dev/null 2>&1; then
+            for a in $(gh release view nightly --json assets --jq '.assets[].name'); do gh release delete-asset nightly "$a" -y; done
+            gh release upload nightly "$f" --clobber
+            gh release edit nightly --prerelease --latest=false --title "一维输入法 测试版" --notes "一维输入法 Windows 测试版（自动构建 #${{ github.run_number }}，提交 ${GITHUB_SHA::7}）。下载 $(basename "$f")，双击安装。支持 Windows 10/11。"
+          else
+            gh release create nightly "$f" --verify-tag --prerelease --latest=false --title "一维输入法 测试版" --notes "一维输入法 Windows 测试版（自动构建 #${{ github.run_number }}，提交 ${GITHUB_SHA::7}）。下载 $(basename "$f")，双击安装。支持 Windows 10/11。"
+          fi
       - name: 发布正式版
         if: startsWith(github.ref, 'refs/tags/')
         env:
