@@ -17,9 +17,11 @@ import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
-W = sys.argv[1]
-ICE_ZIP = sys.argv[2]
-DATA = os.path.join(W, "output", "data")
+# android/prepare.py imports this module and sets DATA / ICE_ZIP / ANDROID itself
+W = sys.argv[1] if __name__ == "__main__" else None
+ICE_ZIP = sys.argv[2] if __name__ == "__main__" else None
+DATA = os.path.join(W, "output", "data") if W else None
+ANDROID = False  # Android (Trime): no Windows helper, so no stats / toast / caret-moving autopair
 
 THEMES = [
     # id, name, 13 colours (argb) in AIME order
@@ -142,10 +144,12 @@ def mount_into_schemas():
         text = open(path, encoding="utf-8").read()
         if "table_translator@custom_phrase" not in text:
             continue  # only full pinyin / double pinyin schemas of rime-ice
-        text = re.sub(r"(\n  processors:\n)", r"\1    - lua_processor@*yiwei_stats  # 一维输入法：输入统计（默认关闭）\n    - lua_processor@*yiwei_toast  # 一维输入法：中/英切换提示\n", text, count=1)
+        if not ANDROID:
+            text = re.sub(r"(\n  processors:\n)", r"\1    - lua_processor@*yiwei_stats  # 一维输入法：输入统计（默认关闭）\n    - lua_processor@*yiwei_toast  # 一维输入法：中/英切换提示\n", text, count=1)
         # after ascii_composer, so a swallowed Shift+( never looks like a lone Shift tap
+        extra = "" if ANDROID else r"\2- lua_processor@*yiwei_autopair  # 一维输入法：括号自动配对\n"
         text, n = re.subn(r"(\n(\s+)- ascii_composer[^\n]*\n)",
-                          r"\1\2- lua_processor@*yiwei_autopair  # 一维输入法：括号自动配对\n"
+                          r"\1" + extra +
                           r"\2- lua_processor@*yiwei_pangu  # 一维输入法：中英之间自动加空格（默认关闭）\n", text, count=1)
         if n != 1:
             raise SystemExit("%s: ascii_composer not found" % fn)

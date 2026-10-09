@@ -1,0 +1,118 @@
+name: 构建一维输入法（安卓）
+
+on:
+  push:
+    branches: [main]
+    paths: ['android/**', 'overlay/**', 'scripts/customize_data.py', 'scripts/brand_schemes.py', 'scripts/design/icon.py', '.github/workflows/android.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  TRIME_REPO: https://github.com/osfans/trime.git
+  TRIME_TAG: v3.3.12
+  VERSION: 0.1.0.${{ github.run_number }}
+  BUILD_ABI: arm64-v8a,armeabi-v7a
+  CI_NAME: Yiwei IME CI
+
+concurrency: { group: android-${{ github.ref }}, cancel-in-progress: true }
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出一维输入法
+        uses: actions/checkout@v5
+
+      - name: 获取同文输入法 ${{ env.TRIME_TAG }}
+        run: |
+          git clone --depth 1 --branch "$TRIME_TAG" --recurse-submodules --shallow-submodules "$TRIME_REPO" trime
+          cd trime && git -c advice.detachedHead=false log -1 --oneline
+
+      - name: 获取雾凇拼音
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          url=$(gh api repos/iDvel/rime-ice/releases/latest --jq '.assets[] | select(.name=="full.zip") | .browser_download_url')
+          curl -fsSL -o rime-ice-full.zip "$url"
+          sha256sum rime-ice-full.zip
+
+      - name: 套上一维（词库、墨线配色、图标、包名）
+        run: |
+          pip install -q pillow
+          python android/prepare.py trime rime-ice-full.zip "$VERSION"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
+
+      - name: 安装 CMake
+        run: sdkmanager --install "cmake;3.31.6"
+
+      - name: 计算原生库缓存键
+        id: hash
+        working-directory: trime
+        run: ./gradlew -q :app:calculateNativeCacheHash
+
+      - name: 原生库缓存
+        uses: actions/cache@v4
+        with:
+          path: trime/app/prebuilt
+          key: yiwei-trime-jni-${{ env.TRIME_TAG }}-${{ env.BUILD_ABI }}-${{ steps.hash.outputs.native-cache-hash }}
+
+      - name: 签名配置
+        working-directory: trime
+        env:
+          KEY_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEY_PW: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -n "$KEY_B64" ]; then
+            printf 'keyBase64=%s\nstorePassword=%s\nkeyAlias=yiwei\nkeyPassword=%s\n' "$KEY_B64" "$KEY_PW" "$KEY_PW" > keystore.properties
+            echo "正式签名"
+          else
+            # 测试签名：公开的测试密钥，只用于测试版，保证测试版之间可以覆盖安装
+            printf 'storeFile=%s\nstorePassword=yiwei-test\nkeyAlias=yiwei\nkeyPassword=yiwei-test\n' "$GITHUB_WORKSPACE/android/signing/yiwei-test.p12" > keystore.properties
+            echo "测试签名"
+          fi
+
+      - name: 编译 APK
+        working-directory: trime
+        run: |
+          git apply --directory=app/src/main/jni/librime-lua-deps patches/lua.patch || true
+          ./gradlew --no-daemon :app:assembleRelease
+          mkdir -p app/prebuilt && cp -R app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib/. app/prebuilt/ 2>/dev/null || true
+          ls -la app/build/outputs/apk/release/
+
+      - name: 整理安装包
+        run: |
+          set -e
+          mkdir dist
+          for f in trime/app/build/outputs/apk/release/*.apk; do
+            abi=$(basename "$f" | grep -oE 'arm64-v8a|armeabi-v7a|x86_64|x86|universal' || echo all)
+            cp "$f" "dist/yiwei-ime-android-${VERSION}-${abi}.apk"
+          done
+          ls -la dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: yiwei-ime-android
+          path: dist/*.apk
+
+      - name: 发布安卓测试版
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          gh release delete android-nightly --cleanup-tag -y || true
+          git push origin :refs/tags/android-nightly || true
+          gh release create android-nightly dist/*.apk --target "$GITHUB_SHA" --prerelease --latest=false \
+            --title "一维输入法 安卓测试版" \
+            --notes "一维输入法 Android 测试版 ${VERSION}（基于同文输入法 Trime ${TRIME_TAG}，提交 ${GITHUB_SHA::7}）。大多数手机下载 arm64-v8a 版本。安装后在系统设置里启用「一维输入法」，首次打开会部署词库，需要一两分钟。"
