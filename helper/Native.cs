@@ -201,6 +201,14 @@ namespace Yiwei
             Native.SendInput((uint)list.Count, list.ToArray(), Marshal.SizeOf(typeof(Native.INPUT)));
         }
 
+        /// <summary>One Left arrow, tagged as ours so the keyboard hook ignores it.</summary>
+        public static void Left()
+        {
+            var list = new System.Collections.Generic.List<Native.INPUT>();
+            AddVk(list, (ushort)Keys.Left);
+            Native.SendInput((uint)list.Count, list.ToArray(), Marshal.SizeOf(typeof(Native.INPUT)));
+        }
+
         /// <summary>Replaces the current selection: paste through the clipboard, then restore it.</summary>
         public static void Replace(string text)
         {

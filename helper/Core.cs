@@ -61,6 +61,7 @@ namespace Yiwei
         public static string SettingsFile => Path.Combine(YiweiDir, "settings.json");
         public static string SnippetsFile => Path.Combine(YiweiDir, "snippets.json");
         public static string StatsFlag => Path.Combine(YiweiDir, "stats.enabled");
+        public static string AutoPairOff => Path.Combine(YiweiDir, "autopair.disabled");
         public static string WeaselCustom => Path.Combine(UserDir, "weasel.custom.yaml");
         public static string DefaultCustom => Path.Combine(UserDir, "default.custom.yaml");
         public static string Deployer => Pick("YiweiDeployer.exe", "WeaselDeployer.exe");
@@ -194,7 +195,7 @@ namespace Yiwei
         public string ColorSchemeDark { get; set; } = "yiwei_qingbi_dark";
         public bool Horizontal { get; set; } = true;
         public bool VerticalText { get; set; } = false;
-        public int FontPoint { get; set; } = 14;
+        public int FontPoint { get; set; } = 12;
         public string FontFace { get; set; } = "Microsoft YaHei UI";
         public int CornerRadius { get; set; } = 8;
         public int HilitedCornerRadius { get; set; } = 6;
@@ -274,6 +275,13 @@ namespace Yiwei
                         s.SettingsVersion = 2;
                         if (existed) try { s.Save(); } catch { }
                     }
+                    if (s.SettingsVersion < 3)
+                    {
+                        // 0.1.0.17: smaller candidate font by default; keep a size the user picked themselves.
+                        if (s.FontPoint == 14) s.FontPoint = 12;
+                        s.SettingsVersion = 3;
+                        if (existed) { try { s.Save(); } catch { } Rime.ApplySoon(4000); }
+                    }
                     if (s.AltBlocklist == null) s.AltBlocklist = DefaultBlocklist();
                     if (s.AiActions == null || s.AiActions.Count == 0) s.AiActions = DefaultActions();
                     if (s.AppAscii == null) s.AppAscii = new Dictionary<string, bool>();
@@ -292,10 +300,17 @@ namespace Yiwei
         {
             lock (Gate)
             {
-                var s = new Settings { SettingsVersion = 2, FirstRunDone = true };
+                var s = new Settings { SettingsVersion = 3, FirstRunDone = true };
                 s.Save();
                 _current = s;
             }
+        }
+
+        /// <summary>括号自动配对（yiwei_autopair.lua 读这个标记文件，默认开启）。</summary>
+        public bool AutoPair
+        {
+            get => !File.Exists(Paths.AutoPairOff);
+            set { if (!value) { Directory.CreateDirectory(Paths.YiweiDir); File.WriteAllText(Paths.AutoPairOff, "1"); } else if (File.Exists(Paths.AutoPairOff)) File.Delete(Paths.AutoPairOff); }
         }
 
         public bool StatsEnabled
@@ -360,8 +375,8 @@ namespace Yiwei
             P("style/text_orientation", Q(s.VerticalText ? "vertical" : "horizontal"));
             P("style/inline_preedit", B(s.InlinePreedit));
             P("style/font_point", s.FontPoint.ToString());
-            P("style/label_font_point", Math.Max(8, s.FontPoint - 3).ToString());
-            P("style/comment_font_point", Math.Max(8, s.FontPoint - 3).ToString());
+            P("style/label_font_point", Math.Max(8, s.FontPoint - 2).ToString());
+            P("style/comment_font_point", Math.Max(8, s.FontPoint - 2).ToString());
             P("style/font_face", Q(RimeFeatures.FontFaceChain(s)));
             P("style/comment_font_face", Q(RimeFeatures.FontFaceChain(s)));
             P("style/layout/corner_radius", s.CornerRadius.ToString());

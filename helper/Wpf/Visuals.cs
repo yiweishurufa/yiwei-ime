@@ -13,7 +13,7 @@ namespace Yiwei
         public string Scheme = "yiwei_qingbi";
         public bool Horizontal = true;
         public string FontName = "Microsoft YaHei UI";
-        public int FontPoint = 14, Radius = 8, HRadius = 6;
+        public int FontPoint = 12, Radius = 8, HRadius = 6;
         static readonly string[] Cands = { "一维", "依偎", "意味", "以为" };
 
         public CandidatePreview() { Height = 150; SnapsToDevicePixels = true; }

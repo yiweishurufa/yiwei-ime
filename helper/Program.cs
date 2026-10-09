@@ -128,6 +128,13 @@ namespace Yiwei
                     ThemeLinks.Handle(command.Trim('"'));
                     return;
                 }
+                if (command == "caret:left")
+                {
+                    // yiwei_autopair.lua just committed a pair such as （）; put the caret between the halves.
+                    TextOut.Pump(40);
+                    TextOut.Left();
+                    return;
+                }
                 if (command.StartsWith("toast:", StringComparison.OrdinalIgnoreCase))
                 {
                     var m = command.Substring(6).Trim();

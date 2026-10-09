@@ -90,6 +90,16 @@ def customize_weasel_yaml():
     open(path, "w", encoding="utf-8", newline="\n").write(text)
 
 
+def customize_default_yaml():
+    """Shift (left or right) commits the typed letters as English and switches to English."""
+    path = os.path.join(DATA, "default.yaml")
+    text = open(path, encoding="utf-8").read()
+    new, n = re.subn(r"^(    Shift_R:)[ \t]*\w+", r"\1 commit_code", text, count=1, flags=re.M)
+    if n != 1 or not re.search(r"^    Shift_L:[ \t]*commit_code", new, re.M):
+        raise SystemExit("default.yaml: ascii_composer/switch_key not as expected")
+    open(path, "w", encoding="utf-8", newline="\n").write(new)
+
+
 def install_rime_ice():
     keep_ours = {"weasel.yaml", "squirrel.yaml", "README.md", "LICENSE"}
     with zipfile.ZipFile(ICE_ZIP) as z:
@@ -133,6 +143,11 @@ def mount_into_schemas():
         if "table_translator@custom_phrase" not in text:
             continue  # only full pinyin / double pinyin schemas of rime-ice
         text = re.sub(r"(\n  processors:\n)", r"\1    - lua_processor@*yiwei_stats  # 一维输入法：输入统计（默认关闭）\n    - lua_processor@*yiwei_toast  # 一维输入法：中/英切换提示\n", text, count=1)
+        # after ascii_composer, so a swallowed Shift+( never looks like a lone Shift tap
+        text, n = re.subn(r"(\n(\s+)- ascii_composer[^\n]*\n)",
+                          r"\1\2- lua_processor@*yiwei_autopair  # 一维输入法：括号自动配对\n", text, count=1)
+        if n != 1:
+            raise SystemExit("%s: ascii_composer not found" % fn)
         text = re.sub(r"(\n(\s+)- table_translator@custom_phrase[^\n]*\n)",
                       r"\1\2- table_translator@yiwei_tech     # 一维输入法：科技与互联网词库\n", text, count=1)
         text = text.rstrip("\n") + "\n" + TECH_BLOCK
@@ -247,6 +262,7 @@ def patch_installer():
 if __name__ == "__main__":
     customize_weasel_yaml()
     install_rime_ice()
+    customize_default_yaml()
     mount_into_schemas()
     patch_installer()
     print("data customised")
