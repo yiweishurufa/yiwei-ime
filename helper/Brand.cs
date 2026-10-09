@@ -24,11 +24,11 @@ namespace Yiwei
     {
         public static readonly BrandColor[] Palette =
         {
-            new BrandColor("moblue", "墨蓝", 0x2F5BEA),
-            new BrandColor("qingbi", "青碧", 0x0F9D8A),
-            new BrandColor("zhusha", "朱砂", 0xE0483A),
-            new BrandColor("dianzi", "靛紫", 0x6B4EE6),
-            new BrandColor("shimo", "石墨", 0x2B2F36),
+            new BrandColor("moblue", "墨蓝", 0x2B5BD7),
+            new BrandColor("qingbi", "青碧", 0x0E8C7A),
+            new BrandColor("zhusha", "朱砂", 0xC8452F),
+            new BrandColor("dianzi", "靛紫", 0x6450D6),
+            new BrandColor("shimo", "石墨", 0x2E3431),
         };
 
         public static BrandColor Default => Palette[1];
@@ -71,45 +71,46 @@ namespace Yiwei
         /// <summary>Colours of a generated scheme, as ARGB, keyed by Weasel colour names.</summary>
         public static Dictionary<string, uint> SchemeArgb(BrandColor c, bool dark)
         {
-            uint accent = Argb(c.Rgb);
-            const uint White = 0xFFFFFFFF;
+            // 「墨线」：纸色底、墨色字；品牌色只用在高亮候选上，其余退成灰（与 scripts/brand_schemes.py 一致）。
+            uint acc = Argb(c.Rgb);
+            const uint White = 0xFFFFFFFF, Paper = 0xFFFBFCFA, Ink = 0xFF1F2421, Night = 0xFF1B1F1D, Moon = 0xFFE8ECE9;
+            bool g = c.Id == "shimo";
             var d = new Dictionary<string, uint>();
             if (!dark)
             {
-                d["back_color"] = 0xFFFFFFFF;
-                d["border_color"] = Mix(0xFFE4E6EA, accent, 0.18);
-                d["shadow_color"] = 0x26000000;
-                d["text_color"] = 0xFF5B6270;
-                d["hilited_text_color"] = c.Id == "shimo" ? 0xFF2B2F36 : accent;
-                d["hilited_back_color"] = Mix(accent, White, 0.88);
-                d["candidate_text_color"] = 0xFF1F2328;
-                d["comment_text_color"] = 0xFF8A9099;
-                d["label_color"] = c.Id == "shimo" ? 0xFF6B7280 : accent;
-                d["hilited_candidate_back_color"] = accent;
-                d["hilited_candidate_text_color"] = White;
-                d["hilited_comment_text_color"] = Mix(White, accent, 0.22);
-                d["hilited_label_color"] = Mix(White, accent, 0.15);
-                d["preedit_back_color"] = Mix(accent, White, 0.92);
+                d["back_color"] = Paper;
+                d["border_color"] = Mix(0xFFDDE3DF, acc, 0.10);
+                d["shadow_color"] = 0x1F1A2420;
+                d["text_color"] = 0xFF6A736E;
+                d["hilited_text_color"] = Ink;
+                d["hilited_back_color"] = Paper;
+                d["preedit_back_color"] = Paper;
+                d["candidate_text_color"] = Ink;
+                d["comment_text_color"] = 0xFF8E9792;
+                d["label_color"] = 0xFF9AA39E;
+                d["hilited_candidate_back_color"] = Mix(acc, Paper, g ? 0.90 : 0.86);
+                d["hilited_candidate_text_color"] = g ? Ink : Mix(acc, Ink, 0.35);
+                d["hilited_comment_text_color"] = g ? 0xFF6A736E : Mix(acc, Paper, 0.30);
+                d["hilited_label_color"] = g ? Ink : acc;
             }
             else
             {
-                // 石墨 is almost the dark background itself, so its dark variant lifts the highlight.
-                uint hi = c.Id == "shimo" ? 0xFF4A505A : Mix(accent, 0xFF000000, 0.08);
-                uint soft = c.Id == "shimo" ? 0xFFB8BEC8 : Mix(accent, White, 0.38);
-                d["back_color"] = 0xFF202226;
-                d["border_color"] = Mix(0xFF3A3D44, accent, 0.15);
+                uint lift = g ? 0xFF39403C : Mix(Night, acc, 0.30);
+                uint glow = g ? Moon : Mix(acc, White, 0.55);
+                d["back_color"] = Night;
+                d["border_color"] = Mix(0xFF323936, acc, 0.12);
                 d["shadow_color"] = 0x4D000000;
-                d["text_color"] = 0xFFA9AFB8;
-                d["hilited_text_color"] = soft;
-                d["hilited_back_color"] = Mix(0xFF202226, accent, 0.22);
-                d["candidate_text_color"] = 0xFFECEEF1;
-                d["comment_text_color"] = 0xFF8B919A;
-                d["label_color"] = soft;
-                d["hilited_candidate_back_color"] = hi;
-                d["hilited_candidate_text_color"] = White;
-                d["hilited_comment_text_color"] = Mix(White, hi, 0.25);
-                d["hilited_label_color"] = Mix(White, hi, 0.18);
-                d["preedit_back_color"] = Mix(0xFF202226, accent, 0.15);
+                d["text_color"] = 0xFF8F9893;
+                d["hilited_text_color"] = Moon;
+                d["hilited_back_color"] = Night;
+                d["preedit_back_color"] = Night;
+                d["candidate_text_color"] = Moon;
+                d["comment_text_color"] = 0xFF7F8883;
+                d["label_color"] = 0xFF6F7873;
+                d["hilited_candidate_back_color"] = lift;
+                d["hilited_candidate_text_color"] = glow;
+                d["hilited_comment_text_color"] = Mix(glow, lift, 0.35);
+                d["hilited_label_color"] = Mix(glow, lift, 0.2);
             }
             return d;
         }

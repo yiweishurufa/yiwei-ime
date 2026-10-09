@@ -79,8 +79,17 @@ namespace Yiwei
             return tb;
         }
 
-        public static TextBlock PageTitle(string t) { var x = Text(t, 26, false, FontWeights.SemiBold); x.Margin = new Thickness(0, 0, 0, 16); return x; }
-        public static TextBlock Section(string t) { var x = Text(t, 14, false, FontWeights.SemiBold); x.Margin = new Thickness(2, 18, 0, 8); return x; }
+        /// <summary>Page title with the brand's one short stroke under it (the 「一」 of 一维).</summary>
+        public static FrameworkElement PageTitle(string t)
+        {
+            var p = new StackPanel { Margin = new Thickness(0, 0, 0, 20) };
+            p.Children.Add(Text(t, 24, false, FontWeights.SemiBold));
+            var bar = new Border { Width = 28, Height = 3, CornerRadius = new CornerRadius(1.5), HorizontalAlignment = HorizontalAlignment.Left, Margin = new Thickness(1, 8, 0, 0) };
+            bar.SetResourceReference(Border.BackgroundProperty, "AccentFillColorDefaultBrush");
+            p.Children.Add(bar);
+            return p;
+        }
+        public static TextBlock Section(string t) { var x = Text(t, 13, true, FontWeights.SemiBold); x.Margin = new Thickness(2, 22, 0, 8); return x; }
 
         public static Border CardBorder(UIElement child, Thickness? pad = null)
         {

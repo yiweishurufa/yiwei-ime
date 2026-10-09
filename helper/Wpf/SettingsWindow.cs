@@ -67,12 +67,10 @@ namespace Yiwei
 
             var left = new DockPanel { Margin = new Thickness(8, 4, 4, 8) };
             var brand = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(12, 4, 0, 14) };
-            var dot = new Border { Width = 22, Height = 22, CornerRadius = new CornerRadius(6), Margin = new Thickness(0, 0, 10, 0) };
-            dot.Background = new SolidColorBrush(UiTheme.Accent);
-            Action recolor = () => dot.Background = new SolidColorBrush(UiTheme.Accent);
-            UiTheme.Changed += recolor;
-            Closed += (s, e) => UiTheme.Changed -= recolor;
-            dot.Child = new TextBlock { Text = "一", Foreground = Brushes.White, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 13 };
+            // 「墨线」品牌标：墨色方块上的一笔横，和安装包、任务栏图标是同一个。
+            var dot = new Image { Width = 24, Height = 24, Margin = new Thickness(0, 0, 10, 0) };
+            try { dot.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(Program.AppIcon.Handle, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromWidthAndHeight(48, 48)); } catch { }
+            RenderOptions.SetBitmapScalingMode(dot, BitmapScalingMode.HighQuality);
             brand.Children.Add(dot);
             brand.Children.Add(K.Text("一维输入法", 15, false, FontWeights.SemiBold));
             DockPanel.SetDock(brand, Dock.Top);

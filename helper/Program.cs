@@ -301,7 +301,8 @@ namespace Yiwei
         {
             _zh = chinese;
             int size = Math.Max(16, System.Windows.Forms.SystemInformation.SmallIconSize.Width * 2);
-            uint rgb = chinese ? Brand.Current.Rgb : 0x6B7280;
+            // 「墨线」托盘：中文是墨色底 + 品牌色短横，英文是灰底无横线。
+            uint rgb = chinese ? 0x1F2421u : 0x6B736Eu;
             using (var bmp = new Bitmap(size, size))
             {
                 using (var g = Graphics.FromImage(bmp))
@@ -317,7 +318,11 @@ namespace Yiwei
                     g.FillPath(br, path);
                     using (var font = new Font("Microsoft YaHei UI", size * 0.56f, FontStyle.Bold, GraphicsUnit.Pixel))
                     using (var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-                        g.DrawString(chinese ? "中" : "英", font, Brushes.White, new RectangleF(0, size * 0.03f, size, size), sf);
+                    using (var paper = new SolidBrush(Color.FromArgb(0xF4, 0xF5, 0xF2)))
+                        g.DrawString(chinese ? "中" : "英", font, paper, new RectangleF(0, -size * 0.04f, size, size), sf);
+                    if (chinese)
+                        using (var bar = new SolidBrush(Color.FromArgb((int)(0xFF000000 | Brand.Current.Rgb))))
+                            g.FillRectangle(bar, size * 0.26f, size * 0.80f, size * 0.48f, Math.Max(2f, size * 0.07f));
                 }
                 var h = bmp.GetHicon();
                 var icon = (Icon)Icon.FromHandle(h).Clone();

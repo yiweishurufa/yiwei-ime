@@ -123,8 +123,14 @@ namespace Yiwei
         UIElement Welcome()
         {
             var sp = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 40, 0, 0) };
-            var logo = new Border { Width = 72, Height = 72, CornerRadius = new CornerRadius(18), Background = new SolidColorBrush(UiTheme.Accent), HorizontalAlignment = HorizontalAlignment.Left };
-            logo.Child = new TextBlock { Text = "一", FontSize = 40, FontWeight = FontWeights.Bold, Foreground = Brushes.White, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+            var logo = new Image { Width = 72, Height = 72, HorizontalAlignment = HorizontalAlignment.Left };
+            try
+            {
+                using (var big = new System.Drawing.Icon(Program.AppIcon, 256, 256))
+                    logo.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(big.Handle, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+            }
+            catch { }
+            RenderOptions.SetBitmapScalingMode(logo, BitmapScalingMode.HighQuality);
             sp.Children.Add(logo);
             sp.Children.Add(Head("欢迎使用一维输入法", "中文常新，自在表达。基于 RIME 与雾凇拼音，组字、候选和个人词频都在本机处理，不含遥测。"));
             sp.Children.Add(K.Text("接下来用一分钟，选好输入方案和外观，再把旧输入法里的词带过来。每一步都可以跳过，之后也能在托盘菜单「首次引导」里重新打开。", 14, true));
