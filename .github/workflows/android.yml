@@ -46,6 +46,17 @@ jobs:
           pip install -q pillow
           python android/prepare.py trime rime-ice-full.zip "$VERSION"
 
+      - name: 预编译词库（装好即可打字，不用在手机上部署）
+        run: |
+          set -e
+          sudo apt-get update -qq && sudo apt-get install -y -qq librime-bin > /dev/null
+          S=trime/app/src/main/assets/shared
+          mkdir -p /tmp/rime-user
+          rime_deployer --build /tmp/rime-user "$S" "$S/build" 2>&1 | grep -E "^E" || true
+          ls -la "$S/build"
+          test -s "$S/build/rime_ice.table.bin" && test -s "$S/build/rime_ice.prism.bin" && test -s "$S/build/t9.prism.bin"
+          rm -rf "$S/build/"*.userdb "$S/build/user.yaml" "$S/build/installation.yaml"
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

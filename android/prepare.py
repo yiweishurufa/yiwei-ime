@@ -120,6 +120,18 @@ def install_theme():
     edit(os.path.join(SHARED, "trime.yaml"), patch)
 
 
+def install_reset_chinese():
+    """像主流输入法一样：每次弹出键盘都是中文模式。"""
+    import glob
+    n = 0
+    for f in glob.glob(os.path.join(SHARED, "*.schema.yaml")):
+        s = open(f, encoding="utf-8").read()
+        s2 = re.sub(r"(\n  - name: ascii_mode\n    states: [^\n]*\n)(?!    reset:)", r"\1    reset: 0\n", s, count=1)
+        if s2 != s:
+            open(f, "w", encoding="utf-8", newline="\n").write(s2); n += 1
+    print("ascii_mode reset in %d schemas" % n)
+
+
 def install_t9():
     """rime-ice's t9 schema targets Hamster / Yuanshu: drop their private processor, show pinyin instead of digits."""
     def patch(t):
@@ -131,6 +143,80 @@ def install_t9():
             raise SystemExit("t9.schema.yaml: uniquifier not found")
         return t
     edit(os.path.join(SHARED, "t9.schema.yaml"), patch)
+
+
+def install_feedback():
+    """按键音（五套自合成音效）、震动默认开、键盘高度滑块。"""
+    import sounds
+    sounds.build(os.path.join(SHARED, "soundeffect"))
+    J = os.path.join(MAIN, "java", "com", "osfans", "trime")
+
+    # shipped sound packs live in the shared dir: copy them into the user dir where Trime looks
+    def sem(t):
+        old = 'return FileUtils.rename(old, dest.name).getOrDefault(dest.also { it.mkdirs() })'
+        if old not in t:
+            raise SystemExit("SoundEffectManager: userDir not found")
+        return t.replace(old, """val dir = FileUtils.rename(old, dest.name).getOrDefault(dest.also { it.mkdirs() })
+            // 一维输入法：把安装包自带的音效复制到用户目录（已存在的不覆盖）
+            File(DataManager.sharedDataDir, "soundeffect").listFiles()?.forEach { src ->
+                val target = File(dir, src.name)
+                if (!target.exists()) src.copyRecursively(target, overwrite = false)
+            }
+            return dir""")
+    edit(os.path.join(J, "data", "soundeffect", "SoundEffectManager.kt"), sem)
+
+    def prefs(t):
+        t = t.replace('const val SPLIT_SPACE_PERCENT = "keyboard_split_space"',
+                      'const val SPLIT_SPACE_PERCENT = "keyboard_split_space"\n            const val KEYBOARD_HEIGHT_PERCENT = "yiwei_keyboard_height_percent"', 1)
+        old = "        val useSoftCursor = switch("
+        if old not in t:
+            raise SystemExit("AppPrefs: useSoftCursor not found")
+        t = t.replace(old, """        // 一维输入法：键盘高度（相对主题默认高度）
+        val keyboardHeightPercent = int(
+            R.string.yiwei_keyboard_height,
+            KEYBOARD_HEIGHT_PERCENT,
+            100,
+            70,
+            140,
+            "%",
+            5,
+        )
+
+""" + old, 1)
+        # mainstream defaults: vibration on, custom sound pack selected (sound itself stays opt-in)
+        t, n1 = re.subn(r"(val vibrateOnKeyPress = switch\(R\.string\.vibrate_on_key_press, VIBRATE_ON_KEY_PRESS, )false\)", r"\1true)", t)
+        t, n2 = re.subn(r"(USE_CUSTOM_SOUND_EFFECT,\s*)false(,\s*\) \{ soundOnKeyPress)", r"\1true\2", t)
+        t, n3 = re.subn(r'(CUSTOM_SOUND_EFFECT,\s*)""', r'\1"一维 · 清脆"', t)
+        if (n1, n2, n3) != (1, 1, 1):
+            raise SystemExit("AppPrefs: feedback defaults not found %r" % ((n1, n2, n3),))
+        return t
+    edit(os.path.join(J, "data", "prefs", "AppPrefs.kt"), prefs)
+
+    def kb(t):
+        old = """    val keyboardHeight: Int =
+        intArrayOf(
+            selfConfig?.let { getKeyboardHeightFromKeyboardConfig(it) } ?: 0,
+            getKeyboardHeightFromTheme(theme),
+        ).firstOrNull { it > 0 } ?: 0"""
+        if old not in t:
+            raise SystemExit("Keyboard.kt: keyboardHeight not found")
+        new = old.replace("        intArrayOf(", "        (intArrayOf(").replace(
+            ").firstOrNull { it > 0 } ?: 0",
+            ").firstOrNull { it > 0 } ?: 0) *\n            // 一维输入法：用户在设置里调的高度比例\n"
+            "            AppPrefs.defaultInstance().keyboard.keyboardHeightPercent.getValue() / 100")
+        return t.replace(old, new)
+    edit(os.path.join(J, "ime", "keyboard", "Keyboard.kt"), kb)
+
+    def svc(t):
+        old = "        prefs.keyboard.expandKeypressArea,\n"
+        if old not in t:
+            raise SystemExit("TrimeInputMethodService: recreateInputViewPrefs not found")
+        return t.replace(old, old + "        prefs.keyboard.keyboardHeightPercent,\n", 1)
+    edit(os.path.join(J, "ime", "core", "TrimeInputMethodService.kt"), svc)
+
+    for d, s in (("values", "Keyboard height"), ("values-zh-rCN", "键盘高度"), ("values-zh-rTW", "鍵盤高度")):
+        edit(os.path.join(MAIN, "res", d, "strings.xml"),
+             lambda t, s=s: t.replace("</resources>", '    <string name="yiwei_keyboard_height">%s</string>\n</resources>' % s, 1))
 
 
 def install_code():
@@ -204,7 +290,9 @@ def icons():
 if __name__ == "__main__":
     install_data()
     install_t9()
+    install_reset_chinese()
     install_theme()
     install_code()
+    install_feedback()
     install_brand()
     print("trime → 一维输入法 %s" % VERSION)
