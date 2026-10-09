@@ -277,7 +277,7 @@ namespace Yiwei
                     }
                     if (s.SettingsVersion < 3)
                     {
-                        // 0.1.0.17: smaller candidate font by default; keep a size the user picked themselves.
+                        // 0.1.0.20: smaller candidate font by default; keep a size the user picked themselves.
                         if (s.FontPoint == 14) s.FontPoint = 12;
                         s.SettingsVersion = 3;
                         if (existed) { try { s.Save(); } catch { } Rime.ApplySoon(4000); }
