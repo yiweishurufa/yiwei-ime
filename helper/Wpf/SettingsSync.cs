@@ -96,6 +96,37 @@ namespace Yiwei
             var lastWrap = new Border { Padding = new Thickness(18, 0, 18, 4), Child = last };
             p.Children.Add(lastWrap);
             Refresh();
+            AddBackupSection(p);
+        }
+
+        /// <summary>「备份与恢复」：一个 .yiwei-backup 文件装下词库、常用语、设置和自定义配置。</summary>
+        void AddBackupSection(StackPanel p)
+        {
+            p.Children.Add(K.Section("备份与恢复"));
+            p.Children.Add(K.Card("备份到文件", "把用户词库、常用语、配色和全部设置存成一个文件，换电脑时带走",
+                K.Btn("备份…", () =>
+                {
+                    using (var dlg = new System.Windows.Forms.SaveFileDialog { Filter = "一维输入法备份|*" + Backup.Extension, FileName = "一维输入法备份-" + DateTime.Now.ToString("yyyyMMdd") + Backup.Extension })
+                    {
+                        if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                        var path = dlg.FileName;
+                        Toast("正在备份…");
+                        System.Threading.Tasks.Task.Run(() => Backup.Export(path)).ContinueWith(t => Dispatcher.BeginInvoke(new Action(() =>
+                            Toast(t.IsFaulted ? "备份失败：" + t.Exception.GetBaseException().Message : "已备份 " + t.Result + " 个文件"))));
+                    }
+                }), Ui.SymbolRegular.ArrowDownload24));
+            p.Children.Add(K.Card("从备份恢复", "词库会合并进来，不会冲掉本机新学的词；被替换的设置文件会留一份 .bak",
+                K.Btn("恢复…", () =>
+                {
+                    using (var dlg = new System.Windows.Forms.OpenFileDialog { Filter = "一维输入法备份|*" + Backup.Extension })
+                    {
+                        if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                        var path = dlg.FileName;
+                        Toast("正在恢复…");
+                        System.Threading.Tasks.Task.Run(() => Backup.Import(path)).ContinueWith(t => Dispatcher.BeginInvoke(new Action(() =>
+                            Toast(t.IsFaulted ? "恢复失败：" + t.Exception.GetBaseException().Message : "已恢复，重新打开设置后可以看到恢复的选项"))));
+                    }
+                }), Ui.SymbolRegular.History24));
         }
     }
 }
