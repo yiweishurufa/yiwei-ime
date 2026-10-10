@@ -187,6 +187,7 @@ namespace Yiwei
         public bool SnippetsHotkey { get; set; } = true;
         public bool AiHotkey { get; set; } = true;
         public bool OcrHotkey { get; set; } = true;
+        public bool SymbolsHotkey { get; set; } = true;
         public bool AddWordHotkey { get; set; } = true;
         public bool HandwritingHotkey { get; set; } = true;
         public List<string> AltBlocklist { get; set; } = DefaultBlocklist();

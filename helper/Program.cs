@@ -25,6 +25,7 @@ namespace Yiwei
         static AiPanel _ai;
         static ImeToast _toast;
         static VoiceInput _voice;
+        static SymbolPanel _symbols;
         static HandwritingPanel _hand;
         static DeployProgress _deployProgress;
         static KeyHook _hook;
@@ -60,13 +61,14 @@ namespace Yiwei
                 _ai = new AiPanel();
                 _toast = new ImeToast();
                 _voice = new VoiceInput();
+                _symbols = new SymbolPanel();
                 _hand = new HandwritingPanel();
                 _deployProgress = new DeployProgress();
                 _hook = new KeyHook
                 {
-                    PanelOpen = () => _snippets.IsOpen || _ai.WantsKeys || _hand.IsOpen,
-                    PanelKey = (k, alt) => _snippets.IsOpen ? _snippets.HandleKey(k, alt) : _hand.IsOpen ? _hand.HandleKey(k) : _ai.HandleKey(k, alt),
-                    ClosePanel = () => { _snippets.Close2(); _ai.Close2(); _hand.Close2(); },
+                    PanelOpen = () => _snippets.IsOpen || _symbols.IsOpen || _ai.WantsKeys || _hand.IsOpen,
+                    PanelKey = (k, alt) => _snippets.IsOpen ? _snippets.HandleKey(k, alt) : _symbols.IsOpen ? _symbols.HandleKey(k) : _hand.IsOpen ? _hand.HandleKey(k) : _ai.HandleKey(k, alt),
+                    ClosePanel = () => { _snippets.Close2(); _ai.Close2(); _symbols.Close2(); _hand.Close2(); },
                     OnSnippets = c => { _ai.Close2(); _snippets.Open(c); },
                     OnAi = () => { _snippets.Close2(); _ai.Open(); },
                     OnVoiceStart = () => { _snippets.Close2(); _ai.Close2(); _voice.Begin(); },
@@ -171,6 +173,7 @@ namespace Yiwei
                     case "/wizard": ShowWizard(); return;
                     case "/share": ShowLanShare(); return;
                     case "/ocr": OcrCapture.Start(); return;
+                    case "/symbols": ShowSymbols(); return;
                     case "/addword": AddWordWindow.ShowFor(""); return;
                     case "/handwrite": ShowHandwriting(); return;
                 }
@@ -208,6 +211,12 @@ namespace Yiwei
             string sel = "";
             try { sel = TextOut.CopySelection(); } catch { }
             AddWordWindow.ShowFor(sel);
+        }
+
+        public static void ShowSymbols()
+        {
+            _snippets.Close2(); _ai.Close2();
+            _symbols.Open();
         }
 
         static LanShareWindow _lan;
@@ -296,6 +305,7 @@ namespace Yiwei
             menu.Items.Add("同步用户数据", null, (s, e) => System.Threading.Tasks.Task.Run(() => Deploy.Run("/sync", false)));
             menu.Items.Add("手写输入", null, (s, e) => Program.ShowHandwriting());
             menu.Items.Add("加词…", null, (s, e) => AddWordWindow.ShowFor(""));
+            menu.Items.Add("符号与表情", null, (s, e) => Program.ShowSymbols());
             menu.Items.Add("截图识字", null, (s, e) => OcrCapture.Start());
             menu.Items.Add("局域网互传", null, (s, e) => Program.ShowLanShare());
             menu.Items.Add("用户文件夹", null, (s, e) => { try { System.Diagnostics.Process.Start("explorer.exe", "\"" + Paths.UserDir + "\""); } catch { } });

@@ -17,6 +17,7 @@
 | `/ocr` | 截图识字: freeze the screen, drag a box, Windows.Media.Ocr (offline), result window with 上屏 / 复制 (also hold Alt + O, tray) |
 | `/handwrite` | mouse handwriting panel (also hold Alt + H, tray 手写输入) |
 | `/addword` | 加词 window (hold Alt + A uses the current selection; tray 加词…) |
+| `/symbols` | symbol & emoji picker (hold Alt + E, tray 符号与表情); no-activate panel, click to type, recent ones in 常用 |
 | `/diagnostics` | export the diagnostics zip to the desktop (also tray 「导出诊断信息」) |
 | `/quit` | exit |
 | `regret:<n>:<pinyin>` | from yiwei_regret.lua (Ctrl+Backspace right after a commit): wait for Ctrl up, n × Backspace, then retype the pinyin as real key presses so the IME recomposes it |
