@@ -31,6 +31,10 @@ namespace Yiwei
                 K.Toggle(S.AutoPair, v => { S.AutoPair = v; }), Ui.SymbolRegular.Document24));
             p.Children.Add(K.Card("上屏后反悔重选", "刚上屏的词选错了？30 秒内按 Ctrl+Backspace，删掉它并重新出现原来的拼音和候选",
                 K.Toggle(S.Regret, v => { S.Regret = v; }), Ui.SymbolRegular.ArrowUndo24));
+            p.Children.Add(K.Card("密码框自动切英文", "光标进入密码框时自动切到英文，离开后切回中文（浏览器网页里的密码框也算）",
+                K.Toggle(S.PasswordAscii, v => { S.PasswordAscii = v; Save(); }), Ui.SymbolRegular.Password24));
+            p.Children.Add(K.Card("无痕窗口不学词、不统计", "浏览器无痕 / InPrivate 窗口里选的词不进用户词库，也不计入输入统计和剪贴板历史",
+                K.Toggle(S.PrivateNoLearn, v => { S.PrivateNoLearn = v; Save(); }), Ui.SymbolRegular.EyeOff24));
             p.Children.Add(K.Card("中英之间自动加空格", "打「用 Windows 写代码」这类中英混排时，自动在中文和英文、数字之间留一个空格",
                 K.Toggle(S.PanguSpacing, v => { S.PanguSpacing = v; }), Ui.SymbolRegular.TextGrammarWand24));
             p.Children.Add(K.Card("中/英切换提示", "切换中英文时，在光标旁短暂显示「中」或「A」",

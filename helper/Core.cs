@@ -224,6 +224,10 @@ namespace Yiwei
         public int ClipKeepDays { get; set; } = 7;
         public List<string> ClipExcludeApps { get; set; } = new List<string>();
 
+        // 隐私（Features/PrivacyGuard.cs）
+        public bool PasswordAscii { get; set; } = true;
+        public bool PrivateNoLearn { get; set; } = true;
+
         // 语音输入（Features/Voice.cs）：rctrl / ralt / off；auto / zh / en / yue
         public string VoiceKey { get; set; } = "rctrl";
         public string VoiceLanguage { get; set; } = "auto";

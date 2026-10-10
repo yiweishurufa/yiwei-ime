@@ -95,3 +95,10 @@ There is also an experimental IMM poller (设置 → 常规 → 从输入法状�
 - Pinyin: whole word looked up in rime-ice `cn_dicts/base|ext|tencent.dict.yaml` (user folder first, then shared data), else per
   character from `8105` / `41448` (highest weight reading). The user can edit it. Saved through `HabitImport.AddWords`
   (sync snapshot `sync/yiwei-import/rime_ice.userdb.txt` + deployer `/sync`).
+
+## Password fields & private windows (Features/PrivacyGuard.cs, yiwei_private.lua)
+- UIA focus events (MTA thread): entering an element with `IsPassword` while the last known mode (from `toast:` messages) is 中
+  sends one tagged Shift tap (RIME ascii_composer toggles); leaving it taps back if we switched and the mode is still 英.
+- Foreground title contains InPrivate / Incognito / 无痕 / 隐私浏览 …: `<user>/yiwei/private.now` exists. `yiwei_private.lua` then commits
+  a full-input candidate chosen with Space/1–9 via `engine:commit_text` + `ctx:clear()` (bypasses the user dictionary);
+  `yiwei_stats.lua` skips counting; clipboard history already skips such windows.

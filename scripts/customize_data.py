@@ -152,7 +152,7 @@ def mount_into_schemas():
         if "table_translator@custom_phrase" not in text:
             continue  # only full pinyin / double pinyin schemas of rime-ice
         if not ANDROID:
-            text = re.sub(r"(\n  processors:\n)", r"\1    - lua_processor@*yiwei_stats  # 一维输入法：输入统计（默认关闭）\n    - lua_processor@*yiwei_toast  # 一维输入法：中/英切换提示\n    - lua_processor@*yiwei_regret  # 一维输入法：上屏后 Ctrl+Backspace 反悔重选\n", text, count=1)
+            text = re.sub(r"(\n  processors:\n)", r"\1    - lua_processor@*yiwei_stats  # 一维输入法：输入统计（默认关闭）\n    - lua_processor@*yiwei_toast  # 一维输入法：中/英切换提示\n    - lua_processor@*yiwei_regret  # 一维输入法：上屏后 Ctrl+Backspace 反悔重选\n    - lua_processor@*yiwei_private  # 一维输入法：无痕窗口里选词不进用户词库\n", text, count=1)
         # after ascii_composer, so a swallowed Shift+( never looks like a lone Shift tap
         extra = "" if ANDROID else r"\2- lua_processor@*yiwei_autopair  # 一维输入法：括号自动配对\n"
         text, n = re.subn(r"(\n(\s+)- ascii_composer[^\n]*\n)",

@@ -85,6 +85,7 @@ namespace Yiwei
                 };
                 Stats.StartAppTracking();
                 ClipHistory.Start();
+                PrivacyGuard.Start();
                 DictUpdater.StartDaily();
                 AppUpdate.StartDaily();
                 Sync.StartScheduler();
@@ -160,6 +161,7 @@ namespace Yiwei
                     var m = command.Substring(6).Trim();
                     bool zh = m == "中" || m.Equals("zh", StringComparison.OrdinalIgnoreCase) || m.Equals("cn", StringComparison.OrdinalIgnoreCase);
                     Tray.SetMode(zh);
+                    PrivacyGuard.ModeChanged(zh);
                     _toast.Flash(zh);
                     return;
                 }

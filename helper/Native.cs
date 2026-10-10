@@ -104,6 +104,15 @@ namespace Yiwei
             }
         }
 
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, EntryPoint = "GetWindowTextW")] static extern int GetWindowTextW(IntPtr hWnd, StringBuilder sb, int max);
+
+        public static string ForegroundTitle()
+        {
+            var sb = new StringBuilder(512);
+            try { GetWindowTextW(GetForegroundWindow(), sb, sb.Capacity); } catch { }
+            return sb.ToString();
+        }
+
         public static string ForegroundExe()
         {
             GetWindowThreadProcessId(GetForegroundWindow(), out var pid);

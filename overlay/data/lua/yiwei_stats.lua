@@ -15,6 +15,9 @@ function M.init(env)
     local f = io.open(env.yiwei_flag, "r")
     if not f then return end
     f:close()
+    -- 浏览器无痕 / InPrivate 窗口里不统计（一维助手写的标记）
+    local p = io.open(env.yiwei_dir .. sep() .. "private.now", "r")
+    if p then p:close(); return end
     local text = ctx:get_commit_text()
     if not text or text == "" then return end
     local path = env.yiwei_dir .. sep() .. "stats-" .. os.date("%Y-%m") .. ".tsv"
