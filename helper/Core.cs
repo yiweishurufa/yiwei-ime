@@ -189,11 +189,11 @@ namespace Yiwei
         public bool AltSkipBorderlessFullscreen { get; set; } = false;
 
         // 外观
-        public string Accent { get; set; } = "qingbi";
+        public string Accent { get; set; } = "pill";
         public bool FollowSystemDark { get; set; } = true;
         public int CandidateCount { get; set; } = 5;
-        public string ColorScheme { get; set; } = "yiwei_qingbi";
-        public string ColorSchemeDark { get; set; } = "yiwei_qingbi_dark";
+        public string ColorScheme { get; set; } = "yiwei_pill";
+        public string ColorSchemeDark { get; set; } = "yiwei_pill_dark";
         public bool Horizontal { get; set; } = true;
         public bool VerticalText { get; set; } = false;
         public int FontPoint { get; set; } = 12;
@@ -283,12 +283,23 @@ namespace Yiwei
                         s.SettingsVersion = 3;
                         if (existed) { try { s.Save(); } catch { } Rime.ApplySoon(4000); }
                     }
+                    if (s.SettingsVersion < 4)
+                    {
+                        // 0.1.0.3x（2026-10 视觉改版）：默认候选框改为「蓝色胶囊」。仍是旧默认（青碧）的换成新默认，挑过别的配色的不动。
+                        if (s.ColorScheme == "yiwei_qingbi" && s.Accent == "qingbi")
+                        {
+                            s.ColorScheme = "yiwei_pill"; s.Accent = "pill";
+                            if (s.ColorSchemeDark == "yiwei_qingbi_dark") s.ColorSchemeDark = "yiwei_pill_dark";
+                        }
+                        s.SettingsVersion = 4;
+                        if (existed) { try { s.Save(); } catch { } Rime.ApplyWhenIdle(); }
+                    }
                     if (s.AltBlocklist == null) s.AltBlocklist = DefaultBlocklist();
                     if (s.AiActions == null || s.AiActions.Count == 0) s.AiActions = DefaultActions();
                     if (s.AppAscii == null) s.AppAscii = new Dictionary<string, bool>();
                     if (s.ImportedThemes == null) s.ImportedThemes = new Dictionary<string, Dictionary<string, string>>();
                     if (s.CandidateCount != 5 && s.CandidateCount != 7 && s.CandidateCount != 9) s.CandidateCount = 5;
-                    if (Brand.Find(s.Accent) == null) s.Accent = "qingbi";
+                    if (Brand.Find(s.Accent) == null) s.Accent = "pill";
                     return _current = s;
                 }
             }
@@ -526,12 +537,14 @@ namespace Yiwei
             P("style/text_orientation", Q(s.VerticalText ? "vertical" : "horizontal"));
             P("style/inline_preedit", B(s.InlinePreedit));
             P("style/font_point", s.FontPoint.ToString());
-            P("style/label_font_point", Math.Max(8, s.FontPoint - 2).ToString());
+            bool pill = Brand.IsPill(light);
+            P("style/label_font_point", Math.Max(8, s.FontPoint - (pill ? 3 : 2)).ToString()); // 胶囊：序号小号灰色
             P("style/comment_font_point", Math.Max(8, s.FontPoint - 2).ToString());
             P("style/font_face", Q(RimeFeatures.FontFaceChain(s)));
             P("style/comment_font_face", Q(RimeFeatures.FontFaceChain(s)));
             P("style/layout/corner_radius", s.CornerRadius.ToString());
-            P("style/layout/round_corner", s.HilitedCornerRadius.ToString());
+            P("style/layout/round_corner", HilitedRadius(s).ToString()); // 小狼毫把超过半高的圆角收成半高，99 = 胶囊
+            if (pill) P("style/layout/hilite_padding_x", "8");
             foreach (var b in Brand.Palette)
                 foreach (var d in new[] { false, true })
                     P("preset_color_schemes/" + Brand.SchemeId(b.Id, d), Brand.WeaselScheme(b, d));
@@ -565,6 +578,9 @@ namespace Yiwei
         /// a scheme that is dark already stays, otherwise a dark version is generated from its accent — unless the user picked
         /// a non-brand dark scheme by hand. Not following: the chosen dark scheme.
         /// </summary>
+        /// <summary>Highlight corner radius actually written: 蓝色胶囊 is always a capsule.</summary>
+        public static int HilitedRadius(Settings s) => Brand.IsPill(s.ColorScheme) ? 99 : s.HilitedCornerRadius;
+
         public static string DarkSchemeFor(Settings s)
         {
             var chosen = string.IsNullOrEmpty(s.ColorSchemeDark) ? AutoChoice : s.ColorSchemeDark;

@@ -24,6 +24,8 @@ namespace Yiwei
     {
         public static readonly BrandColor[] Palette =
         {
+            // 默认：蓝色胶囊（白底深字，高亮候选是 #2B5BD7 胶囊白字；深色版底 #20232C）
+            new BrandColor("pill", "蓝色胶囊", 0x2B5BD7),
             new BrandColor("moblue", "墨蓝", 0x2B5BD7),
             new BrandColor("qingbi", "青碧", 0x0E8C7A),
             new BrandColor("zhusha", "朱砂", 0xC8452F),
@@ -31,7 +33,13 @@ namespace Yiwei
             new BrandColor("shimo", "石墨", 0x2E3431),
         };
 
-        public static BrandColor Default => Palette[1];
+        public static BrandColor Default => Palette[0];
+
+        /// <summary>The 蓝色胶囊 scheme (light or dark): its highlight is drawn as a capsule.</summary>
+        public static bool IsPill(string scheme) => FromScheme(scheme)?.Id == "pill";
+
+        /// <summary>Brand colours offered as accent swatches (蓝色胶囊 shares 墨蓝's blue, so it is not listed twice).</summary>
+        public static IEnumerable<BrandColor> Accents => Palette.Where(b => b.Id != "pill");
 
         public static BrandColor Find(string id) => Palette.FirstOrDefault(b => b.Id == id);
 
@@ -72,6 +80,7 @@ namespace Yiwei
         public static Dictionary<string, uint> SchemeArgb(BrandColor c, bool dark)
         {
             // 「墨线」：纸色底、墨色字；品牌色只用在高亮候选上，其余退成灰（与 scripts/brand_schemes.py 一致）。
+            if (c.Id == "pill") return PillArgb(dark);
             uint acc = Argb(c.Rgb);
             const uint White = 0xFFFFFFFF, Paper = 0xFFFBFCFA, Ink = 0xFF1F2421, Night = 0xFF1B1F1D, Moon = 0xFFE8ECE9;
             bool g = c.Id == "shimo";
@@ -112,6 +121,44 @@ namespace Yiwei
                 d["hilited_comment_text_color"] = Mix(glow, lift, 0.35);
                 d["hilited_label_color"] = Mix(glow, lift, 0.2);
             }
+            return d;
+        }
+
+        /// <summary>蓝色胶囊：白底、深色文字、#2B5BD7 胶囊高亮白字、小号灰色序号（与 scripts/brand_schemes.py 一致）。</summary>
+        static Dictionary<string, uint> PillArgb(bool dark)
+        {
+            const uint Blue = 0xFF2B5BD7, White = 0xFFFFFFFF;
+            var d = new Dictionary<string, uint>();
+            if (!dark)
+            {
+                d["back_color"] = White;
+                d["border_color"] = 0xFFE1E5EE;
+                d["shadow_color"] = 0x1F1A2440;
+                d["text_color"] = 0xFF787F8C;
+                d["hilited_text_color"] = 0xFF1C2028;
+                d["hilited_back_color"] = White;
+                d["preedit_back_color"] = White;
+                d["candidate_text_color"] = 0xFF1C2028;
+                d["comment_text_color"] = 0xFF8C94A5;
+                d["label_color"] = 0xFF8C94A5;
+            }
+            else
+            {
+                d["back_color"] = 0xFF20232C;
+                d["border_color"] = 0xFF373C4B;
+                d["shadow_color"] = 0x4D000000;
+                d["text_color"] = 0xFF8C94A5;
+                d["hilited_text_color"] = 0xFFEBEEF5;
+                d["hilited_back_color"] = 0xFF20232C;
+                d["preedit_back_color"] = 0xFF20232C;
+                d["candidate_text_color"] = 0xFFEBEEF5;
+                d["comment_text_color"] = 0xFF7F8796;
+                d["label_color"] = 0xFF8C94A5;
+            }
+            d["hilited_candidate_back_color"] = Blue;
+            d["hilited_candidate_text_color"] = White;
+            d["hilited_comment_text_color"] = 0xFFDCE6FF;
+            d["hilited_label_color"] = 0xFFDCE6FF;
             return d;
         }
 

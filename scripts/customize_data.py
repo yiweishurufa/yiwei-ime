@@ -44,13 +44,13 @@ ASCII_APPS = ["cmd.exe", "conhost.exe", "WindowsTerminal.exe", "OpenConsole.exe"
               "devenv.exe", "WindowsPowerShell_ISE.exe", "PowerToys.PowerLauncher.exe", "Everything.exe"]
 
 STYLE = {
-    "color_scheme": "yiwei_qingbi", "color_scheme_dark": "yiwei_qingbi_dark",
+    "color_scheme": "yiwei_pill", "color_scheme_dark": "yiwei_pill_dark",
     "font_face": '"Microsoft YaHei UI"', "label_font_face": '"Segoe UI"', "comment_font_face": '"Microsoft YaHei UI"',
-    "font_point": "12", "label_font_point": "10", "comment_font_point": "10",
+    "font_point": "12", "label_font_point": "9", "comment_font_point": "10",
     "horizontal": "true", "inline_preedit": "true", "label_format": '"%s"', "display_tray_icon": "false",
 }
 LAYOUT = {"border_width": "1", "margin_x": "10", "margin_y": "8", "spacing": "8", "candidate_spacing": "10",
-          "hilite_spacing": "4", "hilite_padding": "4", "round_corner": "6", "corner_radius": "10",
+          "hilite_spacing": "4", "hilite_padding": "4", "round_corner": "99", "corner_radius": "10",
           "shadow_radius": "6", "shadow_offset_x": "0", "shadow_offset_y": "2", "min_width": "120"}
 
 
@@ -215,16 +215,216 @@ NSI_UNINSTALL = r'''
 '''
 
 
-NSI_PAGES = r'''!define MUI_WELCOMEPAGE_TITLE "欢迎使用 一维输入法"
-!define MUI_WELCOMEPAGE_TEXT "中文常新，自在表达。$\r$\n$\r$\n一维输入法基于 RIME / 小狼毫，词库默认用雾凇拼音，支持全拼与双拼、AI 翻译润色、常用语和多套配色。除非你主动使用 AI，所有输入都只在本机处理。$\r$\n$\r$\n点「下一步」开始安装，大约 1 分钟。本软件以 GPL-3.0 协议开源。"
-!insertmacro MUI_PAGE_WELCOME
+NSI_PAGES = r'''; ---- 一维输入法安装界面（A 版「纯蓝整窗」）----
+; 欢迎页是 nsDialogs 自定义页，盖住整个窗口（按钮栏也隐藏）：白标 + 标题 + 白色胶囊「立即安装」+「自定义安装位置 ›」+ 底部小字。
+; 进度页：蓝色页眉白字 + 白底 + 蓝色进度条；完成页：整页纯蓝白字。
+!define MUI_BGCOLOR 2B5BD7
+!define MUI_TEXTCOLOR FFFFFF
+!define MUI_INSTFILESPAGE_COLORS "1F2421 FFFFFF"
+!define MUI_INSTFILESPAGE_PROGRESSBAR "smooth"
+!define MUI_FINISHPAGE_LINK_COLOR DCE6FF
+
+Var YwDialog
+Var YwCustomDir
+Var YwHeroBmp
+Var YwHeroHandle
+Var YwBtn
+Var YwBtnHandle
+Var YwFontLink
+Var YwFontFoot
+!macro YwOuterVar ID
+  Var YwVis${ID}
+!macroend
+!insertmacro YwOuterVar 1
+!insertmacro YwOuterVar 2
+!insertmacro YwOuterVar 3
+!insertmacro YwOuterVar 1028
+!insertmacro YwOuterVar 1034
+!insertmacro YwOuterVar 1035
+!insertmacro YwOuterVar 1036
+!insertmacro YwOuterVar 1037
+!insertmacro YwOuterVar 1038
+!insertmacro YwOuterVar 1039
+!insertmacro YwOuterVar 1045
+!insertmacro YwOuterVar 1046
+!insertmacro YwOuterVar 1256
+!macro YwHideOuter ID
+  GetDlgItem $0 $HWNDPARENT ${ID}
+  StrCpy $YwVis${ID} 0
+  ${If} $0 <> 0
+    System::Call "user32::IsWindowVisible(p$0)i.s"
+    Pop $YwVis${ID}
+    ShowWindow $0 ${SW_HIDE}
+  ${EndIf}
+!macroend
+!macro YwShowOuter ID
+  GetDlgItem $0 $HWNDPARENT ${ID}
+  ${If} $0 <> 0
+  ${AndIf} $YwVis${ID} <> 0
+    ShowWindow $0 ${SW_SHOW}
+  ${EndIf}
+!macroend
+
+Function YwWelcomeShow
+  nsDialogs::Create 1044
+  Pop $YwDialog
+  ${If} $YwDialog == error
+    Abort
+  ${EndIf}
+  SetCtlColors $YwDialog "" 2B5BD7
+
+  ; 整窗：把页面铺满客户区，藏起按钮栏、页眉和品牌字
+  LockWindow on
+  !insertmacro YwHideOuter 1
+  !insertmacro YwHideOuter 2
+  !insertmacro YwHideOuter 3
+  !insertmacro YwHideOuter 1028
+  !insertmacro YwHideOuter 1034
+  !insertmacro YwHideOuter 1035
+  !insertmacro YwHideOuter 1036
+  !insertmacro YwHideOuter 1037
+  !insertmacro YwHideOuter 1038
+  !insertmacro YwHideOuter 1039
+  !insertmacro YwHideOuter 1045
+  !insertmacro YwHideOuter 1046
+  !insertmacro YwHideOuter 1256
+  System::Call "*(i,i,i,i)p.r2"
+  System::Call "user32::GetClientRect(p$HWNDPARENT, pr2)"
+  System::Call "*$2(i,i,i.r3,i.r4)"
+  System::Free $2
+  System::Call "user32::SetWindowPos(p$YwDialog, p0, i0, i0, ir3, ir4, i0x0040)"
+  LockWindow off
+
+  ; 位图按 96 DPI 设计，按系统缩放换算成像素位置
+  System::Call "user32::GetDC(p0)p.r5"
+  System::Call "gdi32::GetDeviceCaps(p$5, i88)i.r6"
+  System::Call "user32::ReleaseDC(p0, p$5)"
+  ${If} $6 < 96
+    StrCpy $6 96
+  ${EndIf}
+
+  ; 白标 + 一维输入法 + 中文常新，自在表达（一张位图）
+  IntOp $7 $6 * 320
+  IntOp $7 $7 / 96
+  IntOp $8 $6 * 170
+  IntOp $8 $8 / 96
+  IntOp $1 $3 - $7
+  IntOp $1 $1 / 2
+  IntOp $9 $4 * 10
+  IntOp $9 $9 / 100
+  ${NSD_CreateBitmap} $1 $9 $7 $8 ""
+  Pop $YwHeroBmp
+  ${NSD_SetStretchedImage} $YwHeroBmp "$PLUGINSDIR\yiwei-hero.bmp" $YwHeroHandle
+
+  ; 白色胶囊按钮「立即安装」
+  IntOp $7 $6 * 180
+  IntOp $7 $7 / 96
+  IntOp $8 $6 * 40
+  IntOp $8 $8 / 96
+  IntOp $1 $3 - $7
+  IntOp $1 $1 / 2
+  IntOp $9 $4 * 62
+  IntOp $9 $9 / 100
+  ${NSD_CreateBitmap} $1 $9 $7 $8 ""
+  Pop $YwBtn
+  ${NSD_SetStretchedImage} $YwBtn "$PLUGINSDIR\yiwei-button.bmp" $YwBtnHandle
+  ${NSD_OnClick} $YwBtn YwInstallNow
+
+  ; 自定义安装位置 ›
+  CreateFont $YwFontLink "Microsoft YaHei UI" 9 400
+  CreateFont $YwFontFoot "Microsoft YaHei UI" 8 400
+  IntOp $9 $4 * 76
+  IntOp $9 $9 / 100
+  nsDialogs::CreateControl STATIC ${WS_VISIBLE}|${WS_CHILD}|${WS_CLIPSIBLINGS}|${SS_NOTIFY}|${SS_CENTER} 0 0 $9 100% 20u "自定义安装位置  ›"
+  Pop $0
+  SetCtlColors $0 D2DEFF 2B5BD7
+  SendMessage $0 ${WM_SETFONT} $YwFontLink 1
+  ${NSD_OnClick} $0 YwCustomize
+
+  ; 版本 · 开源免费 · 输入只在本机处理
+  IntOp $9 $4 * 89
+  IntOp $9 $9 / 100
+  nsDialogs::CreateControl STATIC ${WS_VISIBLE}|${WS_CHILD}|${WS_CLIPSIBLINGS}|${SS_CENTER} 0 0 $9 100% 16u "v${WEASEL_VERSION}.${WEASEL_BUILD}  ·  开源免费  ·  输入只在本机处理"
+  Pop $0
+  SetCtlColors $0 BECDFA 2B5BD7
+  SendMessage $0 ${WM_SETFONT} $YwFontFoot 1
+
+  nsDialogs::Show
+  ${NSD_FreeImage} $YwHeroHandle
+  ${NSD_FreeImage} $YwBtnHandle
+FunctionEnd
+
+Function YwWelcomeLeave
+  LockWindow on
+  !insertmacro YwShowOuter 1
+  !insertmacro YwShowOuter 2
+  !insertmacro YwShowOuter 3
+  !insertmacro YwShowOuter 1028
+  !insertmacro YwShowOuter 1034
+  !insertmacro YwShowOuter 1035
+  !insertmacro YwShowOuter 1036
+  !insertmacro YwShowOuter 1037
+  !insertmacro YwShowOuter 1038
+  !insertmacro YwShowOuter 1039
+  !insertmacro YwShowOuter 1045
+  !insertmacro YwShowOuter 1046
+  !insertmacro YwShowOuter 1256
+  LockWindow off
+FunctionEnd
+
+Function YwInstallNow
+  Pop $0
+  StrCpy $YwCustomDir 0
+  SendMessage $HWNDPARENT 0x408 1 0
+FunctionEnd
+
+Function YwCustomize
+  Pop $0
+  StrCpy $YwCustomDir 1
+  SendMessage $HWNDPARENT 0x408 1 0
+FunctionEnd
+
+Function YwDirectoryPre
+  ${If} $YwCustomDir != 1
+    Abort
+  ${EndIf}
+FunctionEnd
+
+Function YwInstFilesShow
+  FindWindow $0 "#32770" "" $HWNDPARENT
+  SetCtlColors $0 "" FFFFFF
+  GetDlgItem $1 $0 1006
+  SetCtlColors $1 1F2421 FFFFFF
+  GetDlgItem $1 $0 1004
+  System::Call 'UXTHEME::SetWindowTheme(p$1,w" ",w" ")'
+  SendMessage $1 0x2001 0 0xF7EBE6
+  SendMessage $1 0x0409 0 0xD75B2B
+FunctionEnd
+
+Page custom YwWelcomeShow YwWelcomeLeave
+!define MUI_PAGE_CUSTOMFUNCTION_PRE YwDirectoryPre
+!insertmacro MUI_PAGE_DIRECTORY
+!define MUI_PAGE_CUSTOMFUNCTION_SHOW YwInstFilesShow
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_TITLE "装好了"
 !define MUI_FINISHPAGE_TEXT "按 Win + 空格 切换到「一维输入法」就能打字。$\r$\n首次引导会帮你选拼音方案和外观，只要一分钟。"
 !define MUI_FINISHPAGE_RUN "$INSTDIR\YiweiHelper.exe"
 !define MUI_FINISHPAGE_RUN_PARAMETERS "/wizard"
 !define MUI_FINISHPAGE_RUN_TEXT "立即体验（打开首次引导）"
+!define MUI_PAGE_CUSTOMFUNCTION_SHOW YwFinishShow
 !insertmacro MUI_PAGE_FINISH
+
+; 完成页的复选框默认主题会画成黑字，换成经典样式才能白字蓝底（变量由上面的 MUI 完成页声明）
+Function YwFinishShow
+  System::Call 'UXTHEME::SetWindowTheme(p$mui.FinishPage.Run,w" ",w" ")'
+  SetCtlColors $mui.FinishPage.Run FFFFFF 2B5BD7
+FunctionEnd
+'''
+
+# the welcome page bitmaps travel inside the installer ($PLUGINSDIR), not into the install folder
+NSI_ONINIT = r'''  InitPluginsDir
+  File "/oname=$PLUGINSDIR\yiwei-hero.bmp" "..\resource\installer-hero.bmp"
+  File "/oname=$PLUGINSDIR\yiwei-button.bmp" "..\resource\installer-button.bmp"
 '''
 
 
@@ -260,6 +460,9 @@ def patch_installer():
                  '!insertmacro MUI_PAGE_FINISH\n')
     assert pages_old in t, "nsi: pages anchor missing"
     t = t.replace(pages_old, NSI_PAGES, 1)
+    anchor = "Function .onInit\n"
+    assert anchor in t, "nsi: .onInit anchor missing"
+    t = t.replace(anchor, anchor + NSI_ONINIT, 1)
     t = t.replace("!define MUI_ICON ..\\resource\\weasel.ico\n",
                   "!define MUI_ICON ..\\resource\\weasel.ico\n!define MUI_UNICON ..\\resource\\weasel.ico\n"
                   "!define MUI_WELCOMEFINISHPAGE_BITMAP ..\\resource\\installer-welcome.bmp\n"

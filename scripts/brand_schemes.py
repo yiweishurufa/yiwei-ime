@@ -37,7 +37,25 @@ def scheme(bid, rgb, dark):
                 hilited_comment_text_color=mix(glow, lift, .35), hilited_label_color=mix(glow, lift, .2))
 
 
+def pill(dark):
+    """蓝色胶囊（默认）：白底深字，高亮候选 #2B5BD7 胶囊白字，序号小号灰色；深色版底 #20232C。与 helper/Brand.cs PillArgb 一致。"""
+    blue, white = 0xFF2B5BD7, 0xFFFFFFFF
+    if not dark:
+        d = dict(back_color=white, border_color=0xFFE1E5EE, shadow_color=0x1F1A2440, text_color=0xFF787F8C,
+                 hilited_text_color=0xFF1C2028, hilited_back_color=white, preedit_back_color=white,
+                 candidate_text_color=0xFF1C2028, comment_text_color=0xFF8C94A5, label_color=0xFF8C94A5)
+    else:
+        d = dict(back_color=0xFF20232C, border_color=0xFF373C4B, shadow_color=0x4D000000, text_color=0xFF8C94A5,
+                 hilited_text_color=0xFFEBEEF5, hilited_back_color=0xFF20232C, preedit_back_color=0xFF20232C,
+                 candidate_text_color=0xFFEBEEF5, comment_text_color=0xFF7F8796, label_color=0xFF8C94A5)
+    d.update(hilited_candidate_back_color=blue, hilited_candidate_text_color=white,
+             hilited_comment_text_color=0xFFDCE6FF, hilited_label_color=0xFFDCE6FF)
+    return d
+
+
 def all_schemes():
+    for dark in (False, True):
+        yield ("yiwei_pill%s" % ("_dark" if dark else ""), "一维 · 蓝色胶囊%s" % ("（深色）" if dark else ""), pill(dark))
     for bid, name, rgb in BRANDS:
         for dark in (False, True):
             yield ("yiwei_%s%s" % (bid, "_dark" if dark else ""),

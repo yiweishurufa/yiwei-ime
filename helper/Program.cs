@@ -306,28 +306,26 @@ namespace Yiwei
         {
             _zh = chinese;
             int size = Math.Max(16, System.Windows.Forms.SystemInformation.SmallIconSize.Width * 2);
-            // 「墨线」托盘：中文是墨色底 + 品牌色短横，英文是灰底无横线。
-            uint rgb = chinese ? 0x1F2421u : 0x6B736Eu;
+            // 托盘状态（与安卓版标志同一枚蓝）：中 = 蓝底白字；英 = 白底蓝框蓝字。
+            var blue = Color.FromArgb(0x2B, 0x5B, 0xD7);
             using (var bmp = new Bitmap(size, size))
             {
                 using (var g = Graphics.FromImage(bmp))
-                using (var br = new SolidBrush(Color.FromArgb((int)(0xFF000000 | rgb))))
                 using (var path = new System.Drawing.Drawing2D.GraphicsPath())
                 {
                     g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                     g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-                    float r = size * 0.28f, w = size - 1;
-                    path.AddArc(0, 0, r, r, 180, 90); path.AddArc(w - r, 0, r, r, 270, 90);
-                    path.AddArc(w - r, w - r, r, r, 0, 90); path.AddArc(0, w - r, r, r, 90, 90);
+                    float stroke = chinese ? 0 : Math.Max(1.5f, size * 0.08f);
+                    float inset = stroke / 2, w = size - 1 - stroke, r = size * 0.44f;
+                    path.AddArc(inset, inset, r, r, 180, 90); path.AddArc(inset + w - r, inset, r, r, 270, 90);
+                    path.AddArc(inset + w - r, inset + w - r, r, r, 0, 90); path.AddArc(inset, inset + w - r, r, r, 90, 90);
                     path.CloseFigure();
-                    g.FillPath(br, path);
-                    using (var font = new Font("Microsoft YaHei UI", size * 0.56f, FontStyle.Bold, GraphicsUnit.Pixel))
+                    using (var fill = new SolidBrush(chinese ? blue : Color.White)) g.FillPath(fill, path);
+                    if (!chinese) using (var pen = new Pen(blue, stroke)) g.DrawPath(pen, path);
+                    using (var font = new Font("Microsoft YaHei UI", size * 0.58f, FontStyle.Bold, GraphicsUnit.Pixel))
                     using (var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-                    using (var paper = new SolidBrush(Color.FromArgb(0xF4, 0xF5, 0xF2)))
-                        g.DrawString(chinese ? "中" : "英", font, paper, new RectangleF(0, -size * 0.04f, size, size), sf);
-                    if (chinese)
-                        using (var bar = new SolidBrush(Color.FromArgb((int)(0xFF000000 | Brand.Current.Rgb))))
-                            g.FillRectangle(bar, size * 0.26f, size * 0.80f, size * 0.48f, Math.Max(2f, size * 0.07f));
+                    using (var ink = new SolidBrush(chinese ? Color.White : blue))
+                        g.DrawString(chinese ? "中" : "英", font, ink, new RectangleF(0, -size * 0.03f, size, size), sf);
                 }
                 var h = bmp.GetHicon();
                 var icon = (Icon)Icon.FromHandle(h).Clone();

@@ -133,7 +133,7 @@ namespace Yiwei
                 _preview.Scheme = WeaselConfig.ActiveScheme(S);
                 _preview.Horizontal = S.Horizontal;
                 _preview.FontName = S.FontFace; _preview.FontPoint = S.FontPoint;
-                _preview.Radius = S.CornerRadius; _preview.HRadius = S.HilitedCornerRadius;
+                _preview.Radius = S.CornerRadius; _preview.HRadius = WeaselConfig.HilitedRadius(S);
                 _preview.Refresh();
             }
             p.Children.Add(K.Block("预览", "候选窗的样子会随下面的设置立即变化", _preview, Ui.SymbolRegular.Window24));
@@ -141,14 +141,14 @@ namespace Yiwei
             // accent
             var swatches = new StackPanel { Orientation = Orientation.Horizontal };
             var swList = new List<Border>();
-            foreach (var b in Brand.Palette)
+            foreach (var b in Brand.Accents)
             {
                 var id = b.Id;
                 var sw = new Border
                 {
                     Width = 30, Height = 30, CornerRadius = new CornerRadius(15), Margin = new Thickness(0, 0, 8, 0), Cursor = System.Windows.Input.Cursors.Hand,
                     Background = new SolidColorBrush(Color.FromRgb(b.R, b.G, b.B)), ToolTip = b.Name, Tag = id,
-                    BorderThickness = new Thickness(S.Accent == id ? 3 : 0),
+                    BorderThickness = new Thickness(S.Accent == id || (id == "moblue" && S.Accent == "pill") ? 3 : 0),
                 };
                 sw.SetResourceReference(Border.BorderBrushProperty, "TextFillColorPrimaryBrush");
                 sw.MouseLeftButtonUp += (s, e) =>
@@ -181,7 +181,7 @@ namespace Yiwei
                 schemeCards.Add(card); schemeGrid.Children.Add(card);
             }
             var cardSchemes = new Border { Child = schemeGrid };
-            p.Children.Add(K.Block("候选窗配色", "五种一维配色，深色模式下自动换成对应的深色版", cardSchemes, Ui.SymbolRegular.PaintBrush24));
+            p.Children.Add(K.Block("候选窗配色", "默认是蓝色胶囊；另有五种墨线配色。深色模式下自动换成对应的深色版", cardSchemes, Ui.SymbolRegular.PaintBrush24));
 
             var others = WeaselConfig.BuiltinSchemes().Where(kv => Brand.FromScheme(kv.Key) == null).ToList();
             other = K.Combo(others, S.ColorScheme, id => { if (id != null) SelectScheme(id); });
@@ -214,7 +214,7 @@ namespace Yiwei
             p.Children.Add(K.Card("字体", "候选窗使用的字体", fonts, Ui.SymbolRegular.TextGrammarWand24));
             p.Children.Add(K.Card("字号", "候选文字大小（磅）", Slider(10, 32, S.FontPoint, v => { S.FontPoint = v; Save(true); Preview(); })));
             p.Children.Add(K.Card("候选窗圆角", "窗口四角的圆角半径，默认 8", Slider(0, 20, S.CornerRadius, v => { S.CornerRadius = v; Save(true); Preview(); })));
-            p.Children.Add(K.Card("高亮圆角", "选中候选背景的圆角半径", Slider(0, 16, S.HilitedCornerRadius, v => { S.HilitedCornerRadius = v; Save(true); Preview(); })));
+            p.Children.Add(K.Card("高亮圆角", "选中候选背景的圆角半径（「蓝色胶囊」配色固定为胶囊形）", Slider(0, 16, S.HilitedCornerRadius, v => { S.HilitedCornerRadius = v; Save(true); Preview(); })));
 
             p.Children.Add(K.Section("主题"));
             p.Children.Add(K.Card("我的配色", "以当前配色为基础，逐项挑选背景、文字和高亮颜色",

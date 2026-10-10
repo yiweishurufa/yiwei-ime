@@ -168,7 +168,7 @@ namespace Yiwei
             void Refresh()
             {
                 preview.Scheme = WeaselConfig.ActiveScheme(S); preview.Horizontal = S.Horizontal;
-                preview.FontName = S.FontFace; preview.FontPoint = S.FontPoint; preview.Radius = S.CornerRadius; preview.HRadius = S.HilitedCornerRadius;
+                preview.FontName = S.FontFace; preview.FontPoint = S.FontPoint; preview.Radius = S.CornerRadius; preview.HRadius = WeaselConfig.HilitedRadius(S);
                 preview.Refresh();
             }
             var wrap = new WrapPanel();

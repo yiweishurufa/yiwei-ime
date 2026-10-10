@@ -200,6 +200,17 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $exe = Get-ChildItem dist -Filter 'yiwei-ime*.exe' | Select-Object -First 1
           Write-Host "installer: $($exe.Name)"
+          # 安装界面截图：交互模式打开欢迎页，截屏后关掉，再静默安装
+          try {
+            Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+            New-Item -ItemType Directory -Force screens | Out-Null
+            $ui = Start-Process $exe.FullName -PassThru; Start-Sleep 10
+            $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+            $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+            $g = [System.Drawing.Graphics]::FromImage($bmp); $g.CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
+            $bmp.Save("screens\installer-welcome.png", [System.Drawing.Imaging.ImageFormat]::Png); $g.Dispose(); $bmp.Dispose()
+            Stop-Process -Id $ui.Id -Force -ErrorAction SilentlyContinue; Start-Sleep 2
+          } catch { Write-Host "安装界面截图失败：$_" }
           $p = Start-Process $exe.FullName -ArgumentList '/S' -PassThru
           if (-not $p.WaitForExit(600000)) { $p.Kill(); throw "安装超时（可能弹出了对话框）" }
           Write-Host "installer exit code $($p.ExitCode)"

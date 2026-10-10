@@ -29,7 +29,7 @@ There is also an experimental IMM poller (设置 → 常规 → 从输入法状�
 - Install root: HKLM\Software\Yiwei\YiweiIME `YiweiRoot`, fallback `WeaselRoot` (64- then 32-bit view).
 
 ## Files the helper writes in the RIME user folder
-- `weasel.custom.yaml` (owned, user copy backed up once): style, preset_color_schemes `yiwei_{moblue,qingbi,zhusha,dianzi,shimo}[_dark]`
+- `weasel.custom.yaml` (owned, user copy backed up once): style, preset_color_schemes `yiwei_{pill,moblue,qingbi,zhusha,dianzi,shimo}[_dark]` (default `yiwei_pill` 蓝色胶囊: `style/layout/round_corner: 99` + `hilite_padding_x: 8`), `yiwei_auto_dark` (generated dark version of an imported / classic scheme)
   (colors in Weasel abgr `0xAABBGGRR`), imported themes, app_options.
 - `default.custom.yaml` (owned, a pre-existing user file is backed up to `.bak-<time>` first): `schema_list` with the chosen schema first
   (rime_ice / double_pinyin_flypy / double_pinyin / double_pinyin_mspy) and `menu/page_size`.
