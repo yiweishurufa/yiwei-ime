@@ -318,7 +318,7 @@ jobs:
       - name: 更新自动更新清单
         run: |
           set -e
-          f=$(ls dist/yiwei-ime*.exe | head -1); name=$(basename "$f"); size=$(stat -c %s "$f")
+          f=$(ls dist/yiwei-ime*.exe | head -1); name=$(basename "$f"); size=$(stat -c %s "$f"); sha=$(sha256sum "$f" | cut -d' ' -f1)
           ver=$(echo "$name" | sed -E 's/yiwei-ime-([0-9.]+)-installer.exe/\1/')
           tag=$([ "${GITHUB_REF_TYPE}" = tag ] && echo "$GITHUB_REF_NAME" || echo nightly)
           url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${tag}/${name}"
@@ -333,7 +333,7 @@ jobs:
                 <title>一维输入法 ${ver}</title>
                 <pubDate>$(date -R)</pubDate>
                 <sparkle:releaseNotesLink>https://github.com/${GITHUB_REPOSITORY}/releases/tag/${tag}</sparkle:releaseNotesLink>
-                <enclosure url="${url}" sparkle:version="${ver}" sparkle:shortVersionString="${ver}" sparkle:os="windows" length="${size}" type="application/octet-stream"/>
+                <enclosure url="${url}" sparkle:version="${ver}" sparkle:shortVersionString="${ver}" sparkle:os="windows" length="${size}" sha256="${sha}" type="application/octet-stream"/>
               </item>
             </channel>
           </rss>

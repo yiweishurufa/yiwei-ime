@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -16,13 +15,10 @@ namespace Yiwei
     /// </summary>
     public static class AppUpdate
     {
-        static readonly string[] Feeds =
-        {
-            "https://raw.githubusercontent.com/yiweishurufa/yiwei-ime/main/update/appcast.xml",
-            "https://cdn.jsdelivr.net/gh/yiweishurufa/yiwei-ime@main/update/appcast.xml", // 国内镜像
-        };
+        // 清单与安装包都走国内镜像链（见 Mirrors）：上次成功的源 → ghfast → gh-proxy → jsDelivr（仅清单）→ GitHub 原站
+        const string Feed = "https://raw.githubusercontent.com/yiweishurufa/yiwei-ime/main/update/appcast.xml";
 
-        public sealed class Info { public Version Version; public string Url; public long Length; }
+        public sealed class Info { public Version Version; public string Url; public long Length; public string Sha256; }
 
         static System.Windows.Forms.Timer _timer;
         static bool _busy;
@@ -52,24 +48,27 @@ namespace Yiwei
         /// <summary>Fetch the appcast; null when unreachable.</summary>
         public static Info Fetch()
         {
-            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-            foreach (var feed in Feeds)
+            try
             {
-                try
-                {
-                    using (var wc = new WebClient { Encoding = System.Text.Encoding.UTF8 })
-                    {
-                        wc.Headers[HttpRequestHeader.UserAgent] = "YiweiIME/" + Current;
-                        var xml = wc.DownloadString(feed + "?t=" + DateTime.UtcNow.Ticks);
-                        var m = Regex.Match(xml, "<enclosure[^>]*url=\"([^\"]+)\"[^>]*sparkle:version=\"([0-9.]+)\"[^>]*length=\"([0-9]+)\"");
-                        if (!m.Success) continue;
-                        if (!Version.TryParse(m.Groups[2].Value, out var v)) continue;
-                        return new Info { Url = m.Groups[1].Value, Version = v, Length = long.Parse(m.Groups[3].Value) };
-                    }
-                }
-                catch (Exception e) { Log.Write("app update feed " + feed + ": " + e.Message); }
+                Info info = null;
+                // ?t= 让代理不返回旧缓存（jsDelivr 映射时去掉查询串，它会缓存 main 分支几小时，作为后备够用）
+                GitHubNet.GetText(Feed + "?t=" + DateTime.UtcNow.Ticks, xml => (info = Parse(xml)) != null).GetAwaiter().GetResult();
+                return info;
             }
-            return null;
+            catch (Exception e) { Log.Write("app update feed: " + e.Message); return null; }
+        }
+
+        static Info Parse(string xml)
+        {
+            var m = Regex.Match(xml ?? "", "<enclosure\\s[^>]*>");
+            if (!m.Success) return null;
+            string Attr(string name) { var a = Regex.Match(m.Value, "\\s" + Regex.Escape(name) + "=\"([^\"]*)\""); return a.Success ? a.Groups[1].Value : null; }
+            if (!Version.TryParse(Attr("sparkle:version") ?? "", out var v)) return null;
+            if (!long.TryParse(Attr("length") ?? "", out var len) || len <= 0) return null;
+            var url = Attr("url");
+            if (string.IsNullOrEmpty(url)) return null;
+            var sha = (Attr("sha256") ?? "").ToLowerInvariant();
+            return new Info { Url = url, Version = v, Length = len, Sha256 = Regex.IsMatch(sha, "^[0-9a-f]{64}$") ? sha : null };
         }
 
         /// <summary>manual = 用户点了「检查更新」：结果都要告诉用户；自动检查只在有新版本时提示一次。</summary>
@@ -101,15 +100,12 @@ namespace Yiwei
             Tray.Balloon("正在下载更新", "一维输入法 " + info.Version);
             try
             {
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
-                    if (File.Exists(file) && new FileInfo(file).Length == info.Length) return;
-                    using (var wc = new WebClient())
-                    {
-                        wc.Headers[HttpRequestHeader.UserAgent] = "YiweiIME/" + Current;
-                        wc.DownloadFile(info.Url, file + ".part");
-                    }
-                    if (new FileInfo(file + ".part").Length != info.Length) throw new IOException("下载的文件大小不对");
+                    bool Good(string f) => File.Exists(f) && new FileInfo(f).Length == info.Length && (info.Sha256 == null || GitHubNet.Sha256Of(f) == info.Sha256);
+                    if (Good(file)) return;
+                    await GitHubNet.Download(info.Url, file + ".part", info.Length, null, true).ConfigureAwait(false);
+                    if (!Good(file + ".part")) { try { File.Delete(file + ".part"); } catch { } throw new IOException("安装包校验失败（大小或 SHA-256 不一致），已删除"); }
                     if (File.Exists(file)) File.Delete(file);
                     File.Move(file + ".part", file);
                 });

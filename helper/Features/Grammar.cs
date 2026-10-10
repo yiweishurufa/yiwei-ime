@@ -96,7 +96,7 @@ namespace Yiwei
             if (Interlocked.Exchange(ref _busy, 1) == 1) throw new Exception("正在下载中");
             try
             {
-                status?.Report("正在查询 GitHub…");
+                status?.Report("正在查询语法模型…");
                 var asset = await LookUp(ct).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(asset.Sha256)) throw new Exception("发布没有提供 SHA-256 校验值，未下载");
                 var free = new DriveInfo(Path.GetPathRoot(Path.GetFullPath(Paths.UserDir))).AvailableFreeSpace;

@@ -13,8 +13,9 @@ using System.Threading.Tasks;
 namespace Yiwei
 {
     /// <summary>
-    /// The only network client the dictionary / grammar features use. It talks to GitHub only
-    /// (api.github.com and the release download hosts GitHub redirects to).
+    /// The only network client the dictionary / grammar / app-update features use. Every request is for a GitHub
+    /// url (api.github.com, release downloads, raw repo files) and goes through the domestic mirror chain in
+    /// <see cref="Mirrors"/>: the source that worked last time first, then the others in order, GitHub itself last.
     /// </summary>
     public static class GitHubNet
     {
@@ -32,30 +33,60 @@ namespace Yiwei
                     var h = new HttpClient(new HttpClientHandler { AllowAutoRedirect = true, AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate })
                     { Timeout = Timeout.InfiniteTimeSpan };
                     var ver = typeof(GitHubNet).Assembly.GetName().Version;
-                    h.DefaultRequestHeaders.UserAgent.ParseAdd("YiweiIME/" + ver.ToString(3) + " (+https://github.com/iDvel/rime-ice)");
+                    h.DefaultRequestHeaders.UserAgent.ParseAdd("YiweiIME/" + ver.ToString(3) + " (+https://github.com/yiweishurufa/yiwei-ime)");
                     return _http = h;
                 }
             }
         }
 
-        /// <summary>GET a GitHub API url and parse the JSON object.</summary>
-        public static async Task<Dictionary<string, object>> GetJson(string url, CancellationToken ct = default(CancellationToken))
+        /// <summary>GET a small text file (API json, appcast) through the mirror chain. <paramref name="accept"/> rejects a proxy's error page.</summary>
+        public static async Task<string> GetText(string url, Func<string, bool> accept, string acceptHeader = null, CancellationToken ct = default(CancellationToken))
         {
-            using (var cts = CancellationTokenSource.CreateLinkedTokenSource(ct))
+            var errors = new List<string>();
+            foreach (var c in Mirrors.Candidates(url))
             {
-                cts.CancelAfter(TimeSpan.FromSeconds(30));
-                using (var req = new HttpRequestMessage(HttpMethod.Get, url))
+                ct.ThrowIfCancellationRequested();
+                try
                 {
-                    req.Headers.Accept.ParseAdd("application/vnd.github+json");
-                    using (var resp = await Http.SendAsync(req, cts.Token).ConfigureAwait(false))
+                    using (var cts = CancellationTokenSource.CreateLinkedTokenSource(ct))
                     {
-                        var body = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
-                        if (!resp.IsSuccessStatusCode)
-                            throw new Exception("GitHub 返回 " + (int)resp.StatusCode + (body.Contains("rate limit") ? "（请求过于频繁，稍后再试）" : ""));
-                        return Json.Parse(body) as Dictionary<string, object> ?? throw new Exception("GitHub 返回的数据无法识别");
+                        cts.CancelAfter(c.Key.HeaderTimeout + TimeSpan.FromSeconds(10));
+                        using (var req = new HttpRequestMessage(HttpMethod.Get, c.Value))
+                        {
+                            if (acceptHeader != null) req.Headers.Accept.ParseAdd(acceptHeader);
+                            using (var resp = await Http.SendAsync(req, cts.Token).ConfigureAwait(false))
+                            {
+                                var body = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                if (!Mirrors.FinalHostOk(c.Key, resp.RequestMessage?.RequestUri?.Host)) throw new Exception("被重定向到 " + resp.RequestMessage?.RequestUri?.Host);
+                                if (!resp.IsSuccessStatusCode)
+                                    throw new Exception("HTTP " + (int)resp.StatusCode + (body.Contains("rate limit") ? "（请求过于频繁，稍后再试）" : ""));
+                                if (accept != null && !accept(body)) throw new Exception("返回的内容无法识别");
+                                Mirrors.Remember(c.Key);
+                                return body;
+                            }
+                        }
                     }
                 }
+                catch (Exception e) when (!ct.IsCancellationRequested)
+                {
+                    var msg = e is OperationCanceledException ? "超时" : e.GetBaseException().Message;
+                    errors.Add(c.Key.Name + "：" + msg);
+                    Log.Write("net " + c.Key.Id + " " + url + ": " + msg);
+                }
             }
+            throw new Exception("所有下载源都连不上（" + string.Join("；", errors) + "）");
+        }
+
+        /// <summary>GET a GitHub API url (through the mirror chain) and parse the JSON object.</summary>
+        public static async Task<Dictionary<string, object>> GetJson(string url, CancellationToken ct = default(CancellationToken))
+        {
+            Dictionary<string, object> parsed = null;
+            await GetText(url, body =>
+            {
+                try { parsed = Json.Parse(body) as Dictionary<string, object>; } catch { parsed = null; }
+                return parsed != null;
+            }, "application/vnd.github+json", ct).ConfigureAwait(false);
+            return parsed;
         }
 
         public sealed class Asset
@@ -84,55 +115,96 @@ namespace Yiwei
         }
 
         /// <summary>
-        /// Downloads to <paramref name="dest"/>. When <paramref name="resume"/> is set and the file exists, asks
-        /// for the rest only (Range). Reports progress 0..1. Only https GitHub hosts are accepted.
+        /// Downloads a GitHub url to <paramref name="dest"/>, trying each mirror in turn. When <paramref name="resume"/> is set
+        /// and the file exists, asks for the rest only (Range). Reports progress 0..1. A source whose answer does not have the
+        /// expected length (a proxy's error page) is skipped. The caller still checks SHA-256 where one is published.
         /// </summary>
         public static async Task Download(string url, string dest, long expectedSize, IProgress<double> progress, bool resume, CancellationToken ct = default(CancellationToken))
         {
-            var uri = new Uri(url);
-            if (uri.Scheme != "https" || !(uri.Host == "github.com" || uri.Host.EndsWith(".github.com") || uri.Host.EndsWith(".githubusercontent.com")))
-                throw new Exception("只允许从 GitHub 下载：" + uri.Host);
+            var errors = new List<string>();
+            foreach (var c in Mirrors.Candidates(url))
+            {
+                ct.ThrowIfCancellationRequested();
+                try
+                {
+                    await DownloadFrom(c.Key, c.Value, dest, expectedSize, progress, resume, ct).ConfigureAwait(false);
+                    Mirrors.Remember(c.Key);
+                    return;
+                }
+                catch (Exception e) when (!ct.IsCancellationRequested)
+                {
+                    var msg = e is OperationCanceledException ? "超时" : e.GetBaseException().Message;
+                    errors.Add(c.Key.Name + "：" + msg);
+                    Log.Write("download " + c.Key.Id + " " + url + ": " + msg);
+                    // a wrong-length leftover would poison the next source's resume
+                    try { if (File.Exists(dest) && expectedSize > 0 && new FileInfo(dest).Length > expectedSize) File.Delete(dest); } catch { }
+                }
+            }
+            throw new Exception("下载失败，所有下载源都不可用（" + string.Join("；", errors) + "）");
+        }
+
+        static async Task DownloadFrom(Mirrors.Source source, string url, string dest, long expectedSize, IProgress<double> progress, bool resume, CancellationToken ct)
+        {
             long have = resume && File.Exists(dest) ? new FileInfo(dest).Length : 0;
             if (expectedSize > 0 && have > expectedSize) { File.Delete(dest); have = 0; }
             if (expectedSize > 0 && have == expectedSize) { progress?.Report(1); return; }
-            using (var req = new HttpRequestMessage(HttpMethod.Get, uri))
+            using (var req = new HttpRequestMessage(HttpMethod.Get, url))
             {
                 if (have > 0) req.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(have, null);
-                using (var resp = await Http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false))
+                HttpResponseMessage resp;
+                using (var head = CancellationTokenSource.CreateLinkedTokenSource(ct))
                 {
-                    if (!resp.IsSuccessStatusCode) throw new Exception("下载失败：HTTP " + (int)resp.StatusCode);
+                    head.CancelAfter(source.HeaderTimeout);
+                    resp = await Http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, head.Token).ConfigureAwait(false);
+                }
+                using (resp)
+                {
+                    if (!resp.IsSuccessStatusCode) throw new Exception("HTTP " + (int)resp.StatusCode);
+                    var finalHost = resp.RequestMessage?.RequestUri?.Host ?? "";
+                    if (!Mirrors.FinalHostOk(source, finalHost)) throw new Exception("被重定向到 " + finalHost);
                     bool append = have > 0 && resp.StatusCode == HttpStatusCode.PartialContent;
                     if (!append) have = 0;
-                    long total = expectedSize > 0 ? expectedSize : have + (resp.Content.Headers.ContentLength ?? 0);
-                    var finalHost = resp.RequestMessage?.RequestUri?.Host ?? "";
-                    if (!(finalHost == "github.com" || finalHost.EndsWith(".github.com") || finalHost.EndsWith(".githubusercontent.com")))
-                        throw new Exception("下载被重定向到非 GitHub 地址：" + finalHost);
+                    var len = resp.Content.Headers.ContentLength;
+                    if (expectedSize > 0 && len.HasValue && have + len.Value != expectedSize)
+                        throw new Exception("文件大小不对（" + (have + len.Value) + " / " + expectedSize + " 字节）");
+                    long total = expectedSize > 0 ? expectedSize : have + (len ?? 0);
                     Directory.CreateDirectory(Path.GetDirectoryName(dest));
-                    using (var src = await resp.Content.ReadAsStreamAsync().ConfigureAwait(false))
-                    using (var dst = new FileStream(dest, append ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.None, 1 << 16, true))
+                    try
                     {
-                        var buf = new byte[1 << 16];
-                        long done = have, lastReport = 0;
-                        int n;
-                        // a stalled connection should not hang forever
-                        while (true)
+                        using (var src = await resp.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                        using (var dst = new FileStream(dest, append ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.None, 1 << 16, true))
                         {
-                            using (var stall = CancellationTokenSource.CreateLinkedTokenSource(ct))
+                            var buf = new byte[1 << 16];
+                            long done = have, lastReport = 0;
+                            int n;
+                            // a stalled connection should not hang forever: move on to the next source
+                            while (true)
                             {
-                                stall.CancelAfter(TimeSpan.FromSeconds(60));
-                                var read = src.ReadAsync(buf, 0, buf.Length, stall.Token);
-                                if (await Task.WhenAny(read, Task.Delay(Timeout.Infinite, stall.Token).ContinueWith(_ => 0)).ConfigureAwait(false) != read)
+                                using (var stall = CancellationTokenSource.CreateLinkedTokenSource(ct))
                                 {
-                                    ct.ThrowIfCancellationRequested();
-                                    throw new Exception("下载超时（60 秒没有收到数据）");
+                                    stall.CancelAfter(TimeSpan.FromSeconds(30));
+                                    var read = src.ReadAsync(buf, 0, buf.Length, stall.Token);
+                                    if (await Task.WhenAny(read, Task.Delay(Timeout.Infinite, stall.Token).ContinueWith(_ => 0)).ConfigureAwait(false) != read)
+                                    {
+                                        ct.ThrowIfCancellationRequested();
+                                        throw new Exception("30 秒没有收到数据");
+                                    }
+                                    n = await read.ConfigureAwait(false);
                                 }
-                                n = await read.ConfigureAwait(false);
+                                if (n <= 0) break;
+                                await dst.WriteAsync(buf, 0, n, ct).ConfigureAwait(false);
+                                done += n;
+                                if (total > 0 && progress != null && done - lastReport > (1 << 20)) { lastReport = done; progress.Report(Math.Min(1.0, (double)done / total)); }
                             }
-                            if (n <= 0) break;
-                            await dst.WriteAsync(buf, 0, n, ct).ConfigureAwait(false);
-                            done += n;
-                            if (total > 0 && progress != null && done - lastReport > (1 << 20)) { lastReport = done; progress.Report(Math.Min(1.0, (double)done / total)); }
                         }
+                        if (!len.HasValue && expectedSize > 0 && new FileInfo(dest).Length != expectedSize)
+                            throw new Exception("下载不完整（" + new FileInfo(dest).Length + " / " + expectedSize + " 字节）");
+                    }
+                    catch when (!len.HasValue)
+                    {
+                        // length was never vouched for: do not let a half page from this source become the next source's resume point
+                        try { File.Delete(dest); } catch { }
+                        throw;
                     }
                     progress?.Report(1);
                 }
@@ -276,7 +348,7 @@ namespace Yiwei
             var rec = Load();
             try
             {
-                status?.Report("正在检查 GitHub…");
+                status?.Report("正在检查词库更新…");
                 var rel = await GitHubNet.GetJson(Api).ConfigureAwait(false);
                 var asset = GitHubNet.Assets(rel).FirstOrDefault(a => a.Name == AssetName) ?? throw new Exception("发布里找不到 " + AssetName);
                 var tag = (rel.TryGetValue("tag_name", out var tn) ? tn as string : "?") + "@" + asset.UpdatedAt;
