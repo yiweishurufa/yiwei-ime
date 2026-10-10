@@ -80,6 +80,7 @@ namespace Yiwei
                     if (!WeaselConfig.UpToDateForDarkMode(Settings.Current)) Rime.ApplySoon(1500);
                 };
                 Stats.StartAppTracking();
+                ClipHistory.Start();
                 DictUpdater.StartDaily();
                 AppUpdate.StartDaily();
                 Sync.StartScheduler();

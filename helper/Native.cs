@@ -212,6 +212,7 @@ namespace Yiwei
         /// <summary>Replaces the current selection: paste through the clipboard, then restore it.</summary>
         public static void Replace(string text)
         {
+            ClipHistory.Suppress(2500);
             IDataObject saved = null;
             try { saved = Clipboard.GetDataObject(); } catch { }
             try
@@ -228,6 +229,7 @@ namespace Yiwei
         /// <summary>Copies the current selection of the foreground app (Ctrl+C) and returns it.</summary>
         public static string CopySelection()
         {
+            ClipHistory.Suppress(2500);
             IDataObject saved = null;
             try { saved = Clipboard.GetDataObject(); } catch { }
             string result = "";
@@ -482,11 +484,13 @@ namespace Yiwei
                 if (modifier || CtrlOrWinDown() || IsDown(Keys.LShiftKey) || IsDown(Keys.RShiftKey)) { _altUsed = true; return false; }
                 var s = Settings.Current;
                 bool held = unchecked(Environment.TickCount - _altDownAt) >= s.HoldMs && !_altUsed;
-                bool wanted = held && ((s.SnippetsHotkey && vk >= Keys.D1 && vk <= Keys.D9) || (s.AiHotkey && vk == Keys.Space));
+                bool wanted = held && ((s.SnippetsHotkey && vk >= Keys.D1 && vk <= Keys.D9) || (s.AiHotkey && vk == Keys.Space)
+                                       || (s.SnippetsHotkey && s.ClipHistory && vk == Keys.V));
                 if (wanted && !GestureBlocked(s))
                 {
                     _swallowedChord = true; _altUsed = true;
                     if (vk == Keys.Space) Program.Ui.BeginInvoke(new Action(() => OnAi?.Invoke()));
+                    else if (vk == Keys.V) Program.Ui.BeginInvoke(new Action(() => OnSnippets?.Invoke(SnippetPanel.ClipTab)));
                     else { int cat = vk - Keys.D1; Program.Ui.BeginInvoke(new Action(() => OnSnippets?.Invoke(cat))); }
                     return true;
                 }

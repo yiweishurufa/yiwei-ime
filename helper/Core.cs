@@ -213,6 +213,12 @@ namespace Yiwei
         public string DictTag { get; set; } = "";
         public string DictCheckedAt { get; set; } = "";
 
+        // 剪贴板历史（Features/ClipHistory.cs）：保留天数 0 = 不过期
+        public bool ClipHistory { get; set; } = true;
+        public bool ClipHistorySaveToDisk { get; set; } = true;
+        public int ClipKeepDays { get; set; } = 7;
+        public List<string> ClipExcludeApps { get; set; } = new List<string>();
+
         // 语音输入（Features/Voice.cs）：rctrl / ralt / off；auto / zh / en / yue
         public string VoiceKey { get; set; } = "rctrl";
         public string VoiceLanguage { get; set; } = "auto";

@@ -46,11 +46,15 @@ namespace Yiwei
 
         public bool IsOpen => IsVisible;
 
+        /// <summary>Opens a snippet group; <see cref="ClipTab"/> (-1) opens the clipboard history.</summary>
+        public const int ClipTab = -1;
+
         public void Open(int category)
         {
             var book = SnippetBook.Current;
-            if (book.Categories.Count == 0) return;
-            _cat = Math.Max(0, Math.Min(category, book.Categories.Count - 1));
+            if (book.Categories.Count == 0 && !ClipOn) return;
+            _clip = ClipHistory.Recent().Select(e => new Snippet { Text = e.Text }).ToList();
+            _cat = category == ClipTab && ClipOn ? GroupCount : Math.Max(0, Math.Min(category, GroupCount - 1));
             _page = 0; _sel = 0;
             _p = PanelPalette.Now();
             Build();
@@ -59,7 +63,14 @@ namespace Yiwei
 
         public void Close2() { Hide(); }
 
-        List<Snippet> Items => SnippetBook.Current.Categories[_cat].Items;
+        List<Snippet> _clip = new List<Snippet>();
+        static bool ClipOn => Settings.Current.ClipHistory;
+        /// <summary>Snippet groups shown as tabs (at most 9: Alt + 1–9).</summary>
+        static int GroupCount => Math.Min(9, SnippetBook.Current.Categories.Count);
+        /// <summary>Groups plus the clipboard tab (last) when clipboard history is on.</summary>
+        static int TabCount => GroupCount + (ClipOn ? 1 : 0);
+        bool OnClip => ClipOn && _cat == GroupCount;
+        List<Snippet> Items => OnClip ? _clip : SnippetBook.Current.Categories[_cat].Items;
         int PageCount => Math.Max(1, (Items.Count + 8) / 9);
 
         void Build()
@@ -67,11 +78,17 @@ namespace Yiwei
             var book = SnippetBook.Current;
             var root = new StackPanel { MinWidth = 420, MaxWidth = 620 };
             var tabs = new WrapPanel { Margin = new Thickness(0, 0, 0, 8) };
-            for (int i = 0; i < book.Categories.Count && i < 9; i++)
+            for (int i = 0; i < GroupCount; i++)
             {
                 int idx = i;
                 var chip = PanelParts.Chip(_p, (i + 1) + " " + book.Categories[i].Name, i == _cat);
                 chip.MouseLeftButtonUp += (s, e) => { _cat = idx; _page = 0; _sel = 0; Build(); };
+                tabs.Children.Add(chip);
+            }
+            if (ClipOn)
+            {
+                var chip = PanelParts.Chip(_p, "V 剪贴板", OnClip);
+                chip.MouseLeftButtonUp += (s, e) => { _cat = GroupCount; _page = 0; _sel = 0; Build(); };
                 tabs.Children.Add(chip);
             }
             root.Children.Add(tabs);
@@ -79,7 +96,11 @@ namespace Yiwei
             var items = Items;
             if (items.Count == 0)
             {
-                root.Children.Add(new TextBlock { Text = "这个分组还是空的。在「设置 → 常用语」里添加。", Foreground = _p.Dim, FontSize = 13, Margin = new Thickness(2, 6, 2, 6) });
+                root.Children.Add(new TextBlock
+                {
+                    Text = OnClip ? "还没有剪贴板记录。复制的文字会出现在这里（只存本机，不记录密码管理器和无痕窗口）。" : "这个分组还是空的。在「设置 → 常用语」里添加。",
+                    Foreground = _p.Dim, FontSize = 13, Margin = new Thickness(2, 6, 2, 6), TextWrapping = TextWrapping.Wrap, MaxWidth = 560,
+                });
             }
             else
             {
@@ -107,20 +128,27 @@ namespace Yiwei
                 }
                 root.Children.Add(grid);
             }
-            var hint = "数字键上屏 · Tab / ← → 换分组" + (PageCount > 1 ? $" · PgDn 下一页（{_page + 1}/{PageCount}）" : "") + " · Esc 关闭";
+            var hint = "数字键上屏 · Tab / ← → 换分组" + (OnClip && items.Count > 0 ? " · Del 删除这条" : "") + (PageCount > 1 ? $" · PgDn 下一页（{_page + 1}/{PageCount}）" : "") + " · Esc 关闭";
             root.Children.Add(PanelParts.Hint(_p, hint));
             Content = PanelParts.Shell(_p, root);
         }
 
         public bool HandleKey(WinKeys k, bool altHeld)
         {
-            var book = SnippetBook.Current;
-            int n = book.Categories.Count;
+            int n = TabCount;
+            if (n == 0) { Close2(); return true; }
             if (k == WinKeys.Escape) { Close2(); return true; }
+            if (k == WinKeys.V && altHeld && ClipOn) { _cat = GroupCount; _page = 0; _sel = 0; Build(); return true; }
+            if (k == WinKeys.Delete && OnClip)
+            {
+                int i = _page * 9 + _sel;
+                if (i < _clip.Count) { ClipHistory.Remove(_clip[i].Text); _clip.RemoveAt(i); if (_sel > 0 && _page * 9 + _sel >= _clip.Count) _sel--; Build(); }
+                return true;
+            }
             if (k >= WinKeys.D1 && k <= WinKeys.D9 || k >= WinKeys.NumPad1 && k <= WinKeys.NumPad9)
             {
                 int d = k >= WinKeys.NumPad1 ? k - WinKeys.NumPad1 : k - WinKeys.D1;
-                if (altHeld) { if (d < n) { _cat = d; _page = 0; _sel = 0; Build(); } }   // Alt still held: switch group
+                if (altHeld) { if (d < GroupCount) { _cat = d; _page = 0; _sel = 0; Build(); } }   // Alt still held: switch group
                 else Commit(_page * 9 + d);
                 return true;
             }

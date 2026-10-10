@@ -171,6 +171,7 @@ namespace Yiwei
             Grid.SetColumn(right, 1);
             grid.Children.Add(left); grid.Children.Add(right);
             p.Children.Add(K.Block("分组与条目", "手机号、邮箱、地址、符号……每组最多 9 条一页，超过可在面板里翻页", grid, Ui.SymbolRegular.TextBulletListSquare24));
+            AddClipHistoryCards(p);   // Wpf/ClipHistoryUi.cs
             return p;
         }
 
