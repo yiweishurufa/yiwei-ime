@@ -143,6 +143,13 @@ namespace Yiwei
                     ThemeLinks.Handle(command.Trim('"'));
                     return;
                 }
+                if (command.StartsWith("pair:"))
+                {
+                    // yiwei_autopair.lua: "pair:（）" → wrap the selection when there is one, else type the pair and step back.
+                    var pair = command.Substring(5);
+                    if (pair.Length == 2) AutoPair.Type(pair[0].ToString(), pair[1].ToString());
+                    return;
+                }
                 if (command == "caret:left")
                 {
                     // yiwei_autopair.lua just committed a pair such as （）; put the caret between the halves.

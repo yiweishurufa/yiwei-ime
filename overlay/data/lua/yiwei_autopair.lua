@@ -1,6 +1,7 @@
 -- 一维输入法 · 括号自动配对
 -- 中文标点状态下、没有正在输入的拼音时，输入左括号/左引号直接上屏一对，
 -- 再请一维助手把光标左移一格，停在两半中间：（|）【|】《|》「|」“|” ‘|’
+-- 选中了文字时输入左括号，则用这对括号把选中的文字包起来（一维助手通过 UI 自动化读取选区，读不到就照常配对）。
 -- 关闭方式：设置 → 输入 → 括号自动配对（存在 yiwei/autopair.disabled 即关闭）。
 -- 终端、代码编辑器、远程桌面和游戏里不配对，以免与应用自带的配对打架。
 local PIPE = "\\\\.\\pipe\\YiweiHelper.Commands"
@@ -38,10 +39,12 @@ local function disabled(env)
 end
 
 local function send(msg)
-  pcall(function()
+  local ok, sent = pcall(function()
     local f = io.open(PIPE, "wb")
-    if f then f:write(msg); f:close() end
+    if f then f:write(msg); f:close(); return true end
+    return false
   end)
+  return ok and sent
 end
 
 function P.init(env)
@@ -56,8 +59,10 @@ function P.func(key, env)
      or ctx:get_option("full_shape") then return 2 end
   local app = (ctx:get_property("client_app") or ""):lower()
   if SKIP[app] or disabled(env) then return 2 end
-  env.engine:commit_text(pair)
-  send("caret:left")
+  -- 助手在：交给它（有选区就包裹，没有就上屏一对并把光标移到中间）；助手不在：自己上屏一对
+  if not send("pair:" .. pair) then
+    env.engine:commit_text(pair)
+  end
   return 1 -- kAccepted
 end
 

@@ -21,6 +21,7 @@
 | `/diagnostics` | export the diagnostics zip to the desktop (also tray 「导出诊断信息」) |
 | `/quit` | exit |
 | `regret:<n>:<pinyin>` | from yiwei_regret.lua (Ctrl+Backspace right after a commit): wait for Ctrl up, n × Backspace, then retype the pinyin as real key presses so the IME recomposes it |
+| `pair:（）` | from yiwei_autopair.lua: wrap the UIA TextPattern selection in the pair, else type the pair and step left (lua commits the pair itself when the pipe is absent) |
 | `toast:中` / `toast:A` | show the 中/英 bubble at the caret (~600 ms). Also accepts `toast:zh` / `toast:cn` for 中 |
 | `yiwei-ime://theme?...` | import a theme link |
 
