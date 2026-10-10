@@ -14,6 +14,7 @@
 | `/settings [页面]` | open settings, optionally on a page: 常规 输入方案 快捷输入 外观 快捷键 常用语 AI 词库 应用规则 统计 关于 |
 | `/deploy` | rewrite weasel.custom.yaml / default.custom.yaml and redeploy in the background |
 | `/share` | open 局域网互传 (LAN text transfer with QR code; also tray menu) |
+| `/ocr` | 截图识字: freeze the screen, drag a box, Windows.Media.Ocr (offline), result window with 上屏 / 复制 (also hold Alt + O, tray) |
 | `/diagnostics` | export the diagnostics zip to the desktop (also tray 「导出诊断信息」) |
 | `/quit` | exit |
 | `toast:中` / `toast:A` | show the 中/英 bubble at the caret (~600 ms). Also accepts `toast:zh` / `toast:cn` for 中 |
@@ -74,3 +75,8 @@ There is also an experimental IMM poller (设置 → 常规 → 从输入法状�
   + `shared/snippets.json` ({"format":"yiwei-snippets","version":1,"groups":[{name,items:[{text,code}]}]}). `.yiwei-backup` files
   now carry `shared/snippets.json` too. `Backup.Import` also accepts any zip with `*.userdb.txt` (e.g. a phone's `rime/sync` folder)
   and merges the words; a foreign `shared/snippets.json` is merged into 常用语 (same group + text skipped).
+
+## Screenshot OCR (Features/Ocr.cs, Wpf/OcrCapture.cs)
+- WinRT via the `Microsoft.Windows.SDK.Contracts` reference package (no extra DLL to ship; the OS has the runtime).
+  Prefers a zh-Hans/zh-Hant recognizer, else the user-profile languages; small crops are upscaled 2–3×; CJK words joined
+  without spaces. 上屏 re-activates the window that was in front before the capture and types with `TextOut.Type`.

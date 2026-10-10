@@ -161,6 +161,7 @@ namespace Yiwei
                     case "/update": _ = AppUpdate.CheckAsync(true); return;
                     case "/wizard": ShowWizard(); return;
                     case "/share": ShowLanShare(); return;
+                    case "/ocr": OcrCapture.Start(); return;
                 }
                 if (command.StartsWith("/settings") || command.Length == 0)
                 {
@@ -268,6 +269,7 @@ namespace Yiwei
             menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add("重新部署", null, (s, e) => Rime.ApplySoon(50));
             menu.Items.Add("同步用户数据", null, (s, e) => System.Threading.Tasks.Task.Run(() => Deploy.Run("/sync", false)));
+            menu.Items.Add("截图识字", null, (s, e) => OcrCapture.Start());
             menu.Items.Add("局域网互传", null, (s, e) => Program.ShowLanShare());
             menu.Items.Add("用户文件夹", null, (s, e) => { try { System.Diagnostics.Process.Start("explorer.exe", "\"" + Paths.UserDir + "\""); } catch { } });
             menu.Items.Add("设置", null, (s, e) => Program.ShowSettings());

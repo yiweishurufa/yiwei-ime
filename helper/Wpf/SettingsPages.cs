@@ -311,6 +311,8 @@ namespace Yiwei
                 K.Toggle(S.SnippetsHotkey, v => { S.SnippetsHotkey = v; Save(); }), Ui.SymbolRegular.TextBulletListSquare24));
             p.Children.Add(K.Card("长按 Alt + 空格 打开 AI", "先选中文字；翻译、润色、粤语或自定义",
                 K.Toggle(S.AiHotkey, v => { S.AiHotkey = v; Save(); }), Ui.SymbolRegular.Sparkle24));
+            p.Children.Add(K.Card("长按 Alt + O 截图识字", "框选屏幕上的文字，用 Windows 自带的离线 OCR 识别后上屏或复制（也在托盘菜单里）",
+                K.Toggle(S.OcrHotkey, v => { S.OcrHotkey = v; Save(); }), Ui.SymbolRegular.ScanText24));
             p.Children.Add(K.Card("长按判定时间", "按住 Alt 多久之后再按数字或空格才算手势（毫秒）",
                 Slider(150, 1000, S.HoldMs, v => { S.HoldMs = (v / 50) * 50; Save(); })));
             p.Children.Add(K.Card("在全屏窗口里停用", "独占全屏的游戏和演示总是自动停用；开启后无边框全屏窗口也停用",
@@ -360,6 +362,7 @@ namespace Yiwei
                 ("Shift", "切换中 / 英文"),
                 ("长按 Alt + 1–9", "常用语面板：数字上屏，Tab 换分组"),
                 ("选中文字，长按 Alt + 空格", "AI：翻译 / 润色 / 粤语 / 自定义"),
+                ("长按 Alt + O", "截图识字：框选文字，离线识别后上屏"),
                 ("长按 Alt + V", "剪贴板历史：最近 50 条，数字上屏"),
                 ("按住右 Ctrl 说话", "离线语音输入，松开上屏（设置 → 语音 下载模型）"),
                 ("Ctrl + `", "方案选单：简繁、全半角、双拼…"),

@@ -36,6 +36,8 @@
     <PackageReference Include="WPF-UI" Version="3.0.5" />
     <!-- QR codes for 局域网互传 (MIT), merged by Costura. -->
     <PackageReference Include="QRCoder" Version="1.6.0" />
+    <!-- WinRT projections for Windows.Media.Ocr / Inking (截图识字、手写); the OS provides the runtime. -->
+    <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.19041.1" />
     <PackageReference Include="Fody" Version="6.9.2" PrivateAssets="all" />
     <PackageReference Include="Costura.Fody" Version="6.0.0" PrivateAssets="all" />
   </ItemGroup>
