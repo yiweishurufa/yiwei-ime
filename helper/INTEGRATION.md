@@ -108,3 +108,8 @@ There is also an experimental IMM poller (设置 → 常规 → 从输入法状�
   GameMode.NotGames), or listed in `GameApps` → `<user>/yiwei/game.now`. `yiwei_game.lua` (first processor) then forces
   `ascii_mode` and returns kRejected for Shift_L/Shift_R so the game gets Shift without a 中/英 toggle; when the flag goes away it
   restores Chinese if it was the one that switched.
+
+## Per-app 中/英 memory (yiwei_appmode.lua)
+- `option_update_notifier` records `ascii_mode` per `client_app` in `<user>/yiwei/appmode.tsv` (not while game.now exists);
+  on the first key in a session whose app changed, the stored mode is restored. Off when `appmode.disabled` exists
+  (设置 → 应用规则 → 按程序记住中英状态). Complements Weasel's per-session state (`global_ascii: false`).

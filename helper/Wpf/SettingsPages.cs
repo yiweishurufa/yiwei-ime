@@ -409,6 +409,8 @@ namespace Yiwei
             p.Children.Add(K.PageTitle("应用规则"));
             p.Children.Add(K.Card("所有应用共用中英文状态", "关闭时，每个应用各自记住自己的中英文状态",
                 K.Toggle(S.GlobalAscii, v => { S.GlobalAscii = v; Save(true); }), Ui.SymbolRegular.Apps24));
+            p.Children.Add(K.Card("按程序记住中英状态", "每个程序上次是中文还是英文，关掉重开、重启电脑后也照旧（「所有应用共用」打开时不起作用）",
+                K.Toggle(S.RememberAppMode, v => { S.RememberAppMode = v; }), Ui.SymbolRegular.WindowApps24));
 
             p.Children.Add(AppModesBlock());
             return p;

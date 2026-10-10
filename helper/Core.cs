@@ -63,6 +63,7 @@ namespace Yiwei
         public static string StatsFlag => Path.Combine(YiweiDir, "stats.enabled");
         public static string AutoPairOff => Path.Combine(YiweiDir, "autopair.disabled");
         public static string RegretOff => Path.Combine(YiweiDir, "regret.disabled");
+        public static string AppModeOff => Path.Combine(YiweiDir, "appmode.disabled");
         public static string PanguFlag => Path.Combine(YiweiDir, "pangu.enabled");
         public static string WeaselCustom => Path.Combine(UserDir, "weasel.custom.yaml");
         public static string DefaultCustom => Path.Combine(UserDir, "default.custom.yaml");
@@ -341,6 +342,14 @@ namespace Yiwei
                 s.Save();
                 _current = s;
             }
+        }
+
+        /// <summary>按程序记住中英状态、重启后也记得（yiwei_appmode.lua 读这个标记文件，默认开启）。</summary>
+        [ScriptIgnore]
+        public bool RememberAppMode
+        {
+            get => !File.Exists(Paths.AppModeOff);
+            set { if (!value) { Directory.CreateDirectory(Paths.YiweiDir); File.WriteAllText(Paths.AppModeOff, "1"); } else if (File.Exists(Paths.AppModeOff)) File.Delete(Paths.AppModeOff); }
         }
 
         /// <summary>上屏后 Ctrl+Backspace 反悔重选（yiwei_regret.lua 读这个标记文件，默认开启）。</summary>
