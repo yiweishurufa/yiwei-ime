@@ -225,7 +225,7 @@ namespace Yiwei
                 var f = Paths.WeaselCustom;
                 if (!File.Exists(f)) return;
                 var y = File.ReadAllText(f, Encoding.UTF8);
-                if (y.Contains("由「一维输入法设置」生成") && !y.Contains("vim_mode")) Rime.ApplySoon(5000);
+                if (y.Contains("由「一维输入法设置」生成") && !y.Contains("vim_mode")) Rime.ApplyWhenIdle();
             }
             catch (Exception e) { Log.Write("appmodes upgrade: " + e.Message); }
         }

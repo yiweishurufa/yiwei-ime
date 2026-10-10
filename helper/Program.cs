@@ -24,6 +24,7 @@ namespace Yiwei
         static SnippetPanel _snippets;
         static AiPanel _ai;
         static ImeToast _toast;
+        static DeployProgress _deployProgress;
         static KeyHook _hook;
         static SettingsWindow _settings;
         static WizardWindow _wizard;
@@ -56,6 +57,7 @@ namespace Yiwei
                 _snippets = new SnippetPanel();
                 _ai = new AiPanel();
                 _toast = new ImeToast();
+                _deployProgress = new DeployProgress();
                 _hook = new KeyHook
                 {
                     PanelOpen = () => _snippets.IsOpen || _ai.WantsKeys,
@@ -112,7 +114,7 @@ namespace Yiwei
                 {
                     // Upgrade from 0.1: add the brand colour schemes to the generated file.
                     var y = File.ReadAllText(Paths.WeaselCustom, Encoding.UTF8);
-                    if (y.Contains("由「一维输入法设置」生成") && !y.Contains("yiwei_qingbi")) Rime.ApplySoon(3000);
+                    if (y.Contains("由「一维输入法设置」生成") && !y.Contains("yiwei_qingbi")) Rime.ApplyWhenIdle();
                 }
             }
             catch (Exception e) { Log.Write("first run: " + e.Message); }

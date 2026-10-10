@@ -334,22 +334,151 @@ namespace Yiwei
         /// <summary>Raised (on a worker thread) when a deployment starts / finishes: (finished, ok).</summary>
         public static event Action<bool, bool> StateChanged;
 
+        /// <summary>What is running now: "/deploy", "/sync" or "external" (a deployer started by the installer / by hand).</summary>
+        public static string Kind { get; private set; } = "";
+        public static DateTime StartedAt { get; private set; }
+        public static bool Running { get; private set; }
+
         public static void Run(bool wait = false) => Run("/deploy", wait);
 
-        public static void Run(string args, bool wait)
+        public static void Run(string args, bool wait) => Start(args, wait, 10 * 60 * 1000);
+
+        /// <summary>Runs the deployer and waits; false when it could not start or did not finish in time.</summary>
+        public static bool RunAndWait(string args = "/deploy", int timeoutMs = 10 * 60 * 1000) => Start(args, true, timeoutMs);
+
+        static bool Start(string args, bool wait, int timeoutMs)
         {
             try
             {
+                if (!File.Exists(Paths.Deployer)) { Log.Write("deploy: deployer not found " + Paths.Deployer); return false; }
                 var p = Process.Start(new ProcessStartInfo(Paths.Deployer, args) { UseShellExecute = false, CreateNoWindow = true });
-                if (p == null) return;
-                Fire(false, true);
-                if (wait) { bool ok = p.WaitForExit(120000); Fire(true, ok); }
-                else System.Threading.Tasks.Task.Run(() => { bool ok = false; try { ok = p.WaitForExit(120000); } catch { } Fire(true, ok); });
+                if (p == null) return false;
+                Began(args);
+                if (wait)
+                {
+                    bool ok = false;
+                    try { ok = p.WaitForExit(timeoutMs); if (!ok) Log.Write("deploy: timeout"); } catch { }
+                    Ended(args, ok);
+                    return ok;
+                }
+                System.Threading.Tasks.Task.Run(() => { bool ok = false; try { ok = p.WaitForExit(timeoutMs); } catch { } Ended(args, ok); });
+                return true;
             }
-            catch (Exception e) { Log.Write("deploy: " + e.Message); Fire(true, false); }
+            catch (Exception e) { Log.Write("deploy: " + e.Message); Fire(true, false); return false; }
+        }
+
+        /// <summary>Lets the watcher report a deployer someone else started (installer, 开始菜单「重新部署」).</summary>
+        public static void External(bool finished, bool ok) { if (finished) Ended("external", ok); else Began("external"); }
+
+        static void Began(string kind)
+        {
+            Kind = kind; StartedAt = DateTime.Now; Running = true;
+            Fire(false, true);
+        }
+
+        static void Ended(string kind, bool ok)
+        {
+            var took = DateTime.Now - StartedAt;
+            Running = false;
+            if (ok && kind != "/sync") DeployTimes.Record(took);
+            Fire(true, ok);
         }
 
         static void Fire(bool finished, bool ok) { try { StateChanged?.Invoke(finished, ok); } catch { } }
+    }
+
+    /// <summary>
+    /// How long deployments take on this machine, to show a realistic estimate. Kept per "profile" (schema + 大字表),
+    /// since only a changed dictionary makes the deployer recompile tables.
+    /// </summary>
+    public static class DeployTimes
+    {
+        public class Data { public Dictionary<string, List<double>> Seconds { get; set; } = new Dictionary<string, List<double>>(); }
+        static string FilePath => Path.Combine(Paths.YiweiDir, "deploy-times.json");
+        static readonly object Gate = new object();
+
+        static string Profile
+        {
+            get { var s = Settings.Current; return s.Schema + (RimeFeatures.Of(s).BigCharset ? "+big" : ""); }
+        }
+
+        /// <summary>No compiled tables yet: the first deployment compiles the whole dictionary.</summary>
+        public static bool FirstTime
+        {
+            get
+            {
+                try
+                {
+                    var build = Path.Combine(Paths.UserDir, "build");
+                    return !Directory.Exists(build) || Directory.GetFiles(build, "*.table.bin").Length == 0;
+                }
+                catch { return false; }
+            }
+        }
+
+        public static void Record(TimeSpan took)
+        {
+            lock (Gate)
+            {
+                try
+                {
+                    var d = Json.Load<Data>(FilePath);
+                    if (d.Seconds == null) d.Seconds = new Dictionary<string, List<double>>();
+                    if (!d.Seconds.TryGetValue(Profile, out var list) || list == null) d.Seconds[Profile] = list = new List<double>();
+                    list.Add(Math.Round(took.TotalSeconds, 1));
+                    while (list.Count > 8) list.RemoveAt(0);
+                    Json.Save(FilePath, d);
+                }
+                catch (Exception e) { Log.Write("deploy times: " + e.Message); }
+            }
+        }
+
+        /// <summary>Expected duration in seconds: first-time guess, else the slower half of recent runs.</summary>
+        public static double Estimate()
+        {
+            bool big = RimeFeatures.Of(Settings.Current).BigCharset;
+            if (FirstTime) return big ? 120 : 75;
+            lock (Gate)
+            {
+                try
+                {
+                    var d = Json.Load<Data>(FilePath);
+                    if (d.Seconds != null && d.Seconds.TryGetValue(Profile, out var list) && list != null && list.Count > 0)
+                    {
+                        var sorted = list.OrderBy(x => x).ToList();
+                        return Math.Max(3, sorted[Math.Min(sorted.Count - 1, sorted.Count * 3 / 4)]);
+                    }
+                }
+                catch { }
+            }
+            return big ? 30 : 10;
+        }
+    }
+
+    /// <summary>How long the user has not touched keyboard or mouse; used to run heavy deployments when nobody is typing.</summary>
+    public static class Idle
+    {
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        struct LASTINPUTINFO { public uint cbSize; public uint dwTime; }
+        [System.Runtime.InteropServices.DllImport("user32.dll")] static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+
+        public static TimeSpan For
+        {
+            get
+            {
+                var li = new LASTINPUTINFO { cbSize = (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(LASTINPUTINFO)) };
+                if (!GetLastInputInfo(ref li)) return TimeSpan.Zero;
+                return TimeSpan.FromMilliseconds(unchecked((uint)Environment.TickCount - li.dwTime));
+            }
+        }
+
+        /// <summary>Waits until nobody has typed for <paramref name="quiet"/>, but never longer than <paramref name="max"/>.</summary>
+        public static async System.Threading.Tasks.Task WaitAsync(TimeSpan quiet, TimeSpan max, System.Threading.CancellationToken ct = default(System.Threading.CancellationToken))
+        {
+            var until = DateTime.Now + max;
+            while (DateTime.Now < until && For < quiet)
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(15), ct).ConfigureAwait(false);
+        }
     }
 
     /// <summary>

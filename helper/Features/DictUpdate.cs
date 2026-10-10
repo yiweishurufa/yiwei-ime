@@ -220,21 +220,8 @@ namespace Yiwei
                 return BitConverter.ToString(sha.ComputeHash(f)).Replace("-", "").ToLowerInvariant();
         }
 
-        /// <summary>Runs the deployer and waits (dictionary compiles can take a minute or two).</summary>
-        public static bool DeployAndWait(int timeoutMs = 10 * 60 * 1000)
-        {
-            try
-            {
-                if (!File.Exists(Paths.Deployer)) { Log.Write("deploy: deployer not found " + Paths.Deployer); return false; }
-                using (var p = Process.Start(new ProcessStartInfo(Paths.Deployer, "/deploy") { UseShellExecute = false, CreateNoWindow = true }))
-                {
-                    if (p == null) return false;
-                    if (!p.WaitForExit(timeoutMs)) { Log.Write("deploy: timeout"); return false; }
-                    return true;
-                }
-            }
-            catch (Exception e) { Log.Write("deploy: " + e.Message); return false; }
-        }
+        /// <summary>Runs the deployer and waits (dictionary compiles can take a minute or two). Shows the deploy progress window.</summary>
+        public static bool DeployAndWait(int timeoutMs = 10 * 60 * 1000) => Deploy.RunAndWait("/deploy", timeoutMs);
     }
 
     /// <summary>
@@ -382,6 +369,11 @@ namespace Yiwei
                         return new Result { Tag = tag, Message = "词库内容没有变化，已是最新" };
                     }
 
+                    if (status == null)
+                    {
+                        // 自动更新：等用户停手两分钟再替换并重新部署（部署期间暂时只能打英文），最多等 8 小时
+                        await Idle.WaitAsync(TimeSpan.FromMinutes(2), TimeSpan.FromHours(8)).ConfigureAwait(false);
+                    }
                     status?.Report("正在备份当前词库…");
                     var backup = Backup(string.IsNullOrEmpty(current) ? "安装包附带" : current);
                     rec.Backups.Insert(0, backup);

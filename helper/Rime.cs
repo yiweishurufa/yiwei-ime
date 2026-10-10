@@ -88,6 +88,24 @@ namespace Yiwei
 
         public static Task ApplyNowAsync() => Task.Run(() => ApplyNow());
 
+        static int _idleQueued;
+
+        /// <summary>
+        /// For redeploys nobody asked for right now (upgrading generated files after an app update, the daily dictionary):
+        /// waits until the keyboard has been quiet for a minute (at most 30 minutes), then applies in the background.
+        /// </summary>
+        public static void ApplyWhenIdle()
+        {
+            try { Settings.Current.Save(); } catch (Exception e) { Log.Write("save: " + e.Message); }
+            if (Interlocked.Exchange(ref _idleQueued, 1) == 1) return;
+            Task.Run(async () =>
+            {
+                try { await Idle.WaitAsync(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(30)).ConfigureAwait(false); }
+                finally { Interlocked.Exchange(ref _idleQueued, 0); }
+                ApplySoon(100);
+            });
+        }
+
         static int _running;
         static bool _again;
 
