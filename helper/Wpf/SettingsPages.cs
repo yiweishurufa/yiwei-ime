@@ -187,11 +187,13 @@ namespace Yiwei
             other = K.Combo(others, S.ColorScheme, id => { if (id != null) SelectScheme(id); });
             p.Children.Add(K.Card("更多配色", "经典主题、导入的主题和「我的配色」", other, Ui.SymbolRegular.Library24));
 
-            var darkCombo = K.Combo(WeaselConfig.BuiltinSchemes(), S.ColorSchemeDark, id => { S.ColorSchemeDark = id; Save(true); Preview(); });
+            var darkChoices = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>(WeaselConfig.AutoChoice, "自动（按当前配色生成深色版）") };
+            darkChoices.AddRange(WeaselConfig.BuiltinSchemes());
+            var darkCombo = K.Combo(darkChoices, string.IsNullOrEmpty(S.ColorSchemeDark) ? WeaselConfig.AutoChoice : S.ColorSchemeDark, id => { S.ColorSchemeDark = id; Save(true); Preview(); });
             darkCombo.IsEnabled = !S.FollowSystemDark || Brand.FromScheme(S.ColorScheme) == null;
             p.Children.Add(K.Card("跟随系统深浅色", "Windows 切换到深色模式时，自动使用所选配色的深色版",
                 K.Toggle(S.FollowSystemDark, v => { S.FollowSystemDark = v; darkCombo.IsEnabled = !v || Brand.FromScheme(S.ColorScheme) == null; Save(true); Preview(); }), Ui.SymbolRegular.Lightbulb24));
-            p.Children.Add(K.Card("深色模式配色", "不跟随一维配色时，深色模式下使用的配色", darkCombo));
+            p.Children.Add(K.Card("深色模式配色", "导入主题、经典配色或不跟随时，深色模式下使用的配色；选「自动」会按当前配色生成墨线风格的深色版", darkCombo));
 
             p.Children.Add(K.Section("排列与字体"));
             p.Children.Add(K.Card("候选排列", "横排一行，或竖排列表",

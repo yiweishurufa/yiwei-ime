@@ -489,6 +489,19 @@ namespace Yiwei
     {
         const string Marker = "# 由「一维输入法设置」生成";
 
+        /// <summary>Whether the generated file already names the light / dark schemes the current settings want.</summary>
+        public static bool UpToDateForDarkMode(Settings s)
+        {
+            try
+            {
+                if (!File.Exists(Paths.WeaselCustom)) return true;
+                var y = File.ReadAllText(Paths.WeaselCustom, Encoding.UTF8);
+                if (!y.Contains(Marker)) return true; // not ours
+                return y.Contains("\"style/color_scheme\": " + Q(s.ColorScheme)) && y.Contains("\"style/color_scheme_dark\": " + Q(DarkSchemeFor(s)));
+            }
+            catch { return true; }
+        }
+
         public static void Write(Settings s)
         {
             var path = Paths.WeaselCustom;
@@ -500,11 +513,12 @@ namespace Yiwei
             y.AppendLine(Marker + "，手动修改会被覆盖。需要额外补丁请写在 yiwei.custom.yaml 之外的方案文件里。");
             y.AppendLine("patch:");
             void P(string key, string value) => y.Append("  \"").Append(key).Append("\": ").AppendLine(value);
-            bool sysDark = SystemTheme.IsDark;
+            // 深浅色由小狼毫自己跟随系统切换（WM_SETTINGCHANGE → color_scheme / color_scheme_dark），不需要重新部署
             var light = s.ColorScheme;
             var dark = DarkSchemeFor(s);
-            P("style/color_scheme", Q(s.FollowSystemDark && sysDark ? dark : light));
+            P("style/color_scheme", Q(light));
             P("style/color_scheme_dark", Q(dark));
+            if (dark == AutoDarkId) P("preset_color_schemes/" + AutoDarkId, AutoDarkYaml(light));
             P("style/display_tray_icon", "false"); // 托盘只显示一维助手的合并图标
             P("style/horizontal", B(s.Horizontal));
             P("style/vertical_text", B(s.VerticalText));
@@ -542,16 +556,67 @@ namespace Yiwei
             foreach (var schema in RimeFeatures.PatchedSchemas) WriteSchemaPatch(schema, s);
         }
 
-        /// <summary>The scheme used in dark mode: the brand's dark variant when following the system, else the chosen one.</summary>
+        /// <summary>Generated dark version of a light scheme that has none (imported themes, 我的配色, classic schemes).</summary>
+        public const string AutoDarkId = "yiwei_auto_dark";
+        public const string AutoChoice = "auto";
+
+        /// <summary>
+        /// The scheme used in dark mode. Following the system: the brand's own dark variant (墨线五色), yiwei_light → yiwei_dark,
+        /// a scheme that is dark already stays, otherwise a dark version is generated from its accent — unless the user picked
+        /// a non-brand dark scheme by hand. Not following: the chosen dark scheme.
+        /// </summary>
         public static string DarkSchemeFor(Settings s)
         {
+            var chosen = string.IsNullOrEmpty(s.ColorSchemeDark) ? AutoChoice : s.ColorSchemeDark;
             if (s.FollowSystemDark)
             {
                 var b = Brand.FromScheme(s.ColorScheme);
                 if (b != null) return Brand.SchemeId(b.Id, true);
                 if (s.ColorScheme == "yiwei_light") return "yiwei_dark";
+                if (chosen == AutoChoice || Brand.FromScheme(chosen) != null) return IsDarkScheme(s.ColorScheme) ? s.ColorScheme : AutoDarkId;
+                return chosen;
             }
-            return string.IsNullOrEmpty(s.ColorSchemeDark) ? "yiwei_dark" : s.ColorSchemeDark;
+            return chosen == AutoChoice ? (IsDarkScheme(s.ColorScheme) ? s.ColorScheme : AutoDarkId) : chosen;
+        }
+
+        static double Luma(uint argb) => (0.2126 * ((argb >> 16) & 0xFF) + 0.7152 * ((argb >> 8) & 0xFF) + 0.0722 * (argb & 0xFF)) / 255.0;
+
+        static double Saturation(uint argb)
+        {
+            double r = ((argb >> 16) & 0xFF) / 255.0, g = ((argb >> 8) & 0xFF) / 255.0, b = (argb & 0xFF) / 255.0;
+            double max = Math.Max(r, Math.Max(g, b)), min = Math.Min(r, Math.Min(g, b));
+            return max <= 0 ? 0 : (max - min) / max;
+        }
+
+        public static bool IsDarkScheme(string id)
+        {
+            if (id == AutoDarkId) return true;
+            var c = SchemeColors(id);
+            return c.TryGetValue("back_color", out var back) && Luma(back) < 0.45;
+        }
+
+        /// <summary>The accent of a light scheme: its most saturated highlight colour, or null for a grey scheme.</summary>
+        static BrandColor AccentOf(string lightId)
+        {
+            var c = SchemeColors(lightId);
+            uint best = 0; double sat = 0.25;
+            foreach (var k in new[] { "hilited_candidate_back_color", "hilited_label_color", "hilited_candidate_label_color", "hilited_candidate_text_color", "hilited_back_color", "border_color" })
+                if (c.TryGetValue(k, out var v) && Saturation(v) > sat && Luma(v) > 0.08) { sat = Saturation(v); best = v; }
+            if (best == 0) return null;
+            // a pale tint (light highlight) → deepen it so it reads on a dark background
+            if (Luma(best) > 0.7) best = Brand.Mix(best, 0xFF000000, 0.45);
+            return new BrandColor("auto", "自动", best & 0xFFFFFF);
+        }
+
+        /// <summary>Colours of the generated dark scheme (ARGB), in the 墨线 dark style with the light scheme's accent.</summary>
+        public static Dictionary<string, uint> AutoDarkColors(string lightId) =>
+            Brand.SchemeArgb(AccentOf(lightId) ?? Brand.Find("shimo"), true);
+
+        static string AutoDarkYaml(string lightId)
+        {
+            var parts = new List<string> { "name: \"自动深色\"", "author: \"一维输入法\"", "color_format: abgr" };
+            foreach (var kv in AutoDarkColors(lightId)) parts.Add(kv.Key + ": " + Brand.ToWeasel(kv.Value));
+            return "{" + string.Join(", ", parts) + "}";
         }
 
         /// <summary>The candidate-window scheme that is showing right now.</summary>
@@ -613,6 +678,7 @@ namespace Yiwei
         public static Dictionary<string, uint> SchemeColors(string id)
         {
             var d = new Dictionary<string, uint>();
+            if (id == AutoDarkId) return AutoDarkColors(Settings.Current.ColorScheme);
             var brand = Brand.FromScheme(id);
             if (brand != null) return Brand.SchemeArgb(brand, id.EndsWith("_dark"));
             if (Settings.Current.ImportedThemes.TryGetValue(id, out var imp) || (id == "yiwei_custom" && (imp = Settings.Current.CustomTheme) != null))

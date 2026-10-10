@@ -70,8 +70,9 @@ namespace Yiwei
                 Tray.Setup();
                 SystemTheme.Changed += dark =>
                 {
-                    // Pick the light / dark candidate scheme for the new mode.
-                    if (Settings.Current.FollowSystemDark) Rime.ApplySoon(1500);
+                    // 小狼毫自己按 color_scheme / color_scheme_dark 切换候选框配色，不用重新部署。
+                    // 只有旧版本写的文件（把深色配色写进了 color_scheme）才需要重写一次。
+                    if (!WeaselConfig.UpToDateForDarkMode(Settings.Current)) Rime.ApplySoon(1500);
                 };
                 Stats.StartAppTracking();
                 DictUpdater.StartDaily();
@@ -114,7 +115,7 @@ namespace Yiwei
                 {
                     // Upgrade from 0.1: add the brand colour schemes to the generated file.
                     var y = File.ReadAllText(Paths.WeaselCustom, Encoding.UTF8);
-                    if (y.Contains("由「一维输入法设置」生成") && !y.Contains("yiwei_qingbi")) Rime.ApplyWhenIdle();
+                    if (y.Contains("由「一维输入法设置」生成") && (!y.Contains("yiwei_qingbi") || !WeaselConfig.UpToDateForDarkMode(Settings.Current))) Rime.ApplyWhenIdle();
                 }
             }
             catch (Exception e) { Log.Write("first run: " + e.Message); }
