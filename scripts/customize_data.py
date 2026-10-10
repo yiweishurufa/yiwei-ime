@@ -99,6 +99,13 @@ def customize_default_yaml():
     new, n = re.subn(r"^(    Shift_R:)[ \t]*\w+", r"\1 commit_code", text, count=1, flags=re.M)
     if n != 1 or not re.search(r"^    Shift_L:[ \t]*commit_code", new, re.M):
         raise SystemExit("default.yaml: ascii_composer/switch_key not as expected")
+    if not ANDROID:
+        # 和微软拼音、搜狗一样：中文状态下 / 键也打顿号「、」（\ 本来就是）；
+        # 数字后面的 / 照旧是斜杠（1/2、10/11），双击 / 恢复成「、」
+        new, n1 = re.subn(r"^(  half_shape:\n(?:    .*\n)*?    '/' : )'/'", r"\1'、'", new, count=1, flags=re.M)
+        new, n2 = re.subn(r'^(  digit_separators: ",\.:)"', r'\1/"', new, count=1, flags=re.M)
+        if (n1, n2) != (1, 1):
+            raise SystemExit("default.yaml: punctuator '/' not as expected %r" % ((n1, n2),))
     open(path, "w", encoding="utf-8", newline="\n").write(new)
 
 
