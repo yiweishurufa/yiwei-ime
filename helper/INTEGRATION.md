@@ -13,6 +13,7 @@
 | `/wizard` | open the first-run wizard (starts tray if not running, else forwarded over the pipe) |
 | `/settings [页面]` | open settings, optionally on a page: 常规 输入方案 快捷输入 外观 快捷键 常用语 AI 词库 应用规则 统计 关于 |
 | `/deploy` | rewrite weasel.custom.yaml / default.custom.yaml and redeploy in the background |
+| `/diagnostics` | export the diagnostics zip to the desktop (also tray 「导出诊断信息」) |
 | `/quit` | exit |
 | `toast:中` / `toast:A` | show the 中/英 bubble at the caret (~600 ms). Also accepts `toast:zh` / `toast:cn` for 中 |
 | `yiwei-ime://theme?...` | import a theme link |

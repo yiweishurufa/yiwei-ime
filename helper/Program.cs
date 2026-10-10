@@ -150,6 +150,7 @@ namespace Yiwei
                     case "/quit": Quit(); return;
                     case "/background": return;
                     case "/deploy": Rime.ApplySoon(100); return;
+                    case "/diagnostics": Diagnostics.ExportAndShow(); return;
                     case "/update": _ = AppUpdate.CheckAsync(true); return;
                     case "/wizard": ShowWizard(); return;
                 }
@@ -248,6 +249,7 @@ namespace Yiwei
             menu.Items.Add("用户文件夹", null, (s, e) => { try { System.Diagnostics.Process.Start("explorer.exe", "\"" + Paths.UserDir + "\""); } catch { } });
             menu.Items.Add("设置", null, (s, e) => Program.ShowSettings());
             menu.Items.Add("检查更新", null, (s, e) => { _ = AppUpdate.CheckAsync(true); });
+            menu.Items.Add("导出诊断信息", null, (s, e) => Diagnostics.ExportAndShow());
             menu.Items.Add("首次引导", null, (s, e) => Program.ShowWizard());
             menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add("退出", null, (s, e) => Program.Quit());
