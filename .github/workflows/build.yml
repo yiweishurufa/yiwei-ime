@@ -243,6 +243,10 @@ jobs:
           Start-Process (Join-Path $root 'YiweiServer.exe')
           Start-Process (Join-Path $root 'YiweiHelper.exe') -ArgumentList '/background'
           Start-Sleep 8
+          # 服务偶尔在首次部署后的几秒内自行重启：最多等 20 秒，不在就再拉起一次
+          $ok = $false
+          for ($i = 0; $i -lt 20 -and -not $ok; $i++) { if (Get-Process YiweiServer -ErrorAction SilentlyContinue) { $ok = $true } else { Start-Sleep 1 } }
+          if (-not $ok) { Write-Host "YiweiServer 不在，重新启动一次"; Start-Process (Join-Path $root 'YiweiServer.exe'); Start-Sleep 6 }
           if (-not (Get-Process YiweiServer -ErrorAction SilentlyContinue)) { throw "YiweiServer 没有启动" }
           if (-not (Get-Process YiweiHelper -ErrorAction SilentlyContinue)) { throw "YiweiHelper 启动后退出了" }
           Write-Host "自检通过"
