@@ -1,0 +1,278 @@
+Log file created at: 2026/10/10 18:59:32
+Running on machine: runnervmtn0fv
+Running duration (h:mm:ss): 0:00:00
+Log line format: [IWEF]yyyymmdd hh:mm:ss.uuuuuu threadid file:line] msg
+W20261010 18:59:32.562795  7900 config_data.cc:70] nonexistent config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\installation.yaml'.
+W20261010 18:59:32.586849  7900 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261010 18:59:32.595062  7900 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261010 18:59:41.643038  7900 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261010 18:59:41.643050  7900 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261010 18:59:41.643056  7900 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261010 18:59:41.643060  7900 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261010 18:59:41.643082  7900 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261010 18:59:41.643086  7900 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261010 18:59:41.643148  7900 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261010 18:59:41.643152  7900 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261010 18:59:41.643162  7900 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261010 18:59:41.643166  7900 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261010 18:59:41.643176  7900 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261010 18:59:41.643180  7900 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261010 18:59:41.643190  7900 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261010 18:59:41.643193  7900 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261010 18:59:41.643203  7900 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261010 18:59:41.643206  7900 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261010 18:59:41.643216  7900 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261010 18:59:41.643220  7900 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261010 18:59:41.643229  7900 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261010 18:59:41.643233  7900 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261010 18:59:41.644368  7900 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261010 18:59:41.697896  7900 entry_collector.cc:212] duplicate word definition 'AHK': [AHK].
+W20261010 18:59:41.698410  7900 entry_collector.cc:212] duplicate word definition 'iPhone': [iPhone].
+W20261010 18:59:41.698843  7900 entry_collector.cc:212] duplicate word definition 'MakerDAO': [MakerDAO].
+W20261010 18:59:41.699563  7900 entry_collector.cc:212] duplicate word definition 'Open WebUI': [OpenWebUI].
+W20261010 18:59:41.699729  7900 entry_collector.cc:212] duplicate word definition 'ABS': [ABS].
+W20261010 18:59:41.699910  7900 entry_collector.cc:212] duplicate word definition 'ADC': [ADC].
+W20261010 18:59:41.699944  7900 entry_collector.cc:212] duplicate word definition 'ADHD': [ADHD].
+W20261010 18:59:41.700013  7900 entry_collector.cc:212] duplicate word definition 'ADSL': [ADSL].
+W20261010 18:59:41.700224  7900 entry_collector.cc:212] duplicate word definition 'AK': [AK].
+W20261010 18:59:41.700281  7900 entry_collector.cc:212] duplicate word definition 'Alfred': [Alfred].
+W20261010 18:59:41.700296  7900 entry_collector.cc:212] duplicate word definition 'Alibaba': [Alibaba].
+W20261010 18:59:41.700459  7900 entry_collector.cc:212] duplicate word definition 'Amazon': [Amazon].
+W20261010 18:59:41.700502  7900 entry_collector.cc:212] duplicate word definition 'AMD': [AMD].
+W20261010 18:59:41.700564  7900 entry_collector.cc:212] duplicate word definition 'Amy': [Amy].
+W20261010 18:59:41.700891  7900 entry_collector.cc:212] duplicate word definition 'API': [API].
+W20261010 18:59:41.700992  7900 entry_collector.cc:212] duplicate word definition 'Apr.': [Apr.].
+W20261010 18:59:41.700998  7900 entry_collector.cc:212] duplicate word definition 'April': [April].
+W20261010 18:59:41.701187  7900 entry_collector.cc:212] duplicate word definition 'ASAP': [ASAP].
+W20261010 18:59:41.701198  7900 entry_collector.cc:212] duplicate word definition 'ASCII': [ASCII].
+W20261010 18:59:41.701368  7900 entry_collector.cc:212] duplicate word definition 'ATM': [ATM].
+W20261010 18:59:41.701515  7900 entry_collector.cc:212] duplicate word definition 'Aug.': [Aug.].
+W20261010 18:59:41.701522  7900 entry_collector.cc:212] duplicate word definition 'August': [August].
+W20261010 18:59:41.701592  7900 entry_collector.cc:212] duplicate word definition 'AV': [AV].
+W20261010 18:59:41.701929  7900 entry_collector.cc:212] duplicate word definition 'BBC': [BBC].
+W20261010 18:59:41.701933  7900 entry_collector.cc:212] duplicate word definition 'BBQ': [BBQ].
+W20261010 18:59:41.701938  7900 entry_collector.cc:212] duplicate word definition 'BBS': [BBS].
+W20261010 18:59:41.702227  7900 entry_collector.cc:212] duplicate word definition 'BIOS': [BIOS].
+W20261010 18:59:41.702445  7900 entry_collector.cc:212] duplicate word definition 'BMW': [BMW].
+W20261010 18:59:41.702827  7900 entry_collector.cc:212] duplicate word definition 'BSD': [BSD].
+W20261010 18:59:41.702832  7900 entry_collector.cc:212] duplicate word definition 'BTW': [BTW].
+W20261010 18:59:41.703258  7900 entry_collector.cc:212] duplicate word definition 'Caps': [Caps].
+W20261010 18:59:41.703534  7900 entry_collector.cc:212] duplicate word definition 'CCTV': [CCTV].
+W20261010 18:59:41.703539  7900 entry_collector.cc:212] duplicate word definition 'CD': [CD].
+W20261010 18:59:41.703609  7900 entry_collector.cc:212] duplicate word definition 'CEO': [CEO].
+W20261010 18:59:41.703635  7900 entry_collector.cc:212] duplicate word definition 'CFO': [CFO].
+W20261010 18:59:41.703990  7900 entry_collector.cc:212] duplicate word definition 'Cinderella': [Cinderella].
+W20261010 18:59:41.704096  7900 entry_collector.cc:212] duplicate word definition 'Claude': [Claude].
+W20261010 18:59:41.704160  7900 entry_collector.cc:212] duplicate word definition 'CLI': [CLI].
+W20261010 18:59:41.704246  7900 entry_collector.cc:212] duplicate word definition 'cmd': [cmd].
+W20261010 18:59:41.704251  7900 entry_collector.cc:212] duplicate word definition 'CN': [CN].
+W20261010 18:59:41.704452  7900 entry_collector.cc:212] duplicate word definition 'command': [command].
+W20261010 18:59:41.705281  7900 entry_collector.cc:212] duplicate word definition 'control': [control].
+W20261010 18:59:41.705559  7900 entry_collector.cc:212] duplicate word definition 'CPU': [CPU].
+W20261010 18:59:41.705758  7900 entry_collector.cc:212] duplicate word definition 'CS': [CS].
+W20261010 18:59:41.705763  7900 entry_collector.cc:212] duplicate word definition 'CSS': [CSS].
+W20261010 18:59:41.705769  7900 entry_collector.cc:212] duplicate word definition 'Ctrl': [Ctrl].
+W20261010 18:59:41.705965  7900 entry_collector.cc:212] duplicate word definition 'Darwin': [Darwin].
+W20261010 18:59:41.706034  7900 entry_collector.cc:212] duplicate word definition 'Debian': [Debian].
+W20261010 18:59:41.706063  7900 entry_collector.cc:212] duplicate word definition 'December': [December].
+W20261010 18:59:41.706286  7900 entry_collector.cc:212] duplicate word definition 'delete': [delete].
+W20261010 18:59:41.706629  7900 entry_collector.cc:212] duplicate word definition 'DHCP': [DHCP].
+W20261010 18:59:41.706883  7900 entry_collector.cc:212] duplicate word definition 'DirectX': [DirectX].
+W20261010 18:59:41.707041  7900 entry_collector.cc:212] duplicate word definition 'Disney': [Disney].
+W20261010 18:59:41.707202  7900 entry_collector.cc:212] duplicate word definition 'DIY': [DIY].
+W20261010 18:59:41.707209  7900 entry_collector.cc:212] duplicate word definition 'DJ': [DJ].
+W20261010 18:59:41.707218  7900 entry_collector.cc:212] duplicate word definition 'DNA': [DNA].
+W20261010 18:59:41.707222  7900 entry_collector.cc:212] duplicate word definition 'DNS': [DNS].
+W20261010 18:59:41.707325  7900 entry_collector.cc:212] duplicate word definition 'DOS': [DOS].
+W20261010 18:59:41.707602  7900 entry_collector.cc:212] duplicate word definition 'DVD': [DVD].
+W20261010 18:59:41.707791  7900 entry_collector.cc:212] duplicate word definition 'eject': [eject].
+W20261010 18:59:41.707851  7900 entry_collector.cc:212] duplicate word definition 'Elijah': [Elijah].
+W20261010 18:59:41.708009  7900 entry_collector.cc:212] duplicate word definition 'EMS': [EMS].
+W20261010 18:59:41.708176  7900 entry_collector.cc:212] duplicate word definition 'enter': [enter].
+W20261010 18:59:41.708304  7900 entry_collector.cc:212] duplicate word definition 'Esc': [Esc].
+W20261010 18:59:41.708364  7900 entry_collector.cc:212] duplicate word definition 'Ethernet': [Ethernet].
+W20261010 18:59:41.708840  7900 entry_collector.cc:212] duplicate word definition 'Fahrenheit': [Fahrenheit].
+W20261010 18:59:41.708889  7900 entry_collector.cc:212] duplicate word definition 'FAQ': [FAQ].
+W20261010 18:59:41.708986  7900 entry_collector.cc:212] duplicate word definition 'FBI': [FBI].
+W20261010 18:59:41.709008  7900 entry_collector.cc:212] duplicate word definition 'Feb.': [Feb.].
+W20261010 18:59:41.709013  7900 entry_collector.cc:212] duplicate word definition 'February': [February].
+W20261010 18:59:41.709161  7900 entry_collector.cc:212] duplicate word definition 'FIFA': [FIFA].
+W20261010 18:59:41.709271  7900 entry_collector.cc:212] duplicate word definition 'Firefox': [Firefox].
+W20261010 18:59:41.709470  7900 entry_collector.cc:212] duplicate word definition 'Fn': [Fn].
+W20261010 18:59:41.709788  7900 entry_collector.cc:212] duplicate word definition 'Friday': [Friday].
+W20261010 18:59:41.709839  7900 entry_collector.cc:212] duplicate word definition 'FTP': [FTP].
+W20261010 18:59:41.709941  7900 entry_collector.cc:212] duplicate word definition 'FYI': [FYI].
+W20261010 18:59:41.710068  7900 entry_collector.cc:212] duplicate word definition 'GBA': [GBA].
+W20261010 18:59:41.710074  7900 entry_collector.cc:212] duplicate word definition 'GCC': [GCC].
+W20261010 18:59:41.710237  7900 entry_collector.cc:212] duplicate word definition 'GIF': [GIF].
+W20261010 18:59:41.710340  7900 entry_collector.cc:212] duplicate word definition 'GMT': [GMT].
+W20261010 18:59:41.710349  7900 entry_collector.cc:212] duplicate word definition 'GNU': [GNU].
+W20261010 18:59:41.710403  7900 entry_collector.cc:212] duplicate word definition 'Google': [Google].
+W20261010 18:59:41.710443  7900 entry_collector.cc:212] duplicate word definition 'GPL': [GPL].
+W20261010 18:59:41.710449  7900 entry_collector.cc:212] duplicate word definition 'GPS': [GPS].
+W20261010 18:59:41.710730  7900 entry_collector.cc:212] duplicate word definition 'GUI': [GUI].
+W20261010 18:59:41.711152  7900 entry_collector.cc:212] duplicate word definition 'hell': [hell].
+W20261010 18:59:41.711392  7900 entry_collector.cc:212] duplicate word definition 'HK': [HK].
+W20261010 18:59:41.711597  7900 entry_collector.cc:212] duplicate word definition 'Howard': [Howard].
+W20261010 18:59:41.711610  7900 entry_collector.cc:212] duplicate word definition 'HTML': [HTML].
+W20261010 18:59:41.711614  7900 entry_collector.cc:212] duplicate word definition 'HTTP': [HTTP].
+W20261010 18:59:41.711619  7900 entry_collector.cc:212] duplicate word definition 'HTTPS': [HTTPS].
+W20261010 18:59:41.711643  7900 entry_collector.cc:212] duplicate word definition 'Hugo': [Hugo].
+W20261010 18:59:41.711813  7900 entry_collector.cc:212] duplicate word definition 'IBM': [IBM].
+W20261010 18:59:41.711860  7900 entry_collector.cc:212] duplicate word definition 'IDC': [IDC].
+W20261010 18:59:41.711895  7900 entry_collector.cc:212] duplicate word definition 'IE': [IE].
+W20261010 18:59:41.711900  7900 entry_collector.cc:212] duplicate word definition 'IEEE': [IEEE].
+W20261010 18:59:41.711904  7900 entry_collector.cc:212] duplicate word definition 'IETF': [IETF].
+W20261010 18:59:41.711957  7900 entry_collector.cc:212] duplicate word definition 'IMAP': [IMAP].
+W20261010 18:59:41.712596  7900 entry_collector.cc:212] duplicate word definition 'Intel': [Intel].
+W20261010 18:59:41.712835  7900 entry_collector.cc:212] duplicate word definition 'iOS': [iOS].
+W20261010 18:59:41.712868  7900 entry_collector.cc:212] duplicate word definition 'IP': [IP].
+W20261010 18:59:41.713223  7900 entry_collector.cc:212] duplicate word definition 'IPO': [IPO].
+W20261010 18:59:41.713274  7900 entry_collector.cc:212] duplicate word definition 'ISBN': [ISBN].
+W20261010 18:59:41.713290  7900 entry_collector.cc:212] duplicate word definition 'ISO': [ISO].
+W20261010 18:59:41.713304  7900 entry_collector.cc:212] duplicate word definition 'ISSN': [ISSN].
+W20261010 18:59:41.713332  7900 entry_collector.cc:212] duplicate word definition 'iTunes': [iTunes].
+W20261010 18:59:41.713423  7900 entry_collector.cc:212] duplicate word definition 'Jan.': [Jan.].
+W20261010 18:59:41.713435  7900 entry_collector.cc:212] duplicate word definition 'January': [January].
+W20261010 18:59:41.713529  7900 entry_collector.cc:212] duplicate word definition 'Joey': [Joey].
+W20261010 18:59:41.713573  7900 entry_collector.cc:212] duplicate word definition 'Joplin': [Joplin].
+W20261010 18:59:41.713598  7900 entry_collector.cc:212] duplicate word definition 'JPEG': [JPEG].
+W20261010 18:59:41.713603  7900 entry_collector.cc:212] duplicate word definition 'JPG': [JPG].
+W20261010 18:59:41.713640  7900 entry_collector.cc:212] duplicate word definition 'July': [July].
+W20261010 18:59:41.713653  7900 entry_collector.cc:212] duplicate word definition 'June': [June].
+W20261010 18:59:41.714091  7900 entry_collector.cc:212] duplicate word definition 'LaTeX': [LaTeX].
+W20261010 18:59:41.714180  7900 entry_collector.cc:212] duplicate word definition 'LCD': [LCD].
+W20261010 18:59:41.714294  7900 entry_collector.cc:212] duplicate word definition 'Leonard': [Leonard].
+W20261010 18:59:41.714553  7900 entry_collector.cc:212] duplicate word definition 'Linus': [Linus].
+W20261010 18:59:41.714558  7900 entry_collector.cc:212] duplicate word definition 'Linux': [Linux].
+W20261010 18:59:41.714754  7900 entry_collector.cc:212] duplicate word definition 'LOL': [LOL].
+W20261010 18:59:41.714939  7900 entry_collector.cc:212] duplicate word definition 'macOS': [macOS].
+W20261010 18:59:41.715007  7900 entry_collector.cc:212] duplicate word definition 'Maine': [Maine].
+W20261010 18:59:41.715206  7900 entry_collector.cc:212] duplicate word definition 'Mar.': [Mar.].
+W20261010 18:59:41.715223  7900 entry_collector.cc:212] duplicate word definition 'March': [March].
+W20261010 18:59:41.715400  7900 entry_collector.cc:212] duplicate word definition 'maven': [maven].
+W20261010 18:59:41.715419  7900 entry_collector.cc:212] duplicate word definition 'May': [May].
+W20261010 18:59:41.715435  7900 entry_collector.cc:212] duplicate word definition 'MBA': [MBA].
+W20261010 18:59:41.715440  7900 entry_collector.cc:212] duplicate word definition 'McAfee': [McAfee].
+W20261010 18:59:41.715784  7900 entry_collector.cc:212] duplicate word definition 'Microsoft': [Microsoft].
+W20261010 18:59:41.715978  7900 entry_collector.cc:212] duplicate word definition 'MIT': [MIT].
+W20261010 18:59:41.716115  7900 entry_collector.cc:212] duplicate word definition 'Mon.': [Mon.].
+W20261010 18:59:41.716129  7900 entry_collector.cc:212] duplicate word definition 'Monday': [Monday].
+W20261010 18:59:41.716142  7900 entry_collector.cc:212] duplicate word definition 'Monica': [Monica].
+W20261010 18:59:41.716348  7900 entry_collector.cc:212] duplicate word definition 'mRNA': [mRNA].
+W20261010 18:59:41.716353  7900 entry_collector.cc:212] duplicate word definition 'Mrs.': [Mrs.].
+W20261010 18:59:41.716384  7900 entry_collector.cc:212] duplicate word definition 'MSN': [MSN].
+W20261010 18:59:41.716390  7900 entry_collector.cc:212] duplicate word definition 'MTV': [MTV].
+W20261010 18:59:41.716490  7900 entry_collector.cc:212] duplicate word definition 'MVC': [MVC].
+W20261010 18:59:41.716506  7900 entry_collector.cc:212] duplicate word definition 'MySQL': [MySQL].
+W20261010 18:59:41.716573  7900 entry_collector.cc:212] duplicate word definition 'NAS': [NAS].
+W20261010 18:59:41.716577  7900 entry_collector.cc:212] duplicate word definition 'NASA': [NASA].
+W20261010 18:59:41.716645  7900 entry_collector.cc:212] duplicate word definition 'NATO': [NATO].
+W20261010 18:59:41.716679  7900 entry_collector.cc:212] duplicate word definition 'NBA': [NBA].
+W20261010 18:59:41.716768  7900 entry_collector.cc:212] duplicate word definition 'net': [net].
+W20261010 18:59:41.716880  7900 entry_collector.cc:212] duplicate word definition 'NGO': [NGO].
+W20261010 18:59:41.716931  7900 entry_collector.cc:212] duplicate word definition 'Nintendo': [Nintendo].
+W20261010 18:59:41.716966  7900 entry_collector.cc:212] duplicate word definition 'Nokia': [Nokia].
+W20261010 18:59:41.717078  7900 entry_collector.cc:212] duplicate word definition 'Nov.': [Nov.].
+W20261010 18:59:41.717090  7900 entry_collector.cc:212] duplicate word definition 'November': [November].
+W20261010 18:59:41.717285  7900 entry_collector.cc:212] duplicate word definition 'Oct.': [Oct.].
+W20261010 18:59:41.717295  7900 entry_collector.cc:212] duplicate word definition 'October': [October].
+W20261010 18:59:41.717387  7900 entry_collector.cc:212] duplicate word definition 'OMG': [OMG].
+W20261010 18:59:41.717497  7900 entry_collector.cc:212] duplicate word definition 'OpenBSD': [OpenBSD].
+W20261010 18:59:41.717561  7900 entry_collector.cc:212] duplicate word definition 'option': [option].
+W20261010 18:59:41.717664  7900 entry_collector.cc:212] duplicate word definition 'OS': [OS].
+W20261010 18:59:41.717682  7900 entry_collector.cc:212] duplicate word definition 'OSS': [OSS].
+W20261010 18:59:41.717689  7900 entry_collector.cc:212] duplicate word definition 'OTC': [OTC].
+W20261010 18:59:41.718252  7900 entry_collector.cc:212] duplicate word definition 'PayPal': [PayPal].
+W20261010 18:59:41.718260  7900 entry_collector.cc:212] duplicate word definition 'PC': [PC].
+W20261010 18:59:41.718344  7900 entry_collector.cc:212] duplicate word definition 'Penny': [Penny].
+W20261010 18:59:41.718669  7900 entry_collector.cc:212] duplicate word definition 'Photoshop': [Photoshop].
+W20261010 18:59:41.718674  7900 entry_collector.cc:212] duplicate word definition 'PHP': [PHP].
+W20261010 18:59:41.718947  7900 entry_collector.cc:212] duplicate word definition 'PNG': [PNG].
+W20261010 18:59:41.719252  7900 entry_collector.cc:212] duplicate word definition 'PowerPoint': [PowerPoint].
+W20261010 18:59:41.719260  7900 entry_collector.cc:212] duplicate word definition 'PPT': [PPT].
+W20261010 18:59:41.719814  7900 entry_collector.cc:212] duplicate word definition 'PS': [PS].
+W20261010 18:59:41.719967  7900 entry_collector.cc:212] duplicate word definition 'QoS': [QoS].
+W20261010 18:59:41.720091  7900 entry_collector.cc:212] duplicate word definition 'Rachel': [Rachel].
+W20261010 18:59:41.720163  7900 entry_collector.cc:212] duplicate word definition 'RAM': [RAM].
+W20261010 18:59:41.721235  7900 entry_collector.cc:212] duplicate word definition 'return': [return].
+W20261010 18:59:41.721318  7900 entry_collector.cc:212] duplicate word definition 'RFT': [RFT].
+W20261010 18:59:41.721475  7900 entry_collector.cc:212] duplicate word definition 'RNA': [RNA].
+W20261010 18:59:41.721598  7900 entry_collector.cc:212] duplicate word definition 'Ross': [Ross].
+W20261010 18:59:41.721656  7900 entry_collector.cc:212] duplicate word definition 'RPG': [RPG].
+W20261010 18:59:41.721661  7900 entry_collector.cc:212] duplicate word definition 'RSS': [RSS].
+W20261010 18:59:41.721896  7900 entry_collector.cc:212] duplicate word definition 'Sat.': [Sat.].
+W20261010 18:59:41.721901  7900 entry_collector.cc:212] duplicate word definition 'SATA': [SATA].
+W20261010 18:59:41.721959  7900 entry_collector.cc:212] duplicate word definition 'Saturday': [Saturday].
+W20261010 18:59:41.722219  7900 entry_collector.cc:212] duplicate word definition 'SDK': [SDK].
+W20261010 18:59:41.722471  7900 entry_collector.cc:212] duplicate word definition 'SEO': [SEO].
+W20261010 18:59:41.722477  7900 entry_collector.cc:212] duplicate word definition 'Sep.': [Sep.].
+W20261010 18:59:41.722493  7900 entry_collector.cc:212] duplicate word definition 'Sept.': [Sept.].
+W20261010 18:59:41.722497  7900 entry_collector.cc:212] duplicate word definition 'September': [September].
+W20261010 18:59:41.722707  7900 entry_collector.cc:212] duplicate word definition 'shed': [shed].
+W20261010 18:59:41.722723  7900 entry_collector.cc:212] duplicate word definition 'Sheldon': [Sheldon].
+W20261010 18:59:41.722751  7900 entry_collector.cc:212] duplicate word definition 'shift': [shift].
+W20261010 18:59:41.723262  7900 entry_collector.cc:212] duplicate word definition 'SMTP': [SMTP].
+W20261010 18:59:41.723412  7900 entry_collector.cc:212] duplicate word definition 'Sony': [Sony].
+W20261010 18:59:41.723443  7900 entry_collector.cc:212] duplicate word definition 'SOS': [SOS].
+W20261010 18:59:41.723483  7900 entry_collector.cc:212] duplicate word definition 'SPA': [SPA].
+W20261010 18:59:41.723489  7900 entry_collector.cc:212] duplicate word definition 'space': [space].
+W20261010 18:59:41.723696  7900 entry_collector.cc:212] duplicate word definition 'SpongeBob': [SpongeBob].
+W20261010 18:59:41.723758  7900 entry_collector.cc:212] duplicate word definition 'SQL': [SQL].
+W20261010 18:59:41.723788  7900 entry_collector.cc:212] duplicate word definition 'SSL': [SSL].
+W20261010 18:59:41.723870  7900 entry_collector.cc:212] duplicate word definition 'Starbucks': [Starbucks].
+W20261010 18:59:41.724479  7900 entry_collector.cc:212] duplicate word definition 'Sun.': [Sun.].
+W20261010 18:59:41.724487  7900 entry_collector.cc:212] duplicate word definition 'Sunday': [Sunday].
+W20261010 18:59:41.724648  7900 entry_collector.cc:212] duplicate word definition 'SUV': [SUV].
+W20261010 18:59:41.724661  7900 entry_collector.cc:212] duplicate word definition 'SVG': [SVG].
+W20261010 18:59:41.724666  7900 entry_collector.cc:212] duplicate word definition 'SVN': [SVN].
+W20261010 18:59:41.724840  7900 entry_collector.cc:212] duplicate word definition 'tab': [tab].
+W20261010 18:59:41.725008  7900 entry_collector.cc:212] duplicate word definition 'TCP': [TCP].
+W20261010 18:59:41.725429  7900 entry_collector.cc:212] duplicate word definition 'Thu.': [Thu.].
+W20261010 18:59:41.725443  7900 entry_collector.cc:212] duplicate word definition 'Thursday': [Thursday].
+W20261010 18:59:41.725554  7900 entry_collector.cc:212] duplicate word definition 'TLS': [TLS].
+W20261010 18:59:41.726155  7900 entry_collector.cc:212] duplicate word definition 'Tue.': [Tue.].
+W20261010 18:59:41.726160  7900 entry_collector.cc:212] duplicate word definition 'Tuesday': [Tuesday].
+W20261010 18:59:41.726231  7900 entry_collector.cc:212] duplicate word definition 'TV': [TV].
+W20261010 18:59:41.726287  7900 entry_collector.cc:212] duplicate word definition 'Uber': [Uber].
+W20261010 18:59:41.726294  7900 entry_collector.cc:212] duplicate word definition 'Ubuntu': [Ubuntu].
+W20261010 18:59:41.726299  7900 entry_collector.cc:212] duplicate word definition 'UDP': [UDP].
+W20261010 18:59:41.726304  7900 entry_collector.cc:212] duplicate word definition 'UFO': [UFO].
+W20261010 18:59:41.726313  7900 entry_collector.cc:212] duplicate word definition 'UI': [UI].
+W20261010 18:59:41.726318  7900 entry_collector.cc:212] duplicate word definition 'UID': [UID].
+W20261010 18:59:41.726322  7900 entry_collector.cc:212] duplicate word definition 'UK': [UK].
+W20261010 18:59:41.726626  7900 entry_collector.cc:212] duplicate word definition 'URI': [URI].
+W20261010 18:59:41.726637  7900 entry_collector.cc:212] duplicate word definition 'USA': [USA].
+W20261010 18:59:41.726646  7900 entry_collector.cc:212] duplicate word definition 'USB': [USB].
+W20261010 18:59:41.726651  7900 entry_collector.cc:212] duplicate word definition 'USD': [USD].
+W20261010 18:59:41.726671  7900 entry_collector.cc:212] duplicate word definition 'USSR': [USSR].
+W20261010 18:59:41.726679  7900 entry_collector.cc:212] duplicate word definition 'UTC': [UTC].
+W20261010 18:59:41.726851  7900 entry_collector.cc:212] duplicate word definition 'VCD': [VCD].
+W20261010 18:59:41.727157  7900 entry_collector.cc:212] duplicate word definition 'VLAN': [VLAN].
+W20261010 18:59:41.727176  7900 entry_collector.cc:212] duplicate word definition 'VoIP': [VoIP].
+W20261010 18:59:41.727224  7900 entry_collector.cc:212] duplicate word definition 'VPN': [VPN].
+W20261010 18:59:41.727485  7900 entry_collector.cc:212] duplicate word definition 'Wed.': [Wed.].
+W20261010 18:59:41.727493  7900 entry_collector.cc:212] duplicate word definition 'Wednesday': [Wednesday].
+W20261010 18:59:41.727570  7900 entry_collector.cc:212] duplicate word definition 'well': [well].
+W20261010 18:59:41.727791  7900 entry_collector.cc:212] duplicate word definition 'Windows': [Windows].
+W20261010 18:59:41.727870  7900 entry_collector.cc:212] duplicate word definition 'WLAN': [WLAN].
+W20261010 18:59:41.727876  7900 entry_collector.cc:212] duplicate word definition 'WMV': [WMV].
+W20261010 18:59:41.727966  7900 entry_collector.cc:212] duplicate word definition 'WordPress': [WordPress].
+W20261010 18:59:41.728061  7900 entry_collector.cc:212] duplicate word definition 'WTF': [WTF].
+W20261010 18:59:41.728068  7900 entry_collector.cc:212] duplicate word definition 'WWII': [WWII].
+W20261010 18:59:41.728082  7900 entry_collector.cc:212] duplicate word definition 'Xbox': [Xbox].
+W20261010 18:59:41.728092  7900 entry_collector.cc:212] duplicate word definition 'XHTML': [XHTML].
+W20261010 18:59:41.728098  7900 entry_collector.cc:212] duplicate word definition 'XML': [XML].
+W20261010 18:59:46.790123  7900 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261010 18:59:46.790151  7900 config_compiler.cc:527] circular dependencies detected in radical_pinyin.schema:
+W20261010 18:59:46.790155  7900 config_compiler.cc:367] accessing blocking node with unresolved dependencies: radical_pinyin.schema:
+W20261010 18:59:47.853019  7900 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261010 18:59:48.072831  7900 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261010 18:59:48.381447  7900 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261010 18:59:48.603056  7900 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261010 18:59:48.806996  7900 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261010 18:59:49.192286  7900 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261010 18:59:49.416447  7900 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261010 18:59:49.696705  7900 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261010 18:59:49.904197  7900 config_data.cc:70] nonexistent config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\user.yaml'.
+W20261010 18:59:49.984675  7900 config_compiler.cc:391] inaccessible node: weasel.custom:/patch

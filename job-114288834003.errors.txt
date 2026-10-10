@@ -1,0 +1,27 @@
+61:2026-10-10T18:59:12.7137723Z ##[group]Run $ErrorActionPreference = 'Stop'
+62:2026-10-10T18:59:12.7138196Z [36;1m$ErrorActionPreference = 'Stop'[0m
+74:2026-10-10T18:59:12.7143214Z [36;1m  Stop-Process -Id $ui.Id -Force -ErrorAction SilentlyContinue; Start-Sleep 2[0m
+77:2026-10-10T18:59:12.7144345Z [36;1mif (-not $p.WaitForExit(600000)) { $p.Kill(); throw "安装超时（可能弹出了对话框）" }[0m
+83:2026-10-10T18:59:12.7146551Z [36;1mif (-not $root) { throw "注册表里没有 YiweiRoot" }[0m
+86:2026-10-10T18:59:12.7147943Z [36;1m  if (-not (Test-Path (Join-Path $root $f))) { throw "缺少文件 $f" }[0m
+90:2026-10-10T18:59:12.7149744Z [36;1mif (-not $rimeText.Contains('octagram')) { throw "rime.dll 不含 librime-octagram 插件，语法模型将不可用" }[0m
+93:2026-10-10T18:59:12.7151174Z [36;1mif (-not ((Test-Path "$sys\yiwei.dll") -or (Test-Path "$sys\yiweix64.dll"))) { Get-ChildItem $sys -Filter 'yiwei*' ; throw "系统目录里没有 yiwei 输入法模块" }[0m
+95:2026-10-10T18:59:12.7152119Z [36;1mif (-not (Test-Path $tip)) { throw "TSF 输入法没有注册：$tip" }[0m
+96:2026-10-10T18:59:12.7152582Z [36;1mif (Test-Path 'HKLM:\SOFTWARE\Microsoft\CTF\TIP\{A3F4CDED-B1E9-41EE-9CA6-7B4D0DE6CB0A}') { throw "注册了小狼毫的 CLSID，改名不彻底" }[0m
+99:2026-10-10T18:59:12.7155173Z [36;1mif (-not $d.WaitForExit(600000)) { $d.Kill(); throw "部署超时" }[0m
+102:2026-10-10T18:59:12.7156250Z [36;1mGet-ChildItem (Join-Path $user 'build') -ErrorAction SilentlyContinue | Select-Object Name, Length | Format-Table | Out-String | Write-Host[0m
+103:2026-10-10T18:59:12.7156821Z [36;1mif (-not (Test-Path (Join-Path $user 'build\rime_ice.prism.bin'))) { throw "雾凇拼音没有部署成功" }[0m
+108:2026-10-10T18:59:12.7158517Z [36;1mif (-not (Get-Process YiweiServer -ErrorAction SilentlyContinue)) { throw "YiweiServer 没有启动" }[0m
+109:2026-10-10T18:59:12.7159035Z [36;1mif (-not (Get-Process YiweiHelper -ErrorAction SilentlyContinue)) { throw "YiweiHelper 启动后退出了" }[0m
+158:2026-10-10T19:00:03.2050016Z [31;1mException: [0mD:\a\_temp\218b4c67-33f7-4785-8753-c7c0c344572a.ps1:48[0m
+160:2026-10-10T19:00:03.2050971Z [31;1m[0m[36;1m[36;1m  48 | [0m … eiServer -ErrorAction SilentlyContinue)) { [36;1mthrow "YiweiServer 没有启动"[0m }[0m
+162:2026-10-10T19:00:03.2052079Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mYiweiServer 没有启动[0m
+163:2026-10-10T19:00:03.2265434Z ##[error]Process completed with exit code 1.
+173:2026-10-10T19:00:03.2610901Z [36;1m$root = (Get-ItemProperty 'HKLM:\SOFTWARE\WOW6432Node\Yiwei\YiweiIME' -ErrorAction SilentlyContinue).YiweiRoot[0m
+179:2026-10-10T19:00:03.2612565Z [36;1mGet-Process YiweiHelper -ErrorAction SilentlyContinue | Stop-Process -Force[0m
+183:2026-10-10T19:00:03.2613965Z [36;1mGet-ChildItem "$env:APPDATA\YiweiIME" -Filter '*.log' -Recurse -ErrorAction SilentlyContinue | Copy-Item -Destination screens[0m
+184:2026-10-10T19:00:03.2614845Z [36;1mGet-ChildItem "$env:LOCALAPPDATA" -Filter 'Yiwei*' -Directory -ErrorAction SilentlyContinue | ForEach-Object { Get-ChildItem $_.FullName -Filter *.log -Recurse | Copy-Item -Destination screens }[0m
+214:2026-10-10T19:00:58.3726120Z (node:1480) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+224:2026-10-10T19:00:59.1315945Z [36;1mGet-ChildItem $env:TEMP -Directory -Filter 'rime*' -ErrorAction SilentlyContinue | ForEach-Object { Copy-Item $_.FullName smoke-logs -Recurse -Force }[0m
+225:2026-10-10T19:00:59.1316416Z [36;1mCopy-Item "$env:APPDATA\YiweiIME\*.yaml" smoke-logs -ErrorAction SilentlyContinue[0m
+275:2026-10-10T19:00:59.8589208Z (node:7364) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.

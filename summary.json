@@ -1,0 +1,5 @@
+{"conclusion":"success","name":"build","steps":[]}
+{"conclusion":"failure","name":"smoke","steps":["静默安装并自检"]}
+{"conclusion":null,"name":"screens","steps":[]}
+{"conclusion":null,"name":"report","steps":[]}
+{"conclusion":"skipped","name":"release","steps":[]}

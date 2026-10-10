@@ -1,0 +1,166 @@
+Log file created at: 2026/10/10 18:59:51
+Running on machine: runnervmtn0fv
+Running duration (h:mm:ss): 0:00:01
+Log line format: [IWEF]yyyymmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I20261010 18:59:51.744223  4468 core_module.cc:20] registering core components.
+I20261010 18:59:51.817108  4468 registry.cc:14] registering component: config_builder
+I20261010 18:59:51.817118  4468 registry.cc:14] registering component: config
+I20261010 18:59:51.817121  4468 registry.cc:14] registering component: schema
+I20261010 18:59:51.817125  4468 registry.cc:14] registering component: user_config
+I20261010 18:59:51.817130  4468 dict_module.cc:25] registering components from module 'dict'.
+I20261010 18:59:51.817137  4468 registry.cc:14] registering component: tabledb
+I20261010 18:59:51.817142  4468 registry.cc:14] registering component: stabledb
+I20261010 18:59:51.817146  4468 registry.cc:14] registering component: plain_userdb
+I20261010 18:59:51.817151  4468 registry.cc:14] registering component: userdb
+I20261010 18:59:51.817157  4468 registry.cc:14] registering component: corrector
+I20261010 18:59:51.817164  4468 registry.cc:14] registering component: dictionary
+I20261010 18:59:51.817169  4468 registry.cc:14] registering component: reverse_lookup_dictionary
+I20261010 18:59:51.817177  4468 registry.cc:14] registering component: user_dictionary
+I20261010 18:59:51.817180  4468 registry.cc:14] registering component: userdb_recovery_task
+I20261010 18:59:51.817194  4468 gears_module.cc:42] registering components from module 'gears'.
+I20261010 18:59:51.817203  4468 registry.cc:14] registering component: ascii_composer
+I20261010 18:59:51.817206  4468 registry.cc:14] registering component: chord_composer
+I20261010 18:59:51.817209  4468 registry.cc:14] registering component: express_editor
+I20261010 18:59:51.817212  4468 registry.cc:14] registering component: fluid_editor
+I20261010 18:59:51.817215  4468 registry.cc:14] registering component: fluency_editor
+I20261010 18:59:51.817218  4468 registry.cc:14] registering component: key_binder
+I20261010 18:59:51.817221  4468 registry.cc:14] registering component: navigator
+I20261010 18:59:51.817224  4468 registry.cc:14] registering component: punctuator
+I20261010 18:59:51.817227  4468 registry.cc:14] registering component: recognizer
+I20261010 18:59:51.817231  4468 registry.cc:14] registering component: selector
+I20261010 18:59:51.817234  4468 registry.cc:14] registering component: speller
+I20261010 18:59:51.817237  4468 registry.cc:14] registering component: shape_processor
+I20261010 18:59:51.817240  4468 registry.cc:14] registering component: abc_segmentor
+I20261010 18:59:51.817243  4468 registry.cc:14] registering component: affix_segmentor
+I20261010 18:59:51.817247  4468 registry.cc:14] registering component: ascii_segmentor
+I20261010 18:59:51.817251  4468 registry.cc:14] registering component: matcher
+I20261010 18:59:51.817257  4468 registry.cc:14] registering component: punct_segmentor
+I20261010 18:59:51.817260  4468 registry.cc:14] registering component: fallback_segmentor
+I20261010 18:59:51.817264  4468 registry.cc:14] registering component: echo_translator
+I20261010 18:59:51.817267  4468 registry.cc:14] registering component: punct_translator
+I20261010 18:59:51.817275  4468 registry.cc:14] registering component: table_translator
+I20261010 18:59:51.817279  4468 registry.cc:14] registering component: script_translator
+I20261010 18:59:51.817282  4468 registry.cc:14] registering component: r10n_translator
+I20261010 18:59:51.817285  4468 registry.cc:14] registering component: reverse_lookup_translator
+I20261010 18:59:51.817289  4468 registry.cc:14] registering component: schema_list_translator
+I20261010 18:59:51.817293  4468 registry.cc:14] registering component: switch_translator
+I20261010 18:59:51.817296  4468 registry.cc:14] registering component: history_translator
+I20261010 18:59:51.817305  4468 registry.cc:14] registering component: simplifier
+I20261010 18:59:51.817309  4468 registry.cc:14] registering component: uniquifier
+I20261010 18:59:51.817312  4468 registry.cc:14] registering component: charset_filter
+I20261010 18:59:51.817315  4468 registry.cc:14] registering component: cjk_minifier
+I20261010 18:59:51.817325  4468 registry.cc:14] registering component: reverse_lookup_filter
+I20261010 18:59:51.817330  4468 registry.cc:14] registering component: single_char_filter
+I20261010 18:59:51.855050  4468 registry.cc:14] registering component: shape_formatter
+I20261010 18:59:51.855059  4468 modules.cc:96] registering components from module 'lua'.
+I20261010 18:59:51.856928  4468 modules.cc:87] rime.lua info: rime.lua should be either in the rime user data directory or in the rime shared data directory
+I20261010 18:59:51.856933  4468 registry.cc:14] registering component: lua_translator
+I20261010 18:59:51.856936  4468 registry.cc:14] registering component: lua_filter
+I20261010 18:59:51.856939  4468 registry.cc:14] registering component: lua_segmentor
+I20261010 18:59:51.856941  4468 registry.cc:14] registering component: lua_processor
+I20261010 18:59:51.856945  4468 grammar_module.cc:15] registering components from module 'grammar'.
+I20261010 18:59:51.856949  4468 registry.cc:14] registering component: grammar
+I20261010 18:59:51.856965  4468 registry.cc:14] registering component: predictor
+I20261010 18:59:51.856967  4468 registry.cc:14] registering component: predict_translator
+I20261010 18:59:51.856976  4468 levers_module.cc:16] registering components from module 'levers'.
+I20261010 18:59:51.856978  4468 registry.cc:14] registering component: detect_modifications
+I20261010 18:59:51.856981  4468 registry.cc:14] registering component: installation_update
+I20261010 18:59:51.856983  4468 registry.cc:14] registering component: workspace_update
+I20261010 18:59:51.856986  4468 registry.cc:14] registering component: schema_update
+I20261010 18:59:51.856988  4468 registry.cc:14] registering component: config_file_update
+I20261010 18:59:51.856990  4468 registry.cc:14] registering component: prebuild_all_schemas
+I20261010 18:59:51.856992  4468 registry.cc:14] registering component: user_dict_upgrade
+I20261010 18:59:51.856994  4468 registry.cc:14] registering component: cleanup_trash
+I20261010 18:59:51.856997  4468 registry.cc:14] registering component: user_dict_sync
+I20261010 18:59:51.856999  4468 registry.cc:14] registering component: backup_config_files
+I20261010 18:59:51.857001  4468 registry.cc:14] registering component: clean_old_log_files
+I20261010 18:59:51.857126  4468 deployment_tasks.cc:83] updating rime installation info.
+I20261010 18:59:51.857156  4468 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\installation.yaml'.
+I20261010 18:59:51.857316  4468 deployment_tasks.cc:101] installation info exists. installation id: 01e4011c-5e09-4725-8810-d58bf5dab3d9
+I20261010 18:59:51.857321  4468 deployment_tasks.cc:112] sync dir: C:\Users\runneradmin\AppData\Roaming\YiweiIME\sync
+I20261010 18:59:51.857324  4468 deployment_tasks.cc:118] previous distribution: Yiwei
+I20261010 18:59:51.857327  4468 deployment_tasks.cc:121] previous distribution version: 0.1.0
+I20261010 18:59:51.857329  4468 deployment_tasks.cc:124] previous Rime version: 1.17.0
+I20261010 18:59:51.860028  4468 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\user.yaml'.
+I20261010 18:59:51.860113  4468 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\weasel.yaml'.
+I20261010 18:59:54.803633  6756 core_module.cc:20] registering core components.
+I20261010 18:59:54.803657  6756 registry.cc:14] registering component: config_builder
+I20261010 18:59:54.803662  6756 registry.cc:14] registering component: config
+I20261010 18:59:54.803665  6756 registry.cc:14] registering component: schema
+I20261010 18:59:54.803668  6756 registry.cc:14] registering component: user_config
+I20261010 18:59:54.803671  6756 dict_module.cc:25] registering components from module 'dict'.
+I20261010 18:59:54.803675  6756 registry.cc:14] registering component: tabledb
+I20261010 18:59:54.803678  6756 registry.cc:14] registering component: stabledb
+I20261010 18:59:54.803681  6756 registry.cc:14] registering component: plain_userdb
+I20261010 18:59:54.803684  6756 registry.cc:14] registering component: userdb
+I20261010 18:59:54.803687  6756 registry.cc:14] registering component: corrector
+I20261010 18:59:54.803690  6756 registry.cc:14] registering component: dictionary
+I20261010 18:59:54.803746  6756 registry.cc:14] registering component: reverse_lookup_dictionary
+I20261010 18:59:54.803749  6756 registry.cc:14] registering component: user_dictionary
+I20261010 18:59:54.803752  6756 registry.cc:14] registering component: userdb_recovery_task
+I20261010 18:59:54.803755  6756 gears_module.cc:42] registering components from module 'gears'.
+I20261010 18:59:54.803758  6756 registry.cc:14] registering component: ascii_composer
+I20261010 18:59:54.803760  6756 registry.cc:14] registering component: chord_composer
+I20261010 18:59:54.803762  6756 registry.cc:14] registering component: express_editor
+I20261010 18:59:54.803764  6756 registry.cc:14] registering component: fluid_editor
+I20261010 18:59:54.803766  6756 registry.cc:14] registering component: fluency_editor
+I20261010 18:59:54.803769  6756 registry.cc:14] registering component: key_binder
+I20261010 18:59:54.803771  6756 registry.cc:14] registering component: navigator
+I20261010 18:59:54.803773  6756 registry.cc:14] registering component: punctuator
+I20261010 18:59:54.803775  6756 registry.cc:14] registering component: recognizer
+I20261010 18:59:54.803777  6756 registry.cc:14] registering component: selector
+I20261010 18:59:54.803780  6756 registry.cc:14] registering component: speller
+I20261010 18:59:54.803782  6756 registry.cc:14] registering component: shape_processor
+I20261010 18:59:54.803784  6756 registry.cc:14] registering component: abc_segmentor
+I20261010 18:59:54.803786  6756 registry.cc:14] registering component: affix_segmentor
+I20261010 18:59:54.803788  6756 registry.cc:14] registering component: ascii_segmentor
+I20261010 18:59:54.803791  6756 registry.cc:14] registering component: matcher
+I20261010 18:59:54.803793  6756 registry.cc:14] registering component: punct_segmentor
+I20261010 18:59:54.803795  6756 registry.cc:14] registering component: fallback_segmentor
+I20261010 18:59:54.803797  6756 registry.cc:14] registering component: echo_translator
+I20261010 18:59:54.803799  6756 registry.cc:14] registering component: punct_translator
+I20261010 18:59:54.803802  6756 registry.cc:14] registering component: table_translator
+I20261010 18:59:54.803804  6756 registry.cc:14] registering component: script_translator
+I20261010 18:59:54.803806  6756 registry.cc:14] registering component: r10n_translator
+I20261010 18:59:54.803809  6756 registry.cc:14] registering component: reverse_lookup_translator
+I20261010 18:59:54.803811  6756 registry.cc:14] registering component: schema_list_translator
+I20261010 18:59:54.803813  6756 registry.cc:14] registering component: switch_translator
+I20261010 18:59:54.803815  6756 registry.cc:14] registering component: history_translator
+I20261010 18:59:54.803818  6756 registry.cc:14] registering component: simplifier
+I20261010 18:59:54.803820  6756 registry.cc:14] registering component: uniquifier
+I20261010 18:59:54.803822  6756 registry.cc:14] registering component: charset_filter
+I20261010 18:59:54.803825  6756 registry.cc:14] registering component: cjk_minifier
+I20261010 18:59:54.803827  6756 registry.cc:14] registering component: reverse_lookup_filter
+I20261010 18:59:54.803829  6756 registry.cc:14] registering component: single_char_filter
+I20261010 18:59:54.803831  6756 registry.cc:14] registering component: shape_formatter
+I20261010 18:59:54.803834  6756 modules.cc:96] registering components from module 'lua'.
+I20261010 18:59:54.804893  6756 modules.cc:87] rime.lua info: rime.lua should be either in the rime user data directory or in the rime shared data directory
+I20261010 18:59:54.804896  6756 registry.cc:14] registering component: lua_translator
+I20261010 18:59:54.804899  6756 registry.cc:14] registering component: lua_filter
+I20261010 18:59:54.804901  6756 registry.cc:14] registering component: lua_segmentor
+I20261010 18:59:54.804903  6756 registry.cc:14] registering component: lua_processor
+I20261010 18:59:54.804907  6756 grammar_module.cc:15] registering components from module 'grammar'.
+I20261010 18:59:54.804909  6756 registry.cc:14] registering component: grammar
+I20261010 18:59:54.804913  6756 registry.cc:14] registering component: predictor
+I20261010 18:59:54.804924  6756 registry.cc:14] registering component: predict_translator
+I20261010 18:59:54.804928  6756 levers_module.cc:16] registering components from module 'levers'.
+I20261010 18:59:54.804930  6756 registry.cc:14] registering component: detect_modifications
+I20261010 18:59:54.804932  6756 registry.cc:14] registering component: installation_update
+I20261010 18:59:54.804935  6756 registry.cc:14] registering component: workspace_update
+I20261010 18:59:54.804937  6756 registry.cc:14] registering component: schema_update
+I20261010 18:59:54.804939  6756 registry.cc:14] registering component: config_file_update
+I20261010 18:59:54.804942  6756 registry.cc:14] registering component: prebuild_all_schemas
+I20261010 18:59:54.804944  6756 registry.cc:14] registering component: user_dict_upgrade
+I20261010 18:59:54.804946  6756 registry.cc:14] registering component: cleanup_trash
+I20261010 18:59:54.804948  6756 registry.cc:14] registering component: user_dict_sync
+I20261010 18:59:54.804951  6756 registry.cc:14] registering component: backup_config_files
+I20261010 18:59:54.804953  6756 registry.cc:14] registering component: clean_old_log_files
+I20261010 18:59:54.805073  6756 deployment_tasks.cc:83] updating rime installation info.
+I20261010 18:59:54.805095  6756 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\installation.yaml'.
+I20261010 18:59:54.805173  6756 deployment_tasks.cc:101] installation info exists. installation id: 01e4011c-5e09-4725-8810-d58bf5dab3d9
+I20261010 18:59:54.805176  6756 deployment_tasks.cc:112] sync dir: C:\Users\runneradmin\AppData\Roaming\YiweiIME\sync
+I20261010 18:59:54.805180  6756 deployment_tasks.cc:118] previous distribution: Yiwei
+I20261010 18:59:54.805183  6756 deployment_tasks.cc:121] previous distribution version: 0.1.0
+I20261010 18:59:54.805185  6756 deployment_tasks.cc:124] previous Rime version: 1.17.0
+I20261010 18:59:54.807662  6756 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\user.yaml'.
+I20261010 18:59:54.807719  6756 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\weasel.yaml'.

@@ -1,0 +1,80 @@
+# 由「一维输入法设置」生成，手动修改会被覆盖。需要额外补丁请写在 yiwei.custom.yaml 之外的方案文件里。
+patch:
+  "style/color_scheme": "yiwei_pill"
+  "style/color_scheme_dark": "yiwei_pill_dark"
+  "style/display_tray_icon": false
+  "style/horizontal": true
+  "style/vertical_text": false
+  "style/candidate_list_layout": "linear"
+  "style/text_orientation": "horizontal"
+  "style/inline_preedit": true
+  "style/font_point": 12
+  "style/label_font_point": 9
+  "style/comment_font_point": 10
+  "style/font_face": "Microsoft YaHei UI, SimSun-ExtB, SimSun-ExtG, Segoe UI Emoji, Segoe UI Symbol"
+  "style/comment_font_face": "Microsoft YaHei UI, SimSun-ExtB, SimSun-ExtG, Segoe UI Emoji, Segoe UI Symbol"
+  "style/layout/corner_radius": 8
+  "style/layout/round_corner": 99
+  "style/layout/hilite_padding_x": 8
+  "preset_color_schemes/yiwei_pill": {name: "一维 · 蓝色胶囊", author: "一维输入法", color_format: abgr, back_color: 0xFFFFFFFF, border_color: 0xFFEEE5E1, shadow_color: 0x1F40241A, text_color: 0xFF8C7F78, hilited_text_color: 0xFF28201C, hilited_back_color: 0xFFFFFFFF, preedit_back_color: 0xFFFFFFFF, candidate_text_color: 0xFF28201C, comment_text_color: 0xFFA5948C, label_color: 0xFFA5948C, hilited_candidate_back_color: 0xFFD75B2B, hilited_candidate_text_color: 0xFFFFFFFF, hilited_comment_text_color: 0xFFFFE6DC, hilited_label_color: 0xFFFFE6DC}
+  "preset_color_schemes/yiwei_pill_dark": {name: "一维 · 蓝色胶囊（深色）", author: "一维输入法", color_format: abgr, back_color: 0xFF2C2320, border_color: 0xFF4B3C37, shadow_color: 0x4D000000, text_color: 0xFFA5948C, hilited_text_color: 0xFFF5EEEB, hilited_back_color: 0xFF2C2320, preedit_back_color: 0xFF2C2320, candidate_text_color: 0xFFF5EEEB, comment_text_color: 0xFF96877F, label_color: 0xFFA5948C, hilited_candidate_back_color: 0xFFD75B2B, hilited_candidate_text_color: 0xFFFFFFFF, hilited_comment_text_color: 0xFFFFE6DC, hilited_label_color: 0xFFFFE6DC}
+  "preset_color_schemes/yiwei_moblue": {name: "一维 · 墨蓝", author: "一维输入法", color_format: abgr, back_color: 0xFFFAFCFB, border_color: 0xFFDED5CB, shadow_color: 0x1F20241A, text_color: 0xFF6E736A, hilited_text_color: 0xFF21241F, hilited_back_color: 0xFFFAFCFB, preedit_back_color: 0xFFFAFCFB, candidate_text_color: 0xFF21241F, comment_text_color: 0xFF92978E, label_color: 0xFF9EA39A, hilited_candidate_back_color: 0xFFF5E5DE, hilited_candidate_text_color: 0xFF974827, hilited_comment_text_color: 0xFFE28B69, hilited_label_color: 0xFFD75B2B}
+  "preset_color_schemes/yiwei_moblue_dark": {name: "一维 · 墨蓝（深色）", author: "一维输入法", color_format: abgr, back_color: 0xFF1D1F1B, border_color: 0xFF493D31, shadow_color: 0x4D000000, text_color: 0xFF93988F, hilited_text_color: 0xFFE9ECE8, hilited_back_color: 0xFF1D1F1B, preedit_back_color: 0xFF1D1F1B, candidate_text_color: 0xFFE9ECE8, comment_text_color: 0xFF83887F, label_color: 0xFF73786F, hilited_candidate_back_color: 0xFF553120, hilited_candidate_text_color: 0xFFEDB5A0, hilited_comment_text_color: 0xFFB88773, hilited_label_color: 0xFFCF9B86}
+  "preset_color_schemes/yiwei_qingbi": {name: "一维 · 青碧", author: "一维输入法", color_format: abgr, back_color: 0xFFFAFCFB, border_color: 0xFFD5DAC8, shadow_color: 0x1F20241A, text_color: 0xFF6E736A, hilited_text_color: 0xFF21241F, hilited_back_color: 0xFFFAFCFB, preedit_back_color: 0xFFFAFCFB, candidate_text_color: 0xFF21241F, comment_text_color: 0xFF92978E, label_color: 0xFF9EA39A, hilited_candidate_back_color: 0xFFE8ECDA, hilited_candidate_text_color: 0xFF5B6814, hilited_comment_text_color: 0xFFA0AE55, hilited_label_color: 0xFF7A8C0E}
+  "preset_color_schemes/yiwei_qingbi_dark": {name: "一维 · 青碧（深色）", author: "一维输入法", color_format: abgr, back_color: 0xFF1D1F1B, border_color: 0xFF3E432E, shadow_color: 0x4D000000, text_color: 0xFF93988F, hilited_text_color: 0xFFE9ECE8, hilited_back_color: 0xFF1D1F1B, preedit_back_color: 0xFF1D1F1B, candidate_text_color: 0xFFE9ECE8, comment_text_color: 0xFF83887F, label_color: 0xFF73786F, hilited_candidate_back_color: 0xFF394017, hilited_candidate_text_color: 0xFFC3CB93, hilited_comment_text_color: 0xFF939A68, hilited_label_color: 0xFFA7AF7A}
+  "preset_color_schemes/yiwei_zhusha": {name: "一维 · 朱砂", author: "一维输入法", color_format: abgr, back_color: 0xFFFAFCFB, border_color: 0xFFCDD3DB, shadow_color: 0x1F20241A, text_color: 0xFF6E736A, hilited_text_color: 0xFF21241F, hilited_back_color: 0xFFFAFCFB, preedit_back_color: 0xFFFAFCFB, candidate_text_color: 0xFF21241F, comment_text_color: 0xFF92978E, label_color: 0xFF9EA39A, hilited_candidate_back_color: 0xFFDEE2F4, hilited_candidate_text_color: 0xFF2A398D, hilited_comment_text_color: 0xFF6C7CD7, hilited_label_color: 0xFF2F45C8}
+  "preset_color_schemes/yiwei_zhusha_dark": {name: "一维 · 朱砂（深色）", author: "一维输入法", color_format: abgr, back_color: 0xFF1D1F1B, border_color: 0xFF353A44, shadow_color: 0x4D000000, text_color: 0xFF93988F, hilited_text_color: 0xFFE9ECE8, hilited_back_color: 0xFF1D1F1B, preedit_back_color: 0xFF1D1F1B, candidate_text_color: 0xFFE9ECE8, comment_text_color: 0xFF83887F, label_color: 0xFF73786F, hilited_candidate_back_color: 0xFF222A4F, hilited_candidate_text_color: 0xFFA1ABE6, hilited_comment_text_color: 0xFF757EB1, hilited_label_color: 0xFF8891C8}
+  "preset_color_schemes/yiwei_dianzi": {name: "一维 · 靛紫", author: "一维输入法", color_format: abgr, back_color: 0xFFFAFCFB, border_color: 0xFFDED4D1, shadow_color: 0x1F20241A, text_color: 0xFF6E736A, hilited_text_color: 0xFF21241F, hilited_back_color: 0xFFFAFCFB, preedit_back_color: 0xFFFAFCFB, candidate_text_color: 0xFF21241F, comment_text_color: 0xFF92978E, label_color: 0xFF9EA39A, hilited_candidate_back_color: 0xFFF5E4E6, hilited_candidate_text_color: 0xFF97414C, hilited_comment_text_color: 0xFFE18491, hilited_label_color: 0xFFD65064}
+  "preset_color_schemes/yiwei_dianzi_dark": {name: "一维 · 靛紫（深色）", author: "一维输入法", color_format: abgr, back_color: 0xFF1D1F1B, border_color: 0xFF493C38, shadow_color: 0x4D000000, text_color: 0xFF93988F, hilited_text_color: 0xFFE9ECE8, hilited_back_color: 0xFF1D1F1B, preedit_back_color: 0xFF1D1F1B, candidate_text_color: 0xFFE9ECE8, comment_text_color: 0xFF83887F, label_color: 0xFF73786F, hilited_candidate_back_color: 0xFF542E31, hilited_candidate_text_color: 0xFFEDB0B9, hilited_comment_text_color: 0xFFB78289, hilited_label_color: 0xFFCE969E}
+  "preset_color_schemes/yiwei_shimo": {name: "一维 · 石墨", author: "一维输入法", color_format: abgr, back_color: 0xFFFAFCFB, border_color: 0xFFCED2CC, shadow_color: 0x1F20241A, text_color: 0xFF6E736A, hilited_text_color: 0xFF21241F, hilited_back_color: 0xFFFAFCFB, preedit_back_color: 0xFFFAFCFB, candidate_text_color: 0xFF21241F, comment_text_color: 0xFF92978E, label_color: 0xFF9EA39A, hilited_candidate_back_color: 0xFFE6E8E6, hilited_candidate_text_color: 0xFF21241F, hilited_comment_text_color: 0xFF6E736A, hilited_label_color: 0xFF21241F}
+  "preset_color_schemes/yiwei_shimo_dark": {name: "一维 · 石墨（深色）", author: "一维输入法", color_format: abgr, back_color: 0xFF1D1F1B, border_color: 0xFF353832, shadow_color: 0x4D000000, text_color: 0xFF93988F, hilited_text_color: 0xFFE9ECE8, hilited_back_color: 0xFF1D1F1B, preedit_back_color: 0xFF1D1F1B, candidate_text_color: 0xFFE9ECE8, comment_text_color: 0xFF83887F, label_color: 0xFF73786F, hilited_candidate_back_color: 0xFF3C4039, hilited_candidate_text_color: 0xFFE9ECE8, hilited_comment_text_color: 0xFFACB0AB, hilited_label_color: 0xFFC6CAC5}
+  "global_ascii": false
+  "app_options/alacritty.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/bash.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/clion64.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/cmd.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/code - insiders.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/code.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/conhost.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/cursor.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/datagrip64.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/devenv.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/emacs.exe": {ascii_mode: true}
+  "app_options/everything.exe": {ascii_mode: true}
+  "app_options/fleet.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/goland64.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/gvim.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/hyper.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/idea64.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/listary.exe": {ascii_mode: true}
+  "app_options/mintty.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/mobaxterm.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/neovide.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/nvim-qt.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/openconsole.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/phpstorm64.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/powershell.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/powershell_ise.exe": {ascii_mode: true}
+  "app_options/powertoys.powerlauncher.exe": {ascii_mode: true}
+  "app_options/putty.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/pwsh.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/pycharm64.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/rider64.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/rubymine64.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/runemacs.exe": {ascii_mode: true}
+  "app_options/rustrover64.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/studio64.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/sublime_text.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/tabby.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/termius.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/trae.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/vscodium.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/webstorm64.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/wezterm-gui.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/windowsterminal.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/windsurf.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/windterm.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/wsl.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/wslhost.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/xshell.exe": {ascii_mode: true, vim_mode: true}
+  "app_options/zed.exe": {ascii_mode: true, vim_mode: true}
