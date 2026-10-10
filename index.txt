@@ -1,0 +1,17 @@
+README.txt
+index.txt
+installer-welcome.png
+settings-AI.png
+settings-关于.png
+settings-外观.png
+settings-常用语.png
+settings-常规.png
+settings-快捷键.png
+settings-统计.png
+wizard-1.png
+wizard-2.png
+wizard-3.png
+wizard-4.png
+wizard-5.png
+wizard-6.png
+wizard-7.png
