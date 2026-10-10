@@ -160,6 +160,7 @@ namespace Yiwei
                     case "/diagnostics": Diagnostics.ExportAndShow(); return;
                     case "/update": _ = AppUpdate.CheckAsync(true); return;
                     case "/wizard": ShowWizard(); return;
+                    case "/share": ShowLanShare(); return;
                 }
                 if (command.StartsWith("/settings") || command.Length == 0)
                 {
@@ -181,6 +182,20 @@ namespace Yiwei
             if (!string.IsNullOrEmpty(page)) _settings.GoTo(page);
             if (_settings.WindowState == System.Windows.WindowState.Minimized) _settings.WindowState = System.Windows.WindowState.Normal;
             _settings.Activate();
+        }
+
+        static LanShareWindow _lan;
+
+        public static void ShowLanShare()
+        {
+            if (_lan == null)
+            {
+                _lan = new LanShareWindow();
+                _lan.Closed += (s, e) => _lan = null;
+                _lan.Show();
+            }
+            if (_lan.WindowState == System.Windows.WindowState.Minimized) _lan.WindowState = System.Windows.WindowState.Normal;
+            _lan.Activate();
         }
 
         public static void ShowWizard()
@@ -253,6 +268,7 @@ namespace Yiwei
             menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add("重新部署", null, (s, e) => Rime.ApplySoon(50));
             menu.Items.Add("同步用户数据", null, (s, e) => System.Threading.Tasks.Task.Run(() => Deploy.Run("/sync", false)));
+            menu.Items.Add("局域网互传", null, (s, e) => Program.ShowLanShare());
             menu.Items.Add("用户文件夹", null, (s, e) => { try { System.Diagnostics.Process.Start("explorer.exe", "\"" + Paths.UserDir + "\""); } catch { } });
             menu.Items.Add("设置", null, (s, e) => Program.ShowSettings());
             menu.Items.Add("检查更新", null, (s, e) => { _ = AppUpdate.CheckAsync(true); });

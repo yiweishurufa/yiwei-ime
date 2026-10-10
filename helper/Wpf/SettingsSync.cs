@@ -115,10 +115,10 @@ namespace Yiwei
                             Toast(t.IsFaulted ? "备份失败：" + t.Exception.GetBaseException().Message : "已备份 " + t.Result + " 个文件"))));
                     }
                 }), Ui.SymbolRegular.ArrowDownload24));
-            p.Children.Add(K.Card("从备份恢复", "词库会合并进来，不会冲掉本机新学的词；被替换的设置文件会留一份 .bak",
+            p.Children.Add(K.Card("从备份恢复", "词库会合并进来，不会冲掉本机新学的词；被替换的设置文件会留一份 .bak。也可以选手机导出的 rime/sync 文件夹 zip",
                 K.Btn("恢复…", () =>
                 {
-                    using (var dlg = new System.Windows.Forms.OpenFileDialog { Filter = "一维输入法备份|*" + Backup.Extension })
+                    using (var dlg = new System.Windows.Forms.OpenFileDialog { Filter = "一维输入法备份或安卓词库|*" + Backup.Extension + ";*.zip|全部文件|*.*" })
                     {
                         if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
                         var path = dlg.FileName;
@@ -127,6 +127,22 @@ namespace Yiwei
                             Toast(t.IsFaulted ? "恢复失败：" + t.Exception.GetBaseException().Message : "已恢复，重新打开设置后可以看到恢复的选项"))));
                     }
                 }), Ui.SymbolRegular.History24));
+
+            p.Children.Add(K.Section("与手机互通"));
+            p.Children.Add(K.Card("局域网互传", "手机连同一个 Wi-Fi 扫码，互发文字，不经过任何服务器；也可以把词库直接发到手机",
+                K.Btn("打开互传", () => Program.ShowLanShare(), Ui.ControlAppearance.Primary, Ui.SymbolRegular.Phone24), Ui.SymbolRegular.PhoneLaptop24));
+            p.Children.Add(K.Card("导出给安卓", "按 RIME 用户文件夹排好的 zip：用户词库快照、custom_phrase.txt、全部常用语。解压到手机 rime 文件夹后「同步用户数据」",
+                K.Btn("导出…", () =>
+                {
+                    using (var dlg = new System.Windows.Forms.SaveFileDialog { Filter = "zip|*.zip", FileName = "一维词库-给手机-" + DateTime.Now.ToString("yyyyMMdd") + ".zip" })
+                    {
+                        if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                        var path = dlg.FileName;
+                        Toast("正在导出…");
+                        System.Threading.Tasks.Task.Run(() => Backup.ExportForAndroid(path)).ContinueWith(t => Dispatcher.BeginInvoke(new Action(() =>
+                            Toast(t.IsFaulted ? "导出失败：" + t.Exception.GetBaseException().Message : "已导出 " + t.Result + " 个文件"))));
+                    }
+                }), Ui.SymbolRegular.ArrowExportLtr24));
         }
     }
 }

@@ -34,6 +34,8 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
     <!-- Fluent controls (MIT). Supports net462+; merged into YiweiHelper.exe by Costura so there is a single file to ship. -->
     <PackageReference Include="WPF-UI" Version="3.0.5" />
+    <!-- QR codes for 局域网互传 (MIT), merged by Costura. -->
+    <PackageReference Include="QRCoder" Version="1.6.0" />
     <PackageReference Include="Fody" Version="6.9.2" PrivateAssets="all" />
     <PackageReference Include="Costura.Fody" Version="6.0.0" PrivateAssets="all" />
   </ItemGroup>

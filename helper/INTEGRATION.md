@@ -13,6 +13,7 @@
 | `/wizard` | open the first-run wizard (starts tray if not running, else forwarded over the pipe) |
 | `/settings [页面]` | open settings, optionally on a page: 常规 输入方案 快捷输入 外观 快捷键 常用语 AI 词库 应用规则 统计 关于 |
 | `/deploy` | rewrite weasel.custom.yaml / default.custom.yaml and redeploy in the background |
+| `/share` | open 局域网互传 (LAN text transfer with QR code; also tray menu) |
 | `/diagnostics` | export the diagnostics zip to the desktop (also tray 「导出诊断信息」) |
 | `/quit` | exit |
 | `toast:中` / `toast:A` | show the 中/英 bubble at the caret (~600 ms). Also accepts `toast:zh` / `toast:cn` for 中 |
@@ -58,3 +59,18 @@ There is also an experimental IMM poller (设置 → 常规 → 从输入法状�
 - Recording: winmm waveIn 16 kHz/16-bit mono, polled buffers; max 60 s. Post-processing: fillers (嗯 呃 额 啊 哦 at sentence
   start / after punctuation) and CJK–Latin spacing, both switchable.
 - If focus moves while recognising, the text goes to the clipboard with a balloon instead of being typed.
+
+## Clipboard history (Features/ClipHistory.cs)
+- `AddClipboardFormatListener` on a message-only window; last 50 text items, DPAPI (CurrentUser) encrypted in `<user>/yiwei/clipboard.dat`,
+  expiry `ClipKeepDays`. Skips password managers (process list + `ExcludeClipboardContentFromMonitorProcessing` /
+  `CanIncludeInClipboardHistory=0` / `Clipboard Viewer Ignore` formats), private-browsing window titles, `ClipExcludeApps`, and the
+  helper's own copy/paste (`ClipHistory.Suppress`). Shown as the last tab 「V 剪贴板」 of the Alt panel; hold Alt + V opens it.
+
+## LAN transfer & Android interop (Features/LanShare.cs, Wpf/LanShareWindow.cs, Features/Backup.cs)
+- While the 局域网互传 window is open: TcpListener on 0.0.0.0:18650–18669, minimal HTTP, every path under a random 10-char token
+  (`/<token>/`, `/<token>/send` POST text, `/<token>/pull?after=n`, `/<token>/file/<id>`). QR code via QRCoder (Costura-embedded).
+  Received text is copied to the clipboard. 「发词库到手机」 offers the Android export zip for download.
+- `Backup.ExportForAndroid`: zip laid out as a RIME user folder (`rime/sync/yiwei-windows/*.userdb.txt`, `rime/custom_phrase.txt`)
+  + `shared/snippets.json` ({"format":"yiwei-snippets","version":1,"groups":[{name,items:[{text,code}]}]}). `.yiwei-backup` files
+  now carry `shared/snippets.json` too. `Backup.Import` also accepts any zip with `*.userdb.txt` (e.g. a phone's `rime/sync` folder)
+  and merges the words; a foreign `shared/snippets.json` is merged into 常用语 (same group + text skipped).
