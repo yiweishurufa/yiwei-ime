@@ -228,6 +228,10 @@ namespace Yiwei
         public bool PasswordAscii { get; set; } = true;
         public bool PrivateNoLearn { get; set; } = true;
 
+        // 游戏模式（Features/GameMode.cs）
+        public bool GameMode { get; set; } = true;
+        public List<string> GameApps { get; set; } = new List<string>();
+
         // 语音输入（Features/Voice.cs）：rctrl / ralt / off；auto / zh / en / yue
         public string VoiceKey { get; set; } = "rctrl";
         public string VoiceLanguage { get; set; } = "auto";

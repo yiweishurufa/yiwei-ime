@@ -85,6 +85,7 @@ namespace Yiwei
                 };
                 Stats.StartAppTracking();
                 ClipHistory.Start();
+                GameMode.Start();
                 PrivacyGuard.Start();
                 DictUpdater.StartDaily();
                 AppUpdate.StartDaily();

@@ -102,3 +102,9 @@ There is also an experimental IMM poller (设置 → 常规 → 从输入法状�
 - Foreground title contains InPrivate / Incognito / 无痕 / 隐私浏览 …: `<user>/yiwei/private.now` exists. `yiwei_private.lua` then commits
   a full-input candidate chosen with Space/1–9 via `engine:commit_text` + `ctx:clear()` (bypasses the user dictionary);
   `yiwei_stats.lua` skips counting; clipboard history already skips such windows.
+
+## Game mode (Features/GameMode.cs, yiwei_game.lua)
+- Every second: foreground exclusive full screen, or covering the monitor and not a browser / player / slideshow (list in
+  GameMode.NotGames), or listed in `GameApps` → `<user>/yiwei/game.now`. `yiwei_game.lua` (first processor) then forces
+  `ascii_mode` and returns kRejected for Shift_L/Shift_R so the game gets Shift without a 中/英 toggle; when the flag goes away it
+  restores Chinese if it was the one that switched.

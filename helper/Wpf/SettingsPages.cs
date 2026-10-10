@@ -327,6 +327,8 @@ namespace Yiwei
                 K.Toggle(S.SymbolsHotkey, v => { S.SymbolsHotkey = v; Save(); }), Ui.SymbolRegular.Emoji24));
             p.Children.Add(K.Card("长按判定时间", "按住 Alt 多久之后再按数字或空格才算手势（毫秒）",
                 Slider(150, 1000, S.HoldMs, v => { S.HoldMs = (v / 50) * 50; Save(); })));
+            p.Children.Add(K.Card("游戏模式", "全屏游戏里自动切英文、Shift 直接交给游戏（不切换中英）、不弹候选框；退出全屏自动恢复。浏览器、播放器和演示文稿全屏不算",
+                K.Toggle(S.GameMode, v => { S.GameMode = v; Save(); }), Ui.SymbolRegular.Games24));
             p.Children.Add(K.Card("在全屏窗口里停用", "独占全屏的游戏和演示总是自动停用；开启后无边框全屏窗口也停用",
                 K.Toggle(S.AltSkipBorderlessFullscreen, v => { S.AltSkipBorderlessFullscreen = v; Save(); }), Ui.SymbolRegular.Window24));
 
