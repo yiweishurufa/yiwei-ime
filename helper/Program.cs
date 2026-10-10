@@ -146,6 +146,13 @@ namespace Yiwei
                     TextOut.Left();
                     return;
                 }
+                if (command.StartsWith("regret:"))
+                {
+                    // yiwei_regret.lua: "regret:<字数>:<拼音>" → delete what was just committed and retype the pinyin.
+                    var parts = command.Split(new[] { ':' }, 3);
+                    if (parts.Length == 3 && int.TryParse(parts[1], out var n) && n > 0 && n <= 200) TextOut.Regret(n, parts[2]);
+                    return;
+                }
                 if (command.StartsWith("toast:", StringComparison.OrdinalIgnoreCase))
                 {
                     var m = command.Substring(6).Trim();

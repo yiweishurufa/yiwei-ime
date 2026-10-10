@@ -62,6 +62,7 @@ namespace Yiwei
         public static string SnippetsFile => Path.Combine(YiweiDir, "snippets.json");
         public static string StatsFlag => Path.Combine(YiweiDir, "stats.enabled");
         public static string AutoPairOff => Path.Combine(YiweiDir, "autopair.disabled");
+        public static string RegretOff => Path.Combine(YiweiDir, "regret.disabled");
         public static string PanguFlag => Path.Combine(YiweiDir, "pangu.enabled");
         public static string WeaselCustom => Path.Combine(UserDir, "weasel.custom.yaml");
         public static string DefaultCustom => Path.Combine(UserDir, "default.custom.yaml");
@@ -330,6 +331,14 @@ namespace Yiwei
                 s.Save();
                 _current = s;
             }
+        }
+
+        /// <summary>上屏后 Ctrl+Backspace 反悔重选（yiwei_regret.lua 读这个标记文件，默认开启）。</summary>
+        [ScriptIgnore]
+        public bool Regret
+        {
+            get => !File.Exists(Paths.RegretOff);
+            set { if (!value) { Directory.CreateDirectory(Paths.YiweiDir); File.WriteAllText(Paths.RegretOff, "1"); } else if (File.Exists(Paths.RegretOff)) File.Delete(Paths.RegretOff); }
         }
 
         /// <summary>括号自动配对（yiwei_autopair.lua 读这个标记文件，默认开启）。</summary>

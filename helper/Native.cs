@@ -201,6 +201,25 @@ namespace Yiwei
             Native.SendInput((uint)list.Count, list.ToArray(), Marshal.SizeOf(typeof(Native.INPUT)));
         }
 
+        /// <summary>
+        /// 反悔重选：等 Ctrl 松开，删掉刚上屏的 <paramref name="chars"/> 个字，再用真实按键把拼音敲回去（输入法会重新组字）。
+        /// 只接受 a–z 和隔音符 '。
+        /// </summary>
+        public static void Regret(int chars, string pinyin)
+        {
+            if (string.IsNullOrEmpty(pinyin) || pinyin.Length > 64) return;
+            foreach (var c in pinyin) if (!(c >= 'a' && c <= 'z' || c == '\'')) return;
+            for (int i = 0; i < 100 && (Native.GetAsyncKeyState((int)Keys.ControlKey) & 0x8000) != 0; i++) Pump(10);
+            ReleaseModifiers();
+            var list = new System.Collections.Generic.List<Native.INPUT>();
+            for (int i = 0; i < chars; i++) AddVk(list, (ushort)Keys.Back);
+            Native.SendInput((uint)list.Count, list.ToArray(), Marshal.SizeOf(typeof(Native.INPUT)));
+            Pump(30);
+            list.Clear();
+            foreach (var c in pinyin) AddVk(list, c == '\'' ? (ushort)0xDE /* VK_OEM_7 */ : (ushort)(Keys.A + (c - 'a')));
+            Native.SendInput((uint)list.Count, list.ToArray(), Marshal.SizeOf(typeof(Native.INPUT)));
+        }
+
         /// <summary>One Left arrow, tagged as ours so the keyboard hook ignores it.</summary>
         public static void Left()
         {
