@@ -485,11 +485,12 @@ namespace Yiwei
                 var s = Settings.Current;
                 bool held = unchecked(Environment.TickCount - _altDownAt) >= s.HoldMs && !_altUsed;
                 bool wanted = held && ((s.SnippetsHotkey && vk >= Keys.D1 && vk <= Keys.D9) || (s.AiHotkey && vk == Keys.Space)
-                                       || (s.SnippetsHotkey && s.ClipHistory && vk == Keys.V) || (s.OcrHotkey && vk == Keys.O));
+                                       || (s.SnippetsHotkey && s.ClipHistory && vk == Keys.V) || (s.OcrHotkey && vk == Keys.O) || (s.HandwritingHotkey && vk == Keys.H));
                 if (wanted && !GestureBlocked(s))
                 {
                     _swallowedChord = true; _altUsed = true;
                     if (vk == Keys.Space) Program.Ui.BeginInvoke(new Action(() => OnAi?.Invoke()));
+                    else if (vk == Keys.H) Program.Ui.BeginInvoke(new Action(() => Program.ShowHandwriting()));
                     else if (vk == Keys.O) Program.Ui.BeginInvoke(new Action(() => OcrCapture.Start()));
                     else if (vk == Keys.V) Program.Ui.BeginInvoke(new Action(() => OnSnippets?.Invoke(SnippetPanel.ClipTab)));
                     else { int cat = vk - Keys.D1; Program.Ui.BeginInvoke(new Action(() => OnSnippets?.Invoke(cat))); }

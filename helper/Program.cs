@@ -25,6 +25,7 @@ namespace Yiwei
         static AiPanel _ai;
         static ImeToast _toast;
         static VoiceInput _voice;
+        static HandwritingPanel _hand;
         static DeployProgress _deployProgress;
         static KeyHook _hook;
         static SettingsWindow _settings;
@@ -59,12 +60,13 @@ namespace Yiwei
                 _ai = new AiPanel();
                 _toast = new ImeToast();
                 _voice = new VoiceInput();
+                _hand = new HandwritingPanel();
                 _deployProgress = new DeployProgress();
                 _hook = new KeyHook
                 {
-                    PanelOpen = () => _snippets.IsOpen || _ai.WantsKeys,
-                    PanelKey = (k, alt) => _snippets.IsOpen ? _snippets.HandleKey(k, alt) : _ai.HandleKey(k, alt),
-                    ClosePanel = () => { _snippets.Close2(); _ai.Close2(); },
+                    PanelOpen = () => _snippets.IsOpen || _ai.WantsKeys || _hand.IsOpen,
+                    PanelKey = (k, alt) => _snippets.IsOpen ? _snippets.HandleKey(k, alt) : _hand.IsOpen ? _hand.HandleKey(k) : _ai.HandleKey(k, alt),
+                    ClosePanel = () => { _snippets.Close2(); _ai.Close2(); _hand.Close2(); },
                     OnSnippets = c => { _ai.Close2(); _snippets.Open(c); },
                     OnAi = () => { _snippets.Close2(); _ai.Open(); },
                     OnVoiceStart = () => { _snippets.Close2(); _ai.Close2(); _voice.Begin(); },
@@ -162,6 +164,7 @@ namespace Yiwei
                     case "/wizard": ShowWizard(); return;
                     case "/share": ShowLanShare(); return;
                     case "/ocr": OcrCapture.Start(); return;
+                    case "/handwrite": ShowHandwriting(); return;
                 }
                 if (command.StartsWith("/settings") || command.Length == 0)
                 {
@@ -183,6 +186,12 @@ namespace Yiwei
             if (!string.IsNullOrEmpty(page)) _settings.GoTo(page);
             if (_settings.WindowState == System.Windows.WindowState.Minimized) _settings.WindowState = System.Windows.WindowState.Normal;
             _settings.Activate();
+        }
+
+        public static void ShowHandwriting()
+        {
+            _snippets.Close2(); _ai.Close2();
+            _hand.Open();
         }
 
         static LanShareWindow _lan;
@@ -269,6 +278,7 @@ namespace Yiwei
             menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add("重新部署", null, (s, e) => Rime.ApplySoon(50));
             menu.Items.Add("同步用户数据", null, (s, e) => System.Threading.Tasks.Task.Run(() => Deploy.Run("/sync", false)));
+            menu.Items.Add("手写输入", null, (s, e) => Program.ShowHandwriting());
             menu.Items.Add("截图识字", null, (s, e) => OcrCapture.Start());
             menu.Items.Add("局域网互传", null, (s, e) => Program.ShowLanShare());
             menu.Items.Add("用户文件夹", null, (s, e) => { try { System.Diagnostics.Process.Start("explorer.exe", "\"" + Paths.UserDir + "\""); } catch { } });

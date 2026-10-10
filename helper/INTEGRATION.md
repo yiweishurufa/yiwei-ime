@@ -15,6 +15,7 @@
 | `/deploy` | rewrite weasel.custom.yaml / default.custom.yaml and redeploy in the background |
 | `/share` | open 局域网互传 (LAN text transfer with QR code; also tray menu) |
 | `/ocr` | 截图识字: freeze the screen, drag a box, Windows.Media.Ocr (offline), result window with 上屏 / 复制 (also hold Alt + O, tray) |
+| `/handwrite` | mouse handwriting panel (also hold Alt + H, tray 手写输入) |
 | `/diagnostics` | export the diagnostics zip to the desktop (also tray 「导出诊断信息」) |
 | `/quit` | exit |
 | `toast:中` / `toast:A` | show the 中/英 bubble at the caret (~600 ms). Also accepts `toast:zh` / `toast:cn` for 中 |
@@ -80,3 +81,9 @@ There is also an experimental IMM poller (设置 → 常规 → 从输入法状�
 - WinRT via the `Microsoft.Windows.SDK.Contracts` reference package (no extra DLL to ship; the OS has the runtime).
   Prefers a zh-Hans/zh-Hant recognizer, else the user-profile languages; small crops are upscaled 2–3×; CJK words joined
   without spaces. 上屏 re-activates the window that was in front before the capture and types with `TextOut.Type`.
+
+## Handwriting (Features/Handwriting.cs, Wpf/HandwritingPanel.cs)
+- `Windows.UI.Input.Inking.InkRecognizerContainer` (offline, Chinese recognizer preferred) fed with strokes built by
+  `InkStrokeBuilder.CreateStroke(points)`. Panel is a no-activate FloatingWindow, so commits (`TextOut.Type`) land in the app
+  that has focus; recognises 0.5 s after the last stroke; keys 1–9 / Space / Backspace (undo stroke) / Esc are routed by the hook.
+  The hint points to the 雾凇 `uU` radical lookup for characters the user cannot write.
