@@ -45,3 +45,16 @@ There is also an experimental IMM poller (设置 → 常规 → 从输入法状�
   (Features/Mirrors.cs): last good source first, then `ghfast.top` → `gh-proxy.com` (also proxies api.github.com) → jsDelivr
   (repo files only) → GitHub. The last good source is kept in `<user>/yiwei/mirror.json`. Integrity: expected size +
   SHA-256 (release asset digest; the appcast `<enclosure sha256="…">` written by CI).
+
+## Offline voice input (Features/Voice.cs, Wpf/VoiceCapsule.cs, Wpf/VoiceUi.cs)
+- Hold **right Ctrl** (or right Alt; 设置 → 语音) ≥ 350 ms (right Alt: max(600, HoldMs+250)) → recording capsule at the caret;
+  release → recognise → `TextOut.Type`. Esc cancels (swallowed); any other key cancels and passes through. Not active until the
+  model is installed, nor in exclusive full screen / the Alt-gesture blocklist.
+- Engine: `sherpa-onnx-offline.exe` 1.13.8 (win-x64 or win-arm64, shared-MT-Release-no-tts: exe + onnxruntime.dll, static CRT)
+  + SenseVoice-Small int8 2024-07-17 (`model.int8.onnx`, `tokens.txt`), run with `--sense-voice-use-itn=1` (punctuation).
+  Both pinned by size + SHA-256, downloaded through `Mirrors`, unpacked with the system `tar.exe` (Win10 1803+) into
+  `<user>/yiwei/voice/`. The recogniser is started per utterance with relative ASCII paths (cwd = voice folder) so a
+  non-ASCII user folder does not break its narrow argv. Output: one JSON line on stdout, field `text`.
+- Recording: winmm waveIn 16 kHz/16-bit mono, polled buffers; max 60 s. Post-processing: fillers (嗯 呃 额 啊 哦 at sentence
+  start / after punctuation) and CJK–Latin spacing, both switchable.
+- If focus moves while recognising, the text goes to the clipboard with a balloon instead of being typed.

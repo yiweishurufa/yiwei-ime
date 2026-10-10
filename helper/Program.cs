@@ -24,6 +24,7 @@ namespace Yiwei
         static SnippetPanel _snippets;
         static AiPanel _ai;
         static ImeToast _toast;
+        static VoiceInput _voice;
         static DeployProgress _deployProgress;
         static KeyHook _hook;
         static SettingsWindow _settings;
@@ -57,6 +58,7 @@ namespace Yiwei
                 _snippets = new SnippetPanel();
                 _ai = new AiPanel();
                 _toast = new ImeToast();
+                _voice = new VoiceInput();
                 _deployProgress = new DeployProgress();
                 _hook = new KeyHook
                 {
@@ -65,6 +67,9 @@ namespace Yiwei
                     ClosePanel = () => { _snippets.Close2(); _ai.Close2(); },
                     OnSnippets = c => { _ai.Close2(); _snippets.Open(c); },
                     OnAi = () => { _snippets.Close2(); _ai.Open(); },
+                    OnVoiceStart = () => { _snippets.Close2(); _ai.Close2(); _voice.Begin(); },
+                    OnVoiceEnd = () => _voice.End(),
+                    OnVoiceCancel = () => _voice.Cancel(),
                 };
                 _hook.Install();
                 Tray.Setup();

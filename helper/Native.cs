@@ -324,7 +324,84 @@ namespace Yiwei
         public Action<int> OnSnippets;               // category index
         public Action OnAi;
 
-        public KeyHook() { _proc = Proc; }
+        // 按住说话（Features/Voice.cs）：按住右 Ctrl / 右 Alt 超过判定时间开始录音，松开识别上屏。
+        public Action OnVoiceStart, OnVoiceEnd, OnVoiceCancel;
+        long _voiceDownAt;    // TickCount when the voice key went down (0 = up)
+        bool _voiceUsed;      // another key was pressed while it was held: an ordinary shortcut
+        bool _voiceActive;    // recording started
+        readonly System.Windows.Forms.Timer _voiceTimer = new System.Windows.Forms.Timer { Interval = 50 };
+
+        public KeyHook()
+        {
+            _proc = Proc;
+            _voiceTimer.Tick += (s, e) =>
+            {
+                if (_voiceDownAt == 0 || _voiceUsed || _voiceActive) { _voiceTimer.Stop(); return; }
+                var vk = VoiceVk(Settings.Current);
+                if (vk == Keys.None || !IsDown(vk)) { _voiceDownAt = 0; _voiceTimer.Stop(); return; }
+                if (unchecked(Environment.TickCount - _voiceDownAt) < VoiceHoldMs(Settings.Current)) return;
+                _voiceTimer.Stop();
+                _voiceActive = true;
+                OnVoiceStart?.Invoke();
+            };
+        }
+
+        static Keys VoiceVk(Settings s) =>
+            s.VoiceKey == "ralt" ? Keys.RMenu : s.VoiceKey == "rctrl" ? Keys.RControlKey : Keys.None;
+
+        /// <summary>右 Alt 要比 Alt 手势的判定时间更久，免得和「长按 Alt + 数字」抢。</summary>
+        static int VoiceHoldMs(Settings s) => s.VoiceKey == "ralt" ? Math.Max(600, s.HoldMs + 250) : 350;
+
+        /// <summary>Voice key bookkeeping. Returns true when the key event must be swallowed.</summary>
+        bool HandleVoice(Keys vk, bool down)
+        {
+            var s = Settings.Current;
+            var voiceVk = VoiceVk(s);
+            if (voiceVk == Keys.None || OnVoiceStart == null || !VoiceModel.Ready) return false;
+            bool isVoiceKey = vk == voiceVk;
+            if (isVoiceKey)
+            {
+                if (down)
+                {
+                    if (_voiceDownAt != 0) return _voiceActive; // auto-repeat
+                    bool otherMods = IsDown(Keys.LControlKey) || IsDown(Keys.LMenu) || IsDown(Keys.LShiftKey) || IsDown(Keys.RShiftKey) || IsDown(Keys.LWin) || IsDown(Keys.RWin)
+                                     || (voiceVk == Keys.RMenu ? IsDown(Keys.RControlKey) : IsDown(Keys.RMenu));
+                    if (otherMods || VoiceBlocked(s)) return false;
+                    _voiceDownAt = Environment.TickCount; _voiceUsed = false; _voiceActive = false;
+                    _voiceTimer.Start();
+                    return false;
+                }
+                _voiceDownAt = 0; _voiceTimer.Stop();
+                if (_voiceActive)
+                {
+                    _voiceActive = false;
+                    Program.Ui.BeginInvoke(new Action(() => OnVoiceEnd?.Invoke()));
+                    if (voiceVk == Keys.RMenu) TextOut.MaskAlt(); // no menu bar after a lone Alt release
+                }
+                return false;
+            }
+            if (!down || _voiceDownAt == 0) return false;
+            if (_voiceActive)
+            {
+                // Esc cancels (and is swallowed); any other key cancels and goes through as usual.
+                _voiceActive = false; _voiceUsed = true;
+                Program.Ui.BeginInvoke(new Action(() => OnVoiceCancel?.Invoke()));
+                return vk == Keys.Escape;
+            }
+            _voiceUsed = true;
+            return false;
+        }
+
+        /// <summary>Voice input stays out of exclusive full screen and the apps blocked for Alt gestures (games, remote desktops).</summary>
+        static bool VoiceBlocked(Settings s)
+        {
+            if (Native.ExclusiveFullscreen()) return true;
+            var exe = Native.ForegroundExe();
+            if (exe.Length > 0 && s.AltBlocklist != null)
+                foreach (var b in s.AltBlocklist)
+                    if (string.Equals(b?.Trim(), exe, StringComparison.OrdinalIgnoreCase)) return true;
+            return false;
+        }
 
         public void Install()
         {
@@ -368,6 +445,7 @@ namespace Yiwei
 
         bool Handle(Keys vk, bool down)
         {
+            if (HandleVoice(vk, down)) return true;
             bool isAlt = vk == Keys.LMenu || vk == Keys.RMenu || vk == Keys.Menu;
             if (isAlt)
             {

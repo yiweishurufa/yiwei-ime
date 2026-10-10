@@ -213,6 +213,12 @@ namespace Yiwei
         public string DictTag { get; set; } = "";
         public string DictCheckedAt { get; set; } = "";
 
+        // 语音输入（Features/Voice.cs）：rctrl / ralt / off；auto / zh / en / yue
+        public string VoiceKey { get; set; } = "rctrl";
+        public string VoiceLanguage { get; set; } = "auto";
+        public bool VoiceRemoveFillers { get; set; } = true;
+        public bool VoicePanguSpacing { get; set; } = true;
+
         // 简繁
         public bool Traditional { get; set; } = false;
 
