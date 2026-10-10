@@ -113,3 +113,9 @@ There is also an experimental IMM poller (设置 → 常规 → 从输入法状�
 - `option_update_notifier` records `ascii_mode` per `client_app` in `<user>/yiwei/appmode.tsv` (not while game.now exists);
   on the first key in a session whose app changed, the stored mode is restored. Off when `appmode.disabled` exists
   (设置 → 应用规则 → 按程序记住中英状态). Complements Weasel's per-session state (`global_ascii: false`).
+
+## Pin / hide candidates (yiwei_pin.lua, yiwei_pin_filter.lua, yiwei_pin_store.lua, Wpf/PinsUi.cs)
+- Ctrl+T pins the highlighted full-input candidate for that pinyin (toggle); Ctrl+Delete hides it (and still lets RIME delete a
+  learned word). Stored in `<user>/yiwei/pins.tsv` (`P|H\tcode\ttext`); the filter (before pangu) moves the pin first (or injects it)
+  and drops hidden ones. The settings page edits the file and writes `pins.reload` so the IME re-reads it. Works on Android too.
+  A right-click menu on the candidate window would need WeaselUI (C++) changes and is not done.

@@ -157,10 +157,11 @@ def mount_into_schemas():
         extra = "" if ANDROID else r"\2- lua_processor@*yiwei_autopair  # 一维输入法：括号自动配对\n"
         text, n = re.subn(r"(\n(\s+)- ascii_composer[^\n]*\n)",
                           r"\1" + extra +
-                          r"\2- lua_processor@*yiwei_pangu  # 一维输入法：中英之间自动加空格（默认关闭）\n", text, count=1)
+                          r"\2- lua_processor@*yiwei_pangu  # 一维输入法：中英之间自动加空格（默认关闭）\n"
+                          r"\2- lua_processor@*yiwei_pin  # 一维输入法：Ctrl+T 置顶 / Ctrl+Delete 隐藏候选\n", text, count=1)
         if n != 1:
             raise SystemExit("%s: ascii_composer not found" % fn)
-        text, n = re.subn(r"(\n  filters:\n(?:    [^\n]*\n)*)", r"\1    - lua_filter@*yiwei_pangu_filter  # 一维输入法：中英之间自动加空格\n", text, count=1)
+        text, n = re.subn(r"(\n  filters:\n(?:    [^\n]*\n)*)", r"\1    - lua_filter@*yiwei_pin_filter  # 一维输入法：置顶 / 隐藏候选\n    - lua_filter@*yiwei_pangu_filter  # 一维输入法：中英之间自动加空格\n", text, count=1)
         if n != 1:
             raise SystemExit("%s: filters not found" % fn)
         text = re.sub(r"(\n(\s+)- table_translator@custom_phrase[^\n]*\n)",

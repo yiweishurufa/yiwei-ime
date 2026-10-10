@@ -263,6 +263,7 @@ namespace Yiwei
             p.Children.Add(K.PageTitle("词库"));
             AddDictUpdateCards(p);   // Wpf/DictFeaturesUi.cs
             AddGrammarCards(p);
+            AddPinsCard(p);          // Wpf/PinsUi.cs
             p.Children.Add(K.Card("用户词典管理", "导出、导入或备份 RIME 用户词典", K.Btn("打开", () => Dialogs.Open(Paths.Deployer, "/dict")), Ui.SymbolRegular.Book24));
 
             p.Children.Add(K.Section("导入旧习惯"));
