@@ -16,6 +16,7 @@
 | `/share` | open 局域网互传 (LAN text transfer with QR code; also tray menu) |
 | `/ocr` | 截图识字: freeze the screen, drag a box, Windows.Media.Ocr (offline), result window with 上屏 / 复制 (also hold Alt + O, tray) |
 | `/handwrite` | mouse handwriting panel (also hold Alt + H, tray 手写输入) |
+| `/addword` | 加词 window (hold Alt + A uses the current selection; tray 加词…) |
 | `/diagnostics` | export the diagnostics zip to the desktop (also tray 「导出诊断信息」) |
 | `/quit` | exit |
 | `regret:<n>:<pinyin>` | from yiwei_regret.lua (Ctrl+Backspace right after a commit): wait for Ctrl up, n × Backspace, then retype the pinyin as real key presses so the IME recomposes it |
@@ -88,3 +89,8 @@ There is also an experimental IMM poller (设置 → 常规 → 从输入法状�
   `InkStrokeBuilder.CreateStroke(points)`. Panel is a no-activate FloatingWindow, so commits (`TextOut.Type`) land in the app
   that has focus; recognises 0.5 s after the last stroke; keys 1–9 / Space / Backspace (undo stroke) / Esc are routed by the hook.
   The hint points to the 雾凇 `uU` radical lookup for characters the user cannot write.
+
+## Add word (Features/AddWord.cs, Wpf/AddWordWindow.cs)
+- Pinyin: whole word looked up in rime-ice `cn_dicts/base|ext|tencent.dict.yaml` (user folder first, then shared data), else per
+  character from `8105` / `41448` (highest weight reading). The user can edit it. Saved through `HabitImport.AddWords`
+  (sync snapshot `sync/yiwei-import/rime_ice.userdb.txt` + deployer `/sync`).

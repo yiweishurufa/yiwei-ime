@@ -223,6 +223,14 @@ namespace Yiwei
             return entries.Count;
         }
 
+        /// <summary>Adds words (phrase → "pin yin ") to the user dictionary: sync snapshot, then the deployer's /sync.</summary>
+        public static void AddWords(Dictionary<string, string> entries)
+        {
+            if (entries.Count == 0) return;
+            WriteSnapshot(entries);
+            Deploy.Run("/sync", false);
+        }
+
         static void WriteSnapshot(Dictionary<string, string> entries)
         {
             var dir = System.IO.Path.Combine(Sync.EffectiveDir, "yiwei-import"); // 跟随 installation.yaml 的 sync_dir

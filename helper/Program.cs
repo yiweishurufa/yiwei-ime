@@ -171,6 +171,7 @@ namespace Yiwei
                     case "/wizard": ShowWizard(); return;
                     case "/share": ShowLanShare(); return;
                     case "/ocr": OcrCapture.Start(); return;
+                    case "/addword": AddWordWindow.ShowFor(""); return;
                     case "/handwrite": ShowHandwriting(); return;
                 }
                 if (command.StartsWith("/settings") || command.Length == 0)
@@ -199,6 +200,14 @@ namespace Yiwei
         {
             _snippets.Close2(); _ai.Close2();
             _hand.Open();
+        }
+
+        /// <summary>Hold Alt + A: copy the selection and open the 加词 window with it (auto pinyin).</summary>
+        public static void AddSelectedWord()
+        {
+            string sel = "";
+            try { sel = TextOut.CopySelection(); } catch { }
+            AddWordWindow.ShowFor(sel);
         }
 
         static LanShareWindow _lan;
@@ -286,6 +295,7 @@ namespace Yiwei
             menu.Items.Add("重新部署", null, (s, e) => Rime.ApplySoon(50));
             menu.Items.Add("同步用户数据", null, (s, e) => System.Threading.Tasks.Task.Run(() => Deploy.Run("/sync", false)));
             menu.Items.Add("手写输入", null, (s, e) => Program.ShowHandwriting());
+            menu.Items.Add("加词…", null, (s, e) => AddWordWindow.ShowFor(""));
             menu.Items.Add("截图识字", null, (s, e) => OcrCapture.Start());
             menu.Items.Add("局域网互传", null, (s, e) => Program.ShowLanShare());
             menu.Items.Add("用户文件夹", null, (s, e) => { try { System.Diagnostics.Process.Start("explorer.exe", "\"" + Paths.UserDir + "\""); } catch { } });
