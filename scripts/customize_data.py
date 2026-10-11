@@ -172,7 +172,12 @@ def mount_into_schemas():
         if n != 1:
             raise SystemExit("%s: filters not found" % fn)
         text = re.sub(r"(\n(\s+)- table_translator@custom_phrase[^\n]*\n)",
-                      r"\1\2- table_translator@yiwei_tech     # 一维输入法：科技与互联网词库\n", text, count=1)
+                      r"\1\2- table_translator@yiwei_tech     # 一维输入法：科技与互联网词库\n"
+                      r"\2- lua_translator@*yiwei_convert   # 一维输入法：hs5km 单位 / 汇率换算\n", text, count=1)
+        # hs + 数字 + 单位：让数字留在输入码里（和雾凇的 R、N 一样靠 recognizer）
+        text, n = re.subn(r"(\nrecognizer:\n(?:  [^\n]*\n)*?  patterns:[^\n]*\n)", r'\1    yiwei_convert: "^hs[0-9][0-9.]*[a-z]*$"\n', text, count=1)
+        if n != 1:
+            raise SystemExit("%s: recognizer/patterns not found" % fn)
         text = text.rstrip("\n") + "\n" + TECH_BLOCK
         open(path, "w", encoding="utf-8", newline="\n").write(text)
         count += 1

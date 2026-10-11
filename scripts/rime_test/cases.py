@@ -205,3 +205,18 @@ def w1_fuzzy_full_and_double(r):
     assert "风" in p, p
     p = page_after(r, "zi", "double_pinyin_flypy")["page"]; r.clear()
     assert "知" in p or "只" in p, p
+
+
+@case
+def w27_unit_currency(r):
+    """W27 换算：hs5km、hs100f、hs2jin、hs100usd（离线汇率）；hs 本身仍是拼音简拼。"""
+    p = page_after(r, "hs5km")["page"]; r.clear()
+    assert "5 千米 = 5000 米" in p, p
+    p = page_after(r, "hs100f")["page"]; r.clear()
+    assert "100 °F = 37.7778 °C" in p, p
+    p = page_after(r, "hs2jin")["page"]; r.clear()
+    assert "2 斤 = 1 千克" in p, p
+    p = page_after(r, "hs100usd")["page"]; r.clear()
+    assert any(x.startswith("100 美元 ≈ ") and x.endswith(" 人民币") for x in p), p
+    p = page_after(r, "hs")["page"]; r.clear()
+    assert p and "千米" not in p[0], p
