@@ -118,9 +118,9 @@ def install_theme():
         if n != 1:
             raise SystemExit("trime.yaml: preset_keyboards not found")
         # stock boards that our aliases replace
-        for a in layouts.QWERTY_ALIASES:
+        for a in layouts.QWERTY_ALIASES + layouts.OTHER_ALIASES:
             t = re.sub(r"\n  %s:\n(?:    [^\n]*\n|      [^\n]*\n|\n)*?(?=  \w+:\n|\Z)" % re.escape(a),
-                       lambda m: "\n" if "import_preset: yw_qwerty" not in m.group(0) else m.group(0), t)
+                       lambda m: "\n" if "import_preset: yw_" not in m.group(0) else m.group(0), t)
         # liquid keyboard: 「常用语」 tab first
         t, n = re.subn(r"(\n  keyboards: \[)emoji,", r"\1phrases, emoji,", t, count=1)
         t, n2 = re.subn(r"(\n  tabs:\n    name: 更多\n    type: TABS\n)", lambda m: m.group(1) + layouts.LIQUID_PHRASES, t, count=1)
@@ -455,6 +455,47 @@ def install_oppo():
              lambda t, s=s: t.replace("</resources>", '    <string name="yiwei_haptic_style">%s</string>\n</resources>' % s, 1))
 
 
+def install_sidecolumn():
+    """九键左侧竖列：标点 / 打字时的拼音选择列（YiweiSideColumn.kt）。"""
+    J = os.path.join(MAIN, "java", "com", "osfans", "trime", "ime")
+    Y = "com.osfans.trime.ime.keyboard.YiweiSideColumn"
+    shutil.copy(os.path.join(HERE, "kotlin", "YiweiSideColumn.kt"), os.path.join(J, "keyboard", "YiweiSideColumn.kt"))
+
+    def cand(t):
+        a = "        val (total, highlighted, candidates) = data\n"
+        b = "rime.launchOnReady { it.selectCandidate(position, global = true) }"
+        c = "inputView.showCandidateActionMenu(position, items[position].text, view, global = true)"
+        if a not in t or b not in t or c not in t:
+            raise SystemExit("CompactCandidateDelegate: anchors not found")
+        t = t.replace(a, "        %s.remember(data)\n        %s.setRefreshHook { onCandidateListUpdate(it) }\n"
+                         "        val (total, highlighted, candidates) = %s.process(data)\n" % (Y, Y, Y), 1)
+        t = t.replace(b, "val real = %s.realIndex(position)\n                rime.launchOnReady { it.selectCandidate(real, global = true) }" % Y, 1)
+        return t.replace(c, "inputView.showCandidateActionMenu(%s.peekIndex(position), items[position].text, view, global = true)" % Y, 1)
+    edit(os.path.join(J, "candidates", "compact", "CompactCandidateDelegate.kt"), cand)
+
+    def kw(t):
+        a = "                add(it, lParams(matchParent, matchParent))\n                YiweiResize.raise()\n"
+        if a not in t:
+            raise SystemExit("KeyboardWindow: attach anchor not found (install_feedback first)")
+        return t.replace(a, a + "                YiweiSideColumn.onKeyboard(this, target, keyboard.keyboardHeight) { p -> service.commitText(p) }\n", 1)
+    edit(os.path.join(J, "keyboard", "KeyboardWindow.kt"), kw)
+
+    def ckal(t):
+        a = "            private fun handleDefaultKeyAction(action: KeyAction) {\n"
+        if a not in t:
+            raise SystemExit("CommonKeyboardActionListener: handleDefaultKeyAction not found")
+        return t.replace(a, a + """                // 一维输入法：选了拼音（九键左列）后，空格上屏过滤后的第一个候选
+                if (action.code == KeyEvent.KEYCODE_SPACE) {
+                    val idx = %s.filteredFirst()
+                    if (idx != null) {
+                        rime.launchOnReady { it.selectCandidate(idx, global = true) }
+                        return
+                    }
+                }
+""" % Y, 1)
+    edit(os.path.join(J, "keyboard", "CommonKeyboardActionListener.kt"), ckal)
+
+
 def install_safe_upgrade():
     """Upgrades: the APK ships dictionaries precompiled with Trime's own librime (assets/shared/build).
     Compiled files an older version left in the user build dir would shadow them (librime looks there first),
@@ -624,6 +665,15 @@ def check_keys():
         for n in needles:
             if n not in src:
                 bad.append("OPPO patch missing in %s: %s" % (f, n))
+    for f, needles in (("ime/candidates/compact/CompactCandidateDelegate.kt", ("YiweiSideColumn.process", "realIndex")),
+                       ("ime/keyboard/KeyboardWindow.kt", ("YiweiSideColumn.onKeyboard",)),
+                       ("ime/keyboard/CommonKeyboardActionListener.kt", ("filteredFirst",))):
+        src = open(os.path.join(MAIN, "java", "com", "osfans", "trime", *f.split("/")), encoding="utf-8").read()
+        for n in needles:
+            if n not in src:
+                bad.append("side column patch missing in %s: %s" % (f, n))
+    if (y["preset_keyboards"].get("number") or {}).get("import_preset") != "yw_number":
+        bad.append("preset_keyboards.number must import yw_number")
     if not any(t[2] == "yw_keepalive" for t in layouts.TOOLBOX):
         bad.append("toolbox: 后台保活 entry missing")
     if "phrases" not in ((y.get("liquid_keyboard") or {}).get("keyboards") or []):
@@ -702,6 +752,7 @@ if __name__ == "__main__":
     install_toolbox()
     install_oppo()
     install_preedit()
+    install_sidecolumn()
     check_keys()  # after install_feedback: also checks the keyboard_resize handler it patches in
     install_brand()
     install_slogan()

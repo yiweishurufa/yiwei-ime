@@ -115,8 +115,8 @@ def t9():
                 % (q(code), q(label), q(d), commit(d), commit(d)))
 
     def left(r):
-        return "      - {click: %s, label: %s, width: 16, key_back_color: yw_func_back, key_text_color: yw_func_text}" % (
-            q(side_send[r]), q(side[r]))
+        # 左列由 YiweiSideColumn 覆盖层负责（标点 / 拼音选择），这里只占位
+        return "      - {width: 16}"
     k = []
     k += [left(0), digit(0), digit(1), digit(2), "      - {click: yw_backspace, width: 18}"]
     k += [left(1), digit(3), digit(4), digit(5), "      - {click: yw_reinput, width: 18}"]
@@ -195,6 +195,10 @@ QWERTY_ALIASES = ["rime_ice", "double_pinyin", "double_pinyin_abc", "double_piny
                   "double_pinyin_mspy", "double_pinyin_sogou", "double_pinyin_ziguang", "melt_eng", "qwerty", "qwerty_", "qwerty0"]
 
 
+# 同文在数字/电话输入框里会切到名为 number 的键盘：换成一维数字键盘
+OTHER_ALIASES = ["number"]
+ALIAS_TARGET = {"number": "yw_number"}
+
 OUR_KEYBOARDS = ["yw_qwerty", "t9", "yw_edit_board", "yw_number"]
 
 
@@ -202,6 +206,8 @@ def keyboards():
     out = qwerty() + t9() + edit_board() + number_board()
     for a in QWERTY_ALIASES:
         out += "  %s:\n    import_preset: yw_qwerty\n" % a
+    for a in OTHER_ALIASES:
+        out += "  %s:\n    import_preset: %s\n" % (a, ALIAS_TARGET[a])
     return out
 
 
