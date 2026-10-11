@@ -20,6 +20,7 @@ PRESET_KEYS = """
   yw_sym: {label: "符", send: Eisu_toggle, select: symbols, functional: true}
   yw_emoji: {label: "ic@emoticon_outline", send: FUNCTION, command: liquid_keyboard, option: "emoji", functional: true}
   yw_layout: {label: "九键", send: FUNCTION, command: select_schema, option: "t9|rime_ice", functional: true}
+  yw_layout26: {label: "26键", send: FUNCTION, command: select_schema, option: "t9|rime_ice", functional: true}
   yw_reinput: {label: "重输", send: Escape, functional: true}
   yw_split: {label: "分词", send: "1"}
   yw_menu: {label: "菜单", send: FUNCTION, command: menu_keyboard, functional: true}
@@ -86,12 +87,12 @@ def t9():
     k = []
     k += [left(0), digit(0), digit(1), digit(2), "      - {click: yw_backspace, width: 18}"]
     k += [left(1), digit(3), digit(4), digit(5), "      - {click: yw_reinput, width: 18}"]
-    k += [left(2), digit(6), digit(7), digit(8), "      - {click: '@', label: '@', swipe_up: %s, width: 18,"
-          " key_back_color: yw_func_back, key_text_color: yw_func_text}" % commit("0")]
+    k += [left(2), digit(6), digit(7), digit(8), "      - {click: %s, label: '@', swipe_up: %s, width: 18,"
+          " key_back_color: yw_func_back, key_text_color: yw_func_text}" % (commit("@"), commit("0"))]
     k += ["      - {click: yw_num, long_click: yw_sym, width: 16}",
           "      - {click: yw_mode, width: 11}",
           "      - {click: yw_space_t9, swipe_up: %s, width: 44}" % commit("0"),
-          "      - {click: yw_layout, long_click: yw_emoji, width: 11}",
+          "      - {click: yw_layout26, long_click: yw_emoji, width: 11}",
           "      - {click: yw_return, key_back_color: yw_enter_back, key_text_color: yw_enter_text,"
           " hilited_key_back_color: yw_enter_back, hilited_key_text_color: yw_enter_text, width: 18}"]
     return """  t9:
