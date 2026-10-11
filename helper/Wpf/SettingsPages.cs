@@ -268,8 +268,8 @@ namespace Yiwei
             p.Children.Add(K.Section("排列与字体"));
             p.Children.Add(K.Card("候选排列", "横排一行，或竖排列表",
                 K.Segmented(new[] { KV(true, "横排"), KV(false, "竖排") }, S.Horizontal, v => { S.Horizontal = v; S.VerticalText = false; Save(true); Preview(); }), Ui.SymbolRegular.Window24));
-            p.Children.Add(K.Card("候选个数", "每页显示几个候选",
-                K.Segmented(new[] { KV(5, "5"), KV(7, "7"), KV(9, "9") }, S.CandidateCount, v => { S.CandidateCount = v; Save(true); })));
+            p.Children.Add(K.Card("候选个数", "每页显示几个候选（5–10，第 10 个按 0 选）",
+                K.Segmented(Enumerable.Range(5, 6).Select(n => KV(n, n.ToString())), S.CandidateCount, v => { S.CandidateCount = v; Save(true); })));
 
             var fonts = new ComboBox { MinWidth = 240, IsEditable = true, Text = S.FontFace };
             try

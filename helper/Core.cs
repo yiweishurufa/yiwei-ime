@@ -331,7 +331,7 @@ namespace Yiwei
                     if (s.AiActions == null || s.AiActions.Count == 0) s.AiActions = DefaultActions();
                     if (s.AppAscii == null) s.AppAscii = new Dictionary<string, bool>();
                     if (s.ImportedThemes == null) s.ImportedThemes = new Dictionary<string, Dictionary<string, string>>();
-                    if (s.CandidateCount != 5 && s.CandidateCount != 7 && s.CandidateCount != 9) s.CandidateCount = 5;
+                    if (s.CandidateCount < 5 || s.CandidateCount > 10) s.CandidateCount = 5; // 5–10（W17）
                     if (Brand.Find(s.Accent) == null) s.Accent = "pill";
                     return _current = s;
                 }

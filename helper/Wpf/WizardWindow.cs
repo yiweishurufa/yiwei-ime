@@ -195,7 +195,7 @@ namespace Yiwei
             sp.Children.Add(K.Card("候选排列", "横排一行，或竖排列表",
                 K.Segmented(new[] { new KeyValuePair<bool, string>(true, "横排"), new KeyValuePair<bool, string>(false, "竖排") }, S.Horizontal, v => { S.Horizontal = v; S.VerticalText = false; Changed(); Refresh(); })));
             sp.Children.Add(K.Card("候选个数", "每页显示几个候选",
-                K.Segmented(new[] { new KeyValuePair<int, string>(5, "5"), new KeyValuePair<int, string>(7, "7"), new KeyValuePair<int, string>(9, "9") }, S.CandidateCount, v => { S.CandidateCount = v; Changed(); })));
+                K.Segmented(System.Linq.Enumerable.Range(5, 6).Select(n => new KeyValuePair<int, string>(n, n.ToString())), S.CandidateCount, v => { S.CandidateCount = v; Changed(); })));
             Refresh();
             return sp;
         }
