@@ -197,6 +197,8 @@ namespace Yiwei
                 K.Toggle(T.DelayAtBoot, v => { T.DelayAtBoot = v; SaveTools(); }), Ui.SymbolRegular.Timer24);
             yield return K.Card("开机自动启动一维助手", "关掉后开机不启动助手（Windows「启动应用」里同一个开关），从语言栏菜单打开设置、手写等时才启动；在那之前长按 Alt 手势、语音、剪贴板历史不可用。打字本身不受影响",
                 K.Toggle(StartupMode.AutoStart, v => StartupMode.AutoStart = v), Ui.SymbolRegular.Power24);
+            yield return K.Card("更新通道", "测试版：每次构建都推送，新功能最快；稳定版：经过验证后才推送（稳定版发布前选它暂时收不到更新）",
+                K.Combo(new[] { KS("beta", "测试版"), KS("stable", "稳定版") }, T.UpdateChannel ?? "beta", v => { T.UpdateChannel = v; SaveTools(); }, 160), Ui.SymbolRegular.ArrowSync24);
             yield return K.CardBorder(K.Row(K.Btn("现在回收内存", () => { LowSpec.Trim(); Refresh(); }), mem));
         }
 

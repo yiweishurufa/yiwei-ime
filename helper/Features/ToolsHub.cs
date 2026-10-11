@@ -48,6 +48,8 @@ namespace Yiwei
         public bool LowSpecHinted { get; set; } = false;
         /// <summary>W41 开机时延迟工具组后台任务、低优先级启动。</summary>
         public bool DelayAtBoot { get; set; } = true;
+        /// <summary>W44 更新通道：beta（测试版，每次构建）/ stable（稳定版）。</summary>
+        public string UpdateChannel { get; set; } = "beta";
 
         static ToolSettings _current;
         static string FilePath => System.IO.Path.Combine(Paths.YiweiDir, "tools.json");

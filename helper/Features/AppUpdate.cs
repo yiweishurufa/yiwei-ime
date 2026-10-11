@@ -16,7 +16,10 @@ namespace Yiwei
     public static class AppUpdate
     {
         // 清单与安装包都走国内镜像链（见 Mirrors）：上次成功的源 → ghfast → gh-proxy → jsDelivr（仅清单）→ GitHub 原站
-        const string Feed = "https://raw.githubusercontent.com/yiweishurufa/yiwei-ime/main/update/appcast.xml";
+        // W44 更新通道：测试版 = 每次 CI 构建（nightly）；稳定版 = 维护者用 scripts/promote_stable.sh 提升的版本
+        const string BetaFeed = "https://raw.githubusercontent.com/yiweishurufa/yiwei-ime/main/update/appcast.xml";
+        const string StableFeed = "https://raw.githubusercontent.com/yiweishurufa/yiwei-ime/main/update/appcast-stable.xml";
+        static string Feed => ToolSettings.Current.UpdateChannel == "stable" ? StableFeed : BetaFeed;
 
         public sealed class Info { public Version Version; public string Url; public long Length; public string Sha256; }
 
