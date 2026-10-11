@@ -46,6 +46,8 @@ namespace Yiwei
         public bool LowSpec { get; set; } = false;
         public string LowSpecSaved { get; set; } = "";
         public bool LowSpecHinted { get; set; } = false;
+        /// <summary>W41 开机时延迟工具组后台任务、低优先级启动。</summary>
+        public bool DelayAtBoot { get; set; } = true;
 
         static ToolSettings _current;
         static string FilePath => System.IO.Path.Combine(Paths.YiweiDir, "tools.json");
@@ -104,7 +106,15 @@ namespace Yiwei
         {
             EnsureRegistered();
             try { _hk = new HotkeyWindow(); _hk.Apply(); } catch (Exception e) { Log.Write("tools hotkeys: " + e.Message); }
-            foreach (var s in _starters) { try { s(); } catch (Exception e) { Log.Write("tools start: " + e.Message); } }
+            void RunStarters() { foreach (var s in _starters) { try { s(); } catch (Exception e) { Log.Write("tools start: " + e.Message); } } }
+            int delay = StartupMode.DelayMs(); // W41：开机自启时推迟后台任务
+            if (delay <= 0) RunStarters();
+            else
+            {
+                var t = new Timer { Interval = delay };
+                t.Tick += (o, e) => { t.Stop(); t.Dispose(); RunStarters(); };
+                t.Start();
+            }
         }
 
         /// <summary>Re-register the global hotkeys after the user changed them. Returns ids that could not be registered.</summary>

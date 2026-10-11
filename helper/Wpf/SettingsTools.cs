@@ -193,6 +193,10 @@ namespace Yiwei
             Refresh();
             yield return K.Card("低配机模式", "关掉长按 Alt+空格 AI、按住说话、跟随壁纸取色、WebDAV 自动同步、Win+V 合并，并定时回收内存（目标 < 100 MB）；关闭时恢复原来的设置",
                 K.Toggle(T.LowSpec, v => { LowSpec.Set(v); Refresh(); }), Ui.SymbolRegular.Gauge24);
+            yield return K.Card("开机时延迟启动后台任务", "开机自启时助手先低优先级运行，自动备份、同步、取色等后台任务推迟 90 秒，让开机更快",
+                K.Toggle(T.DelayAtBoot, v => { T.DelayAtBoot = v; SaveTools(); }), Ui.SymbolRegular.Timer24);
+            yield return K.Card("开机自动启动一维助手", "关掉后开机不启动助手（Windows「启动应用」里同一个开关），从语言栏菜单打开设置、手写等时才启动；在那之前长按 Alt 手势、语音、剪贴板历史不可用。打字本身不受影响",
+                K.Toggle(StartupMode.AutoStart, v => StartupMode.AutoStart = v), Ui.SymbolRegular.Power24);
             yield return K.CardBorder(K.Row(K.Btn("现在回收内存", () => { LowSpec.Trim(); Refresh(); }), mem));
         }
 
