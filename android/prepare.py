@@ -113,6 +113,15 @@ def install_theme():
         for a in layouts.QWERTY_ALIASES:
             t = re.sub(r"\n  %s:\n(?:    [^\n]*\n|      [^\n]*\n|\n)*?(?=  \w+:\n|\Z)" % re.escape(a),
                        lambda m: "\n" if "import_preset: yw_qwerty" not in m.group(0) else m.group(0), t)
+        # liquid keyboard: 「常用语」 tab first
+        t, n = re.subn(r"(\n  keyboards: \[)emoji,", r"\1phrases, emoji,", t, count=1)
+        t, n2 = re.subn(r"(\n  tabs:\n    name: 更多\n    type: TABS\n)", lambda m: m.group(1) + layouts.LIQUID_PHRASES, t, count=1)
+        if (n, n2) != (1, 1):
+            raise SystemExit("trime.yaml: liquid_keyboard keyboards/tabs not found %r" % ((n, n2),))
+        # the stock tool_bar is replaced by ours
+        m = re.search(r"^tool_bar:\n(?:[ \t#][^\n]*\n|\n)*", t, re.M)
+        if m:
+            t = t[:m.start()] + t[m.end():]
         t = t.rstrip("\n") + "\n" + layouts.TOOL_BAR
         t = re.sub(r"^name: .*$", "name: 一维", t, count=1, flags=re.M)
         t = re.sub(r"^author: .*$", "author: 一维输入法（基于同文 Trime 默认主题）", t, count=1, flags=re.M)
@@ -304,6 +313,55 @@ def install_code():
     edit(f, patch)
 
 
+def install_toolbox():
+    """工具栏可左右滑动 + 点 Logo 打开工具箱（YiweiToolboxWindow，条目由 layouts.TOOLBOX 生成）。"""
+    J = os.path.join(MAIN, "java", "com", "osfans", "trime", "ime")
+    src = open(os.path.join(HERE, "kotlin", "YiweiToolbox.kt"), encoding="utf-8").read()
+    items = ",\n".join('            Item("%s", "%s", "%s")' % t for t in layouts.TOOLBOX)
+    if "/*YIWEI_ITEMS*/" not in src:
+        raise SystemExit("YiweiToolbox.kt: items marker missing")
+    open(os.path.join(J, "keyboard", "YiweiToolbox.kt"), "w", encoding="utf-8", newline="\n").write(
+        src.replace("/*YIWEI_ITEMS*/", items))
+
+    def ckal(t):
+        old = '"menu_keyboard" -> windowManager.attachWindow(SwitchOptionWindow())'
+        if old not in t:
+            raise SystemExit("CommonKeyboardActionListener: menu_keyboard handler not found")
+        return t.replace(old, '"yiwei_toolbox" -> windowManager.attachWindow(YiweiToolboxWindow())\n                    ' + old, 1)
+    edit(os.path.join(J, "keyboard", "CommonKeyboardActionListener.kt"), ckal)
+
+    def bar(t):
+        # buttons in natural left-to-right order, inside a horizontal scroller
+        t = t.replace("flexDirection = FlexDirection.ROW_REVERSE", "flexDirection = FlexDirection.ROW", 1)
+        old = "    val firstButton: ToolButton?\n"
+        if old not in t:
+            raise SystemExit("ButtonsBarUi: firstButton not found")
+        t = t.replace(old, """    // 一维输入法：工具栏可以左右滑动
+    val scroller = android.widget.HorizontalScrollView(ctx).apply {
+        isHorizontalScrollBarEnabled = false
+        overScrollMode = android.view.View.OVER_SCROLL_NEVER
+        isFillViewport = true
+        addView(
+            root,
+            android.view.ViewGroup.LayoutParams(
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+            ),
+        )
+    }
+
+""" + old, 1)
+        return t
+    edit(os.path.join(J, "bar", "ui", "ButtonsBarUi.kt"), bar)
+
+    def always(t):
+        old = "            add(buttonsUi.root, lParams(matchParent, matchParent))\n"
+        if old not in t:
+            raise SystemExit("AlwaysUi: buttonsUi.root add not found")
+        return t.replace(old, "            add(buttonsUi.scroller, lParams(matchParent, matchParent))\n", 1)
+    edit(os.path.join(J, "bar", "ui", "AlwaysUi.kt"), always)
+
+
 def install_safe_upgrade():
     """Upgrades: the APK ships dictionaries precompiled with Trime's own librime (assets/shared/build).
     Compiled files an older version left in the user build dir would shadow them (librime looks there first),
@@ -414,9 +472,51 @@ def check_keys():
     ck = open(os.path.join(MAIN, "java", "com", "osfans", "trime", "ime", "keyboard", "CommonKeyboardActionListener.kt"), encoding="utf-8").read()
     if '"keyboard_resize" ->' not in ck:
         bad.append("CommonKeyboardActionListener: keyboard_resize not handled")
+    # 工具箱：每一项的动作都已定义、图标是 MDI 里真有的名字；工具栏按钮的图标同理
+    names = set(open(os.path.join(HERE, "mdi_names.txt"), encoding="utf-8").read().split())
+    for label, icon, action in layouts.TOOLBOX:
+        if icon not in names:
+            bad.append("toolbox %s: unknown icon %s" % (label, icon))
+        if action not in presets:
+            bad.append("toolbox %s: undefined action %s" % (label, action))
+    for b in [tb.get("primary_button") or {}] + list(tb.get("buttons") or []):
+        st = (b.get("foreground") or {}).get("style") or ""
+        if st.startswith("ic@") and st[3:].replace("-", "_") not in names:
+            bad.append("tool_bar: unknown icon %s" % st)
+    for k, v in (y.get("preset_keys") or {}).items():
+        lab = v.get("label") if isinstance(v, dict) else None
+        if isinstance(lab, str) and lab.startswith("ic@") and lab[3:].replace("-", "_") not in names:
+            bad.append("preset_keys %s: unknown icon %s" % (k, lab))
+    if not (y.get("tool_bar") or {}).get("primary_button", {}).get("action") == "yw_toolbox":
+        bad.append("tool_bar: the Logo button must open the toolbox (yw_toolbox)")
+    if not any(t[2] == "yw_edit" for t in layouts.TOOLBOX) or "yw_edit_board" not in (y.get("preset_keyboards") or {}):
+        bad.append("edit panel keyboard missing")
+    tbx = os.path.join(MAIN, "java", "com", "osfans", "trime", "ime", "keyboard", "YiweiToolbox.kt")
+    if not os.path.exists(tbx) or '"yiwei_toolbox" ->' not in ck:
+        bad.append("toolbox window or its command handler missing")
+    if "phrases" not in ((y.get("liquid_keyboard") or {}).get("keyboards") or []):
+        bad.append("liquid_keyboard: 常用语 tab missing")
     if bad:
         raise SystemExit("undefined key actions (would be typed as text):\n  " + "\n  ".join(bad))
     print("keys ok: %d preset keys, tool bar and %s checked" % (len(presets), "/".join(layouts.OUR_KEYBOARDS)))
+
+
+def install_slogan():
+    """系统「更改键盘」列表里输入法名字下面的副标题（IME subtype 标签，原为「击响中文之韵」）改成「一维输入法」。"""
+    n = 0
+    for d in sorted(os.listdir(os.path.join(MAIN, "res"))):
+        p = os.path.join(MAIN, "res", d, "strings.xml")
+        if not d.startswith("values") or not os.path.exists(p):
+            continue
+        txt = "一維輸入法" if d.endswith("zh-rTW") or d.endswith("zh-rHK") else "一维输入法"
+        t = open(p, encoding="utf-8").read()
+        t2 = re.sub(r'(<string name="trime_app_slogan">)[^<]*', r"\g<1>" + txt, t)
+        if t2 != t:
+            open(p, "w", encoding="utf-8", newline="\n").write(t2)
+            n += 1
+    if n < 3:
+        raise SystemExit("trime_app_slogan patched in only %d resource files" % n)
+    print("slogan set in %d string files" % n)
 
 
 # ---------- brand ----------
@@ -467,6 +567,8 @@ if __name__ == "__main__":
     install_safe_upgrade()
     install_default_custom()
     install_feedback()
+    install_toolbox()
     check_keys()  # after install_feedback: also checks the keyboard_resize handler it patches in
     install_brand()
+    install_slogan()
     print("trime → 一维输入法 %s" % VERSION)

@@ -28,6 +28,31 @@ PRESET_KEYS = """
   yw_clipboard: {label: "剪贴板", send: FUNCTION, command: clipboard_window, option: "0", functional: true}
   yw_settings: {label: "设置", send: SETTINGS, functional: true}
   yw_resize: {label: "调整高度", send: FUNCTION, command: keyboard_resize, functional: true}
+  yw_toolbox: {label: "工具箱", send: FUNCTION, command: yiwei_toolbox, functional: true}
+  yw_phrases: {label: "常用语", send: FUNCTION, command: liquid_keyboard, option: "常用语", functional: true}
+  yw_edit: {label: "编辑", send: Eisu_toggle, select: yw_edit_board, functional: true}
+  yw_voice: {label: "语音", send: VOICE_ASSIST, functional: true}
+  yw_trad: {label: "繁体", toggle: traditionalization, send: SWITCH_CHARSET, states: ["简", "繁"], functional: true}
+  yw_fullshape: {label: "全角", toggle: full_shape, send: SWITCH_CHARSET, states: ["半角", "全角"], functional: true}
+  yw_color: {label: "配色", send: SETTINGS, option: "color", functional: true}
+  yw_sound: {label: "按键音", send: SETTINGS, option: "sound", functional: true}
+  yw_schema: {label: "方案", send: MENU, functional: true}
+  yw_e_all: {label: "全选", send: Control+a, functional: true}
+  yw_e_copy: {label: "复制", send: Control+c, functional: true}
+  yw_e_cut: {label: "剪切", send: Control+x, functional: true}
+  yw_e_paste: {label: "粘贴", send: Control+v, functional: true}
+  yw_e_undo: {label: "撤销", send: Control+z, functional: true}
+  yw_e_redo: {label: "重做", send: Control+Shift+z, functional: true}
+  yw_e_home: {label: "行首", send: Home, functional: true}
+  yw_e_end: {label: "行尾", send: End, functional: true}
+  yw_e_left: {label: "ic@arrow_left", send: Left, repeatable: true, functional: true}
+  yw_e_right: {label: "ic@arrow_right", send: Right, repeatable: true, functional: true}
+  yw_e_up: {label: "ic@arrow_up", send: Up, repeatable: true, functional: true}
+  yw_e_down: {label: "ic@arrow_down", send: Down, repeatable: true, functional: true}
+  yw_e_del: {label: "删除", send: Delete, repeatable: true, functional: true}
+  yw_e_clear: {label: "清空", text: "{Control+a}{BackSpace}", functional: true}
+  yw_e_copyall: {label: "全部复制", text: "{Control+a}{Control+c}", functional: true}
+  yw_back: {label: "返回", send: Eisu_toggle, select: .default, functional: true}
 """
 
 # letter, swipe-up/long-press symbol (Gboard-style)
@@ -108,37 +133,89 @@ def t9():
 """ + "\n".join(k) + "\n"
 
 
+def edit_board():
+    k = ["      - {click: yw_e_all, width: 20}", "      - {click: yw_e_copy, width: 20}",
+         "      - {click: yw_e_cut, width: 20}", "      - {click: yw_e_paste, width: 20}",
+         "      - {click: yw_backspace, width: 20}",
+         "      - {click: yw_e_undo, width: 20}", "      - {click: yw_e_home, width: 20}",
+         "      - {click: yw_e_up, width: 20}", "      - {click: yw_e_end, width: 20}",
+         "      - {click: yw_e_redo, width: 20}",
+         "      - {click: yw_e_del, width: 20}", "      - {click: yw_e_left, width: 20}",
+         "      - {click: yw_e_down, width: 20}", "      - {click: yw_e_right, width: 20}",
+         "      - {click: yw_e_copyall, width: 20}",
+         "      - {click: yw_back, width: 20}", "      - {click: yw_e_clear, width: 20}",
+         "      - {click: yw_space, width: 40}",
+         "      - {click: yw_return, key_back_color: yw_enter_back, key_text_color: yw_enter_text,"
+         " hilited_key_back_color: yw_enter_back, hilited_key_text_color: yw_enter_text, width: 20}"]
+    return """  yw_edit_board:
+    name: 一维编辑面板
+    author: 一维输入法
+    width: 20
+    height: 50
+    lock: true
+    keys:
+""" + "\n".join(k) + "\n"
+
+
 # schemas that should use the 26-key board (Trime picks the board named like the schema id)
 QWERTY_ALIASES = ["rime_ice", "double_pinyin", "double_pinyin_abc", "double_pinyin_flypy", "double_pinyin_jiajia",
                   "double_pinyin_mspy", "double_pinyin_sogou", "double_pinyin_ziguang", "melt_eng", "qwerty", "qwerty_", "qwerty0"]
 
 
-OUR_KEYBOARDS = ["yw_qwerty", "t9"]
+OUR_KEYBOARDS = ["yw_qwerty", "t9", "yw_edit_board"]
 
 
 def keyboards():
-    out = qwerty() + t9()
+    out = qwerty() + t9() + edit_board()
     for a in QWERTY_ALIASES:
         out += "  %s:\n    import_preset: yw_qwerty\n" % a
     return out
 
 
+PHRASES = ["好的，收到。", "谢谢！", "不客气", "稍等，我马上看一下。", "在路上，马上到。", "抱歉，刚才没看到消息。",
+           "方便的话请回电话。", "辛苦了！", "明白了，我来处理。", "晚点联系你。", "我现在不方便，稍后回复。", "请问您方便吗？"]
+
+# liquid_keyboard 里的「常用语」标签页（工具栏/工具箱的常用语按钮打开它）
+LIQUID_PHRASES = "  phrases:\n    name: 常用语\n    type: SINGLE\n    keys:\n" + "".join(
+    "      - {click: %s}\n" % q(x) for x in PHRASES)
+
+
+# 工具箱里的功能：(显示名, MDI 图标名, preset_keys 里的动作)。新增功能时在这里加，CI 会检查图标名和动作都存在。
+TOOLBOX = [
+    ("常用语", "message_text_outline", "yw_phrases"),
+    ("编辑面板", "text_box_edit_outline", "yw_edit"),
+    ("键盘切换", "keyboard_outline", "yw_layout"),
+    ("剪贴板", "clipboard_outline", "yw_clipboard"),
+    ("语音输入", "microphone_outline", "yw_voice"),
+    ("表情", "emoticon_outline", "yw_emoji"),
+    ("符号", "ideogram_cjk", "yw_sym"),
+    ("数字键盘", "numeric", "yw_num"),
+    ("键盘调节", "arrow_expand_vertical", "yw_resize"),
+    ("换配色", "palette_outline", "yw_color"),
+    ("按键音", "volume_high", "yw_sound"),
+    ("繁体输入", "translate", "yw_trad"),
+    ("全角半角", "format_letter_case", "yw_fullshape"),
+    ("输入方案", "view_list_outline", "yw_schema"),
+    ("设置", "cog_outline", "yw_settings"),
+]
+
+# 工具栏：左 Logo(点开工具箱) | 可左右滑动的功能按钮 | 右 收起。buttons[0] 固定在最右（收起），其余从左到右按顺序排列。
+_TB = [("keyboard_close", "yw_hide"), ("dialpad", "yw_layout"), ("message_text_outline", "yw_phrases"),
+       ("clipboard_outline", "yw_clipboard"), ("microphone_outline", "yw_voice"), ("emoticon_outline", "yw_emoji"),
+       ("text_box_edit_outline", "yw_edit"), ("arrow_expand_vertical", "yw_resize"), ("translate", "yw_trad"),
+       ("palette_outline", "yw_color"), ("cog_outline", "yw_settings")]
+
 TOOL_BAR = """
 tool_bar:
-  button_spacing: 4
-  back_style: "ic@arrow-left"
+  button_spacing: 2
+  back_style: "ic@arrow_left"
   primary_button:
     background: {type: circle, corner_radius: 10, normal: 0x00000000, highlight: hilited_candidate_button_color, vertical_inset: 4, horizontal_inset: 4}
-    foreground: {style: "ic@dots_horizontal", normal: candidate_text_color, padding: 10}
-    action: yw_menu
+    foreground: {style: "一", normal: hilited_candidate_text_color, font_size: 22, padding: 8}
+    action: yw_toolbox
     long_press_action: yw_settings
   buttons:
-    - {foreground: {style: "ic@keyboard_close", normal: candidate_text_color}, action: yw_hide}
-    - {foreground: {style: "ic@clipboard_outline", normal: candidate_text_color}, action: yw_clipboard}
-    - {foreground: {style: "ic@emoticon_outline", normal: candidate_text_color}, action: yw_emoji}
-    - {foreground: {style: "ic@dialpad", normal: candidate_text_color}, action: yw_layout}
-    - {foreground: {style: "ic@arrow_expand_vertical", normal: candidate_text_color}, action: yw_resize}
-"""
+""" + "\n".join('    - {foreground: {style: "ic@%s", normal: candidate_text_color}, action: %s}' % t for t in _TB) + "\n"
 
 STYLE = {
     "key_height": "50", "keyboard_height": "236", "keyboard_height_land": "180",
