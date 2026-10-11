@@ -27,6 +27,7 @@ PRESET_KEYS = """
   yw_hide: {label: "收起", send: BACK, functional: true}
   yw_clipboard: {label: "剪贴板", send: FUNCTION, command: clipboard_window, option: "0", functional: true}
   yw_settings: {label: "设置", send: SETTINGS, functional: true}
+  yw_resize: {label: "调整高度", send: FUNCTION, command: keyboard_resize, functional: true}
 """
 
 # letter, swipe-up/long-press symbol (Gboard-style)
@@ -136,6 +137,7 @@ tool_bar:
     - {foreground: {style: "ic@clipboard_outline", normal: candidate_text_color}, action: yw_clipboard}
     - {foreground: {style: "ic@emoticon_outline", normal: candidate_text_color}, action: yw_emoji}
     - {foreground: {style: "ic@dialpad", normal: candidate_text_color}, action: yw_layout}
+    - {foreground: {style: "ic@arrow_expand_vertical", normal: candidate_text_color}, action: yw_resize}
 """
 
 STYLE = {

@@ -178,8 +178,8 @@ def install_feedback():
             R.string.yiwei_keyboard_height,
             KEYBOARD_HEIGHT_PERCENT,
             100,
-            70,
-            140,
+            60,
+            160,
             "%",
             5,
         )
@@ -202,10 +202,10 @@ def install_feedback():
         ).firstOrNull { it > 0 } ?: 0"""
         if old not in t:
             raise SystemExit("Keyboard.kt: keyboardHeight not found")
-        new = old.replace("        intArrayOf(", "        (intArrayOf(").replace(
+        # 一维输入法：主题高度 × 用户比例（设置滑块 / 键盘上拖动；拖动时用预览值），横竖屏各自封顶
+        new = old.replace("        intArrayOf(", "        YiweiResize.scaled(\n            context,\n            intArrayOf(").replace(
             ").firstOrNull { it > 0 } ?: 0",
-            ").firstOrNull { it > 0 } ?: 0) *\n            // 一维输入法：用户在设置里调的高度比例\n"
-            "            AppPrefs.defaultInstance().keyboard.keyboardHeightPercent.getValue() / 100")
+            ").firstOrNull { it > 0 } ?: 0,\n        )")
         return t.replace(old, new)
     edit(os.path.join(J, "ime", "keyboard", "Keyboard.kt"), kb)
 
@@ -215,6 +215,29 @@ def install_feedback():
             raise SystemExit("TrimeInputMethodService: recreateInputViewPrefs not found")
         return t.replace(old, old + "        prefs.keyboard.keyboardHeightPercent,\n", 1)
     edit(os.path.join(J, "ime", "core", "TrimeInputMethodService.kt"), svc)
+
+    # 拖动调整高度：覆盖层代码 + KeyboardWindow 暴露容器/当前高度 + keyboard_resize 命令
+    shutil.copy(os.path.join(HERE, "kotlin", "YiweiResize.kt"), os.path.join(J, "ime", "keyboard", "YiweiResize.kt"))
+
+    def kw(t):
+        old = "    private lateinit var keyboardView: FrameLayout\n"
+        old2 = "                add(it, lParams(matchParent, matchParent))\n"
+        if old not in t or old2 not in t:
+            raise SystemExit("KeyboardWindow: keyboardView / add not found")
+        t = t.replace(old, old + """
+    // 一维输入法：拖动调整高度（YiweiResize）用
+    val yiweiContainer: FrameLayout get() = keyboardView
+    val yiweiKeyboardHeight: Int get() = currentKeyboard?.keyboardHeight ?: 0
+""", 1)
+        return t.replace(old2, old2 + "                YiweiResize.raise()\n", 1)
+    edit(os.path.join(J, "ime", "keyboard", "KeyboardWindow.kt"), kw)
+
+    def ckal(t):
+        t, n = re.subn(r'(\n(\s+)"menu_keyboard" -> )', r'\n\2"keyboard_resize" -> YiweiResize.toggle(keyboardWindow)\1', t, count=1)
+        if n != 1:
+            raise SystemExit("CommonKeyboardActionListener: menu_keyboard not found")
+        return t
+    edit(os.path.join(J, "ime", "keyboard", "CommonKeyboardActionListener.kt"), ckal)
 
     for d, s in (("values", "Keyboard height"), ("values-zh-rCN", "键盘高度"), ("values-zh-rTW", "鍵盤高度")):
         edit(os.path.join(MAIN, "res", d, "strings.xml"),
@@ -352,6 +375,15 @@ def check_keys():
                 a = key.get(k)
                 if isinstance(a, str) and len(a) > 1 and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", a) and a not in presets:
                     bad.append("%s %s: %s" % (kb, k, a))
+    # 拖动调整高度：工具栏必须有 yw_resize 按钮，且它是 keyboard_resize 命令，Kotlin 里有处理
+    rz = (y.get("preset_keys") or {}).get("yw_resize") or {}
+    if rz.get("command") != "keyboard_resize" or rz.get("send") != "FUNCTION":
+        bad.append("preset_keys yw_resize: missing or not FUNCTION keyboard_resize")
+    if not any(b.get("action") == "yw_resize" for b in tb.get("buttons") or []):
+        bad.append("tool_bar: no yw_resize (调整高度) button")
+    ck = open(os.path.join(MAIN, "java", "com", "osfans", "trime", "ime", "keyboard", "CommonKeyboardActionListener.kt"), encoding="utf-8").read()
+    if '"keyboard_resize" ->' not in ck:
+        bad.append("CommonKeyboardActionListener: keyboard_resize not handled")
     if bad:
         raise SystemExit("undefined key actions (would be typed as text):\n  " + "\n  ".join(bad))
     print("keys ok: %d preset keys, tool bar and %s checked" % (len(presets), "/".join(layouts.OUR_KEYBOARDS)))
