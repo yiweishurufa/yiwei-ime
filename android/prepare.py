@@ -461,8 +461,23 @@ def check_keys():
         for key in (y["preset_keyboards"][kb].get("keys") or []):
             for k in ("click", "long_click", "swipe_up", "swipe_down", "swipe_left", "swipe_right", "composing", "has_menu", "paging"):
                 a = key.get(k)
-                if isinstance(a, str) and len(a) > 1 and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", a) and a not in presets:
+                if isinstance(a, str) and len(a) > 1 and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", a) and a not in presets \
+                        and not re.fullmatch(r"KP_\d", a):  # keypad digits are real key names
                     bad.append("%s %s: %s" % (kb, k, a))
+    # 每个键盘每一行的宽度加起来必须是 100（否则最后一键会掉到下一行/留空）
+    for kb in layouts.OUR_KEYBOARDS:
+        spec = y["preset_keyboards"][kb]
+        row, w0 = 0.0, float(spec.get("width", 10))
+        for key in spec.get("keys") or []:
+            w = float(key.get("width", w0))
+            if row + w > 100.001:
+                bad.append("%s: row width %.1f != 100" % (kb, row))
+                row = 0.0
+            row += w
+            if abs(row - 100) < 0.001:
+                row = 0.0
+        if row:
+            bad.append("%s: last row width %.1f != 100" % (kb, row))
     # 拖动调整高度：工具栏必须有 yw_resize 按钮，且它是 keyboard_resize 命令，Kotlin 里有处理
     rz = (y.get("preset_keys") or {}).get("yw_resize") or {}
     if rz.get("command") != "keyboard_resize" or rz.get("send") != "FUNCTION":

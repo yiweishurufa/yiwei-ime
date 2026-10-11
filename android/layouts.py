@@ -12,12 +12,13 @@ def commit(ch):
 PRESET_KEYS = """
   yw_shift: {label: "ic@apple_keyboard_shift", send: Shift_L, shift_lock: ascii_long, functional: true}
   yw_backspace: {label: "ic@backspace_outline", repeatable: true, slide_delete: true, functional: true, send: BackSpace}
-  yw_space: {label: "一维拼音", preview: " ", slide_cursor: true, functional: false, send: space}
-  yw_space_t9: {label: "空格", preview: " ", slide_cursor: true, functional: false, send: space}
+  yw_space: {label: "ic@microphone_outline", preview: " ", slide_cursor: true, functional: false, send: space}
+  yw_space_t9: {label: "ic@microphone_outline", preview: " ", slide_cursor: true, functional: false, send: space}
+  yw_space_plain: {label: "空格", preview: " ", slide_cursor: true, functional: false, send: space}
   yw_return: {label: enter_labels, functional: true, send: Return}
   yw_mode: {toggle: ascii_mode, send: SWITCH_CHARSET, states: ["中", "英"], functional: true}
-  yw_num: {label: "123", send: Eisu_toggle, select: number, functional: true}
-  yw_sym: {label: "符", send: Eisu_toggle, select: symbols, functional: true}
+  yw_num: {label: "123", send: Eisu_toggle, select: yw_number, functional: true}
+  yw_sym: {label: "符", send: FUNCTION, command: liquid_keyboard, option: "中文", functional: true}
   yw_emoji: {label: "ic@emoticon_outline", send: FUNCTION, command: liquid_keyboard, option: "emoji", functional: true}
   yw_layout: {label: "九键", send: FUNCTION, command: select_schema, option: "t9|rime_ice", functional: true}
   yw_layout26: {label: "26键", send: FUNCTION, command: select_schema, option: "t9|rime_ice", functional: true}
@@ -76,11 +77,12 @@ def qwerty():
     k += [letter(c, s) for c, s in ROW3]
     k.append("      - {width: 1}")
     k.append("      - {click: yw_backspace, width: 14}")
-    k.append("      - {click: yw_num, long_click: yw_sym, width: 12}")
-    k.append("      - {click: yw_emoji, long_click: yw_layout, width: 10}")
-    k.append("      - {click: yw_mode, width: 10}")
-    k.append("      - {click: yw_space, width: 38}")
-    k.append("      - {click: ',', long_click: '.', swipe_up: '.', label: '，', label_symbol: '。', width: 10}")
+    k.append("      - {click: yw_sym, long_click: yw_emoji, width: 10}")
+    k.append("      - {click: yw_num, width: 10}")
+    k.append("      - {click: \"'\", label: \"'\", width: 8}")
+    k.append("      - {click: yw_space, long_click: yw_voice, width: 34}")
+    k.append("      - {click: '.', label: '。', swipe_up: ',', width: 8}")
+    k.append("      - {click: yw_mode, long_click: yw_layout, width: 10}")
     k.append("      - {click: yw_return, key_back_color: yw_enter_back, key_text_color: yw_enter_text,"
              " hilited_key_back_color: yw_enter_back, hilited_key_text_color: yw_enter_text, width: 20}")
     return """  yw_qwerty:
@@ -115,17 +117,43 @@ def t9():
     k += [left(1), digit(3), digit(4), digit(5), "      - {click: yw_reinput, width: 18}"]
     k += [left(2), digit(6), digit(7), digit(8), "      - {click: %s, label: '@', swipe_up: %s, width: 18,"
           " key_back_color: yw_func_back, key_text_color: yw_func_text}" % (commit("@"), commit("0"))]
-    k += ["      - {click: yw_num, long_click: yw_sym, width: 16}",
-          "      - {click: yw_mode, width: 11}",
-          "      - {click: yw_space_t9, swipe_up: %s, width: 44}" % commit("0"),
-          "      - {click: yw_layout26, long_click: yw_emoji, width: 11}",
+    k += ["      - {click: yw_sym, long_click: yw_emoji, width: 16}",
+          "      - {click: yw_num, width: 16}",
+          "      - {click: yw_space_t9, long_click: yw_voice, width: 36}",
+          "      - {click: yw_mode, long_click: yw_layout, width: 16}",
           "      - {click: yw_return, key_back_color: yw_enter_back, key_text_color: yw_enter_text,"
-          " hilited_key_back_color: yw_enter_back, hilited_key_text_color: yw_enter_text, width: 18}"]
+          " hilited_key_back_color: yw_enter_back, hilited_key_text_color: yw_enter_text, width: 16}"]
     return """  t9:
     name: 一维九键
     author: 一维输入法
     ascii_mode: 0
     ascii_keyboard: yw_qwerty
+    width: 22
+    height: 50
+    lock: true
+    keys:
+""" + "\n".join(k) + "\n"
+
+
+def number_board():
+    """数字键盘（对标搜狗）：左列 / - :，3×3 数字，右列 ⌫ . @，底行 符 | 返回 | 0 | 空格 | ↵。"""
+    def side(ch, up=None):
+        extra = (", swipe_up: %s" % commit(up)) if up else ""
+        return "      - {click: %s, label: %s%s, width: 16, key_back_color: yw_func_back, key_text_color: yw_func_text}" % (
+            q(ch), q(ch), extra)
+
+    def d(n):
+        return "      - {click: KP_%d, label: %s, width: 22}" % (n, q(str(n)))
+    k = [side("/", "+"), d(1), d(2), d(3), "      - {click: yw_backspace, width: 18}",
+         side("-", "_"), d(4), d(5), d(6), "      - {click: '.', label: '.', width: 18, key_back_color: yw_func_back, key_text_color: yw_func_text}",
+         side(":", ";"), d(7), d(8), d(9), "      - {click: '@', label: '@', width: 18, key_back_color: yw_func_back, key_text_color: yw_func_text}",
+         "      - {click: yw_sym, width: 16}", "      - {click: yw_back, width: 22}", "      - {click: KP_0, label: '0', width: 22}",
+         "      - {click: yw_space_plain, width: 22}",
+         "      - {click: yw_return, key_back_color: yw_enter_back, key_text_color: yw_enter_text,"
+         " hilited_key_back_color: yw_enter_back, hilited_key_text_color: yw_enter_text, width: 18}"]
+    return """  yw_number:
+    name: 一维数字
+    author: 一维输入法
     width: 22
     height: 50
     lock: true
@@ -162,11 +190,11 @@ QWERTY_ALIASES = ["rime_ice", "double_pinyin", "double_pinyin_abc", "double_piny
                   "double_pinyin_mspy", "double_pinyin_sogou", "double_pinyin_ziguang", "melt_eng", "qwerty", "qwerty_", "qwerty0"]
 
 
-OUR_KEYBOARDS = ["yw_qwerty", "t9", "yw_edit_board"]
+OUR_KEYBOARDS = ["yw_qwerty", "t9", "yw_edit_board", "yw_number"]
 
 
 def keyboards():
-    out = qwerty() + t9() + edit_board()
+    out = qwerty() + t9() + edit_board() + number_board()
     for a in QWERTY_ALIASES:
         out += "  %s:\n    import_preset: yw_qwerty\n" % a
     return out
@@ -219,7 +247,7 @@ tool_bar:
 
 STYLE = {
     "key_height": "50", "keyboard_height": "236", "keyboard_height_land": "180",
-    "horizontal_gap": "5", "vertical_gap": "9", "round_corner": "6", "key_border": "0",
+    "horizontal_gap": "5", "vertical_gap": "9", "round_corner": "9", "key_border": "0",
     "key_text_size": "21", "key_long_text_size": "15", "symbol_text_size": "9", "label_text_size": "15",
     "candidate_text_size": "20", "comment_text_size": "11", "candidate_view_height": "40", "comment_height": "12",
     "candidate_padding": "8", "candidate_spacing": "0.0", "candidate_corner_radius": "8",
