@@ -133,3 +133,10 @@ There is also an experimental IMM poller (设置 → 常规 → 从输入法状�
   learned word). Stored in `<user>/yiwei/pins.tsv` (`P|H\tcode\ttext`); the filter (before pangu) moves the pin first (or injects it)
   and drops hidden ones. The settings page edits the file and writes `pins.reload` so the IME re-reads it. Works on Android too.
   A right-click menu on the candidate window would need WeaselUI (C++) changes and is not done.
+
+## 工具组 (Features/ToolsHub.cs, ToolsRegistry.cs, Wpf/SettingsTools.cs)
+- Own settings file `<user>/yiwei/tools.json` (`ToolSettings`), not settings.json.
+- Actions registry (`ToolsRegistry.RegisterAll`): every action runs via `/tool <id>` on the pipe, an optional hold-Alt key
+  (`KeyHook` calls `ToolsHub.AltHold` after the built-in gestures), and an optional global hotkey (`RegisterHotKey`, 设置 → 工具 → 工具快捷键).
+  `/tools` or hold Alt + T opens the 文字工具 menu (non-activating ContextMenuStrip at the caret; items act on the selection).
+- 截图翻译 (hold Alt + S, `/tool translate-shot`): `OcrCapture.Start(then)` → `Translator` (AI when configured, else MyMemory free API) → `TranslateWindow`.

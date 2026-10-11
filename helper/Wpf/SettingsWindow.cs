@@ -52,6 +52,7 @@ namespace Yiwei
             Add("常用语", Ui.SymbolRegular.TextBulletListSquare24, PageSnippets);
             Add("AI", Ui.SymbolRegular.Sparkle24, PageAi);
             Add("词库", Ui.SymbolRegular.Library24, PageDicts);
+            Add("工具", Ui.SymbolRegular.Toolbox24, PageTools);
             Add("应用规则", Ui.SymbolRegular.AppsList24, PageApps);
             Add("统计", Ui.SymbolRegular.DataTrending24, PageStats);
             Add("关于", Ui.SymbolRegular.Info24, PageAbout);

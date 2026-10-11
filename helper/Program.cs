@@ -95,6 +95,7 @@ namespace Yiwei
                 StartPipeServer();
                 ImeModeWatcher.Start(chinese => { Tray.SetMode(chinese); _toast.Flash(chinese); });
                 Keyboards.HintOnceLater();
+                ToolsHub.Start(); // 工具组（Features/ToolsHub.cs）：文字工具、截图翻译、同步备份、自定义快捷键
 
                 if (command.Length > 0 && command != "/background") Ui.BeginInvoke(new Action(() => Execute(command)));
                 else if (!Settings.Current.FirstRunDone) Ui.BeginInvoke(new Action(() => Execute("/wizard")));
@@ -184,6 +185,7 @@ namespace Yiwei
                     Tray.SetVisible(show);
                     return;
                 }
+                if (ToolsHub.TryExecute(command)) return; // /tool <id>、/tools
                 switch (command)
                 {
                     case "/quit": Quit(); return;

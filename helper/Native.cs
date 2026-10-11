@@ -526,6 +526,8 @@ namespace Yiwei
                     else { int cat = vk - Keys.D1; Program.Ui.BeginInvoke(new Action(() => OnSnippets?.Invoke(cat))); }
                     return true;
                 }
+                // 工具组的长按 Alt 手势（T 文字工具、S 截图翻译 …，Features/ToolsHub.cs）
+                if (held && !GestureBlocked(s) && ToolsHub.AltHold(vk)) { _swallowedChord = true; _altUsed = true; return true; }
                 _altUsed = true;
             }
             return false;

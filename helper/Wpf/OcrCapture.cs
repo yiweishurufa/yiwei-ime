@@ -21,14 +21,16 @@ namespace Yiwei
         Point _start;
         Rectangle _sel;
         bool _dragging;
+        Action<string, string, IntPtr, Point> _then;
 
-        public static void Start()
+        /// <param name="then">可选：拿到识别结果后交给它（截图翻译用），不传就弹出识字结果窗。</param>
+        public static void Start(Action<string, string, IntPtr, Point> then = null)
         {
             if (_open != null) { _open.Activate(); return; }
             try
             {
                 if (!Ocr.Supported) { Tray.Balloon("截图识字", "这台电脑没有可用的 OCR 识别器：请在 Windows 设置 → 时间和语言 → 语言 → 中文 → 语言选项 里安装「光学字符识别」"); return; }
-                _open = new OcrCapture();
+                _open = new OcrCapture { _then = then };
                 _open.FormClosed += (s, e) => { _open.Dispose2(); _open = null; };
                 _open.Show();
                 _open.Activate();
@@ -109,8 +111,10 @@ namespace Yiwei
             catch (Exception e) { error = e.GetBaseException().Message; Log.Write("ocr: " + e); }
             var target = _target;
             var where = PointToScreen(new Point(_sel.Left, _sel.Bottom + 8));
+            var then = _then;
             Close();
-            OcrResult.Show(text, error, target, where);
+            if (then != null) then(text, error, target, where);
+            else OcrResult.Show(text, error, target, where);
         }
 
         void Dispose2() { try { _shot.Dispose(); } catch { } }
