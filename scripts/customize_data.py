@@ -49,6 +49,8 @@ STYLE = {
     "font_point": "12", "label_font_point": "9", "comment_font_point": "10",
     "horizontal": "true", "inline_preedit": "true", "label_format": '"%s"', "display_tray_icon": "false",
 }
+# 小狼毫状态提示：不含 ascii_mode（中/英提示由一维助手显示，避免光标旁同时弹出两个「中」）
+SHOW_NOTIFICATIONS = "[schema, ascii_punct, full_shape, traditionalization, emoji, search_single_char]"
 LAYOUT = {"border_width": "1", "margin_x": "10", "margin_y": "8", "spacing": "8", "candidate_spacing": "10",
           "hilite_spacing": "4", "hilite_padding": "4", "round_corner": "99", "corner_radius": "10",
           "shadow_radius": "6", "shadow_offset_x": "0", "shadow_offset_y": "2", "min_width": "120"}
@@ -88,6 +90,11 @@ def customize_weasel_yaml():
     if "preset_color_schemes:" not in text:
         raise SystemExit("weasel.yaml: preset_color_schemes not found")
     text = text.replace("preset_color_schemes:\n", "preset_color_schemes:\n" + schemes, 1)
+    # 中/英切换只弹一维助手的「中/A」提示（设置 → 常规 → 中/英切换提示）：小狼毫自己的
+    # ascii_mode 状态提示关掉，其余开关（简繁、全半角、emoji…）和切换方案照常提示
+    text, n = re.subn(r"^show_notifications:[ \t]*[^\n#]*", "show_notifications: " + SHOW_NOTIFICATIONS + " ", text, count=1, flags=re.M)
+    if n != 1:
+        raise SystemExit("weasel.yaml: show_notifications not found")
     text = text.replace("# Weasel settings", "# 一维输入法 前端设置（基于小狼毫 Weasel）", 1)
     open(path, "w", encoding="utf-8", newline="\n").write(text)
 

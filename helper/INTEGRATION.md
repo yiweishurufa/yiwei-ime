@@ -19,13 +19,26 @@
 | `/addword` | 加词 window (hold Alt + A uses the current selection; tray 加词…) |
 | `/symbols` | symbol & emoji picker (hold Alt + E, tray 符号与表情); no-activate panel, click to type, recent ones in 常用 |
 | `/diagnostics` | export the diagnostics zip to the desktop (also tray 「导出诊断信息」) |
+| `/tray [on\|off\|toggle]` | show / hide the notification-area icon (setting `TrayIcon`, default hidden); the TSF language-bar menu item 「显示/隐藏通知区域的一维图标」 sends `/tray toggle` |
 | `/quit` | exit |
 | `regret:<n>:<pinyin>` | from yiwei_regret.lua (Ctrl+Backspace right after a commit): wait for Ctrl up, n × Backspace, then retype the pinyin as real key presses so the IME recomposes it |
 | `pair:（）` | from yiwei_autopair.lua: wrap the UIA TextPattern selection in the pair, else type the pair and step left (lua commits the pair itself when the pipe is absent) |
 | `toast:中` / `toast:A` | show the 中/英 bubble at the caret (~600 ms). Also accepts `toast:zh` / `toast:cn` for 中 |
 | `yiwei-ime://theme?...` | import a theme link |
 
+## 任务栏图标（只留一个）
+- The one status icon is Weasel's TSF language-bar button (`GUID_LBI_INPUTMODE`, shown by Windows next to the input indicator, `assets/zh.ico` / `en.ico`).
+  Left click toggles 中/英; its right-click menu is rewritten by `scripts/rebrand.py` (`LANGBAR_MENUS`): 设置 / 手写 / 符号 / 截图识字 / 加词 / 局域网互传 /
+  显示/隐藏托盘图标 / 检查更新 / 重新部署 / 导出诊断 are launched as `YiweiHelper.exe <command>` (`HELPER_IDS`; falls back to Weasel's own handler when the helper is missing).
+- WeaselServer's tray icon: `style/display_tray_icon: false`. The helper's NotifyIcon: hidden unless `TrayIcon` (balloons briefly show it, then hide it again).
+- When other keyboards are installed, Windows adds its own keyboard switcher (showing the profile icon 「一」); an IME cannot hide it.
+  设置 → 常规 → 任务栏只留一个图标 lists them (`Features/Keyboards.cs`, PowerShell `Get-WinUserLanguageList`) and, after confirmation, keeps only
+  一维输入法 (the display language is kept). A one-time balloon points there.
+
 ## 中/英 toast
+- Weasel's own ascii_mode status tip is off: `show_notifications` lists everything except `ascii_mode` (weasel.yaml via customize_data.py
+  `SHOW_NOTIFICATIONS`, and weasel.custom.yaml via `WeaselConfig.ShowNotifications`), so only the helper bubble appears; its toggle is 设置 → 常规 → 中/英切换提示.
+
 Weasel is a TSF text service and does not reliably mirror ascii_mode into IMM, so the reliable trigger is the
 IME side: when `ascii_mode` changes (e.g. in WeaselServer's option-update / a librime notification handler, or a Lua
 processor), write `toast:中` or `toast:A` to the pipe above (connect with a short timeout; ignore failures).

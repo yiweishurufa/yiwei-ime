@@ -87,7 +87,7 @@ namespace Yiwei
                 if (manual) { await InstallAsync(info, true); return; }
                 // 自动检查：不弹窗打断，只在托盘冒一个气泡，点一下再更新
                 _pending = info;
-                Tray.Balloon("一维输入法有新版本 " + info.Version, "点这里更新（约半分钟，设置和词库都会保留）。也可以在托盘菜单里点「检查更新」。");
+                Tray.Balloon("一维输入法有新版本 " + info.Version, "点这里更新（约半分钟，设置和词库都会保留）。也可以右键任务栏上的 中/英 图标，点「检查更新」。");
             }
             finally { _busy = false; }
         }

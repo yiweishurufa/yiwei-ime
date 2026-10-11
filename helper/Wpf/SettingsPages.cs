@@ -37,7 +37,7 @@ namespace Yiwei
                 K.Toggle(S.PrivateNoLearn, v => { S.PrivateNoLearn = v; Save(); }), Ui.SymbolRegular.EyeOff24));
             p.Children.Add(K.Card("中英之间自动加空格", "打「用 Windows 写代码」这类中英混排时，自动在中文和英文、数字之间留一个空格",
                 K.Toggle(S.PanguSpacing, v => { S.PanguSpacing = v; }), Ui.SymbolRegular.TextGrammarWand24));
-            p.Children.Add(K.Card("中/英切换提示", "切换中英文时，在光标旁短暂显示「中」或「A」",
+            p.Children.Add(K.Card("中/英切换提示", "切换中英文时，在光标旁短暂显示一维的「中」或「A」（只弹这一个；关掉就都不弹）",
                 K.Toggle(S.ImeToast, v => { S.ImeToast = v; Save(); }), Ui.SymbolRegular.Chat24));
             p.Children.Add(K.Card("从输入法状态检测切换（实验）", "部分应用里输入法不会主动通知时，靠轮询检测中英状态；可能有误报",
                 K.Toggle(S.ImeToastPolling, v => { S.ImeToastPolling = v; Save(); }), Ui.SymbolRegular.Lightbulb24));
@@ -45,6 +45,9 @@ namespace Yiwei
                 K.Toggle(S.Traditional, v => { S.Traditional = v; Save(true); }), Ui.SymbolRegular.Translate24));
             p.Children.Add(K.Card("在输入框里显示拼音", "内嵌编码：拼音直接显示在光标处，而不是候选窗上方",
                 K.Toggle(S.InlinePreedit, v => { S.InlinePreedit = v; Save(true); }), Ui.SymbolRegular.Document24));
+            AddTaskbarSection(p);
+
+            p.Children.Add(K.Section("其他"));
             p.Children.Add(K.Card("首次引导", "重新走一遍方案、外观、导入旧习惯和 AI 的设置向导",
                 K.Btn("打开引导", () => Program.ShowWizard()), Ui.SymbolRegular.Home24));
             p.Children.Add(K.Card("重新部署", "手动修改 YAML 后让配置生效；平时修改设置会自动部署",
@@ -57,12 +60,73 @@ namespace Yiwei
             {
                 if (!Dialogs.Confirm("把一维输入法的所有设置恢复为默认值？\n\n常用语、输入统计和用户词库不会被删除。AI 密钥会被清除。")) return;
                 Settings.Reset();
+                Tray.SetVisible(Settings.Current.TrayIcon);
                 Rime.ApplySoon(50);
                 UiTheme.Apply();
                 Close();
                 Program.ShowSettings();
             }));
             return p;
+        }
+
+        /// <summary>
+        /// 任务栏图标：默认只有输入指示器旁的 中/英（小狼毫语言栏按钮，右键是一维的菜单）。
+        /// 一维助手的托盘图标可以重新打开；装了其他键盘时 Windows 会多一个切换按钮，这里可以一键清理。
+        /// </summary>
+        void AddTaskbarSection(StackPanel p)
+        {
+            p.Children.Add(K.Section("任务栏图标"));
+            p.Children.Add(K.Card("在通知区域显示一维图标", "默认不显示：任务栏输入指示器旁的 中/英 图标就是一维的状态图标，左键切中英，右键打开设置、手写、符号、截图识字等全部功能",
+                K.Toggle(S.TrayIcon, v => { S.TrayIcon = v; Save(); Tray.SetVisible(v); }), Ui.SymbolRegular.Apps24));
+
+            var status = K.Text("正在检查系统里装了哪些键盘…", 13, true);
+            status.TextWrapping = TextWrapping.Wrap;
+            var btn = K.Btn("只保留一维输入法…", () => { }, Ui.ControlAppearance.Secondary);
+            btn.IsEnabled = false;
+            var open = K.Btn("系统语言设置", () => Keyboards.OpenSystemSettings());
+            var buttons = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 10, 0, 0) };
+            open.Margin = new Thickness(8, 0, 0, 0);
+            buttons.Children.Add(btn); buttons.Children.Add(open);
+            var body = new StackPanel();
+            body.Children.Add(status); body.Children.Add(buttons);
+            p.Children.Add(K.Block("任务栏只留一个图标",
+                "系统里还装着别的键盘（如微软拼音、英语键盘）时，Windows 会在 中/英 旁再显示一个键盘切换按钮（一维的「一」）。这个按钮输入法隐藏不了，删掉其他键盘它就消失",
+                body, Ui.SymbolRegular.Keyboard24));
+
+            List<Keyboards.Entry> others = null, kept = null;
+            async void Refresh()
+            {
+                btn.IsEnabled = false;
+                var all = await System.Threading.Tasks.Task.Run(() => Keyboards.List());
+                if (all.Count == 0) { status.Text = "读不到系统的键盘列表，可以点「系统语言设置」自己查看。"; return; }
+                if (!all.Any(e => e.Ours)) { status.Text = "系统的语言列表里还没有一维输入法。"; return; }
+                others = Keyboards.Others(all); kept = Keyboards.Kept(all);
+                var keptText = kept.Count == 0 ? "" : "\n" + string.Join("、", kept.Select(e => e.Name).Distinct()) + " 属于 Windows 显示语言，会保留（所以切换按钮仍会在）；想完全只剩一个，需要在系统语言设置里把显示语言改成中文后再删除它。";
+                if (others.Count == 0)
+                    status.Text = (kept.Count == 0 ? "只装了一维输入法，任务栏只有 中/英 一个图标。" : "除显示语言外没有其他键盘。") + keptText;
+                else
+                {
+                    status.Text = "还装着：" + string.Join("、", others.Select(e => e.Name).Distinct()) + "。" + keptText;
+                    btn.IsEnabled = true;
+                }
+            }
+            btn.Click += (s, e) =>
+            {
+                if (others == null || others.Count == 0) return;
+                var names = string.Join("\n", others.Select(x => "· " + x.Name).Distinct());
+                if (!Dialogs.Confirm("从 Windows 的语言列表里删除这些键盘，只保留一维输入法？\n\n" + names +
+                    "\n\n打英文用 Shift 切到一维的英文模式即可。以后想加回来，可以在 Windows 设置 → 时间和语言 → 语言和区域 里重新添加。")) return;
+                btn.IsEnabled = false;
+                status.Text = "正在修改…";
+                System.Threading.Tasks.Task.Run(() => Keyboards.KeepOnlyOurs()).ContinueWith(t =>
+                {
+                    var err = t.Result;
+                    if (err != null) Dialogs.Error(err);
+                    else Toast("已只保留一维输入法；任务栏上多出来的切换按钮会在几秒内消失");
+                    Refresh();
+                }, System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext());
+            };
+            Refresh();
         }
 
         // ================= 输入方案 =================

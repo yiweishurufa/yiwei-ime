@@ -232,6 +232,13 @@ jobs:
           $tip = 'HKLM:\SOFTWARE\Microsoft\CTF\TIP\{54C92C2A-5FE9-43A0-A9EC-D05B42C996D4}'
           if (-not (Test-Path $tip)) { throw "TSF 输入法没有注册：$tip" }
           if (Test-Path 'HKLM:\SOFTWARE\Microsoft\CTF\TIP\{A3F4CDED-B1E9-41EE-9CA6-7B4D0DE6CB0A}') { throw "注册了小狼毫的 CLSID，改名不彻底" }
+          # 任务栏只留一个图标：语言栏 中/英 按钮的右键菜单换成一维菜单（交给 YiweiHelper.exe）；切中英只弹一维的提示
+          $dll = if (Test-Path "$sys\yiweix64.dll") { "$sys\yiweix64.dll" } else { "$sys\yiwei.dll" }
+          $dllText = [Text.Encoding]::Unicode.GetString([IO.File]::ReadAllBytes($dll))
+          if (-not $dllText.Contains('显示/隐藏通知区域的一维图标') -or -not $dllText.Contains('YiweiHelper.exe')) { throw "语言栏菜单没有换成一维菜单：$dll" }
+          $notif = (Select-String -Path (Join-Path $root 'data\weasel.yaml') -Pattern '^show_notifications:' | Select-Object -First 1).Line
+          Write-Host "weasel.yaml $notif"
+          if (-not $notif -or $notif -match 'true|ascii_mode') { throw "小狼毫的中/英状态提示没有关掉（会和一维提示一起弹）" }
           # 部署词库
           $d = Start-Process (Join-Path $root 'YiweiDeployer.exe') -ArgumentList '/deploy' -PassThru
           if (-not $d.WaitForExit(600000)) { $d.Kill(); throw "部署超时" }

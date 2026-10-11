@@ -113,6 +113,119 @@ NSI_EN = [
 ]
 
 
+# ---------------------------------------------------------------------------
+# 一维：任务栏只留一个状态图标。小狼毫 TSF 的语言栏「输入模式」按钮（GUID_LBI_INPUTMODE，
+# Windows 输入指示器旁的 中/英）是唯一常驻图标；一维助手的托盘图标默认隐藏，
+# 它的菜单功能挪到这个按钮的右键菜单里（菜单项交给 YiweiHelper.exe 执行）。
+HELPER_IDS = {  # 菜单 id → YiweiHelper.exe 命令行
+    "ID_WEASELTRAY_SETTINGS": "/settings", "ID_WEASELTRAY_CHECKUPDATE": "/update",
+    "ID_WEASELTRAY_DEPLOY": "/deploy",
+    "40101": "/handwrite", "40102": "/symbols", "40103": "/ocr", "40104": "/addword",
+    "40105": "/share", "40106": "/tray toggle", "40107": "/diagnostics",
+}
+LANGBAR_MENUS = {
+    "IDR_MENU_POPUP_HANS": [
+        ("一维输入法设置 (&S)", "ID_WEASELTRAY_SETTINGS"), None,
+        ("手写输入 (&H)", "40101"), ("符号与表情 (&F)", "40102"), ("截图识字 (&O)", "40103"),
+        ("加词… (&A)", "40104"), ("局域网互传 (&L)", "40105"), None,
+        ("用户词典管理 (&D)", "ID_WEASELTRAY_DICT_MANAGEMENT"), ("用户资料同步 (&N)", "ID_WEASELTRAY_SYNC"),
+        ("用户文件夹 (&C)", "ID_WEASELTRAY_USERCONFIG"), ("程序文件夹 (&P)", "ID_WEASELTRAY_INSTALLDIR"),
+        ("日志文件夹 (&G)", "ID_WEASELTRAY_LOGDIR"), None,
+        ("显示/隐藏通知区域的一维图标 (&T)", "40106"), ("检查更新 (&U)", "ID_WEASELTRAY_CHECKUPDATE"),
+        ("重新部署 (&R)", "ID_WEASELTRAY_DEPLOY"), ("导出诊断信息 (&I)", "40107"),
+        ("帮助 (&W)", "ID_WEASELTRAY_WIKI"), None,
+        ("重启算法服务 (&E)", "ID_WEASELTRAY_RERUN_SERVICE"), ("退出算法服务 (&Q)", "ID_WEASELTRAY_QUIT"),
+    ],
+    "IDR_MENU_POPUP_HANT": [
+        ("一維輸入法設定 (&S)", "ID_WEASELTRAY_SETTINGS"), None,
+        ("手寫輸入 (&H)", "40101"), ("符號與表情 (&F)", "40102"), ("截圖識字 (&O)", "40103"),
+        ("加詞… (&A)", "40104"), ("區域網路互傳 (&L)", "40105"), None,
+        ("用戶詞典管理 (&D)", "ID_WEASELTRAY_DICT_MANAGEMENT"), ("用戶資料同步 (&N)", "ID_WEASELTRAY_SYNC"),
+        ("用戶文件夾 (&C)", "ID_WEASELTRAY_USERCONFIG"), ("程序文件夾 (&P)", "ID_WEASELTRAY_INSTALLDIR"),
+        ("日誌文件夾 (&G)", "ID_WEASELTRAY_LOGDIR"), None,
+        ("顯示/隱藏通知區域的一維圖示 (&T)", "40106"), ("檢查更新 (&U)", "ID_WEASELTRAY_CHECKUPDATE"),
+        ("重新部署 (&R)", "ID_WEASELTRAY_DEPLOY"), ("匯出診斷資訊 (&I)", "40107"),
+        ("說明 (&W)", "ID_WEASELTRAY_WIKI"), None,
+        ("重啓算法服務 (&E)", "ID_WEASELTRAY_RERUN_SERVICE"), ("退出算法服務 (&Q)", "ID_WEASELTRAY_QUIT"),
+    ],
+    "IDR_MENU_POPUP": [
+        ("Yiwei IME settings (&S)", "ID_WEASELTRAY_SETTINGS"), None,
+        ("Handwriting (&H)", "40101"), ("Symbols && emoji (&F)", "40102"), ("Text from screenshot (&O)", "40103"),
+        ("Add word… (&A)", "40104"), ("LAN share (&L)", "40105"), None,
+        ("Dictionary manager (&D)", "ID_WEASELTRAY_DICT_MANAGEMENT"), ("User data sync (&N)", "ID_WEASELTRAY_SYNC"),
+        ("User folder (&C)", "ID_WEASELTRAY_USERCONFIG"), ("Program folder (&P)", "ID_WEASELTRAY_INSTALLDIR"),
+        ("Log folder (&G)", "ID_WEASELTRAY_LOGDIR"), None,
+        ("Show/hide tray icon (&T)", "40106"), ("Check for updates (&U)", "ID_WEASELTRAY_CHECKUPDATE"),
+        ("Deploy (&R)", "ID_WEASELTRAY_DEPLOY"), ("Export diagnostics (&I)", "40107"),
+        ("Help (&W)", "ID_WEASELTRAY_WIKI"), None,
+        ("Restart (&E)", "ID_WEASELTRAY_RERUN_SERVICE"), ("Exit (&Q)", "ID_WEASELTRAY_QUIT"),
+    ],
+}
+
+
+def langbar_menu_block(name, items, nl):
+    lines = ["%s MENU" % name, "BEGIN", '    POPUP "WeaselTray"', "    BEGIN"]
+    for it in items:
+        lines.append("        MENUITEM SEPARATOR" if it is None else '        MENUITEM "%s", %s' % it)
+    lines += ["    END", "END"]
+    return nl.join(lines) + nl
+
+
+def patch_tsf_rc(text):
+    nl = "\r\n" if "\r\n" in text else "\n"
+    for name, items in LANGBAR_MENUS.items():
+        pat = re.compile(r"^%s MENU\r?\nBEGIN\r?\n.*?^END\r?\n" % re.escape(name), re.S | re.M)
+        text, n = pat.subn(lambda m: langbar_menu_block(name, items, nl), text, count=1)
+        if n != 1:
+            raise SystemExit("WeaselTSF.rc: menu %s not found" % name)
+    return text
+
+
+HELPER_CPP = r"""
+// 一维输入法：语言栏菜单里的一维功能交给一维助手 YiweiHelper.exe（找不到助手时照原来的方式处理）
+static const wchar_t* YiweiHelperCommand(UINT wID) {
+  switch (wID) {
+%s
+  }
+  return nullptr;
+}
+
+static bool YiweiRunHelper(const std::wstring& root, const wchar_t* args) {
+  if (root.empty())
+    return false;
+  std::wstring exe = root + L"\\YiweiHelper.exe";
+  if (GetFileAttributesW(exe.c_str()) == INVALID_FILE_ATTRIBUTES)
+    return false;
+  AllowSetForegroundWindow(ASFW_ANY);
+  std::wstring a(args);
+  std::thread th([exe, a, root]() {
+    ShellExecuteW(NULL, L"open", exe.c_str(), a.c_str(), root.c_str(),
+                  SW_SHOWNORMAL);
+  });
+  th.detach();
+  return true;
+}
+
+void WeaselTSF::_HandleLangBarMenuSelect(UINT wID) {
+  if (const wchar_t* yiwei_cmd = YiweiHelperCommand(wID)) {
+    if (YiweiRunHelper(_GetRootDir(), yiwei_cmd))
+      return;
+  }
+"""
+
+
+def patch_langbar_cpp(text):
+    if "YiweiHelperCommand" in text:
+        return text
+    cases = "\n".join('    case %s:\n      return L"%s";' % (k, v) for k, v in HELPER_IDS.items())
+    block = (HELPER_CPP % cases).lstrip("\n")
+    pat = re.compile(r"^void WeaselTSF::_HandleLangBarMenuSelect\(UINT wID\) \{\r?\n", re.M)
+    text, n = pat.subn(lambda m: block, text, count=1)
+    if n != 1:
+        raise SystemExit("LanguageBar.cpp: _HandleLangBarMenuSelect not found")
+    return text
+
+
 def guid_struct(g):
     p = g.split("-")
     b = p[3] + p[4]
@@ -171,6 +284,10 @@ def transform(path, text):
     if base in EXE_TARGETS and "<TargetName>%s</TargetName>" % EXE_TARGETS[base] not in text:
         imp = '<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.targets" />'
         text = text.replace(imp, "<PropertyGroup>\r\n    <TargetName>%s</TargetName>\r\n  </PropertyGroup>\r\n  %s" % (EXE_TARGETS[base], imp), 1)
+    if base == "WeaselTSF.rc":
+        text = patch_tsf_rc(text)
+    if base == "LanguageBar.cpp":
+        text = patch_langbar_cpp(text)
     if base.endswith(".rc"):
         text = text.replace('"Weasel Server"', '"%s"' % NAME)
         text = text.replace('VALUE "ProductName", "Weasel"', 'VALUE "ProductName", "%s"' % NAME)
@@ -209,6 +326,12 @@ def main():
             if text and ("小狼毫" in text or "A3F4CDED" in text.upper() or "WeaselNamedPipe" in text or "ShowBalloon(info" in text or "display notification when deploying" in text
                          or re.search(r"Weasel(Server|Deployer|Setup)\.exe|weasel(x64|ARM64X?|ARM)?\.dll", text)):
                 leftovers.append(os.path.join(dirpath, fn))
+    tsf = os.path.join(ROOT, "WeaselTSF")
+    if os.path.isdir(tsf):
+        rc, _, _ = read(os.path.join(tsf, "WeaselTSF.rc"))
+        lb, _, _ = read(os.path.join(tsf, "LanguageBar.cpp"))
+        if '"40106"' in rc or "/tray toggle" not in lb or rc.count(", 40106") != 3:
+            leftovers.append("WeaselTSF: 语言栏菜单未改成一维菜单")
     print("rebranded %d files" % changed)
     if leftovers:
         print("LEFTOVER upstream identity in:", *leftovers, sep="\n  ")

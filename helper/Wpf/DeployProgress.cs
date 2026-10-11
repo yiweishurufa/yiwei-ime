@@ -111,7 +111,7 @@ namespace Yiwei
             bool sync = Deploy.Kind == "/sync";
             _title.Text = ok ? (sync ? "同步完成" : "部署完成，可以打字了") : (sync ? "同步没有完成" : "部署没有完成");
             _detail.Text = ok ? "用时 " + Human((DateTime.Now - Deploy.StartedAt).TotalSeconds) + "。"
-                              : "可以在托盘菜单里点「重新部署」再试一次；仍不行请用「导出诊断信息」反馈给我们。";
+                              : "可以右键任务栏上的 中/英 图标点「重新部署」再试一次；仍不行请用「导出诊断信息」反馈给我们。";
             ShowCorner();
             _hide.Interval = TimeSpan.FromMilliseconds(ok ? 2200 : 7000);
             _hide.Start();

@@ -133,14 +133,14 @@ namespace Yiwei
             RenderOptions.SetBitmapScalingMode(logo, BitmapScalingMode.HighQuality);
             sp.Children.Add(logo);
             sp.Children.Add(Head("欢迎使用一维输入法", "中文常新，自在表达。基于 RIME 与雾凇拼音，组字、候选和个人词频都在本机处理，不含遥测。"));
-            sp.Children.Add(K.Text("接下来用一分钟，选好输入方案和外观，再把旧输入法里的词带过来。每一步都可以跳过，之后也能在托盘菜单「首次引导」里重新打开。", 14, true));
+            sp.Children.Add(K.Text("接下来用一分钟，选好输入方案和外观，再把旧输入法里的词带过来。每一步都可以跳过，之后也能在 设置 → 常规 →「首次引导」里重新打开。", 14, true));
             return sp;
         }
 
         UIElement Schema()
         {
             var sp = new StackPanel();
-            sp.Children.Add(Head("你习惯怎么打拼音？", "选一个默认方案，以后可随时在设置或托盘菜单里切换。"));
+            sp.Children.Add(Head("你习惯怎么打拼音？", "选一个默认方案，以后可随时在设置里切换。"));
             var grid = new System.Windows.Controls.Primitives.UniformGrid { Columns = 2 };
             var cards = new List<Border>();
             foreach (var sc in Rime.Schemas)
@@ -289,7 +289,7 @@ namespace Yiwei
         UIElement Done()
         {
             var sp = new StackPanel();
-            sp.Children.Add(Head("一切就绪", "这些快捷键值得记住。随时可在托盘图标里打开设置。"));
+            sp.Children.Add(Head("一切就绪", "这些快捷键值得记住。右键任务栏上的 中/英 图标，可以打开设置和一维的所有功能。"));
             sp.Children.Add(K.CardBorder(SettingsWindow.CheatSheet()));
             return sp;
         }

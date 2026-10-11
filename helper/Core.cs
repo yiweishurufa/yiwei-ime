@@ -178,6 +178,13 @@ namespace Yiwei
         // 常规
         public bool ImeToast { get; set; } = true;
         public bool ImeToastPolling { get; set; } = false;
+        /// <summary>
+        /// 通知区域（托盘）里的一维图标。默认隐藏：任务栏只留输入指示器旁小狼毫语言栏按钮的 中/英，
+        /// 一维的菜单功能在那个按钮的右键菜单里（scripts/rebrand.py 改的 WeaselTSF 菜单）。旧版本的设置文件没有这一项，升级后也是隐藏。
+        /// </summary>
+        public bool TrayIcon { get; set; } = false;
+        /// <summary>「装了其他键盘所以任务栏多一个切换按钮」的提示只弹一次。</summary>
+        public bool KeyboardHintShown { get; set; } = false;
 
         // 输入方案（雾凇拼音 schema id）
         public string Schema { get; set; } = "rime_ice";
@@ -542,6 +549,15 @@ namespace Yiwei
     {
         const string Marker = "# 由「一维输入法设置」生成";
 
+        /// <summary>
+        /// 小狼毫在光标旁弹状态提示的开关：不含 ascii_mode，切中英时只弹一维助手的「中/A」，不会两个一起弹。
+        /// 与 scripts/customize_data.py 的 SHOW_NOTIFICATIONS 一致。
+        /// </summary>
+        public const string ShowNotifications = "[schema, ascii_punct, full_shape, traditionalization, emoji, search_single_char]";
+
+        /// <summary>Whether a generated file predates the single 中/英 tip (needs rewriting once after an upgrade).</summary>
+        public static bool HasShowNotifications(string yaml) => yaml.Contains("\"show_notifications\": " + ShowNotifications);
+
         /// <summary>Whether the generated file already names the light / dark schemes the current settings want.</summary>
         public static bool UpToDateForDarkMode(Settings s)
         {
@@ -572,7 +588,8 @@ namespace Yiwei
             P("style/color_scheme", Q(light));
             P("style/color_scheme_dark", Q(dark));
             if (dark == AutoDarkId) P("preset_color_schemes/" + AutoDarkId, AutoDarkYaml(light));
-            P("style/display_tray_icon", "false"); // 托盘只显示一维助手的合并图标
+            P("style/display_tray_icon", "false"); // 小狼毫算法服务自己的托盘图标始终关闭
+            P("show_notifications", ShowNotifications); // 中/英提示只由一维助手显示（设置 → 常规 → 中/英切换提示）
             P("style/horizontal", B(s.Horizontal));
             P("style/vertical_text", B(s.VerticalText));
             P("style/candidate_list_layout", Q(s.Horizontal ? "linear" : "stacked"));

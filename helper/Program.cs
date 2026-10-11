@@ -94,6 +94,7 @@ namespace Yiwei
                 FirstRun();
                 StartPipeServer();
                 ImeModeWatcher.Start(chinese => { Tray.SetMode(chinese); _toast.Flash(chinese); });
+                Keyboards.HintOnceLater();
 
                 if (command.Length > 0 && command != "/background") Ui.BeginInvoke(new Action(() => Execute(command)));
                 else if (!Settings.Current.FirstRunDone) Ui.BeginInvoke(new Action(() => Execute("/wizard")));
@@ -127,7 +128,7 @@ namespace Yiwei
                 {
                     // Upgrade from 0.1: add the brand colour schemes to the generated file.
                     var y = File.ReadAllText(Paths.WeaselCustom, Encoding.UTF8);
-                    if (y.Contains("由「一维输入法设置」生成") && (!y.Contains("yiwei_qingbi") || !WeaselConfig.UpToDateForDarkMode(Settings.Current))) Rime.ApplyWhenIdle();
+                    if (y.Contains("由「一维输入法设置」生成") && (!y.Contains("yiwei_qingbi") || !WeaselConfig.UpToDateForDarkMode(Settings.Current) || !WeaselConfig.HasShowNotifications(y))) Rime.ApplyWhenIdle();
                 }
             }
             catch (Exception e) { Log.Write("first run: " + e.Message); }
@@ -171,6 +172,16 @@ namespace Yiwei
                     Tray.SetMode(zh);
                     PrivacyGuard.ModeChanged(zh);
                     _toast.Flash(zh);
+                    return;
+                }
+                if (command.StartsWith("/tray"))
+                {
+                    // 语言栏右键菜单「显示/隐藏通知区域的一维图标」→ "/tray toggle"；也接受 /tray on、/tray off
+                    var arg = command.Substring(5).Trim().ToLowerInvariant();
+                    bool show = arg == "on" ? true : arg == "off" ? false : !Settings.Current.TrayIcon;
+                    Settings.Current.TrayIcon = show;
+                    Settings.Current.Save();
+                    Tray.SetVisible(show);
                     return;
                 }
                 switch (command)
@@ -347,9 +358,22 @@ namespace Yiwei
                     themes.DropDownItems.Add(new ToolStripMenuItem(kv.Value, null, (x, y) => UseTheme(id)) { Checked = st.ColorScheme == id });
                 }
             };
-            _icon = new NotifyIcon { Icon = ModeIcon(true), Text = "一维输入法 · 中文", ContextMenuStrip = menu, Visible = true };
+            // 默认隐藏（设置 → 常规 → 在通知区域显示一维图标）：任务栏只留输入指示器旁的 中/英 一个图标
+            _icon = new NotifyIcon { Icon = ModeIcon(true), Text = "一维输入法 · 中文", ContextMenuStrip = menu, Visible = Settings.Current.TrayIcon };
             _icon.DoubleClick += (s, e) => Program.ShowSettings();
-            _icon.BalloonTipClicked += (s, e) => AppUpdate.OnBalloonClicked();
+            _icon.BalloonTipClicked += (s, e) => { var a = _balloonClick; _balloonClick = null; if (a != null) a(); else AppUpdate.OnBalloonClicked(); };
+            _icon.BalloonTipClosed += (s, e) => _balloonClick = null;
+        }
+
+        static Action _balloonClick;
+        static System.Windows.Forms.Timer _balloonHide;
+
+        /// <summary>Show or hide the notification-area icon (setting 托盘图标 / pipe command /tray).</summary>
+        public static void SetVisible(bool show)
+        {
+            if (_icon == null) return;
+            _balloonHide?.Stop();
+            _icon.Visible = show;
         }
 
         static bool? _zh;
@@ -433,9 +457,30 @@ namespace Yiwei
 
         public static void Hide() { if (_icon != null) _icon.Visible = false; }
 
-        public static void Balloon(string title, string text)
+        /// <summary>
+        /// A system notification. With the tray icon hidden (the default) the icon is shown just long enough
+        /// to carry the notification, then hidden again.
+        /// </summary>
+        public static void Balloon(string title, string text, Action onClick = null)
         {
-            try { _icon?.ShowBalloonTip(4000, title, text, ToolTipIcon.Info); } catch { }
+            if (_icon == null) return;
+            if (Program.Ui != null && Program.Ui.InvokeRequired) { Program.Ui.BeginInvoke(new Action(() => Balloon(title, text, onClick))); return; }
+            try
+            {
+                _balloonClick = onClick;
+                if (!Settings.Current.TrayIcon)
+                {
+                    _icon.Visible = true;
+                    if (_balloonHide == null)
+                    {
+                        _balloonHide = new System.Windows.Forms.Timer { Interval = 12000 };
+                        _balloonHide.Tick += (s, e) => { _balloonHide.Stop(); if (!Settings.Current.TrayIcon) _icon.Visible = false; };
+                    }
+                    _balloonHide.Stop(); _balloonHide.Start();
+                }
+                _icon.ShowBalloonTip(4000, title, text, ToolTipIcon.Info);
+            }
+            catch { }
         }
     }
 }
