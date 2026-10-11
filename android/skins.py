@@ -29,7 +29,7 @@ def palette(kb, key, func, text, sub, pressed, func_pressed, accent, accent_text
     return dict(
         # candidate bar / floating window
         back_color=kb, border_color=border, candidate_separator_color=kb,
-        text_color=sub, text_back_color=kb, hilited_text_color=text, hilited_back_color=kb,
+        text_color=sub, text_back_color=key, hilited_text_color=text, hilited_back_color=kb,
         candidate_text_color=cand_text, comment_text_color=comment, label_color=sub,
         hilited_candidate_back_color=cand_hl_back, hilited_candidate_text_color=cand_hl_text,
         hilited_comment_text_color=cand_hl_text, hilited_label_color=cand_hl_text,

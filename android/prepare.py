@@ -103,6 +103,14 @@ def install_theme():
         t = t[:i] + colour_block() + "\n" + t[m.start():]
         for k, v in layouts.STYLE.items():
             t = set_style(t, k, v)
+        # preedit 小浮条（对标搜狗：键盘左上角、候选栏上方的圆角小条，不占输入框）
+        for key, val in (("top_start_radius", "10"), ("top_end_radius", "10"), ("horizontal_padding", "10")):
+            t, n = re.subn(r"(\npreedit:[^\n]*\n(?:[ \t#][^\n]*\n|\n)*?  %s:)[ \t]*[^\n#]*" % key, lambda m: m.group(1) + " " + val + " ", t, count=1)
+            if n != 1:
+                raise SystemExit("trime.yaml: preedit/%s not found" % key)
+        t, n = re.subn(r"\n#  alpha: 0\.8[^\n]*", "\n  alpha: 1.0", t, count=1)
+        if n != 1:
+            raise SystemExit("trime.yaml: preedit alpha not found")
         t, n = re.subn(r"\npreset_keys:\n", lambda m: m.group(0) + layouts.PRESET_KEYS.lstrip("\n"), t, count=1)
         if n != 1:
             raise SystemExit("trime.yaml: preset_keys not found")
@@ -502,6 +510,20 @@ def install_default_custom():
         fp.write(TRIME_DEFAULT_CUSTOM)
 
 
+def install_preedit():
+    """preedit 浮条四角都圆（原版只有上面两个角）。"""
+    f = os.path.join(MAIN, "java", "com", "osfans", "trime", "ime", "composition", "PreeditDelegate.kt")
+
+    def patch(t):
+        a = "floatArrayOf(startRadius, startRadius, endRadius, endRadius, 0f, 0f, 0f, 0f)"
+        b = "floatArrayOf(endRadius, endRadius, startRadius, startRadius, 0f, 0f, 0f, 0f)"
+        if a not in t or b not in t:
+            raise SystemExit("PreeditDelegate: radii not found")
+        return (t.replace(a, "floatArrayOf(startRadius, startRadius, endRadius, endRadius, endRadius, endRadius, startRadius, startRadius)", 1)
+                 .replace(b, "floatArrayOf(endRadius, endRadius, startRadius, startRadius, startRadius, startRadius, endRadius, endRadius)", 1))
+    edit(f, patch)
+
+
 def install_safe_toolbar():
     """Tool-bar buttons: run only actions defined in preset_keys (or a real key name); an unknown action does
     nothing instead of being typed out as text (stock Trime turns an unknown token into a key sequence)."""
@@ -676,6 +698,7 @@ if __name__ == "__main__":
     install_feedback()
     install_toolbox()
     install_oppo()
+    install_preedit()
     check_keys()  # after install_feedback: also checks the keyboard_resize handler it patches in
     install_brand()
     install_slogan()
