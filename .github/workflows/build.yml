@@ -55,7 +55,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ${{ env.BOOST_ROOT }}
-          key: ${{ runner.os }}-boost-${{ env.boost_version }}-x86x64
+          key: ${{ runner.os }}-boost-${{ env.boost_version }}-x86x64-arm64
 
       - name: 安装 Boost
         if: steps.cache-boost.outputs.cache-hit != 'true'
@@ -63,7 +63,7 @@ jobs:
         working-directory: weasel
         run: |
           ./install_boost.bat
-          ./build.bat boost
+          ./build.bat boost arm64
 
       - name: 配置 MSVC 环境（vcvars，替代 Node 20 的 msvc-dev-cmd）
         shell: pwsh
@@ -170,8 +170,10 @@ jobs:
           WEASEL_BUILD: ${{ github.run_number }}
         run: |
           $ErrorActionPreference = 'Stop'
-          .\build.bat installer
+          .\build.bat arm64 installer
           if ($LASTEXITCODE -ne 0) { throw "build failed" }
+          # ARM64 版：同一个安装包，在 ARM64 Windows 11 上装 ARM64/ARM64X 输入法模块（服务用 x64 仿真运行）
+          foreach ($f in 'yiweiARM64.dll','yiweiARM64X.dll') { if (-not (Test-Path "output\$f")) { throw "缺少 ARM64 模块 $f" } }
           Get-ChildItem output\archives
 
       - name: 打包绿色便携版 zip
