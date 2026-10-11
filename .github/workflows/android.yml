@@ -54,7 +54,7 @@ jobs:
           sudo apt-get install -y -qq cmake ninja-build pkg-config libboost-dev libboost-regex-dev \
             libgoogle-glog-dev libleveldb-dev libmarisa-dev libopencc-dev libyaml-cpp-dev liblua5.4-dev > /dev/null
           J=trime/app/src/main/jni
-          echo "key=rimehost-${{ runner.os }}-$(git -C $J/librime rev-parse HEAD)-$(git -C $J/librime-lua rev-parse HEAD)-${{ hashFiles('android/rime_host/**') }}" >> "$GITHUB_OUTPUT"
+          echo "key=rimehost-${{ runner.os }}-$(git -C $J/librime rev-parse HEAD)-$(git -C $J/librime-lua rev-parse HEAD)-${{ hashFiles('android/rime_host/build.sh') }}" >> "$GITHUB_OUTPUT"
 
       - name: 缓存 librime（主机版）
         id: rimecache
@@ -70,7 +70,9 @@ jobs:
       - name: 预编译词库（与手机同一版 librime，装好即可打字，手机上不用再编译）
         run: |
           set -e
-          $HOME/rime-host/bin/rime_gate --version
+          R=$HOME/rime-host
+          cc -O2 -Wall -o $R/bin/rime_gate android/rime_host/rime_gate.c -I$R/include -L$R/lib -lrime -Wl,-rpath,$R/lib
+          $R/bin/rime_gate --version
           S=trime/app/src/main/assets/shared
           rm -rf "$S/build" /tmp/rime-user && mkdir -p /tmp/rime-user
           $HOME/rime-host/bin/rime_deployer --build /tmp/rime-user "$S" "$S/build" 2>&1 | grep -E "^E" || true
@@ -78,11 +80,12 @@ jobs:
           test -s "$S/build/rime_ice.table.bin" && test -s "$S/build/rime_ice.prism.bin" && test -s "$S/build/t9.prism.bin"
           rm -rf "$S/build/"*.userdb "$S/build/user.yaml" "$S/build/installation.yaml"
 
-      - name: 词库测试（像手机首次启动一样：26 键 nihao、九键 64426 必须出「你好」）
+      - name: 词库测试（像手机首次启动一样：部署前后 26 键 nihao、九键 64426 都必须出「你好」）
         run: |
           S=trime/app/src/main/assets/shared
-          rm -rf /tmp/gate-user
-          $HOME/rime-host/bin/rime_gate "$S" /tmp/gate-user --no-staging-bins \
+          rm -rf /tmp/gate-user && mkdir -p /tmp/gate-user
+          cp trime/yiwei-default.custom.yaml /tmp/gate-user/default.custom.yaml   # what the app writes on first start
+          $HOME/rime-host/bin/rime_gate "$PWD/$S" /tmp/gate-user --no-table-rebuild \
             "rime_ice:nihao:你好" "rime_ice:hello:hello" "t9:64426:你好:ni hao" \
             || { cat /tmp/gate-user/*.ERROR 2>/dev/null | tail -40; exit 1; }
 
@@ -134,9 +137,10 @@ jobs:
         run: |
           set -e
           apk=$(ls dist/*arm64-v8a.apk | head -1)
-          rm -rf /tmp/apk-x /tmp/apk-user && mkdir -p /tmp/apk-x
+          rm -rf /tmp/apk-x /tmp/apk-user && mkdir -p /tmp/apk-x /tmp/apk-user
           unzip -q "$apk" 'assets/*' -d /tmp/apk-x
-          $HOME/rime-host/bin/rime_gate /tmp/apk-x/assets/shared /tmp/apk-user --no-staging-bins \
+          cp trime/yiwei-default.custom.yaml /tmp/apk-user/default.custom.yaml
+          $HOME/rime-host/bin/rime_gate /tmp/apk-x/assets/shared /tmp/apk-user --no-table-rebuild \
             "rime_ice:nihao:你好" "t9:64426:你好:ni hao" \
             || { cat /tmp/apk-user/*.ERROR 2>/dev/null | tail -40; exit 1; }
 

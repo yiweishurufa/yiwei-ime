@@ -277,6 +277,38 @@ def install_safe_upgrade():
     edit(f, patch)
 
 
+# What Trime writes to the user dir as default.custom.yaml on first start. Stock Trime writes a schema_list of
+# luna_pinyin + luna_pinyin_simp, which this app does not ship: the start-up deployment then skips rime_ice and
+# t9 entirely. Ours keeps default.yaml's list. The CI gate copies the same file into its user dir.
+TRIME_DEFAULT_CUSTOM = """# 一维输入法：方案列表用 default.yaml 里的（雾凇拼音、九键、双拼）
+patch:
+  {}
+"""
+
+
+def install_default_custom():
+    f = os.path.join(MAIN, "java", "com", "osfans", "trime", "data", "base", "DataManager.kt")
+
+    def patch(t):
+        t, n = re.subn(r'private const val SCHEMA_LIST_CUSTOM_PATCH = """.*?"""',
+                       lambda m: 'private const val SCHEMA_LIST_CUSTOM_PATCH = """\n' + TRIME_DEFAULT_CUSTOM + '"""',
+                       t, count=1, flags=re.S)
+        if n != 1:
+            raise SystemExit("DataManager: SCHEMA_LIST_CUSTOM_PATCH not found")
+        old = "        if (!custom.exists()) {"
+        if old not in t:
+            raise SystemExit("DataManager: default.custom creation not found")
+        t = t.replace(old, """        // 一维输入法：旧版本写过同文默认的 luna_pinyin 方案列表（本应用没有这些方案），改回一维的
+        if (custom.exists() && custom.readText().let { it.contains("luna_pinyin") && !it.contains("rime_ice") }) {
+            custom.delete()
+        }
+""" + old, 1)
+        return t
+    edit(f, patch)
+    with open(os.path.join(T, "yiwei-default.custom.yaml"), "w", encoding="utf-8", newline="\n") as fp:
+        fp.write(TRIME_DEFAULT_CUSTOM)
+
+
 def install_safe_toolbar():
     """Tool-bar buttons: run only actions defined in preset_keys (or a real key name); an unknown action does
     nothing instead of being typed out as text (stock Trime turns an unknown token into a key sequence)."""
@@ -371,6 +403,7 @@ if __name__ == "__main__":
     install_code()
     install_safe_toolbar()
     install_safe_upgrade()
+    install_default_custom()
     check_keys()
     install_feedback()
     install_brand()
