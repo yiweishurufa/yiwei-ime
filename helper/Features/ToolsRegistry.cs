@@ -28,6 +28,17 @@ namespace Yiwei
                 Run = () => ToolsHub.TransformSelection("转为简体", TextConvert.ToSimplified) });
             ToolsHub.Register(new ToolAction { Id = "to-trad", Name = "转为繁体", Group = "繁简", Help = "选中文字简体→繁体（Windows 系统转换，离线）",
                 Run = () => ToolsHub.TransformSelection("转为繁体", TextConvert.ToTraditional) });
+            // W32 大小写、全半角、中英标点
+            void T(string id, string name, string help, Func<string, string> f) =>
+                ToolsHub.Register(new ToolAction { Id = id, Name = name, Group = "大小写", Help = help, Run = () => ToolsHub.TransformSelection(name, f) });
+            T("upper", "全部大写", "abc → ABC", TextConvert.Upper);
+            T("lower", "全部小写", "ABC → abc", TextConvert.Lower);
+            T("title", "单词首字母大写", "hello world → Hello World", TextConvert.Title);
+            T("toggle-case", "大小写互换", "全大写变全小写，否则变全大写", TextConvert.ToggleCase);
+            T("fullwidth", "转为全角", "ABC 123 → ＡＢＣ　１２３", TextConvert.FullWidth);
+            T("halfwidth", "转为半角", "ＡＢＣ　１２３ → ABC 123", TextConvert.HalfWidth);
+            T("punct-ascii", "中文标点→英文标点", "，。！？ → ,.!?", TextConvert.PunctToAscii);
+            T("punct-zh", "英文标点→中文标点", ",.!?\"\" → ，。！？“”", TextConvert.PunctToChinese);
         }
     }
 
