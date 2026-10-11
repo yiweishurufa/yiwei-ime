@@ -42,6 +42,10 @@ namespace Yiwei
         public bool FollowWallpaper { get; set; } = false;
         public string WallpaperStamp { get; set; } = "";
         public string ThemeRgb { get; set; } = "";
+        /// <summary>W40 低配机模式；开启前的设置（关闭时恢复）；是否已提示过。</summary>
+        public bool LowSpec { get; set; } = false;
+        public string LowSpecSaved { get; set; } = "";
+        public bool LowSpecHinted { get; set; } = false;
 
         static ToolSettings _current;
         static string FilePath => System.IO.Path.Combine(Paths.YiweiDir, "tools.json");

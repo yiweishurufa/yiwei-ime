@@ -39,6 +39,7 @@ namespace Yiwei
             yield return CompletionSection;
             yield return WebDavSection;
             yield return BackupSection;
+            yield return PerformanceSection;
             yield return HotkeysSection;
         }
 
@@ -182,6 +183,17 @@ namespace Yiwei
             copy.Margin = new Thickness(0, 10, 0, 0); copy.HorizontalAlignment = HorizontalAlignment.Left;
             body.Children.Add(copy);
             yield return K.Block("所有快捷键", "按现在的设置列出；长按 Alt + K 随时打开这里", body, Ui.SymbolRegular.KeyboardShift24);
+        }
+
+        IEnumerable<UIElement> PerformanceSection()
+        {
+            yield return K.Section("性能");
+            var mem = K.Text("", 12, true);
+            void Refresh() => mem.Text = "一维助手现在占用内存约 " + LowSpec.WorkingSetMb + " MB · 本机内存 " + LowSpec.TotalRamGb.ToString("0.#") + " GB、" + Environment.ProcessorCount + " 核";
+            Refresh();
+            yield return K.Card("低配机模式", "关掉长按 Alt+空格 AI、按住说话、跟随壁纸取色、WebDAV 自动同步、Win+V 合并，并定时回收内存（目标 < 100 MB）；关闭时恢复原来的设置",
+                K.Toggle(T.LowSpec, v => { LowSpec.Set(v); Refresh(); }), Ui.SymbolRegular.Gauge24);
+            yield return K.CardBorder(K.Row(K.Btn("现在回收内存", () => { LowSpec.Trim(); Refresh(); }), mem));
         }
 
         /// <summary>W47：每个工具动作都可以绑一个全局快捷键（RegisterHotKey，被别的程序占用时会提示）。</summary>
