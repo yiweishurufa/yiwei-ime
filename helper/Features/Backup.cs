@@ -21,6 +21,13 @@ namespace Yiwei
 
         static void WriteSharedSnippets(ZipArchive zip)
         {
+            var e = zip.CreateEntry(SharedSnippets);
+            using (var w = new StreamWriter(e.Open(), new UTF8Encoding(false))) w.Write(SharedSnippetsJson());
+        }
+
+        /// <summary>常用语的通用 JSON（安卓/WebDAV 同步共用）。</summary>
+        public static string SharedSnippetsJson()
+        {
             var book = SnippetBook.Current;
             var doc = new Dictionary<string, object>
             {
@@ -31,8 +38,7 @@ namespace Yiwei
                         { "items", c.Items.Where(i => !string.IsNullOrEmpty(i.Text)).Select(i => new Dictionary<string, object> { { "text", i.Text }, { "code", i.Code ?? "" } }).ToList() },
                     }).ToList() },
             };
-            var e = zip.CreateEntry(SharedSnippets);
-            using (var w = new StreamWriter(e.Open(), new UTF8Encoding(false))) w.Write(Json.Write(doc));
+            return Json.Write(doc);
         }
 
         /// <summary>Adds snippets from a shared snippets.json that are not here yet (same group name + same text). Returns how many were added.</summary>

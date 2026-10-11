@@ -49,6 +49,10 @@ namespace Yiwei
             // W35 邮箱后缀、路径补全
             ToolsHub.Register(new ToolAction { Id = "complete", Name = "补全邮箱/路径", Group = "补全", AltKey = Keys.OemQuestion, Run = Completion.Run,
                 Help = "光标前是「name@」时列出邮箱后缀，是「C:\\…」「%APPDATA%\\」「~\\」时列出文件和文件夹" });
+            // W36 WebDAV 同步
+            ToolsHub.Register(new ToolAction { Id = "webdav-sync", Name = "WebDAV 同步词库和常用语", Group = "同步", InMenu = false, Help = "坚果云等 WebDAV 网盘，设置 → 工具 里填账号",
+                Run = async () => { try { Tray.Balloon("WebDAV 同步", await WebDavSync.SyncAsync()); } catch (Exception e) { Tray.Balloon("WebDAV 同步失败", e.GetBaseException().Message); } } });
+            starters.Add(WebDavSync.Start);
         }
     }
 

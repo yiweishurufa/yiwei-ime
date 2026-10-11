@@ -26,6 +26,12 @@ namespace Yiwei
         /// <summary>W35 邮箱后缀（空 = 内置列表）和各后缀的使用次数（常用的排前面）。</summary>
         public List<string> EmailSuffixes { get; set; } = new List<string>();
         public Dictionary<string, int> EmailUse { get; set; } = new Dictionary<string, int>();
+        /// <summary>W36 WebDAV（坚果云等）：地址、账号、DPAPI 加密的密码、自动同步、上次结果。</summary>
+        public string DavUrl { get; set; } = "";
+        public string DavUser { get; set; } = "";
+        public string DavPass { get; set; } = "";
+        public bool DavAuto { get; set; } = true;
+        public string DavLast { get; set; } = "";
 
         static ToolSettings _current;
         static string FilePath => System.IO.Path.Combine(Paths.YiweiDir, "tools.json");

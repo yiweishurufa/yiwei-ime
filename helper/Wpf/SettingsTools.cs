@@ -35,6 +35,7 @@ namespace Yiwei
             yield return TextSection;
             yield return ClipLinkSection;
             yield return CompletionSection;
+            yield return WebDavSection;
             yield return HotkeysSection;
         }
 
@@ -85,6 +86,35 @@ namespace Yiwei
             };
             yield return K.Card("邮箱后缀", "打到「名字@」后长按 Alt + / 选后缀；用得多的自动排前面", box, Ui.SymbolRegular.Mail24);
             yield return K.Card("文件路径补全", "打到「C:\\Users\\」「%APPDATA%\\」「~\\」后长按 Alt + / 列出里面的文件夹和文件（隐藏文件不列）", null, Ui.SymbolRegular.Folder24);
+        }
+
+        IEnumerable<UIElement> WebDavSection()
+        {
+            yield return K.Section("WebDAV / 坚果云同步");
+            var url = new TextBox { Width = 380, Text = T.DavUrl ?? "" };
+            var user = new TextBox { Width = 380, Text = T.DavUser ?? "" };
+            var pass = new PasswordBox { Width = 380 };
+            if (!string.IsNullOrEmpty(T.DavPass)) pass.Password = "\u2022\u2022\u2022\u2022\u2022\u2022";
+            var status = K.Text(T.DavLast ?? "", 12, true); status.TextWrapping = TextWrapping.Wrap;
+            void Store()
+            {
+                T.DavUrl = (url.Text ?? "").Trim(); T.DavUser = (user.Text ?? "").Trim();
+                if (pass.Password != "\u2022\u2022\u2022\u2022\u2022\u2022") T.DavPass = WebDavSync.Protect(pass.Password);
+                SaveTools();
+            }
+            var form = new StackPanel();
+            form.Children.Add(K.Text("WebDAV 地址", 12, true)); form.Children.Add(url);
+            form.Children.Add(K.Text("账号", 12, true)); form.Children.Add(user);
+            form.Children.Add(K.Text("密码（坚果云：账户信息 → 安全选项 → 添加应用，用生成的应用密码）", 12, true)); form.Children.Add(pass);
+            var buttons = K.Row(
+                K.Btn("用坚果云", () => { url.Text = WebDavSync.JianguoyunUrl; }),
+                K.Btn("测试连接", async () => { Store(); status.Text = "正在连接…"; try { status.Text = await WebDavSync.TestAsync(); } catch (Exception ex) { status.Text = ex.GetBaseException().Message; } }),
+                K.Btn("立即同步", async () => { Store(); status.Text = "正在同步…（会先整理本机词库，可能要几十秒）"; try { status.Text = await WebDavSync.SyncAsync(); } catch (Exception ex) { status.Text = "同步失败：" + ex.GetBaseException().Message; } }, Ui.ControlAppearance.Primary));
+            buttons.Margin = new Thickness(0, 10, 0, 6);
+            form.Children.Add(buttons);
+            form.Children.Add(status);
+            yield return K.Block("WebDAV 账号", "用户词库和常用语存到你自己的网盘 yiwei-ime 文件夹，多台电脑互相合并（和安卓同一种快照格式）", form, Ui.SymbolRegular.CloudSync24);
+            yield return K.Card("自动同步", "开机 2 分钟后和之后每 6 小时同步一次", K.Toggle(T.DavAuto, v => { T.DavAuto = v; SaveTools(); }));
         }
 
         /// <summary>W47：每个工具动作都可以绑一个全局快捷键（RegisterHotKey，被别的程序占用时会提示）。</summary>
