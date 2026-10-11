@@ -8,6 +8,7 @@
  */
 package com.osfans.trime.ime.keyboard
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
@@ -49,6 +50,7 @@ object YiweiOppo {
     }
 
     /** 键盘左右各 32dp 的边缘排除系统返回手势（系统最多认每边 200dp 高）。 */
+    @SuppressLint("NewApi")
     fun excludeEdgeGestures(view: View) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         view.addOnLayoutChangeListener { v, l, t, r, b, _, _, _, _ ->
