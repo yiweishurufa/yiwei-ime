@@ -260,6 +260,8 @@ jobs:
           path: dist
       - name: 静默安装并自检
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference = 'Stop'
           $exe = Get-ChildItem dist -Filter 'yiwei-ime*.exe' | Select-Object -First 1
@@ -275,9 +277,20 @@ jobs:
             $bmp.Save("screens\installer-welcome.png", [System.Drawing.Imaging.ImageFormat]::Png); $g.Dispose(); $bmp.Dispose()
             Stop-Process -Id $ui.Id -Force -ErrorAction SilentlyContinue; Start-Sleep 2
           } catch { Write-Host "安装界面截图失败：$_" }
+          # 先装上一版 nightly（有的话），下面的安装就是一次真实的「旧版 → 新版」升级
+          try {
+            gh release download nightly -R $env:GITHUB_REPOSITORY -p 'yiwei-ime-*-installer.exe' -D old-nightly --clobber
+            $old = Get-ChildItem old-nightly -Filter 'yiwei-ime*.exe' -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($old) {
+              Write-Host "先安装旧版 $($old.Name)"
+              $po = Start-Process $old.FullName -ArgumentList '/S' -PassThru
+              if (-not $po.WaitForExit(600000)) { $po.Kill(); Write-Host "旧版安装超时，跳过升级测试" } else { Write-Host "旧版 exit code $($po.ExitCode)"; Start-Sleep 5 }
+            }
+          } catch { Write-Host "没有拿到旧版 nightly，跳过旧版 → 新版升级测试：$_" }
           $p = Start-Process $exe.FullName -ArgumentList '/S' -PassThru
           if (-not $p.WaitForExit(600000)) { $p.Kill(); throw "安装超时（可能弹出了对话框）" }
           Write-Host "installer exit code $($p.ExitCode)"
+          if ($p.ExitCode -eq 3010) { throw "安装/升级要求重启电脑（退出码 3010）" }
           $root = $null
           foreach ($k in 'HKLM:\SOFTWARE\Yiwei\YiweiIME','HKLM:\SOFTWARE\WOW6432Node\Yiwei\YiweiIME') {
             if (Test-Path $k) { $v = (Get-ItemProperty $k).YiweiRoot; if ($v) { $root = $v } }
@@ -324,6 +337,27 @@ jobs:
           if (-not $ok) { Write-Host "YiweiServer 不在，重新启动一次"; Start-Process (Join-Path $root 'YiweiServer.exe'); Start-Sleep 6 }
           if (-not (Get-Process YiweiServer -ErrorAction SilentlyContinue)) { throw "YiweiServer 没有启动" }
           if (-not (Get-Process YiweiHelper -ErrorAction SilentlyContinue)) { throw "YiweiHelper 启动后退出了" }
+          # 升级不需要重启：模拟正在打字的程序 —— 本进程把系统目录里的输入法 DLL 按映像映射（锁住不能覆盖），
+          # 再静默覆盖安装同一个安装包：退出码不能是 3010，服务和助手要自己起来，输入法注册不能丢
+          $sysDll = if (Test-Path "$sys\yiwei.dll") { "$sys\yiwei.dll" } else { "$sys\yiweix64.dll" }
+          Add-Type -Namespace YwTest -Name K -MemberDefinition '[System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)] public static extern System.IntPtr LoadLibraryExW(string p, System.IntPtr h, uint f);'
+          $hmod = [YwTest.K]::LoadLibraryExW($sysDll, [IntPtr]::Zero, 1)  # DONT_RESOLVE_DLL_REFERENCES：映射但不运行 DllMain
+          Write-Host "锁住 $sysDll -> $hmod"
+          $p2 = Start-Process $exe.FullName -ArgumentList '/S' -PassThru
+          if (-not $p2.WaitForExit(600000)) { $p2.Kill(); throw "覆盖安装超时（可能弹出了对话框）" }
+          Write-Host "upgrade exit code $($p2.ExitCode)"
+          Get-ChildItem $sys -Filter 'yiwei*' | Select-Object Name, Length, LastWriteTime | Format-Table | Out-String | Write-Host
+          if ($p2.ExitCode -eq 3010) { throw "覆盖安装要求重启电脑（退出码 3010）" }
+          if ($p2.ExitCode -ne 0) { throw "覆盖安装失败，退出码 $($p2.ExitCode)" }
+          if (-not (Test-Path $sysDll)) { throw "覆盖安装后系统目录里没有输入法模块" }
+          if ($hmod -ne [IntPtr]::Zero -and -not (Get-ChildItem $sys -Filter ((Split-Path $sysDll -Leaf) + '.old.*'))) { Write-Host "提示：被占用的 DLL 没有改名（可能复制时未被锁）" }
+          if (-not (Test-Path $tip)) { throw "覆盖安装后 TSF 输入法注册丢了" }
+          foreach ($proc in 'YiweiServer','YiweiHelper') {
+            $ok = $false
+            for ($i = 0; $i -lt 40 -and -not $ok; $i++) { if (Get-Process $proc -ErrorAction SilentlyContinue) { $ok = $true } else { Start-Sleep 1 } }
+            if (-not $ok) { throw "覆盖安装后 $proc 没有自动启动" }
+          }
+          Write-Host "升级免重启检查通过"
           Write-Host "自检通过"
       - name: 真实输入测试（记事本里敲 nihao，空格上屏应为「你好」）
         shell: pwsh

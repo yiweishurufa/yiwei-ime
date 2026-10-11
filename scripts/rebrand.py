@@ -313,6 +313,56 @@ def install_style_dialog():
             f.write(b"\xef\xbb\xbf" + src.replace("\r\n", "\n").replace("\n", "\r\n").encode("utf-8"))
 
 
+# ---------------------------------------------------------------------------
+# 一维：升级不需要重启。系统目录里的 yiwei*.dll 被各程序加载着，不能覆盖但能改名：Weasel 原来改名成
+# .old.0 … .old.9 并登记开机删除，十次升级不重启就会把名字用完、复制失败。改成先清掉已经没人用的
+# .old.*，再用时间戳起新名字；已开的程序继续用旧 DLL，新开的程序用新 DLL，不需要重启。
+COPY_FILE_NEW = """// 一维输入法：先清掉以前改名留下、已经没人加载的 .old.*，正在用的改成带时间戳的新名字，
+// 新文件复制到原名 —— 已开的程序继续用旧版，新开的程序用新版，升级不需要重启。
+static void yiwei_cleanup_old(const std::wstring& dest) {
+  size_t slash = dest.find_last_of(L"\\\\/");
+  std::wstring dir = slash == std::wstring::npos ? L"" : dest.substr(0, slash + 1);
+  WIN32_FIND_DATAW fd;
+  HANDLE h = FindFirstFileW((dest + L".old.*").c_str(), &fd);
+  if (h == INVALID_HANDLE_VALUE)
+    return;
+  do {
+    DeleteFileW((dir + fd.cFileName).c_str());
+  } while (FindNextFileW(h, &fd));
+  FindClose(h);
+}
+
+BOOL copy_file(const std::wstring& src, const std::wstring& dest) {
+  yiwei_cleanup_old(dest);
+  BOOL ret = CopyFile(src.c_str(), dest.c_str(), FALSE);
+  if (!ret) {
+    for (int i = 0; i < 3 && !ret; ++i) {
+      std::wstring old = dest + L".old." + std::to_wstring(GetTickCount64()) +
+                         L"." + std::to_wstring(i);
+      if (MoveFileEx(dest.c_str(), old.c_str(), MOVEFILE_REPLACE_EXISTING)) {
+        MoveFileEx(old.c_str(), NULL, MOVEFILE_DELAY_UNTIL_REBOOT);
+        ret = CopyFile(src.c_str(), dest.c_str(), FALSE);
+      }
+    }
+  }
+  return ret;
+}
+"""
+
+
+def patch_imesetup(text):
+    if "yiwei_cleanup_old" in text:
+        return text
+    nl = "\r\n" if "\r\n" in text else "\n"
+    t = text.replace("\r\n", "\n")
+    start = t.find("BOOL copy_file(const std::wstring& src, const std::wstring& dest) {\n")
+    end = t.find("  return ret;\n}\n", start)
+    if start < 0 or end < 0 or "MOVEFILE_DELAY_UNTIL_REBOOT" not in t[start:end]:
+        raise SystemExit("imesetup.cpp: copy_file not as expected")
+    t = t[:start] + COPY_FILE_NEW + t[end + len("  return ret;\n}\n"):]
+    return t.replace("\n", nl)
+
+
 def guid_struct(g):
     p = g.split("-")
     b = p[3] + p[4]
@@ -375,6 +425,8 @@ def transform(path, text):
         text = patch_tsf_rc(text)
     if base == "LanguageBar.cpp":
         text = patch_langbar_cpp(text)
+    if base == "imesetup.cpp":
+        text = patch_imesetup(text)
     if base in ("WeaselDeployer.rc", "UIStyleSettings.h", "WeaselDeployer.cpp"):
         text = patch_deployer_sources(text, base)
     if base.endswith(".rc"):
@@ -423,6 +475,9 @@ def main():
         lb, _, _ = read(os.path.join(tsf, "LanguageBar.cpp"))
         if '"40106"' in rc or "/tray toggle" not in lb or rc.count(", 40106") != 3:
             leftovers.append("WeaselTSF: 语言栏菜单未改成一维菜单")
+    ims = os.path.join(ROOT, "WeaselSetup", "imesetup.cpp")
+    if os.path.exists(ims) and "yiwei_cleanup_old" not in (read(ims)[0] or ""):
+        leftovers.append("WeaselSetup: copy_file 未改成升级免重启版本")
     dep = os.path.join(ROOT, "WeaselDeployer")
     if os.path.isdir(dep):
         drc, _, _ = read(os.path.join(dep, "WeaselDeployer.rc"))

@@ -516,6 +516,49 @@ NSI_ONINIT = r'''  ; 安装/卸载界面一律简体中文（按钮「下一步�
 ''' + NSI_OLD_WEASEL
 
 
+# ---- 一维：升级不需要重启 ----
+# Weasel 安装器要求重启的原因：①升级时先「卸载旧版」（YiweiSetup /u 注销输入法、删系统目录 DLL）并 SetRebootFlag；
+# ②安装段末尾对升级无条件 SetRebootFlag；③卸载段也 SetRebootFlag。技术上并不需要：系统目录里的 yiwei*.dll
+# 被各程序加载时不能覆盖，但可以改名 —— YiweiSetup 把它改名成 .old.<时间戳> 再复制新文件到原名，
+# 已开的程序继续用旧 DLL，新开的程序用新 DLL（CLSID 指向的路径不变）；安装目录里的文件只被服务、助手、
+# 部署程序占用，先停掉它们再替换，装完自动重启服务和助手。只有 YiweiSetup 注册失败（极端情况）才提示重启，默认「稍后」。
+NSI_UPGRADE_FUNCS = r"""
+; 停掉一维的进程（不弹黑窗）
+!macro YwStopProcesses
+  nsExec::Exec 'taskkill /f /im YiweiHelper.exe'
+  Pop $9
+  nsExec::Exec 'taskkill /f /im YiweiDeployer.exe'
+  Pop $9
+  nsExec::Exec 'taskkill /f /im YiweiServer.exe'
+  Pop $9
+!macroend
+
+; 安装目录里删不掉（仍被占用）的 exe/dll 改名让位，下次升级再清掉；不用 /REBOOTOK，不要求重启
+Function YwFreeLocked
+  Delete "$INSTDIR\*.yiwei-old"
+  System::Call "kernel32::GetTickCount()i.r8"
+  FindFirst $6 $7 "$INSTDIR\*.*"
+  ${DoWhile} $7 != ""
+    StrCpy $5 $7 4 -4
+    ${If} $5 == ".dll"
+    ${OrIf} $5 == ".exe"
+      Delete "$INSTDIR\$7"
+      ${If} ${FileExists} "$INSTDIR\$7"
+        Rename "$INSTDIR\$7" "$INSTDIR\$7.$8.yiwei-old"
+      ${EndIf}
+    ${EndIf}
+    FindNext $6 $7
+  ${Loop}
+  FindClose $6
+FunctionEnd
+
+; 扩展名 .yiwei-old 的文件下次安装时清掉；安装失败需要重启时退出码 3010（CI 用来检查升级不需要重启）
+Function .onInstSuccess
+  IfRebootFlag 0 +2
+  SetErrorLevel 3010
+FunctionEnd
+"""
+
 def patch_installer():
     path = os.path.join(W, "output", "install.nsi")
     raw = open(path, "rb").read()
@@ -574,8 +617,56 @@ def patch_installer():
     # before upgrading, stop the running helper as well
     t = t.replace("  ExecWait '\"$R1\\YiweiServer.exe\" /quit'\n",
                   "  ExecWait '\"$R1\\YiweiServer.exe\" /quit'\n  ExecWait 'taskkill /f /im YiweiHelper.exe'\n", 1)
+    t = patch_upgrade(t)
     out = t.replace("\n", nl)
     open(path, "wb").write((b"\xef\xbb\xbf" if bom else b"") + out.encode("utf-8"))
+
+
+def patch_upgrade(t):
+    """升级不需要重启（见 NSI_UPGRADE_FUNCS 上的说明）。"""
+    # .onInit 只判断是否升级；旧版的清理挪到真正安装时（YwUpgrade），不再弹「请先卸载旧版本」，取消安装也不会删掉旧版
+    i = t.index('  StrCpy $0 "Upgrade"\n')
+    j = t.index("uninst:\n", i)
+    k = t.index("done:\nFunctionEnd\n", j)
+    block = t[j + len("uninst:\n"):k]
+    # 用专门的变量记「升级」：$0 会被安装界面各页的回调改掉
+    t = t[:i] + '  StrCpy $YwUpgrading 1\n\n' + t[k:]
+    t = t.replace("Function .onInit\n", "Var YwUpgrading\nFunction .onInit\n", 1)
+    for old in ("  ExecWait '\"$R1\\YiweiSetup.exe\" /u'\n",  # 不注销输入法：Windows 不会把它从键盘列表里拿掉
+                "  ; Prompt reboot\n  SetRebootFlag true\n",
+                "  ExecWait 'taskkill /f /im YiweiHelper.exe'\n"):
+        assert old in block, "nsi upgrade block: %r" % old
+        block = block.replace(old, "", 1)
+    block = block.replace("  ExecWait '\"$R1\\YiweiServer.exe\" /quit'\n",
+                          "  ExecWait '\"$R1\\YiweiServer.exe\" /quit'\n  !insertmacro YwStopProcesses\n", 1)
+    assert "YwStopProcesses" in block
+    upgrade = "Function YwUpgrade\n" + block + "FunctionEnd\n"
+    anchor = "; The stuff to install\n"
+    assert anchor in t, "nsi: section anchor missing"
+    t = t.replace(anchor, NSI_UPGRADE_FUNCS.lstrip("\n") + "\n" + upgrade + "\n" + anchor, 1)
+    old = "  SectionIn RO\n"
+    assert old in t
+    t = t.replace(old, old + "\n  ; 一维：升级时先停掉旧版进程、清掉旧文件（不卸载输入法、不要求重启）\n  StrCmp $YwUpgrading 1 0 +2\n  Call YwUpgrade\n", 1)
+    old = "  IfFileExists \"$INSTDIR\\YiweiServer.exe\" 0 +2\n  ExecWait '\"$INSTDIR\\YiweiServer.exe\" /quit'\n"
+    assert old in t, "nsi: server quit anchor missing"
+    t = t.replace(old, old + "  !insertmacro YwStopProcesses\n  Call YwFreeLocked\n", 1)
+    # 注册输入法：/s 静默（不弹 Weasel 的安装选项框）；失败才要求重启（极端情况，完成页默认「稍后重启」）
+    old = '  StrCpy $R2 "/i"\n'
+    assert old in t
+    t = t.replace(old, '  StrCpy $R2 "/s"\n', 1)
+    old = "  ExecWait '\"$INSTDIR\\YiweiSetup.exe\" $R2'\n"
+    assert old in t
+    t = t.replace(old, "  ExecWait '\"$INSTDIR\\YiweiSetup.exe\" $R2' $R3\n  ${If} $R3 != 0\n    DetailPrint \"输入法注册未完成（$R3），重启电脑后生效\"\n    SetRebootFlag true\n  ${EndIf}\n", 1)
+    old = '  ; Prompt reboot\n  StrCmp $0 "Upgrade" 0 +2\n  SetRebootFlag true\n'
+    assert old in t, "nsi: upgrade reboot anchor missing"
+    t = t.replace(old, "", 1)
+    # 卸载：系统目录里仍被占用的 DLL 由 YiweiSetup 改名并在下次开机时删除，不需要立刻重启
+    old = "  ; Prompt reboot\n  SetRebootFlag true\n\nSectionEnd"
+    assert old in t, "nsi: uninstall reboot anchor missing"
+    t = t.replace(old, "SectionEnd", 1)
+    t = t.replace("  ExecWait 'taskkill /f /im YiweiHelper.exe'\n", "  nsExec::Exec 'taskkill /f /im YiweiHelper.exe'\n  Pop $9\n")
+    assert "SetRebootFlag true\n" not in t.replace("    SetRebootFlag true\n  ${EndIf}", ""), "nsi: unexpected SetRebootFlag left"
+    return t
 
 
 if __name__ == "__main__":
