@@ -1,5 +1,21 @@
 """用例：每个函数拿到一个已部署的 Rime，失败就 raise。"""
+import os
+
 ALL = []
+
+# 一维助手（helper/Features/CoreInput.cs、RimeFeatures.cs）写出的补丁，格式保持一致
+CUSTOM = {
+    # W1：全拼模糊音追加在雾凇规则之后（en = eng）
+    "rime_ice.custom.yaml": 'patch:\n  "speller/algebra/+":\n    - derive/en$/eng/\n    - derive/eng$/en/\n',
+    # W1：双拼模糊音插在最前（zh = z）
+    "double_pinyin_flypy.custom.yaml": 'patch:\n  "speller/algebra/@before 0": derive/^zh/z/\n  "speller/algebra/@before 1": derive/^z([^h])/zh$1/\n',
+}
+
+
+def setup(user):
+    os.makedirs(user, exist_ok=True)
+    for name, text in CUSTOM.items():
+        open(os.path.join(user, name), "w", encoding="utf-8").write(text)
 
 
 def case(fn):
@@ -148,6 +164,14 @@ def w10_emoji(r):
     """W10 Emoji 候选：xiaolian 的前几个候选里有 😀。"""
     p = page_after(r, "xiaolian")["page"]; r.clear()
     assert any(ord(c[0]) > 0x1F000 for c in p[:6]), p
+    # 关掉 emoji 开关（助手写 switches/@3/reset: 0 就是这个开关的默认值）后只剩文字
+    r.open("rime_ice")
+    r.option("emoji", False)
+    r.type("xiaolian")
+    p = r.context()["page"]
+    r.clear()
+    r.option("emoji", True)
+    assert not any(ord(c[0]) > 0x1F000 for c in p), p
 
 
 @case
@@ -172,3 +196,12 @@ def w15_caret_edit(r):
     keys(r, list("nihao") + ["LEFT", "LEFT", "BS"])
     assert r.input() == "niao", r.input()
     r.clear()
+
+
+@case
+def w1_fuzzy_full_and_double(r):
+    """W1 模糊音：全拼 en=eng（fen 出 风），小鹤双拼 z=zh（zi 出 知）。"""
+    p = page_after(r, "fen")["page"]; r.clear()
+    assert "风" in p, p
+    p = page_after(r, "zi", "double_pinyin_flypy")["page"]; r.clear()
+    assert "知" in p or "只" in p, p

@@ -39,6 +39,7 @@ def test(shared, user, lib, only):
     t0 = time.time()
     os.makedirs(user, exist_ok=True)
     os.chdir(user)  # Windows 专用 Lua 在 Linux 上会把命名管道当普通文件写到当前目录
+    cases.setup(user)  # 部署前写好助手会生成的 *.custom.yaml
     r = Rime(lib or default_lib(), shared, user)
     r.deploy(True)
     print("deployed in %.0fs" % (time.time() - t0))

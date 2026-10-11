@@ -51,7 +51,7 @@ namespace Yiwei
                 wrap.Children.Add(cb);
             }
             var fuzzyDesc = dbl
-                ? "勾选的两种读音都能打出同样的字。目前只对全拼生效（双拼方案的键位规则不同），你现在用的是双拼"
+                ? "勾选的两种读音都能打出同样的字。双拼也生效（规则在转换成双拼键位之前应用）"
                 : "勾选的两种读音都能打出同样的字。规则追加在雾凇自带规则之后，不影响原有的简拼和纠错";
             p.Children.Add(K.Block("模糊音", fuzzyDesc, wrap, Ui.SymbolRegular.SoundWaveCircle24));
 

@@ -8,6 +8,28 @@ namespace Yiwei
     {
         void AddCoreInputSection(StackPanel p)
         {
+            p.Children.Add(K.Section("模糊音地区预设"));
+            var presets = new WrapPanel();
+            foreach (var ps in CoreInput.FuzzyPresets)
+            {
+                var preset = ps;
+                var b = K.Btn(preset.Name, () =>
+                {
+                    var f = RimeFeatures.Of(S);
+                    f.Fuzzy = new System.Collections.Generic.List<string>(preset.Ids);
+                    ApplyFeatures("模糊音已换成「" + preset.Name + "」（全拼和双拼都生效），重新打开本页可看到勾选");
+                });
+                b.ToolTip = preset.Desc;
+                b.Margin = new System.Windows.Thickness(0, 0, 8, 8);
+                presets.Children.Add(b);
+            }
+            p.Children.Add(K.Block("一键套用", "按口音选一组模糊音，之后还可以在上面逐项增减；全拼、双拼都生效", presets, Ui.SymbolRegular.SoundWaveCircle24));
+
+            p.Children.Add(K.Section("候选"));
+            p.Children.Add(K.Card("Emoji 候选", "打 xiaolian、haha 等词时在候选里带上 😀 😂；关掉后只出文字（Ctrl+` 菜单里也能临时切换）",
+                K.Toggle(CoreInput.Emoji, v => { CoreInput.Emoji = v; ApplyFeatures(v ? "已开启 Emoji 候选" : "已关闭 Emoji 候选"); }),
+                Ui.SymbolRegular.Emoji24));
+
             p.Children.Add(K.Section("按习惯调整候选"));
             p.Children.Add(K.Card("按习惯调整候选",
                 "分几次选出来的词（如 yuanyiwei 依次选 苑、祎、玮）会记成一个词，下次排第一；常选的字词持续靠前。只在本机记录，无痕窗口不记",
