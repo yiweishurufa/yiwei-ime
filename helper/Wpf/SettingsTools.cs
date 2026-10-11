@@ -31,6 +31,7 @@ namespace Yiwei
         /// <summary>Sections of the 工具 page, in order.</summary>
         IEnumerable<Func<IEnumerable<UIElement>>> ToolSections()
         {
+            yield return OverviewSection;
             yield return TranslateSection;
             yield return SkinColorSection;
             yield return TextSection;
@@ -158,6 +159,29 @@ namespace Yiwei
                 K.Btn("开始取色", () => { WindowState = WindowState.Minimized; Dispatcher.BeginInvoke(new Action(() => { TextOut.Pump(300); ScreenColorPicker.Start(rgb => { ThemeFromColor.Apply(rgb, "屏幕取色"); status.Text = "已用 #" + ThemeFromColor.Readable(rgb).ToString("X6") + " 生成「我的配色」"; WindowState = WindowState.Normal; Activate(); }); })); }), Ui.SymbolRegular.Eyedropper24);
             yield return K.Card("跟随壁纸自动换色", "换壁纸后自动重新取色（会切到「我的配色」）",
                 K.Toggle(T.FollowWallpaper, v => { T.FollowWallpaper = v; SaveTools(); if (v) { try { status.Text = ThemeFromColor.FromWallpaper(); } catch (Exception ex) { status.Text = ex.Message; } } }));
+        }
+
+        IEnumerable<UIElement> OverviewSection()
+        {
+            yield return K.Section("快捷键总览");
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(90) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(250) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            int row = 0;
+            foreach (var r in ShortcutOverview.Build())
+            {
+                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                var cells = new[] { K.Text(r.Group, 12, true), K.Text(r.Keys, 13, false, FontWeights.SemiBold), K.Text(r.What + (r.On ? "" : "（已关闭）"), 13, !r.On) };
+                for (int c = 0; c < 3; c++) { cells[c].Margin = new Thickness(0, 3, 8, 3); Grid.SetRow(cells[c], row); Grid.SetColumn(cells[c], c); grid.Children.Add(cells[c]); }
+                row++;
+            }
+            var body = new StackPanel();
+            body.Children.Add(grid);
+            var copy = K.Btn("复制为文字", () => { Clipboard.SetText(ShortcutOverview.AsText()); _toast.Show("已复制"); });
+            copy.Margin = new Thickness(0, 10, 0, 0); copy.HorizontalAlignment = HorizontalAlignment.Left;
+            body.Children.Add(copy);
+            yield return K.Block("所有快捷键", "按现在的设置列出；长按 Alt + K 随时打开这里", body, Ui.SymbolRegular.KeyboardShift24);
         }
 
         /// <summary>W47：每个工具动作都可以绑一个全局快捷键（RegisterHotKey，被别的程序占用时会提示）。</summary>

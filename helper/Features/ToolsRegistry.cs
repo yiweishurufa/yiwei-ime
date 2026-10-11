@@ -65,6 +65,9 @@ namespace Yiwei
             // W23 屏幕取色生成皮肤
             ToolsHub.Register(new ToolAction { Id = "theme-pick", Name = "屏幕取色生成皮肤", Group = "皮肤", InMenu = false, Help = "在屏幕上点一个颜色，用它生成候选框配色「我的配色」",
                 Run = () => ScreenColorPicker.Start() });
+            // W25 快捷键总览
+            ToolsHub.Register(new ToolAction { Id = "shortcuts", Name = "快捷键总览", Group = "菜单", AltKey = Keys.K, InMenu = false, Help = "列出所有快捷键（按当前设置）",
+                Run = () => Program.ShowSettings("工具") });
         }
     }
 
