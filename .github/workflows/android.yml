@@ -18,7 +18,7 @@ env:
 
 concurrency:
   group: android-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false  # 不要因为别的提交打断正在编译的安卓包（Windows 提交也会触发它）
 
 jobs:
   apk:
