@@ -30,6 +30,10 @@ PRESET_KEYS = """
   yw_settings: {label: "设置", send: SETTINGS, functional: true}
   yw_resize: {label: "调整高度", send: FUNCTION, command: keyboard_resize, functional: true}
   yw_keepalive: {label: "保活", send: FUNCTION, command: yiwei_keepalive, functional: true}
+  yw_kbd_chooser: {label: "键盘选择", send: FUNCTION, command: yiwei_kbdchooser, functional: true}
+  yw_s_t9: {label: "九键", send: FUNCTION, command: select_schema, option: "t9", functional: true}
+  yw_s_qp: {label: "26键", send: FUNCTION, command: select_schema, option: "rime_ice", functional: true}
+  yw_s_flypy: {label: "小鹤", send: FUNCTION, command: select_schema, option: "double_pinyin_flypy", functional: true}
   yw_toolbox: {label: "工具箱", send: FUNCTION, command: yiwei_toolbox, functional: true}
   yw_phrases: {label: "常用语", send: FUNCTION, command: liquid_keyboard, option: "常用语", functional: true}
   yw_edit: {label: "编辑", send: Eisu_toggle, select: yw_edit_board, functional: true}
@@ -213,7 +217,7 @@ LIQUID_PHRASES = "  phrases:\n    name: 常用语\n    type: SINGLE\n    keys:\n
 TOOLBOX = [
     ("常用语", "message_text_outline", "yw_phrases"),
     ("编辑面板", "text_box_edit_outline", "yw_edit"),
-    ("键盘切换", "keyboard_outline", "yw_layout"),
+    ("键盘选择", "keyboard_outline", "yw_kbd_chooser"),
     ("剪贴板", "clipboard_outline", "yw_clipboard"),
     ("语音输入", "microphone_outline", "yw_voice"),
     ("表情", "emoticon_outline", "yw_emoji"),
@@ -229,8 +233,17 @@ TOOLBOX = [
     ("设置", "cog_outline", "yw_settings"),
 ]
 
+# 键盘选择页：(显示名, 图标, 动作)。只放真的能用的键盘；手写 / 笔画 / 五笔做好后再加。
+KEYBOARDS = [
+    ("拼音 9 键", "dialpad", "yw_s_t9"),
+    ("拼音 26 键", "keyboard_outline", "yw_s_qp"),
+    ("小鹤双拼", "keyboard_variant", "yw_s_flypy"),
+    ("数字键盘", "numeric", "yw_num"),
+    ("编辑面板", "text_box_edit_outline", "yw_edit"),
+]
+
 # 工具栏：左 Logo(点开工具箱) | 可左右滑动的功能按钮 | 右 收起。buttons[0] 固定在最右（收起），其余从左到右按顺序排列。
-_TB = [("keyboard_close", "yw_hide"), ("dialpad", "yw_layout"), ("message_text_outline", "yw_phrases"),
+_TB = [("keyboard_close", "yw_hide"), ("dialpad", "yw_kbd_chooser"), ("message_text_outline", "yw_phrases"),
        ("clipboard_outline", "yw_clipboard"), ("microphone_outline", "yw_voice"), ("emoticon_outline", "yw_emoji"),
        ("text_box_edit_outline", "yw_edit"), ("arrow_expand_vertical", "yw_resize"), ("translate", "yw_trad"),
        ("palette_outline", "yw_color"), ("cog_outline", "yw_settings")]

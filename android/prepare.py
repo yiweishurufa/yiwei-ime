@@ -325,17 +325,20 @@ def install_toolbox():
     """工具栏可左右滑动 + 点 Logo 打开工具箱（YiweiToolboxWindow，条目由 layouts.TOOLBOX 生成）。"""
     J = os.path.join(MAIN, "java", "com", "osfans", "trime", "ime")
     src = open(os.path.join(HERE, "kotlin", "YiweiToolbox.kt"), encoding="utf-8").read()
-    items = ",\n".join('            Item("%s", "%s", "%s")' % t for t in layouts.TOOLBOX)
-    if "/*YIWEI_ITEMS*/" not in src:
-        raise SystemExit("YiweiToolbox.kt: items marker missing")
-    open(os.path.join(J, "keyboard", "YiweiToolbox.kt"), "w", encoding="utf-8", newline="\n").write(
-        src.replace("/*YIWEI_ITEMS*/", items))
+    def gen(lst):
+        return ",\n".join('                YiweiGridWindow.Item("%s", "%s", "%s")' % t for t in lst)
+    for marker in ("/*YIWEI_TOOLBOX*/", "/*YIWEI_KEYBOARDS*/"):
+        if marker not in src:
+            raise SystemExit("YiweiToolbox.kt: %s missing" % marker)
+    src = src.replace("/*YIWEI_TOOLBOX*/", gen(layouts.TOOLBOX)).replace("/*YIWEI_KEYBOARDS*/", gen(layouts.KEYBOARDS))
+    open(os.path.join(J, "keyboard", "YiweiToolbox.kt"), "w", encoding="utf-8", newline="\n").write(src)
 
     def ckal(t):
         old = '"menu_keyboard" -> windowManager.attachWindow(SwitchOptionWindow())'
         if old not in t:
             raise SystemExit("CommonKeyboardActionListener: menu_keyboard handler not found")
-        return t.replace(old, '"yiwei_toolbox" -> windowManager.attachWindow(YiweiToolboxWindow())\n                    ' + old, 1)
+        return t.replace(old, '"yiwei_toolbox" -> windowManager.attachWindow(YiweiGridWindow.toolbox())\n'
+                         '                    "yiwei_kbdchooser" -> windowManager.attachWindow(YiweiGridWindow.keyboards())\n                    ' + old, 1)
     edit(os.path.join(J, "keyboard", "CommonKeyboardActionListener.kt"), ckal)
 
     def bar(t):
@@ -378,7 +381,7 @@ def install_oppo():
     Y = "com.osfans.trime.ime.keyboard.YiweiOppo"
 
     def ckal(t):
-        old = '"yiwei_toolbox" -> windowManager.attachWindow(YiweiToolboxWindow())'
+        old = '"yiwei_toolbox" -> windowManager.attachWindow(YiweiGridWindow.toolbox())'
         if old not in t:
             raise SystemExit("CommonKeyboardActionListener: yiwei_toolbox handler not found (install_toolbox first)")
         return t.replace(old, old + '\n                    "yiwei_keepalive" -> %s.keepAlive(service)' % Y, 1)
@@ -593,7 +596,7 @@ def check_keys():
         bad.append("CommonKeyboardActionListener: keyboard_resize not handled")
     # 工具箱：每一项的动作都已定义、图标是 MDI 里真有的名字；工具栏按钮的图标同理
     names = set(open(os.path.join(HERE, "mdi_names.txt"), encoding="utf-8").read().split())
-    for label, icon, action in layouts.TOOLBOX:
+    for label, icon, action in layouts.TOOLBOX + layouts.KEYBOARDS:
         if icon not in names:
             bad.append("toolbox %s: unknown icon %s" % (label, icon))
         if action not in presets:
