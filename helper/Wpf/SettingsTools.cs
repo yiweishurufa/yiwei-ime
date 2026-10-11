@@ -154,6 +154,8 @@ namespace Yiwei
             var status = K.Text(string.IsNullOrEmpty(T.ThemeRgb) ? "" : "当前取色 #" + T.ThemeRgb, 12, true);
             yield return K.Card("按壁纸生成皮肤", "取桌面壁纸里最鲜明的主色做候选高亮色，生成「我的配色」（读不到壁纸时用 Windows 主题色）",
                 K.Row(K.Btn("现在取色", () => { try { status.Text = ThemeFromColor.FromWallpaper(); } catch (Exception ex) { status.Text = ex.Message; } }), status), Ui.SymbolRegular.Image24);
+            yield return K.Card("屏幕取色生成皮肤", "在屏幕上任意位置点一下（带放大镜），用那个颜色生成「我的配色」",
+                K.Btn("开始取色", () => { WindowState = WindowState.Minimized; Dispatcher.BeginInvoke(new Action(() => { TextOut.Pump(300); ScreenColorPicker.Start(rgb => { ThemeFromColor.Apply(rgb, "屏幕取色"); status.Text = "已用 #" + ThemeFromColor.Readable(rgb).ToString("X6") + " 生成「我的配色」"; WindowState = WindowState.Normal; Activate(); }); })); }), Ui.SymbolRegular.Eyedropper24);
             yield return K.Card("跟随壁纸自动换色", "换壁纸后自动重新取色（会切到「我的配色」）",
                 K.Toggle(T.FollowWallpaper, v => { T.FollowWallpaper = v; SaveTools(); if (v) { try { status.Text = ThemeFromColor.FromWallpaper(); } catch (Exception ex) { status.Text = ex.Message; } } }));
         }

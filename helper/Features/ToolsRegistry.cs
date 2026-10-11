@@ -62,6 +62,9 @@ namespace Yiwei
             ToolsHub.Register(new ToolAction { Id = "theme-wallpaper", Name = "按壁纸生成皮肤", Group = "皮肤", InMenu = false, Help = "取桌面壁纸的主色生成候选框配色「我的配色」",
                 Run = () => { try { Tray.Balloon("皮肤取色", ThemeFromColor.FromWallpaper()); } catch (Exception e) { Tray.Balloon("皮肤取色", e.Message); } } });
             starters.Add(ThemeFromColor.Start);
+            // W23 屏幕取色生成皮肤
+            ToolsHub.Register(new ToolAction { Id = "theme-pick", Name = "屏幕取色生成皮肤", Group = "皮肤", InMenu = false, Help = "在屏幕上点一个颜色，用它生成候选框配色「我的配色」",
+                Run = () => ScreenColorPicker.Start() });
         }
     }
 
