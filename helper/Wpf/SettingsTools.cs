@@ -32,6 +32,7 @@ namespace Yiwei
         IEnumerable<Func<IEnumerable<UIElement>>> ToolSections()
         {
             yield return TranslateSection;
+            yield return TextSection;
             yield return HotkeysSection;
         }
 
@@ -44,6 +45,13 @@ namespace Yiwei
                 K.Combo(Translator.Targets, T.TranslateTarget ?? "auto", v => { T.TranslateTarget = v; SaveTools(); }, 260));
             yield return K.Card("截图翻译", "长按 Alt + S，或下面给它设一个快捷键：框选屏幕文字 → 离线识别 → 翻译，可上屏或复制",
                 K.Btn("现在试试", () => { Hide(); Dispatcher.BeginInvoke(new Action(() => { TextOut.Pump(250); ScreenTranslate.Start(); Show(); })); }), Ui.SymbolRegular.ScreenshotRecord24);
+        }
+
+        IEnumerable<UIElement> TextSection()
+        {
+            yield return K.Section("选中文字");
+            yield return K.Card("加注拼音样式", "长按 Alt + T →「加注拼音」：多音字按雾凇词库里的词来读；词库不带声调，所以拼音不带声调",
+                K.Combo(PinyinAnnotate.Styles, T.PinyinStyle ?? "after", v => { T.PinyinStyle = v; SaveTools(); }, 260), Ui.SymbolRegular.TextFont24);
         }
 
         /// <summary>W47：每个工具动作都可以绑一个全局快捷键（RegisterHotKey，被别的程序占用时会提示）。</summary>

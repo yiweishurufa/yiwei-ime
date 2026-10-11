@@ -18,6 +18,11 @@ namespace Yiwei
                 Help = "框选屏幕上的文字，离线识别后翻译（中文→英文，其它→中文）" });
             ToolsHub.Register(new ToolAction { Id = "translate-sel", Name = "翻译选中文字", Group = "翻译", Run = ScreenTranslate.Selection,
                 Help = "翻译选中的文字，可以直接替换原文" });
+            // W30 加注拼音
+            ToolsHub.Register(new ToolAction { Id = "pinyin", Name = "加注拼音", Group = "文字", Help = "给选中的汉字加上拼音（多音字按词读；样式在 设置 → 工具 里选）",
+                Run = () => ToolsHub.TransformSelection("加注拼音", t => PinyinAnnotate.Annotate(t, ToolSettings.Current.PinyinStyle)) });
+            ToolsHub.Register(new ToolAction { Id = "pinyin-only", Name = "转成拼音", Group = "文字", Help = "把选中的汉字换成拼音",
+                Run = () => ToolsHub.TransformSelection("转成拼音", t => PinyinAnnotate.Annotate(t, "only")) });
         }
     }
 

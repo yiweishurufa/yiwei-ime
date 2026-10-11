@@ -57,6 +57,12 @@ namespace Yiwei
             }
         }
 
+        /// <summary>Most common reading of one character, or null (used by 加注拼音).</summary>
+        public static string CharPinyin(string ch) { LoadChars(); return _chars.TryGetValue(ch, out var p) ? p : null; }
+
+        /// <summary>(word, pinyin) rows of the rime-ice base + ext dictionaries (used by 加注拼音 for 多音字).</summary>
+        public static IEnumerable<string[]> WordRows() => DictFiles("base").Concat(DictFiles("ext")).SelectMany(Rows);
+
         /// <summary>Best-guess pinyin ("ni hao"), or "" when some character has no known reading.</summary>
         public static string Guess(string word)
         {

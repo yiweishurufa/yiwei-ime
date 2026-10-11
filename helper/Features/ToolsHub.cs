@@ -19,6 +19,8 @@ namespace Yiwei
         public string TranslateEngine { get; set; } = "auto";
         /// <summary>翻译目标：auto（中文→英文，其它→中文）/ zh / en / ja / ko。</summary>
         public string TranslateTarget { get; set; } = "auto";
+        /// <summary>W30 加注拼音样式：after / line / only / ruby。</summary>
+        public string PinyinStyle { get; set; } = "after";
 
         static ToolSettings _current;
         static string FilePath => System.IO.Path.Combine(Paths.YiweiDir, "tools.json");
