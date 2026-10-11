@@ -21,6 +21,8 @@ namespace Yiwei
         public string TranslateTarget { get; set; } = "auto";
         /// <summary>W30 加注拼音样式：after / line / only / ruby。</summary>
         public string PinyinStyle { get; set; } = "after";
+        /// <summary>W34 把 Windows 剪贴板历史（Win+V）并入一维剪贴板历史。</summary>
+        public bool MergeWinClipboard { get; set; } = false;
 
         static ToolSettings _current;
         static string FilePath => System.IO.Path.Combine(Paths.YiweiDir, "tools.json");

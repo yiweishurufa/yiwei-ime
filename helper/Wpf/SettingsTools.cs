@@ -33,6 +33,7 @@ namespace Yiwei
         {
             yield return TranslateSection;
             yield return TextSection;
+            yield return ClipLinkSection;
             yield return HotkeysSection;
         }
 
@@ -52,6 +53,24 @@ namespace Yiwei
             yield return K.Section("选中文字");
             yield return K.Card("加注拼音样式", "长按 Alt + T →「加注拼音」：多音字按雾凇词库里的词来读；词库不带声调，所以拼音不带声调",
                 K.Combo(PinyinAnnotate.Styles, T.PinyinStyle ?? "after", v => { T.PinyinStyle = v; SaveTools(); }, 260), Ui.SymbolRegular.TextFont24);
+        }
+
+        IEnumerable<UIElement> ClipLinkSection()
+        {
+            yield return K.Section("剪贴板");
+            yield return K.Card("Windows 剪贴板历史（Win+V）", "系统自带的剪贴板历史；一维自己的在长按 Alt+V（本机加密保存、排除密码管理器）",
+                K.Toggle(WinClipboardLink.SystemHistoryEnabled, v => WinClipboardLink.SystemHistoryEnabled = v), Ui.SymbolRegular.ClipboardPaste24);
+            var status = K.Text("", 12, true);
+            var row = K.Row(K.Btn("现在合并", async () =>
+            {
+                status.Text = "正在读取…";
+                try { var n = await WinClipboardLink.ImportAsync(); status.Text = n == 0 ? "没有新内容" : "并入了 " + n + " 条"; }
+                catch (Exception ex) { status.Text = ex.Message; }
+            }), status);
+            status.VerticalAlignment = VerticalAlignment.Center;
+            yield return K.Card("把 Win+V 的内容并入 Alt+V 面板", "开启后每 10 分钟尝试一次（Windows 只让前台窗口读剪贴板历史，后台可能读不到；点「现在合并」最可靠）",
+                K.Toggle(T.MergeWinClipboard, v => { T.MergeWinClipboard = v; SaveTools(); }));
+            yield return K.CardBorder(row);
         }
 
         /// <summary>W47：每个工具动作都可以绑一个全局快捷键（RegisterHotKey，被别的程序占用时会提示）。</summary>

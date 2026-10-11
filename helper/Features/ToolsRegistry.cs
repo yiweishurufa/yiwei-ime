@@ -42,6 +42,10 @@ namespace Yiwei
             // W33 Markdown 快捷符号
             ToolsHub.Register(new ToolAction { Id = "markdown", Name = "Markdown 符号…", Group = "Markdown", AltKey = Keys.M, Run = MarkdownTools.ShowMenu,
                 Help = "加粗、斜体、代码、链接、标题、列表、待办、引用、表格：选中文字就包起来，没选中就插入" });
+            // W34 与 Win+V 联动
+            ToolsHub.Register(new ToolAction { Id = "clip-system", Name = "系统剪贴板历史 (Win+V)", Group = "剪贴板", Run = WinClipboardLink.OpenSystemPanel,
+                Help = "打开 Windows 自带的剪贴板历史；没开启时可以一键开启。一维自己的剪贴板历史是长按 Alt+V" });
+            starters.Add(WinClipboardLink.Start);
         }
     }
 
