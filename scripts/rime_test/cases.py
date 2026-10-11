@@ -90,3 +90,85 @@ def x1_habit_single_char(r):
     yiwei_file(r, "learn.clear", "all")
     r.type("shi"); r.clear()
     print("    关闭时 shi →", off[:5])
+
+
+def keys(r, seq):
+    for k in seq:
+        r.key(k)
+
+
+def page_after(r, seq, schema="rime_ice"):
+    r.open(schema)
+    keys(r, seq)
+    c = r.context()
+    return c
+
+
+@case
+def w3_select_char(r):
+    """W3 以词定字：jiandan 后按 [ 上屏首字、] 上屏尾字。"""
+    r.open("rime_ice")
+    r.type("jiandan["); assert r.commit() == "简"
+    r.type("jiandan]"); assert r.commit() == "单"
+
+
+@case
+def w11_time_phrases(r):
+    """W11 时间短语：rq 日期、sj 时间、xq 星期。"""
+    import re
+    import time
+    assert re.match(r"\d{4}-\d\d-\d\d$", page_after(r, "rq")["page"][0])
+    r.clear()
+    assert re.match(r"\d\d:\d\d$", page_after(r, "sj")["page"][0])
+    r.clear()
+    assert page_after(r, "xq")["page"][0].startswith("星期")
+    r.clear()
+
+
+@case
+def w5_v_mode_amount_date_calc(r):
+    """W5：R+数字 大写金额、N+日期 农历、cC 算式（雾凇的 V 模式等价物）。"""
+    p = page_after(r, "R1234.5")["page"]; r.clear()
+    assert "壹仟贰佰叁拾肆元伍角" in p, p
+    p = page_after(r, "cC1+2*3")["page"]; r.clear()
+    assert p[:2] == ["7", "1+2*3=7"], p
+    p = page_after(r, "N20261001")["page"]; r.clear()
+    assert p and "八月" in p[0], p
+
+
+@case
+def w7_abbrev(r):
+    """W7 简拼：zgrm → 中国人民 首选。"""
+    assert page_after(r, "zgrm")["page"][0] == "中国人民"
+    r.clear()
+
+
+@case
+def w10_emoji(r):
+    """W10 Emoji 候选：xiaolian 的前几个候选里有 😀。"""
+    p = page_after(r, "xiaolian")["page"]; r.clear()
+    assert any(ord(c[0]) > 0x1F000 for c in p[:6]), p
+
+
+@case
+def w13_decimal_after_digit(r):
+    """W13 智能标点：数字后的 . 是小数点，汉字后的 . 是句号。"""
+    r.open("rime_ice")
+    keys(r, ["1", ".", "5"]); assert r.commit().startswith("."), "数字后应是小数点"
+    keys(r, list("ni") + ["."]); assert r.commit() == "你。"
+
+
+@case
+def w14_mixed_english(r):
+    """W14 中英混输：直接打 hello 首选英文单词。"""
+    assert page_after(r, "hello")["page"][0] == "hello"
+    r.clear()
+
+
+@case
+def w15_caret_edit(r):
+    """W15 拼音内光标：← 移到音节中间，退格删掉一个字母后重新出候选。"""
+    r.open("rime_ice")
+    keys(r, list("nihao") + ["LEFT", "LEFT", "BS"])
+    assert r.input() == "niao", r.input()
+    r.clear()

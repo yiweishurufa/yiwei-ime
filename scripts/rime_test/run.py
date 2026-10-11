@@ -37,6 +37,8 @@ def test(shared, user, lib, only):
     from rime import Rime, default_lib
     import cases
     t0 = time.time()
+    os.makedirs(user, exist_ok=True)
+    os.chdir(user)  # Windows 专用 Lua 在 Linux 上会把命名管道当普通文件写到当前目录
     r = Rime(lib or default_lib(), shared, user)
     r.deploy(True)
     print("deployed in %.0fs" % (time.time() - t0))
