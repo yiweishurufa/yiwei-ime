@@ -23,6 +23,11 @@ namespace Yiwei
                 Run = () => ToolsHub.TransformSelection("加注拼音", t => PinyinAnnotate.Annotate(t, ToolSettings.Current.PinyinStyle)) });
             ToolsHub.Register(new ToolAction { Id = "pinyin-only", Name = "转成拼音", Group = "文字", Help = "把选中的汉字换成拼音",
                 Run = () => ToolsHub.TransformSelection("转成拼音", t => PinyinAnnotate.Annotate(t, "only")) });
+            // W31 繁简互转
+            ToolsHub.Register(new ToolAction { Id = "to-simp", Name = "转为简体", Group = "繁简", Help = "选中文字繁体→简体（Windows 系统转换，离线）",
+                Run = () => ToolsHub.TransformSelection("转为简体", TextConvert.ToSimplified) });
+            ToolsHub.Register(new ToolAction { Id = "to-trad", Name = "转为繁体", Group = "繁简", Help = "选中文字简体→繁体（Windows 系统转换，离线）",
+                Run = () => ToolsHub.TransformSelection("转为繁体", TextConvert.ToTraditional) });
         }
     }
 
