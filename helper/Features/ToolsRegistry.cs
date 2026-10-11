@@ -58,6 +58,10 @@ namespace Yiwei
             ToolsHub.Register(new ToolAction { Id = "backup-now", Name = "立即备份词库", Group = "同步", InMenu = false, Help = "导出一份 .yiwei-backup 到自动备份文件夹",
                 Run = () => Task.Run(() => { try { var f = AutoBackup.RunNow(); Tray.Balloon("备份完成", f); } catch (Exception e) { Tray.Balloon("备份失败", e.Message); } }) });
             starters.Add(AutoBackup.Start);
+            // W22 皮肤随壁纸取色
+            ToolsHub.Register(new ToolAction { Id = "theme-wallpaper", Name = "按壁纸生成皮肤", Group = "皮肤", InMenu = false, Help = "取桌面壁纸的主色生成候选框配色「我的配色」",
+                Run = () => { try { Tray.Balloon("皮肤取色", ThemeFromColor.FromWallpaper()); } catch (Exception e) { Tray.Balloon("皮肤取色", e.Message); } } });
+            starters.Add(ThemeFromColor.Start);
         }
     }
 

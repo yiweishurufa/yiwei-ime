@@ -38,6 +38,10 @@ namespace Yiwei
         public string BackupDir { get; set; } = "";
         public int BackupKeep { get; set; } = 10;
         public string BackupLast { get; set; } = "";
+        /// <summary>W22/W23 取色皮肤：跟随壁纸、上次壁纸（路径|时间）、当前取到的颜色。</summary>
+        public bool FollowWallpaper { get; set; } = false;
+        public string WallpaperStamp { get; set; } = "";
+        public string ThemeRgb { get; set; } = "";
 
         static ToolSettings _current;
         static string FilePath => System.IO.Path.Combine(Paths.YiweiDir, "tools.json");

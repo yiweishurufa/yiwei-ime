@@ -32,6 +32,7 @@ namespace Yiwei
         IEnumerable<Func<IEnumerable<UIElement>>> ToolSections()
         {
             yield return TranslateSection;
+            yield return SkinColorSection;
             yield return TextSection;
             yield return ClipLinkSection;
             yield return CompletionSection;
@@ -145,6 +146,16 @@ namespace Yiwei
                 K.Btn("立即备份", async () => { status.Text = "正在备份…"; try { var f = await System.Threading.Tasks.Task.Run(() => AutoBackup.RunNow()); Refresh(); status.Text += "\n" + f; } catch (Exception ex) { status.Text = "备份失败：" + ex.Message; } }),
                 K.Btn("打开文件夹", () => { System.IO.Directory.CreateDirectory(AutoBackup.TargetDir); System.Diagnostics.Process.Start("explorer.exe", "\"" + AutoBackup.TargetDir + "\""); }),
                 status));
+        }
+
+        IEnumerable<UIElement> SkinColorSection()
+        {
+            yield return K.Section("取色皮肤");
+            var status = K.Text(string.IsNullOrEmpty(T.ThemeRgb) ? "" : "当前取色 #" + T.ThemeRgb, 12, true);
+            yield return K.Card("按壁纸生成皮肤", "取桌面壁纸里最鲜明的主色做候选高亮色，生成「我的配色」（读不到壁纸时用 Windows 主题色）",
+                K.Row(K.Btn("现在取色", () => { try { status.Text = ThemeFromColor.FromWallpaper(); } catch (Exception ex) { status.Text = ex.Message; } }), status), Ui.SymbolRegular.Image24);
+            yield return K.Card("跟随壁纸自动换色", "换壁纸后自动重新取色（会切到「我的配色」）",
+                K.Toggle(T.FollowWallpaper, v => { T.FollowWallpaper = v; SaveTools(); if (v) { try { status.Text = ThemeFromColor.FromWallpaper(); } catch (Exception ex) { status.Text = ex.Message; } } }));
         }
 
         /// <summary>W47：每个工具动作都可以绑一个全局快捷键（RegisterHotKey，被别的程序占用时会提示）。</summary>
