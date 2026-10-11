@@ -8,6 +8,8 @@ CUSTOM = {
     # W1：全拼模糊音追加在雾凇规则之后（en = eng）
     "rime_ice.custom.yaml": 'patch:\n  "speller/algebra/+":\n    - derive/en$/eng/\n    - derive/eng$/en/\n',
     # W1：双拼模糊音插在最前（zh = z）
+    # W12：自定义标点（yiwei/punct.txt「`  ·」「~  ～|〜」→ half_shape 合并补丁）
+    "double_pinyin.custom.yaml": 'patch:\n  "punctuator/half_shape/+": {"`": "·", "~": ["～", "〜"]}\n',
     "double_pinyin_flypy.custom.yaml": 'patch:\n  "speller/algebra/@before 0": derive/^zh/z/\n  "speller/algebra/@before 1": derive/^z([^h])/zh$1/\n',
 }
 
@@ -222,3 +224,12 @@ def w27_unit_currency(r):
     assert any(x.startswith("100 美元 ≈ ") and x.endswith(" 人民币") for x in p), p
     p = page_after(r, "hs")["page"]; r.clear()
     assert p and "千米" not in p[0], p
+
+
+@case
+def w12_custom_punct(r):
+    """W12 自定义标点：自然码双拼方案里 ` 打出 ·，~ 出两个候选。"""
+    r.open("double_pinyin")
+    r.key("`"); assert r.commit() == "·"
+    r.key("~"); p = r.context()["page"]; r.clear()
+    assert p[:2] == ["～", "〜"], p

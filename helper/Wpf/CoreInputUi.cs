@@ -30,6 +30,12 @@ namespace Yiwei
                 K.Toggle(CoreInput.Emoji, v => { CoreInput.Emoji = v; ApplyFeatures(v ? "已开启 Emoji 候选" : "已关闭 Emoji 候选"); }),
                 Ui.SymbolRegular.Emoji24));
 
+            p.Children.Add(K.Card("自定义标点", "改某个键在中文状态下打出的标点，例如 / 打「、」、` 打「·」、~ 打「～」；一行一个，保存后点「应用」",
+                K.Row(
+                    K.Btn("编辑…", () => { CoreInput.EnsurePunctFile(); Dialogs.Open(CoreInput.PunctFile); }),
+                    K.Btn("应用", () => ApplyFeatures("自定义标点已更新"), Ui.ControlAppearance.Primary)),
+                Ui.SymbolRegular.NumberSymbol24));
+
             p.Children.Add(K.Section("按习惯调整候选"));
             p.Children.Add(K.Card("按习惯调整候选",
                 "分几次选出来的词（如 yuanyiwei 依次选 苑、祎、玮）会记成一个词，下次排第一；常选的字词持续靠前。只在本机记录，无痕窗口不记",

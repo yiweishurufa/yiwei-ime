@@ -48,6 +48,39 @@ namespace Yiwei
         // ---------- W10 Emoji 候选（雾凇 emoji 开关的默认值；F4 菜单里也能临时切换） ----------
         public static bool Emoji { get => !Has("emoji.disabled"); set => Set("emoji.disabled", !value); }
 
+        // ---------- W12 自定义标点映射：yiwei/punct.txt，每行「按键<Tab或空格>输出」，# 开头为注释 ----------
+        public static string PunctFile => F("punct.txt");
+
+        public static void EnsurePunctFile()
+        {
+            if (File.Exists(PunctFile)) return;
+            Write("punct.txt", "# 一维输入法 · 自定义中文标点（改完保存，再在设置里点「应用」或重新部署）\n" +
+                "# 每行：按键  输出。输出可以写多个，用 | 分开，会出候选让你选\n" +
+                "# 例：\n# /  、\n# \\  ÷\n# `  ·\n# ~  ～|〜\n");
+        }
+
+        static string YQ(string v) => "\"" + v.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+
+        /// <summary>中文标点（半角状态）下按键 → 输出，写成 punctuator/half_shape/+ 合并补丁（按键为 / 也可以）。</summary>
+        public static string PunctPatch()
+        {
+            if (!File.Exists(PunctFile)) return "";
+            var items = new StringBuilder();
+            foreach (var raw in File.ReadAllLines(PunctFile, Encoding.UTF8))
+            {
+                var line = raw.Trim();
+                if (line.Length < 2 || line.StartsWith("#")) continue;
+                var key = line.Substring(0, 1);
+                var val = line.Substring(1).Trim();
+                if (val.Length == 0 || key[0] > 0x7e || key[0] <= 0x20) continue;
+                var outs = val.Split('|');
+                items.Append(items.Length == 0 ? "" : ", ").Append(YQ(key)).Append(": ");
+                if (outs.Length == 1) items.Append(YQ(outs[0].Trim()));
+                else items.Append("[").Append(string.Join(", ", outs.Select(o => YQ(o.Trim())))).Append("]");
+            }
+            return items.Length == 0 ? "" : "  \"punctuator/half_shape/+\": {" + items + "}\n";
+        }
+
         // ---------- W1 模糊音地区预设 ----------
         public sealed class FuzzyPreset { public string Name, Desc; public string[] Ids; }
         public static readonly FuzzyPreset[] FuzzyPresets =
@@ -69,6 +102,8 @@ namespace Yiwei
 
             // W10：雾凇 switches 顺序 ascii_mode, ascii_punct, traditionalization, emoji, …
             if (!Emoji) y.Append("  \"switches/@3/reset\": 0\n");
+
+            y.Append(PunctPatch()); // W12
 
             // W1 模糊音也给双拼：双拼方案的 algebra 先把全拼转成键位，所以规则要插在最前面（librime 的 @before N）
             if (!full)
