@@ -441,10 +441,28 @@ FunctionEnd
 '''
 
 # the welcome page bitmaps travel inside the installer ($PLUGINSDIR), not into the install folder
+# W43 安装时检测原版小狼毫（Weasel）：同是 RIME，可共存，但 Ctrl+` / Shift 等快捷键和两个候选框会混淆。
+# 在 customize_data（rebrand 之后）插入，所以这里的 Software\Rime\Weasel 不会被改名。静默安装不提示。
+NSI_OLD_WEASEL = r'''  IfSilent yw_weasel_done
+  StrCpy $R8 ""
+  ReadRegStr $R8 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Weasel" "UninstallString"
+  StrCmp $R8 "" 0 yw_weasel_found
+  SetRegView 64
+  ReadRegStr $R8 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Weasel" "UninstallString"
+  SetRegView lastused
+  StrCmp $R8 "" yw_weasel_done yw_weasel_found
+yw_weasel_found:
+  MessageBox MB_YESNOCANCEL|MB_ICONEXCLAMATION "检测到这台电脑装着「小狼毫」输入法。$\r$\n$\r$\n一维输入法基于小狼毫，两者可以同时安装，但同时启用时 Ctrl+`、Shift 切换等快捷键会互相抢，任务栏也会出现两个输入法。$\r$\n小狼毫的用户词库不会被改动；需要的话可以在一维设置 → 词库 → 导入里把它导进来。$\r$\n$\r$\n「是」：先打开小狼毫的卸载程序$\r$\n「否」：保留小狼毫，继续安装$\r$\n「取消」：退出安装" IDYES yw_weasel_uninst IDNO yw_weasel_done
+  Quit
+yw_weasel_uninst:
+  ExecWait '$R8'
+yw_weasel_done:
+'''
+
 NSI_ONINIT = r'''  InitPluginsDir
   File "/oname=$PLUGINSDIR\yiwei-hero.bmp" "..\resource\installer-hero.bmp"
   File "/oname=$PLUGINSDIR\yiwei-button.bmp" "..\resource\installer-button.bmp"
-'''
+''' + NSI_OLD_WEASEL
 
 
 def patch_installer():
