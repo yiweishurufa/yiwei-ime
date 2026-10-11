@@ -23,6 +23,9 @@ namespace Yiwei
         public string PinyinStyle { get; set; } = "after";
         /// <summary>W34 把 Windows 剪贴板历史（Win+V）并入一维剪贴板历史。</summary>
         public bool MergeWinClipboard { get; set; } = false;
+        /// <summary>W35 邮箱后缀（空 = 内置列表）和各后缀的使用次数（常用的排前面）。</summary>
+        public List<string> EmailSuffixes { get; set; } = new List<string>();
+        public Dictionary<string, int> EmailUse { get; set; } = new Dictionary<string, int>();
 
         static ToolSettings _current;
         static string FilePath => System.IO.Path.Combine(Paths.YiweiDir, "tools.json");
@@ -35,6 +38,8 @@ namespace Yiwei
                 try { _current = Json.Load<ToolSettings>(FilePath); } catch (Exception e) { Log.Write("tools.json: " + e.Message); }
                 if (_current == null) _current = new ToolSettings();
                 if (_current.Hotkeys == null) _current.Hotkeys = new Dictionary<string, string>();
+                if (_current.EmailSuffixes == null) _current.EmailSuffixes = new List<string>();
+                if (_current.EmailUse == null) _current.EmailUse = new Dictionary<string, int>();
                 return _current;
             }
         }

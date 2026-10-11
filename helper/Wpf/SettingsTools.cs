@@ -34,6 +34,7 @@ namespace Yiwei
             yield return TranslateSection;
             yield return TextSection;
             yield return ClipLinkSection;
+            yield return CompletionSection;
             yield return HotkeysSection;
         }
 
@@ -71,6 +72,19 @@ namespace Yiwei
             yield return K.Card("把 Win+V 的内容并入 Alt+V 面板", "开启后每 10 分钟尝试一次（Windows 只让前台窗口读剪贴板历史，后台可能读不到；点「现在合并」最可靠）",
                 K.Toggle(T.MergeWinClipboard, v => { T.MergeWinClipboard = v; SaveTools(); }));
             yield return K.CardBorder(row);
+        }
+
+        IEnumerable<UIElement> CompletionSection()
+        {
+            yield return K.Section("补全");
+            var box = new TextBox { Width = 380, Text = string.Join(" ", T.EmailSuffixes.Count > 0 ? T.EmailSuffixes : Completion.DefaultSuffixes.ToList()), ToolTip = "空格分隔；清空恢复默认" };
+            box.LostFocus += (s, e) =>
+            {
+                var list = (box.Text ?? "").Split(new[] { ' ', ',', '，', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim().TrimStart('@')).Where(x => x.Contains(".")).Distinct().ToList();
+                T.EmailSuffixes = list.SequenceEqual(Completion.DefaultSuffixes) ? new List<string>() : list; SaveTools();
+            };
+            yield return K.Card("邮箱后缀", "打到「名字@」后长按 Alt + / 选后缀；用得多的自动排前面", box, Ui.SymbolRegular.Mail24);
+            yield return K.Card("文件路径补全", "打到「C:\\Users\\」「%APPDATA%\\」「~\\」后长按 Alt + / 列出里面的文件夹和文件（隐藏文件不列）", null, Ui.SymbolRegular.Folder24);
         }
 
         /// <summary>W47：每个工具动作都可以绑一个全局快捷键（RegisterHotKey，被别的程序占用时会提示）。</summary>

@@ -46,6 +46,9 @@ namespace Yiwei
             ToolsHub.Register(new ToolAction { Id = "clip-system", Name = "系统剪贴板历史 (Win+V)", Group = "剪贴板", Run = WinClipboardLink.OpenSystemPanel,
                 Help = "打开 Windows 自带的剪贴板历史；没开启时可以一键开启。一维自己的剪贴板历史是长按 Alt+V" });
             starters.Add(WinClipboardLink.Start);
+            // W35 邮箱后缀、路径补全
+            ToolsHub.Register(new ToolAction { Id = "complete", Name = "补全邮箱/路径", Group = "补全", AltKey = Keys.OemQuestion, Run = Completion.Run,
+                Help = "光标前是「name@」时列出邮箱后缀，是「C:\\…」「%APPDATA%\\」「~\\」时列出文件和文件夹" });
         }
     }
 
