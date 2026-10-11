@@ -362,6 +362,88 @@ def install_toolbox():
     edit(os.path.join(J, "bar", "ui", "AlwaysUi.kt"), always)
 
 
+def install_oppo():
+    """OPPO / ColorOS 适配 + 大屏适配（YiweiOppo.kt）：后台保活向导、字体放大上限、折叠屏/平板限宽、边缘手势排除、
+    线性马达触感（系统键盘触感 / 轻 / 中 / 重 四档预设波形）。"""
+    J = os.path.join(MAIN, "java", "com", "osfans", "trime")
+    shutil.copy(os.path.join(HERE, "kotlin", "YiweiOppo.kt"), os.path.join(J, "ime", "keyboard", "YiweiOppo.kt"))
+    Y = "com.osfans.trime.ime.keyboard.YiweiOppo"
+
+    def ckal(t):
+        old = '"yiwei_toolbox" -> windowManager.attachWindow(YiweiToolboxWindow())'
+        if old not in t:
+            raise SystemExit("CommonKeyboardActionListener: yiwei_toolbox handler not found (install_toolbox first)")
+        return t.replace(old, old + '\n                    "yiwei_keepalive" -> %s.keepAlive(service)' % Y, 1)
+    edit(os.path.join(J, "ime", "keyboard", "CommonKeyboardActionListener.kt"), ckal)
+
+    def svc(t):
+        a = "    override fun onCreate() {\n        rime = RimeDaemon.createSession(javaClass.name)\n"
+        b = "    override fun onConfigurationChanged(newConfig: Configuration) {\n"
+        if a not in t or b not in t:
+            raise SystemExit("TrimeInputMethodService: onCreate / onConfigurationChanged anchors not found")
+        t = t.replace(a, "    override fun onCreate() {\n        %s.capFontScale(this)\n        rime = RimeDaemon.createSession(javaClass.name)\n" % Y, 1)
+        return t.replace(b, b + "        %s.capFontScale(this)\n" % Y, 1)
+    edit(os.path.join(J, "ime", "core", "TrimeInputMethodService.kt"), svc)
+
+    def iv(t):
+        a = "                if (context.isLandscapeMode()) keyboardSidePaddingLandscape else keyboardSidePadding\n            return dp(value)\n"
+        if a not in t:
+            raise SystemExit("InputView: keyboardSidePaddingPx not found")
+        t = t.replace(a, "                if (context.isLandscapeMode()) keyboardSidePaddingLandscape else keyboardSidePadding\n"
+                         "            return %s.extraSidePadding(context, dp(value))\n" % Y, 1)
+        b = "        updateKeyboardSize()\n\n        add(\n            preedit.ui.root,"
+        if b not in t:
+            raise SystemExit("InputView: init updateKeyboardSize anchor not found")
+        return t.replace(b, "        updateKeyboardSize()\n        %s.excludeEdgeGestures(keyboardView)\n\n        add(\n            preedit.ui.root," % Y, 1)
+    edit(os.path.join(J, "ime", "core", "InputView.kt"), iv)
+
+    def prefs(t):
+        a = '            const val VIBRATION_AMPLITUDE = "vibration_amplitude"'
+        b = "        val speakOnKeyPress = switch("
+        if a not in t or b not in t:
+            raise SystemExit("AppPrefs: vibration anchors not found")
+        t = t.replace(a, a + '\n            const val YIWEI_HAPTIC_STYLE = "yiwei_haptic_style"', 1)
+        return t.replace(b, """        // 一维输入法：线性马达触感（0 系统键盘触感，1 轻 TICK，2 中 CLICK，3 重 HEAVY_CLICK）
+        val yiweiHapticStyle = int(
+            R.string.yiwei_haptic_style,
+            YIWEI_HAPTIC_STYLE,
+            0,
+            0,
+            3,
+            "",
+            defaultLabel = R.string.system_default,
+        ) { vibrateOnKeyPress.getValue() }
+
+""" + b, 1)
+    edit(os.path.join(J, "data", "prefs", "AppPrefs.kt"), prefs)
+
+    def fb(t):
+        a = "        if (duration != 0L) { // use vibrator\n"
+        if a not in t:
+            raise SystemExit("InputFeedbackManager: vibrator branch not found")
+        return t.replace(a, """        // 一维输入法：系统预设波形（OPPO/一加线性马达按这些预设调过，比方波「嗡」一下清脆得多）
+        val yiweiStyle = keyboardPrefs.yiweiHapticStyle.getValue()
+        if (yiweiStyle != 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val effect = when {
+                longPress -> VibrationEffect.EFFECT_HEAVY_CLICK
+                yiweiStyle == 1 -> VibrationEffect.EFFECT_TICK
+                yiweiStyle == 2 -> VibrationEffect.EFFECT_CLICK
+                else -> VibrationEffect.EFFECT_HEAVY_CLICK
+            }
+            vibrator.vibrate(VibrationEffect.createPredefined(effect))
+            return
+        }
+
+""" + a, 1)
+    edit(os.path.join(J, "ime", "keyboard", "InputFeedbackManager.kt"), fb)
+
+    for d, s in (("values", "Key vibration feel (0 system, 1 light, 2 medium, 3 strong)"),
+                 ("values-zh-rCN", "按键触感（0 系统，1 轻，2 中，3 重）"),
+                 ("values-zh-rTW", "按鍵觸感（0 系統，1 輕，2 中，3 重）")):
+        edit(os.path.join(MAIN, "res", d, "strings.xml"),
+             lambda t, s=s: t.replace("</resources>", '    <string name="yiwei_haptic_style">%s</string>\n</resources>' % s, 1))
+
+
 def install_safe_upgrade():
     """Upgrades: the APK ships dictionaries precompiled with Trime's own librime (assets/shared/build).
     Compiled files an older version left in the user build dir would shadow them (librime looks there first),
@@ -509,6 +591,16 @@ def check_keys():
     tbx = os.path.join(MAIN, "java", "com", "osfans", "trime", "ime", "keyboard", "YiweiToolbox.kt")
     if not os.path.exists(tbx) or '"yiwei_toolbox" ->' not in ck:
         bad.append("toolbox window or its command handler missing")
+    for f, needles in (("ime/keyboard/InputFeedbackManager.kt", ("createPredefined",)),
+                       ("ime/core/TrimeInputMethodService.kt", ("capFontScale",)),
+                       ("ime/core/InputView.kt", ("excludeEdgeGestures", "extraSidePadding")),
+                       ("ime/keyboard/CommonKeyboardActionListener.kt", ('"yiwei_keepalive" ->',))):
+        src = open(os.path.join(MAIN, "java", "com", "osfans", "trime", *f.split("/")), encoding="utf-8").read()
+        for n in needles:
+            if n not in src:
+                bad.append("OPPO patch missing in %s: %s" % (f, n))
+    if not any(t[2] == "yw_keepalive" for t in layouts.TOOLBOX):
+        bad.append("toolbox: 后台保活 entry missing")
     if "phrases" not in ((y.get("liquid_keyboard") or {}).get("keyboards") or []):
         bad.append("liquid_keyboard: 常用语 tab missing")
     if bad:
@@ -583,6 +675,7 @@ if __name__ == "__main__":
     install_default_custom()
     install_feedback()
     install_toolbox()
+    install_oppo()
     check_keys()  # after install_feedback: also checks the keyboard_resize handler it patches in
     install_brand()
     install_slogan()

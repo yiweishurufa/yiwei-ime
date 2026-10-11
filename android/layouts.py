@@ -29,6 +29,7 @@ PRESET_KEYS = """
   yw_clipboard: {label: "剪贴板", send: FUNCTION, command: clipboard_window, option: "0", functional: true}
   yw_settings: {label: "设置", send: SETTINGS, functional: true}
   yw_resize: {label: "调整高度", send: FUNCTION, command: keyboard_resize, functional: true}
+  yw_keepalive: {label: "保活", send: FUNCTION, command: yiwei_keepalive, functional: true}
   yw_toolbox: {label: "工具箱", send: FUNCTION, command: yiwei_toolbox, functional: true}
   yw_phrases: {label: "常用语", send: FUNCTION, command: liquid_keyboard, option: "常用语", functional: true}
   yw_edit: {label: "编辑", send: Eisu_toggle, select: yw_edit_board, functional: true}
@@ -224,6 +225,7 @@ TOOLBOX = [
     ("繁体输入", "translate", "yw_trad"),
     ("全角半角", "format_letter_case", "yw_fullshape"),
     ("输入方案", "view_list_outline", "yw_schema"),
+    ("后台保活", "shield_check_outline", "yw_keepalive"),
     ("设置", "cog_outline", "yw_settings"),
 ]
 
