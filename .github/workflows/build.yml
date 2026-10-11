@@ -266,6 +266,10 @@ jobs:
           $dll = if (Test-Path "$sys\yiweix64.dll") { "$sys\yiweix64.dll" } else { "$sys\yiwei.dll" }
           $dllText = [Text.Encoding]::Unicode.GetString([IO.File]::ReadAllBytes($dll))
           if (-not $dllText.Contains('显示/隐藏通知区域的一维图标') -or -not $dllText.Contains('YiweiHelper.exe')) { throw "语言栏菜单没有换成一维菜单：$dll" }
+          # 界面风格对话框换成一维版本：确定按钮、一维配色排序、不带参数进助手外观页
+          $dep = [IO.File]::ReadAllBytes((Join-Path $root 'YiweiDeployer.exe'))
+          $depW = [Text.Encoding]::Unicode.GetString($dep); $depA = [Text.Encoding]::ASCII.GetString($dep)
+          if (-not $depW.Contains('/settings 外观') -or -not $depW.Contains('确定') -or -not $depA.Contains('yiwei_moblue')) { throw "YiweiDeployer 的界面风格对话框没有换成一维版本" }
           $notif = (Select-String -Path (Join-Path $root 'data\weasel.yaml') -Pattern '^show_notifications:' | Select-Object -First 1).Line
           Write-Host "weasel.yaml $notif"
           if (-not $notif -or $notif -match 'true|ascii_mode') { throw "小狼毫的中/英状态提示没有关掉（会和一维提示一起弹）" }

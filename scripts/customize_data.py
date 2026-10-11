@@ -478,6 +478,10 @@ def patch_installer():
                   "!define MUI_HEADERIMAGE\n!define MUI_HEADERIMAGE_RIGHT\n"
                   "!define MUI_HEADERIMAGE_BITMAP ..\\resource\\installer-header.bmp\n"
                   "!define MUI_ABORTWARNING\nBrandingText \"一维输入法\"\n", 1)
+    # 一维：安装时不弹 Weasel 的「方案选单 / 界面风格」对话框，方案和外观交给首次引导（完成页「立即体验」）
+    old_inst = '  ExecWait "$INSTDIR\\YiweiDeployer.exe /install"\n'
+    assert old_inst in t, "nsi: deployer /install anchor missing"
+    t = t.replace(old_inst, '  ExecWait "$INSTDIR\\YiweiDeployer.exe /deploy"\n', 1)
     # before upgrading, stop the running helper as well
     t = t.replace("  ExecWait '\"$R1\\YiweiServer.exe\" /quit'\n",
                   "  ExecWait '\"$R1\\YiweiServer.exe\" /quit'\n  ExecWait 'taskkill /f /im YiweiHelper.exe'\n", 1)

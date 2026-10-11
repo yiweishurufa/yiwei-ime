@@ -226,6 +226,93 @@ def patch_langbar_cpp(text):
     return text
 
 
+# ---------------------------------------------------------------------------
+# 一维：「界面风格设定」对话框（WeaselDeployer）。小狼毫原版预览是繁体图片「RIME shu ru fa / 輸入法」、
+# 列表混着小狼毫配色、确定按钮写着「中」、设定字体灰掉。换成 scripts/weasel_patches 里的一维版本：
+# 一维配色排最前、原版配色隐藏，按配色实时画「yi wei / 一维输入法」预览，可设字体；
+# 装了一维助手时选择交给助手保存（设置 → 外观 同一份设置），不带参数打开部署程序直接进助手的外观页。
+PATCH_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "weasel_patches")
+UPSTREAM_SCHEMES_FALLBACK = [
+    "aqua", "azure", "luna", "ink", "lost_temple", "dark_temple", "starcraft", "google", "solarized_rock",
+    "tintin", "dota_2", "brasil", "doraemon", "espagna", "gholabok", "kuma_shuzboz", "kuon", "macau", "nba",
+    "ps4", "skype", "xbox_silver", "youtube", "so_young", "smurfs", "wii", "android", "cool_breeze",
+    "google_plus", "modern_warfare", "brisk", "starcraft_ii", "steam", "flypy", "metroblue", "psionics"]
+
+LEVERS_HELPERS = """  RimeCustomSettings* settings() { return settings_; }
+  // 一维输入法：预览配色、设定字体
+  bool GetConfig(RimeConfig* config) {
+    return !!api_->settings_get_config(settings_, config);
+  }
+  bool CustomizeString(const char* key, const char* value) {
+    return !!api_->customize_string(settings_, key, value);
+  }
+  bool CustomizeInt(const char* key, int value) {
+    return !!api_->customize_int(settings_, key, value);
+  }
+"""
+
+DEPLOYER_RUN_OLD = """  bool installing = !wcscmp(L"/install", lpCmdLine);
+  return configurator.Run(installing);"""
+DEPLOYER_RUN_NEW = """  bool installing = !wcscmp(L"/install", lpCmdLine);
+  // 一维输入法：「输入法设定」「界面风格」直接打开一维助手的设置窗口（外观页）；
+  // /classic 或找不到助手时才用Weasel 原来的对话框
+  bool classic = !wcscmp(L"/classic", lpCmdLine);
+  if (!installing && !classic && YiweiHelperRun(L"/settings \\u5916\\u89c2"))
+    return 0;
+  return configurator.Run(installing);"""
+
+
+def upstream_scheme_ids():
+    path = os.path.join(ROOT, "output", "data", "weasel.yaml")
+    try:
+        text = open(path, encoding="utf-8").read()
+        ids = re.findall(r"^  ([A-Za-z0-9_]+):[ \t]*$", text[text.index("preset_color_schemes:"):], re.M)
+        ids = [i for i in ids if not i.startswith("yiwei")]
+        if len(ids) >= 10:
+            return ids
+    except (OSError, ValueError):
+        pass
+    return UPSTREAM_SCHEMES_FALLBACK
+
+
+def patch_deployer_sources(text, base):
+    nl = "\r\n" if "\r\n" in text else "\n"
+    if base == "WeaselDeployer.rc":
+        n = text.count('"中",IDOK')
+        if n == 0 and '"确定",IDOK' not in text:
+            raise SystemExit("WeaselDeployer.rc: IDOK button text not found")
+        text = text.replace('"中",IDOK', '"确定",IDOK')
+    elif base == "UIStyleSettings.h" and "CustomizeString" not in text:
+        old = "  RimeCustomSettings* settings() { return settings_; }" + nl
+        if old not in text:
+            raise SystemExit("UIStyleSettings.h: settings() accessor not found")
+        text = text.replace(old, LEVERS_HELPERS.replace("\n", nl), 1)
+    elif base == "WeaselDeployer.cpp" and "YiweiHelperRun" not in text:
+        old = DEPLOYER_RUN_OLD.replace("\n", nl)
+        if old not in text:
+            raise SystemExit("WeaselDeployer.cpp: Run() tail not found")
+        text = text.replace(old, DEPLOYER_RUN_NEW.replace("\n", nl), 1)
+        decl = "static int Run(LPTSTR lpCmdLine) {"
+        if decl not in text:
+            raise SystemExit("WeaselDeployer.cpp: Run() not found")
+        text = text.replace(decl, "bool YiweiHelperRun(const wchar_t* args);  // UIStyleSettingsDialog.cpp" + nl + nl + decl, 1)
+    return text
+
+
+def install_style_dialog():
+    dst = os.path.join(ROOT, "WeaselDeployer")
+    if not os.path.isdir(dst):
+        return
+    old, _, _ = read(os.path.join(dst, "UIStyleSettingsDialog.cpp"))
+    if old is not None and "YiweiHelperRun" not in old and "select_font_.EnableWindow(FALSE);" not in old:
+        raise SystemExit("UIStyleSettingsDialog.cpp: upstream changed, review scripts/weasel_patches")
+    ids = ", ".join('"%s"' % i for i in upstream_scheme_ids())
+    for fn in ("UIStyleSettingsDialog.cpp", "UIStyleSettingsDialog.h"):
+        src = open(os.path.join(PATCH_DIR, fn), encoding="utf-8").read().replace("/*UPSTREAM_IDS*/", ids)
+        with open(os.path.join(dst, fn), "wb") as f:
+            f.write(b"\xef\xbb\xbf" + src.replace("\r\n", "\n").replace("\n", "\r\n").encode("utf-8"))
+
+
 def guid_struct(g):
     p = g.split("-")
     b = p[3] + p[4]
@@ -288,6 +375,8 @@ def transform(path, text):
         text = patch_tsf_rc(text)
     if base == "LanguageBar.cpp":
         text = patch_langbar_cpp(text)
+    if base in ("WeaselDeployer.rc", "UIStyleSettings.h", "WeaselDeployer.cpp"):
+        text = patch_deployer_sources(text, base)
     if base.endswith(".rc"):
         text = text.replace('"Weasel Server"', '"%s"' % NAME)
         text = text.replace('VALUE "ProductName", "Weasel"', 'VALUE "ProductName", "%s"' % NAME)
@@ -315,6 +404,8 @@ def main():
                 with open(path, "wb") as f:
                     f.write(bom + new.encode(enc))
                 changed += 1
+    if os.path.isdir(os.path.join(ROOT, "WeaselDeployer")):
+        install_style_dialog()
     # verify nothing important was missed
     leftovers = []
     for dirpath, dirnames, filenames in os.walk(ROOT):
@@ -332,6 +423,13 @@ def main():
         lb, _, _ = read(os.path.join(tsf, "LanguageBar.cpp"))
         if '"40106"' in rc or "/tray toggle" not in lb or rc.count(", 40106") != 3:
             leftovers.append("WeaselTSF: 语言栏菜单未改成一维菜单")
+    dep = os.path.join(ROOT, "WeaselDeployer")
+    if os.path.isdir(dep):
+        drc, _, _ = read(os.path.join(dep, "WeaselDeployer.rc"))
+        dcpp, _, _ = read(os.path.join(dep, "WeaselDeployer.cpp"))
+        dlg, _, _ = read(os.path.join(dep, "UIStyleSettingsDialog.cpp"))
+        if '"中",IDOK' in drc or "YiweiHelperRun(L\"/settings" not in dcpp or "kYiweiOrder" not in dlg or '"steam"' not in dlg:
+            leftovers.append("WeaselDeployer: 界面风格对话框未换成一维版本")
     print("rebranded %d files" % changed)
     if leftovers:
         print("LEFTOVER upstream identity in:", *leftovers, sep="\n  ")

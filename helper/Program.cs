@@ -185,6 +185,19 @@ namespace Yiwei
                     Tray.SetVisible(show);
                     return;
                 }
+                if (command.StartsWith("/style "))
+                {
+                    // 部署程序的「界面风格设定」对话框（后备）确定后交过来："/style 配色id|字号|字体"，空字段表示不改。
+                    // 写进同一份设置，设置 → 外观 显示的就是这个选择。
+                    var a = command.Substring(7).Split(new[] { '|' }, 3);
+                    var s = Settings.Current;
+                    if (a[0].Trim().Length > 0) s.ColorScheme = a[0].Trim();
+                    if (a.Length > 1 && int.TryParse(a[1].Trim(), out var pt) && pt >= 8 && pt <= 48) s.FontPoint = pt;
+                    if (a.Length > 2 && a[2].Trim().Length > 0) s.FontFace = a[2].Trim();
+                    Rime.ApplySoon(100);
+                    if (_settings != null) { _settings.Close(); ShowSettings("外观"); }
+                    return;
+                }
                 if (ToolsHub.TryExecute(command)) return; // /tool <id>、/tools
                 switch (command)
                 {
