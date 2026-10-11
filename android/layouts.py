@@ -177,7 +177,7 @@ def edit_board():
          "      - {click: yw_e_down, width: 20}", "      - {click: yw_e_right, width: 20}",
          "      - {click: yw_e_copyall, width: 20}",
          "      - {click: yw_back, width: 20}", "      - {click: yw_e_clear, width: 20}",
-         "      - {click: yw_space, width: 40}",
+         "      - {click: yw_space_plain, width: 40}",
          "      - {click: yw_return, key_back_color: yw_enter_back, key_text_color: yw_enter_text,"
          " hilited_key_back_color: yw_enter_back, hilited_key_text_color: yw_enter_text, width: 20}"]
     return """  yw_edit_board:
