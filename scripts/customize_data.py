@@ -220,6 +220,17 @@ NSI_UNINSTALL = r'''
   RMDir /r "$INSTDIR\data\en_dicts"
   Delete "$INSTDIR\YiweiHelper.exe"
   Delete "$INSTDIR\YiweiHelper.exe.config"
+  ; W42 卸载时可选清除个人数据（用户词库、常用语、设置、剪贴板历史）。默认保留；静默卸载（/S）保留。
+  ; 覆盖安装/升级时安装程序会先静默卸载旧版，同样保留。
+  IfSilent yw_keep_data
+  SetShellVarContext current
+  IfFileExists "$APPDATA\YiweiIME\*.*" 0 yw_keep_data
+  MessageBox MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON2 "要同时删除你的个人数据吗？$\r$\n$\r$\n包括用户词库（打字学到的词）、常用语、设置、剪贴板历史和统计，位置：$\r$\n$APPDATA\YiweiIME$\r$\n$\r$\n选「否」保留，以后重新安装会自动用回这些数据。" IDYES yw_clean_data
+  Goto yw_keep_data
+yw_clean_data:
+  RMDir /r "$APPDATA\YiweiIME"
+yw_keep_data:
+  SetShellVarContext all
 '''
 
 
