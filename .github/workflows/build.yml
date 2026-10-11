@@ -174,6 +174,24 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "build failed" }
           Get-ChildItem output\archives
 
+      - name: 打包绿色便携版 zip
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $inst = Get-ChildItem weasel\output\archives -Filter 'yiwei-ime*-installer.exe' | Select-Object -First 1
+          $ver = $inst.BaseName -replace '^yiwei-ime-','' -replace '-installer$',''
+          $dst = "portable\yiwei-ime-$ver-portable-x64"
+          New-Item -ItemType Directory -Force $dst | Out-Null
+          $src = 'weasel\output'
+          Get-ChildItem $src -File | Where-Object { $_.Extension -in '.exe','.dll','.txt','.crt','.config' -and $_.Name -notmatch '^(install|uninstall)' } | Copy-Item -Destination $dst
+          foreach ($d in 'data','helperlibs') { if (Test-Path "$src\$d") { Copy-Item "$src\$d" "$dst\$d" -Recurse } }
+          if (Test-Path "$src\Win32") { New-Item -ItemType Directory -Force "$dst\Win32" | Out-Null; Get-ChildItem "$src\Win32" -File -Include *.dll,*.exe -Recurse | Copy-Item -Destination "$dst\Win32" }
+          Copy-Item scripts\portable\* $dst
+          New-Item -ItemType Directory -Force "$dst\userdata" | Out-Null
+          foreach ($f in 'YiweiServer.exe','YiweiSetup.exe','YiweiDeployer.exe','YiweiHelper.exe','rime.dll','data\default.yaml') { if (-not (Test-Path "$dst\$f")) { throw "便携版缺少 $f" } }
+          Compress-Archive -Path "$dst\*" -DestinationPath "weasel\output\archives\yiwei-ime-$ver-portable-x64.zip" -CompressionLevel Optimal
+          Get-Item weasel\output\archives\*.zip | Select-Object Name, Length | Format-Table | Out-String | Write-Host
+
       - name: 收集编译日志
         if: failure()
         shell: pwsh
@@ -193,6 +211,12 @@ jobs:
           name: yiwei-ime-installer
           if-no-files-found: error
           path: weasel\output\archives\yiwei-ime*.exe
+      - name: 上传便携版
+        uses: actions/upload-artifact@v6
+        with:
+          name: yiwei-ime-portable
+          if-no-files-found: error
+          path: weasel\output\archives\yiwei-ime*-portable-*.zip
 
 
   rime-test:
@@ -409,29 +433,37 @@ jobs:
         with:
           name: yiwei-ime-installer
           path: dist
+      - uses: actions/download-artifact@v7
+        continue-on-error: true
+        with:
+          name: yiwei-ime-portable
+          path: dist-extra
       - name: 发布测试版
         if: github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -e
+          set -e; shopt -s nullglob
           f=$(ls dist/yiwei-ime*.exe | head -1)
           # move the tag and refresh the release in place (deleting and re-creating races with GitHub and can leave no release at all)
           git tag -f nightly "$GITHUB_SHA" && git push -f origin "refs/tags/nightly"
           if gh release view nightly >/dev/null 2>&1; then
             for a in $(gh release view nightly --json assets --jq '.assets[].name'); do gh release delete-asset nightly "$a" -y; done
             gh release upload nightly "$f" --clobber
-            gh release edit nightly --prerelease --latest=false --title "一维输入法 测试版" --notes "一维输入法 Windows 测试版（自动构建 #${{ github.run_number }}，提交 ${GITHUB_SHA::7}）。下载 $(basename "$f")，双击安装。支持 Windows 10/11。"
+            for z in dist-extra/*.zip; do gh release upload nightly "$z" --clobber; done
+            gh release edit nightly --prerelease --latest=false --title "一维输入法 测试版" --notes "一维输入法 Windows 测试版（自动构建 #${{ github.run_number }}，提交 ${GITHUB_SHA::7}）。下载 $(basename "$f")，双击安装；不想安装可下 portable zip 绿色便携版（解压后运行「安装-注册输入法.cmd」）。支持 Windows 10/11。"
           else
-            gh release create nightly "$f" --verify-tag --prerelease --latest=false --title "一维输入法 测试版" --notes "一维输入法 Windows 测试版（自动构建 #${{ github.run_number }}，提交 ${GITHUB_SHA::7}）。下载 $(basename "$f")，双击安装。支持 Windows 10/11。"
+            gh release create nightly "$f" dist-extra/*.zip --verify-tag --prerelease --latest=false --title "一维输入法 测试版" --notes "一维输入法 Windows 测试版（自动构建 #${{ github.run_number }}，提交 ${GITHUB_SHA::7}）。下载 $(basename "$f")，双击安装；不想安装可下 portable zip 绿色便携版（解压后运行「安装-注册输入法.cmd」）。支持 Windows 10/11。"
           fi
       - name: 发布正式版
         if: startsWith(github.ref, 'refs/tags/')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          shopt -s nullglob
           f=$(ls dist/yiwei-ime*.exe | head -1)
           gh release create "$GITHUB_REF_NAME" "$f" --title "一维输入法 $GITHUB_REF_NAME" --generate-notes || gh release upload "$GITHUB_REF_NAME" "$f" --clobber
+          for z in dist-extra/*.zip; do gh release upload "$GITHUB_REF_NAME" "$z" --clobber; done
       - name: 更新自动更新清单
         run: |
           set -e
