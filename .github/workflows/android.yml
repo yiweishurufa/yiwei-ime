@@ -43,19 +43,48 @@ jobs:
 
       - name: 套上一维（词库、墨线配色、图标、包名）
         run: |
-          pip install -q pillow
+          pip install -q pillow pyyaml
           python android/prepare.py trime rime-ice-full.zip "$VERSION"
 
-      - name: 预编译词库（装好即可打字，不用在手机上部署）
+      - name: 编译与手机相同版本的 librime（电脑上用来预编译和测试词库）
+        id: rimehost
         run: |
           set -e
-          sudo apt-get update -qq && sudo apt-get install -y -qq librime-bin > /dev/null
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq cmake ninja-build pkg-config libboost-dev libboost-regex-dev \
+            libgoogle-glog-dev libleveldb-dev libmarisa-dev libopencc-dev libyaml-cpp-dev liblua5.4-dev > /dev/null
+          J=trime/app/src/main/jni
+          echo "key=rimehost-${{ runner.os }}-$(git -C $J/librime rev-parse HEAD)-$(git -C $J/librime-lua rev-parse HEAD)-${{ hashFiles('android/rime_host/**') }}" >> "$GITHUB_OUTPUT"
+
+      - name: 缓存 librime（主机版）
+        id: rimecache
+        uses: actions/cache@v4
+        with:
+          path: ~/rime-host
+          key: ${{ steps.rimehost.outputs.key }}
+
+      - name: 构建 librime（主机版）
+        if: steps.rimecache.outputs.cache-hit != 'true'
+        run: bash android/rime_host/build.sh trime "$HOME/rime-host"
+
+      - name: 预编译词库（与手机同一版 librime，装好即可打字，手机上不用再编译）
+        run: |
+          set -e
+          $HOME/rime-host/bin/rime_gate --version
           S=trime/app/src/main/assets/shared
-          mkdir -p /tmp/rime-user
-          rime_deployer --build /tmp/rime-user "$S" "$S/build" 2>&1 | grep -E "^E" || true
+          rm -rf "$S/build" /tmp/rime-user && mkdir -p /tmp/rime-user
+          $HOME/rime-host/bin/rime_deployer --build /tmp/rime-user "$S" "$S/build" 2>&1 | grep -E "^E" || true
           ls -la "$S/build"
           test -s "$S/build/rime_ice.table.bin" && test -s "$S/build/rime_ice.prism.bin" && test -s "$S/build/t9.prism.bin"
           rm -rf "$S/build/"*.userdb "$S/build/user.yaml" "$S/build/installation.yaml"
+
+      - name: 词库测试（像手机首次启动一样：26 键 nihao、九键 64426 必须出「你好」）
+        run: |
+          S=trime/app/src/main/assets/shared
+          rm -rf /tmp/gate-user
+          $HOME/rime-host/bin/rime_gate "$S" /tmp/gate-user --no-staging-bins \
+            "rime_ice:nihao:你好" "rime_ice:hello:hello" "t9:64426:你好:ni hao" \
+            || { cat /tmp/gate-user/*.ERROR 2>/dev/null | tail -40; exit 1; }
 
       - uses: actions/setup-java@v4
         with:
@@ -101,6 +130,16 @@ jobs:
           done
           ls -la dist
 
+      - name: 安装包词库测试（解开 arm64 安装包，用里面的 assets 再测一遍）
+        run: |
+          set -e
+          apk=$(ls dist/*arm64-v8a.apk | head -1)
+          rm -rf /tmp/apk-x /tmp/apk-user && mkdir -p /tmp/apk-x
+          unzip -q "$apk" 'assets/*' -d /tmp/apk-x
+          $HOME/rime-host/bin/rime_gate /tmp/apk-x/assets/shared /tmp/apk-user --no-staging-bins \
+            "rime_ice:nihao:你好" "t9:64426:你好:ni hao" \
+            || { cat /tmp/apk-user/*.ERROR 2>/dev/null | tail -40; exit 1; }
+
       - uses: actions/upload-artifact@v4
         with:
           name: yiwei-ime-android
@@ -117,7 +156,7 @@ jobs:
           if gh release view android-nightly >/dev/null 2>&1; then
             for a in $(gh release view android-nightly --json assets --jq '.assets[].name'); do gh release delete-asset android-nightly "$a" -y; done
             gh release upload android-nightly dist/*.apk --clobber
-            gh release edit android-nightly --prerelease --latest=false --title "一维输入法 安卓测试版" --notes "一维输入法 Android 测试版 ${VERSION}（基于同文输入法 Trime ${TRIME_TAG}，提交 ${GITHUB_SHA::7}）。大多数手机下载 arm64-v8a 版本。安装后在系统设置里启用「一维输入法」，首次打开会部署词库，需要一两分钟。"
+            gh release edit android-nightly --prerelease --latest=false --title "一维输入法 安卓测试版" --notes "一维输入法 Android 测试版 ${VERSION}（基于同文输入法 Trime ${TRIME_TAG}，提交 ${GITHUB_SHA::7}）。大多数手机下载 arm64-v8a 版本。安装后在系统设置里启用「一维输入法」即可打字（词库已用与手机相同的 librime 预编译并在 CI 里实测）。"
           else
-            gh release create android-nightly dist/*.apk --verify-tag --prerelease --latest=false --title "一维输入法 安卓测试版" --notes "一维输入法 Android 测试版 ${VERSION}（基于同文输入法 Trime ${TRIME_TAG}，提交 ${GITHUB_SHA::7}）。大多数手机下载 arm64-v8a 版本。安装后在系统设置里启用「一维输入法」，首次打开会部署词库，需要一两分钟。"
+            gh release create android-nightly dist/*.apk --verify-tag --prerelease --latest=false --title "一维输入法 安卓测试版" --notes "一维输入法 Android 测试版 ${VERSION}（基于同文输入法 Trime ${TRIME_TAG}，提交 ${GITHUB_SHA::7}）。大多数手机下载 arm64-v8a 版本。安装后在系统设置里启用「一维输入法」即可打字（词库已用与手机相同的 librime 预编译并在 CI 里实测）。"
           fi

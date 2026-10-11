@@ -22,6 +22,10 @@ PRESET_KEYS = """
   yw_layout: {label: "九键", send: FUNCTION, command: select_schema, option: "t9|rime_ice", functional: true}
   yw_reinput: {label: "重输", send: Escape, functional: true}
   yw_split: {label: "分词", send: "1"}
+  yw_menu: {label: "菜单", send: FUNCTION, command: menu_keyboard, functional: true}
+  yw_hide: {label: "收起", send: BACK, functional: true}
+  yw_clipboard: {label: "剪贴板", send: FUNCTION, command: clipboard_window, option: "0", functional: true}
+  yw_settings: {label: "设置", send: SETTINGS, functional: true}
 """
 
 # letter, swipe-up/long-press symbol (Gboard-style)
@@ -107,6 +111,9 @@ QWERTY_ALIASES = ["rime_ice", "double_pinyin", "double_pinyin_abc", "double_piny
                   "double_pinyin_mspy", "double_pinyin_sogou", "double_pinyin_ziguang", "melt_eng", "qwerty", "qwerty_", "qwerty0"]
 
 
+OUR_KEYBOARDS = ["yw_qwerty", "t9"]
+
+
 def keyboards():
     out = qwerty() + t9()
     for a in QWERTY_ALIASES:
@@ -121,11 +128,11 @@ tool_bar:
   primary_button:
     background: {type: circle, corner_radius: 10, normal: 0x00000000, highlight: hilited_candidate_button_color, vertical_inset: 4, horizontal_inset: 4}
     foreground: {style: "ic@dots_horizontal", normal: candidate_text_color, padding: 10}
-    action: menu_keyboard
-    long_press_action: Settings
+    action: yw_menu
+    long_press_action: yw_settings
   buttons:
-    - {foreground: {style: "ic@keyboard_close", normal: candidate_text_color}, action: Hide}
-    - {foreground: {style: "ic@clipboard_outline", normal: candidate_text_color}, action: clipboard_window}
+    - {foreground: {style: "ic@keyboard_close", normal: candidate_text_color}, action: yw_hide}
+    - {foreground: {style: "ic@clipboard_outline", normal: candidate_text_color}, action: yw_clipboard}
     - {foreground: {style: "ic@emoticon_outline", normal: candidate_text_color}, action: yw_emoji}
     - {foreground: {style: "ic@dialpad", normal: candidate_text_color}, action: yw_layout}
 """

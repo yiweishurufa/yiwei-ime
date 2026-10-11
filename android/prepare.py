@@ -138,9 +138,11 @@ def install_t9():
         t, n = re.subn(r"\n    - t9_processor[^\n]*", "", t, count=1)
         if n != 1:
             raise SystemExit("t9.schema.yaml: t9_processor not found")
-        t, n = re.subn(r"(\n    - uniquifier[^\n]*\n)", r"\1    - lua_filter@*t9_preedit  # 一维输入法：输入框显示拼音而不是数字\n", t, count=1)
+        # t9_preedit must be the FIRST filter: behind simplifier/uniquifier its preedit change does not reach the
+        # composition and the input box keeps showing digits (verified with librime 1.17 + librime-lua)
+        t, n = re.subn(r"(\n  filters:\n)", r"\1    - lua_filter@*t9_preedit  # 一维输入法：输入框显示拼音而不是数字\n", t, count=1)
         if n != 1:
-            raise SystemExit("t9.schema.yaml: uniquifier not found")
+            raise SystemExit("t9.schema.yaml: filters not found")
         return t
     edit(os.path.join(SHARED, "t9.schema.yaml"), patch)
 
@@ -249,6 +251,80 @@ def install_code():
     edit(f, patch)
 
 
+def install_safe_upgrade():
+    """Upgrades: the APK ships dictionaries precompiled with Trime's own librime (assets/shared/build).
+    Compiled files an older version left in the user build dir would shadow them (librime looks there first),
+    so whenever the shipped data changes, drop user-dir copies of the shipped *.bin files."""
+    f = os.path.join(MAIN, "java", "com", "osfans", "trime", "data", "base", "DataManager.kt")
+
+    def patch(t):
+        old = "        DataDiff.diff(oldChecksums, newChecksums).sortedByDescending { it.ordinal }.forEach {"
+        if old not in t:
+            raise SystemExit("DataManager: DataDiff loop not found")
+        t = t.replace(old, "        val diffs = DataDiff.diff(oldChecksums, newChecksums).sortedByDescending { it.ordinal }\n"
+                           "        diffs.forEach {", 1)
+        old2 = "        ResourceUtils.copyFile(DATA_CHECKSUMS_NAME, dataDir.resolve(DATA_CHECKSUMS_NAME).absolutePath)"
+        if old2 not in t:
+            raise SystemExit("DataManager: checksums copy not found")
+        return t.replace(old2, """        // 一维输入法：词库随安装包预编译好了；数据有更新时删掉用户目录里旧版本留下的同名编译文件，免得旧文件盖住新词库
+        if (diffs.isNotEmpty()) {
+            prebuiltDataDir.listFiles()?.filter { it.name.endsWith(".bin") }?.forEach { shipped ->
+                val stale = File(stagingDir, shipped.name)
+                if (stale.exists() && stale.delete()) Timber.i("removed stale ${stale.name}")
+            }
+        }
+""" + old2, 1)
+    edit(f, patch)
+
+
+def install_safe_toolbar():
+    """Tool-bar buttons: run only actions defined in preset_keys (or a real key name); an unknown action does
+    nothing instead of being typed out as text (stock Trime turns an unknown token into a key sequence)."""
+    f = os.path.join(MAIN, "java", "com", "osfans", "trime", "ime", "bar", "InputBarDelegate.kt")
+
+    def patch(t):
+        old = """            if (action.isNotEmpty()) {
+                commonKeyboardActionListener.listener.onAction(KeyActionManager.getAction(action))
+            } else {"""
+        if old not in t:
+            raise SystemExit("InputBarDelegate: tool bar action handler not found")
+        return t.replace(old, """            if (action.isNotEmpty()) {
+                // 一维输入法：只执行定义过的按键；没有定义的动作什么也不做，绝不把名字当文字上屏
+                if (theme.presetKeys.containsKey(action) ||
+                    com.osfans.trime.ime.keyboard.KeyCode.parse(action).first != 0
+                ) {
+                    commonKeyboardActionListener.listener.onAction(KeyActionManager.getAction(action))
+                } else {
+                    timber.log.Timber.w("tool bar: undefined action '%s' ignored", action)
+                }
+            } else {""", 1)
+    edit(f, patch)
+
+
+def check_keys():
+    """Fail the build if one of our keys or tool-bar buttons points at an action that is not defined:
+    Trime would type its name out as text."""
+    import yaml
+    y = yaml.safe_load(open(os.path.join(SHARED, "trime.yaml"), encoding="utf-8"))
+    presets = set((y.get("preset_keys") or {}).keys())
+    bad = []
+    tb = y.get("tool_bar") or {}
+    for b in [tb.get("primary_button") or {}] + list(tb.get("buttons") or []):
+        for k in ("action", "long_press_action"):
+            a = b.get(k)
+            if a and a not in presets:
+                bad.append("tool_bar %s: %s" % (k, a))
+    for kb in layouts.OUR_KEYBOARDS:
+        for key in (y["preset_keyboards"][kb].get("keys") or []):
+            for k in ("click", "long_click", "swipe_up", "swipe_down", "swipe_left", "swipe_right", "composing", "has_menu", "paging"):
+                a = key.get(k)
+                if isinstance(a, str) and len(a) > 1 and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", a) and a not in presets:
+                    bad.append("%s %s: %s" % (kb, k, a))
+    if bad:
+        raise SystemExit("undefined key actions (would be typed as text):\n  " + "\n  ".join(bad))
+    print("keys ok: %d preset keys, tool bar and %s checked" % (len(presets), "/".join(layouts.OUR_KEYBOARDS)))
+
+
 # ---------- brand ----------
 
 def install_brand():
@@ -293,6 +369,9 @@ if __name__ == "__main__":
     install_reset_chinese()
     install_theme()
     install_code()
+    install_safe_toolbar()
+    install_safe_upgrade()
+    check_keys()
     install_feedback()
     install_brand()
     print("trime → 一维输入法 %s" % VERSION)
