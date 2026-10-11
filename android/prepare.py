@@ -436,7 +436,7 @@ if __name__ == "__main__":
     install_safe_toolbar()
     install_safe_upgrade()
     install_default_custom()
-    check_keys()
     install_feedback()
+    check_keys()  # after install_feedback: also checks the keyboard_resize handler it patches in
     install_brand()
     print("trime → 一维输入法 %s" % VERSION)
