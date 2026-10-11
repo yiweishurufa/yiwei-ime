@@ -185,6 +185,36 @@ jobs:
           path: weasel\output\archives\yiwei-ime*.exe
 
 
+  rime-test:
+    # 输入核心测试：用 Debian 的 librime + librime-lua 加载与安装包相同的雾凇数据和一维 Lua，模拟按键检查候选
+    runs-on: ubuntu-latest
+    container: debian:trixie
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - name: 安装 librime 与 librime-lua
+        run: |
+          apt-get update -qq
+          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends python3 curl ca-certificates librime1t64 librime-plugin-lua > /dev/null
+          ls /usr/lib/*/rime-plugins/
+      - name: 下载雾凇拼音
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          url=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/iDvel/rime-ice/releases/latest | python3 -c "import json,sys; print([a['browser_download_url'] for a in json.load(sys.stdin)['assets'] if a['name']=='full.zip'][0])")
+          curl -fsSL -o rime-ice-full.zip "$url"
+      - name: 输入测试（scripts/rime_test）
+        run: |
+          python3 scripts/rime_test/run.py prepare rime-ice-full.zip /tmp/rt/shared
+          python3 -u scripts/rime_test/run.py test /tmp/rt/shared /tmp/rt/user
+      - name: 失败时上传 RIME 日志
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rime-test-logs
+          path: /tmp/rt/user/*.log*
+          if-no-files-found: ignore
+
   smoke:
     needs: build
     runs-on: windows-2022
@@ -392,7 +422,7 @@ jobs:
           git push -f "https://x-access-token:${GH_TOKEN}@github.com/$GITHUB_REPOSITORY.git" ci-shots
 
   report:
-    needs: [build, smoke]
+    needs: [build, smoke, rime-test]
     if: failure()
     runs-on: ubuntu-latest
     steps:
@@ -410,6 +440,7 @@ jobs:
           sleep 20
           gh run download $GITHUB_RUN_ID -R $GITHUB_REPOSITORY -D artifacts -n build-logs || true
           gh run download $GITHUB_RUN_ID -R $GITHUB_REPOSITORY -D artifacts -n smoke-logs || true
+          gh run download $GITHUB_RUN_ID -R $GITHUB_REPOSITORY -D artifacts -n rime-test-logs || true
           for f in $(find artifacts -name '*.log' 2>/dev/null); do grep -n -E " error |error [A-Z]+[0-9]+|: error|Error:|MSB[0-9]+" "$f" | grep -v warning | head -100 > "$(basename $f).errors.txt" || true; done
           git init -q -b ci-logs && git config user.name ci && git config user.email ci@users.noreply.github.com
           echo "run $GITHUB_RUN_ID $GITHUB_SHA" > README.txt

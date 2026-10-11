@@ -168,7 +168,7 @@ def mount_into_schemas():
                           r"\2- lua_processor@*yiwei_pin  # 一维输入法：Ctrl+T 置顶 / Ctrl+Delete 隐藏候选\n", text, count=1)
         if n != 1:
             raise SystemExit("%s: ascii_composer not found" % fn)
-        text, n = re.subn(r"(\n  filters:\n(?:    [^\n]*\n)*)", r"\1    - lua_filter@*yiwei_pin_filter  # 一维输入法：置顶 / 隐藏候选\n    - lua_filter@*yiwei_pangu_filter  # 一维输入法：中英之间自动加空格\n", text, count=1)
+        text, n = re.subn(r"(\n  filters:\n(?:    [^\n]*\n)*)", r"\1    - lua_filter@*yiwei_learn  # 一维输入法：按习惯自动调候选（可关、可清除）\n    - lua_filter@*yiwei_pin_filter  # 一维输入法：置顶 / 隐藏候选\n    - lua_filter@*yiwei_pangu_filter  # 一维输入法：中英之间自动加空格\n", text, count=1)
         if n != 1:
             raise SystemExit("%s: filters not found" % fn)
         text = re.sub(r"(\n(\s+)- table_translator@custom_phrase[^\n]*\n)",

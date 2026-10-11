@@ -703,6 +703,7 @@ namespace Yiwei
             if (File.Exists(path) && !File.ReadAllText(path).Contains(Marker)) return; // user owns it
             var y = Marker + "\npatch:\n  \"switches/@2/reset\": " + (s.Traditional ? "1" : "0") + "\n" + RimeFeatures.PatchLines(schema, s);
             y += Grammar.PatchBlock(); // 语法模型（Features/Grammar.cs）
+            y += CoreInput.PatchLines(schema, s); // 输入核心组（Features/CoreInput.cs）
             File.WriteAllText(path, y, new UTF8Encoding(false));
         }
 

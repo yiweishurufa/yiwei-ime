@@ -82,6 +82,7 @@ namespace Yiwei
                     new[] { "U4e00", "Unicode 码位：直接打出「一」" },
                     new[] { "ni`r", "辅码：在「ni」的候选里只留带「亻」的字" },
                 }), Ui.SymbolRegular.Search24));
+            AddCoreInputSection(p); // 输入核心组（Wpf/CoreInputUi.cs）
             return p;
         }
 
