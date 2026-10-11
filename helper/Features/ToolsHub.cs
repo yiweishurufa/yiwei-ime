@@ -32,6 +32,12 @@ namespace Yiwei
         public string DavPass { get; set; } = "";
         public bool DavAuto { get; set; } = true;
         public string DavLast { get; set; } = "";
+        /// <summary>W37 自动备份：开关、位置（local / onedrive / custom）、自定义目录、保留份数、上次时间。</summary>
+        public bool AutoBackup { get; set; } = true;
+        public string BackupWhere { get; set; } = "local";
+        public string BackupDir { get; set; } = "";
+        public int BackupKeep { get; set; } = 10;
+        public string BackupLast { get; set; } = "";
 
         static ToolSettings _current;
         static string FilePath => System.IO.Path.Combine(Paths.YiweiDir, "tools.json");

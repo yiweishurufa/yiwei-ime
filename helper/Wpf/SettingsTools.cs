@@ -36,6 +36,7 @@ namespace Yiwei
             yield return ClipLinkSection;
             yield return CompletionSection;
             yield return WebDavSection;
+            yield return BackupSection;
             yield return HotkeysSection;
         }
 
@@ -115,6 +116,35 @@ namespace Yiwei
             form.Children.Add(status);
             yield return K.Block("WebDAV 账号", "用户词库和常用语存到你自己的网盘 yiwei-ime 文件夹，多台电脑互相合并（和安卓同一种快照格式）", form, Ui.SymbolRegular.CloudSync24);
             yield return K.Card("自动同步", "开机 2 分钟后和之后每 6 小时同步一次", K.Toggle(T.DavAuto, v => { T.DavAuto = v; SaveTools(); }));
+        }
+
+        IEnumerable<UIElement> BackupSection()
+        {
+            yield return K.Section("自动备份");
+            var status = K.Text("", 12, true);
+            void Refresh() => status.Text = "备份到：" + AutoBackup.TargetDir + (string.IsNullOrEmpty(T.BackupLast) ? "　还没有备份过" : "　上次：" + T.BackupLast);
+            Refresh();
+            yield return K.Card("每天自动备份用户词库", "空闲时导出一份 .yiwei-backup（词库 + 常用语 + 设置），可在 词库 → 备份与恢复 里还原",
+                K.Toggle(T.AutoBackup, v => { T.AutoBackup = v; SaveTools(); }), Ui.SymbolRegular.History24);
+            var where = new List<KeyValuePair<string, string>> { KS("local", "文档\\一维输入法备份") };
+            if (AutoBackup.OneDriveDir != null) where.Add(KS("onedrive", "OneDrive（随网盘上云）"));
+            where.Add(KS("custom", "自定义文件夹…"));
+            yield return K.Card("备份位置", AutoBackup.OneDriveDir == null ? "没有检测到 OneDrive" : "检测到 OneDrive：" + AutoBackup.OneDriveDir,
+                K.Combo(where, T.BackupWhere ?? "local", v =>
+                {
+                    if (v == "custom")
+                    {
+                        using (var d = new WF.FolderBrowserDialog { Description = "选择自动备份文件夹" })
+                            if (d.ShowDialog() == WF.DialogResult.OK) T.BackupDir = d.SelectedPath; else return;
+                    }
+                    T.BackupWhere = v; SaveTools(); Refresh();
+                }, 260));
+            yield return K.Card("保留份数", "更早的自动备份会被删掉（手动导出的不动）",
+                K.Combo(new[] { 3, 5, 10, 30 }.Select(n => new KeyValuePair<int, string>(n, n + " 份")), T.BackupKeep, v => { T.BackupKeep = v; SaveTools(); }, 120));
+            yield return K.CardBorder(K.Row(
+                K.Btn("立即备份", async () => { status.Text = "正在备份…"; try { var f = await System.Threading.Tasks.Task.Run(() => AutoBackup.RunNow()); Refresh(); status.Text += "\n" + f; } catch (Exception ex) { status.Text = "备份失败：" + ex.Message; } }),
+                K.Btn("打开文件夹", () => { System.IO.Directory.CreateDirectory(AutoBackup.TargetDir); System.Diagnostics.Process.Start("explorer.exe", "\"" + AutoBackup.TargetDir + "\""); }),
+                status));
         }
 
         /// <summary>W47：每个工具动作都可以绑一个全局快捷键（RegisterHotKey，被别的程序占用时会提示）。</summary>

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Yiwei
@@ -53,6 +54,10 @@ namespace Yiwei
             ToolsHub.Register(new ToolAction { Id = "webdav-sync", Name = "WebDAV 同步词库和常用语", Group = "同步", InMenu = false, Help = "坚果云等 WebDAV 网盘，设置 → 工具 里填账号",
                 Run = async () => { try { Tray.Balloon("WebDAV 同步", await WebDavSync.SyncAsync()); } catch (Exception e) { Tray.Balloon("WebDAV 同步失败", e.GetBaseException().Message); } } });
             starters.Add(WebDavSync.Start);
+            // W37 自动备份
+            ToolsHub.Register(new ToolAction { Id = "backup-now", Name = "立即备份词库", Group = "同步", InMenu = false, Help = "导出一份 .yiwei-backup 到自动备份文件夹",
+                Run = () => Task.Run(() => { try { var f = AutoBackup.RunNow(); Tray.Balloon("备份完成", f); } catch (Exception e) { Tray.Balloon("备份失败", e.Message); } }) });
+            starters.Add(AutoBackup.Start);
         }
     }
 
