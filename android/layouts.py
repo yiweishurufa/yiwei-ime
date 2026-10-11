@@ -21,7 +21,7 @@ PRESET_KEYS = """
   yw_emoji: {label: "ic@emoticon_outline", send: FUNCTION, command: liquid_keyboard, option: "emoji", functional: true}
   yw_layout: {label: "九键", send: FUNCTION, command: select_schema, option: "t9|rime_ice", functional: true}
   yw_layout26: {label: "26键", send: FUNCTION, command: select_schema, option: "t9|rime_ice", functional: true}
-  yw_reinput: {label: "重输", send: Escape, functional: true}
+  yw_reinput: {label: "重输", send: FUNCTION, command: clear_composition, functional: true}
   yw_split: {label: "分词", send: "1"}
   yw_menu: {label: "菜单", send: FUNCTION, command: menu_keyboard, functional: true}
   yw_hide: {label: "收起", send: BACK, functional: true}

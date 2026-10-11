@@ -232,8 +232,38 @@ def install_feedback():
         return t.replace(old2, old2 + "                YiweiResize.raise()\n", 1)
     edit(os.path.join(J, "ime", "keyboard", "KeyboardWindow.kt"), kw)
 
+    # 九键按「中/英」：以前只切 ascii_mode，键盘还是九键，按键打出来全是数字。
+    # 现在九键方案下切到英文就换成 26 键字母键盘（保持英文），切回中文回到九键。
+    def kw_t9(t):
+        old = "            val targetMode = if (it.resetAsciiMode) it.asciiMode else it.lastAsciiMode\n"
+        old2 = "    override fun onRimeOptionUpdated(value: RimeMessage.OptionMessage.Data) {\n        val option = value.option\n"
+        if old not in t or old2 not in t:
+            raise SystemExit("KeyboardWindow: targetMode / onRimeOptionUpdated not found")
+        t = t.replace(old, "            val targetMode = yiweiForceAscii.also { yiweiForceAscii = null }\n"
+                           "                ?: (if (it.resetAsciiMode) it.asciiMode else it.lastAsciiMode)\n", 1)
+        return t.replace(old2, """    // 一维输入法：九键方案的英文用 26 键字母键盘
+    private var yiweiForceAscii: Boolean? = null
+
+    private fun yiweiT9Ascii(on: Boolean) {
+        if (rime.run { statusCached }.schemaId != "t9") return
+        val target = when {
+            on && currentKeyboardId == "t9" -> "yw_qwerty"
+            !on && currentKeyboardId == "yw_qwerty" -> "t9"
+            else -> return
+        }
+        ContextCompat.getMainExecutor(service).execute {
+            if (currentKeyboardId == target) return@execute
+            detachCurrentView()
+            yiweiForceAscii = on
+            attachKeyboard(target)
+        }
+    }
+
+""" + old2 + "        if (option == \"ascii_mode\") yiweiT9Ascii(value.value)\n", 1)
+    edit(os.path.join(J, "ime", "keyboard", "KeyboardWindow.kt"), kw_t9)
+
     def ckal(t):
-        t, n = re.subn(r'(\n(\s+)"menu_keyboard" -> )', r'\n\2"keyboard_resize" -> YiweiResize.toggle(keyboardWindow)\1', t, count=1)
+        t, n = re.subn(r'(\n(\s+)"menu_keyboard" -> )', r'\n\2"keyboard_resize" -> YiweiResize.toggle(keyboardWindow)\n\2"clear_composition" -> rime.launchOnReady { api -> service.lifecycleScope.launch { if (api.statusCached.isComposing) api.clearComposition() } }\1', t, count=1)
         if n != 1:
             raise SystemExit("CommonKeyboardActionListener: menu_keyboard not found")
         return t
