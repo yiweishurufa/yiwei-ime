@@ -289,12 +289,14 @@ Var YwFontFoot
 !insertmacro YwOuterVar 1045
 !insertmacro YwOuterVar 1046
 !insertmacro YwOuterVar 1256
+; 记下控件自己的 WS_VISIBLE 位（欢迎页显示时主窗口还没显示，IsWindowVisible 会把所有按钮都当成隐藏，
+; 离开欢迎页后「下一步/取消」就再也不出来了 —— 完成页只剩「< 上一步」就是这个原因）
 !macro YwHideOuter ID
   GetDlgItem $0 $HWNDPARENT ${ID}
   StrCpy $YwVis${ID} 0
   ${If} $0 <> 0
-    System::Call "user32::IsWindowVisible(p$0)i.s"
-    Pop $YwVis${ID}
+    System::Call "user32::GetWindowLongW(p$0, i-16)i.r1"
+    IntOp $YwVis${ID} $1 & 0x10000000
     ShowWindow $0 ${SW_HIDE}
   ${EndIf}
 !macroend
@@ -304,6 +306,17 @@ Var YwFontFoot
   ${AndIf} $YwVis${ID} <> 0
     ShowWindow $0 ${SW_SHOW}
   ${EndIf}
+!macroend
+
+!macro YwFinishButtons
+  GetDlgItem $0 $HWNDPARENT 3
+  ShowWindow $0 ${SW_HIDE}
+  GetDlgItem $0 $HWNDPARENT 2
+  ShowWindow $0 ${SW_HIDE}
+  GetDlgItem $0 $HWNDPARENT 1
+  ShowWindow $0 ${SW_SHOW}
+  EnableWindow $0 1
+  SendMessage $0 ${WM_SETTEXT} 0 "STR:完成"
 !macroend
 
 Function YwWelcomeShow
@@ -410,6 +423,11 @@ Function YwWelcomeLeave
   !insertmacro YwShowOuter 1045
   !insertmacro YwShowOuter 1046
   !insertmacro YwShowOuter 1256
+  ; 按钮栏的「下一步」「取消」无论如何都要回来（「上一步」由 NSIS 按页面自己管）
+  GetDlgItem $0 $HWNDPARENT 1
+  ShowWindow $0 ${SW_SHOW}
+  GetDlgItem $0 $HWNDPARENT 2
+  ShowWindow $0 ${SW_SHOW}
   LockWindow off
 FunctionEnd
 
@@ -452,14 +470,23 @@ Page custom YwWelcomeShow YwWelcomeLeave
 !define MUI_FINISHPAGE_RUN "$INSTDIR\YiweiHelper.exe"
 !define MUI_FINISHPAGE_RUN_PARAMETERS "/wizard"
 !define MUI_FINISHPAGE_RUN_TEXT "立即体验（打开首次引导）"
+!define MUI_FINISHPAGE_BUTTON "完成"
+!define MUI_FINISHPAGE_REBOOTLATER_DEFAULT
 !define MUI_PAGE_CUSTOMFUNCTION_SHOW YwFinishShow
 !insertmacro MUI_PAGE_FINISH
 
 ; 完成页的复选框默认主题会画成黑字，换成经典样式才能白字蓝底（变量由上面的 MUI 完成页声明）
+; 结束页：只留一个明显的「完成」，「上一步」「取消」隐藏
 Function YwFinishShow
   System::Call 'UXTHEME::SetWindowTheme(p$mui.FinishPage.Run,w" ",w" ")'
   SetCtlColors $mui.FinishPage.Run FFFFFF 2B5BD7
+  !insertmacro YwFinishButtons
 FunctionEnd
+
+Function un.YwFinishShow
+  !insertmacro YwFinishButtons
+FunctionEnd
+
 '''
 
 # the welcome page bitmaps travel inside the installer ($PLUGINSDIR), not into the install folder
@@ -481,7 +508,9 @@ yw_weasel_uninst:
 yw_weasel_done:
 '''
 
-NSI_ONINIT = r'''  InitPluginsDir
+NSI_ONINIT = r'''  ; 安装/卸载界面一律简体中文（按钮「下一步」「完成」「卸载」…）
+  StrCpy $LANGUAGE ${LANG_SIMPCHINESE}
+  InitPluginsDir
   File "/oname=$PLUGINSDIR\yiwei-hero.bmp" "..\resource\installer-hero.bmp"
   File "/oname=$PLUGINSDIR\yiwei-button.bmp" "..\resource\installer-button.bmp"
 ''' + NSI_OLD_WEASEL
@@ -522,6 +551,15 @@ def patch_installer():
     anchor = "Function .onInit\n"
     assert anchor in t, "nsi: .onInit anchor missing"
     t = t.replace(anchor, anchor + NSI_ONINIT, 1)
+    # 卸载完成页：同样只留「完成」
+    anchor = "!insertmacro MUI_UNPAGE_FINISH\n"
+    assert anchor in t, "nsi: uninstall finish page anchor missing"
+    t = t.replace(anchor, "!define MUI_PAGE_CUSTOMFUNCTION_SHOW un.YwFinishShow\n!define MUI_FINISHPAGE_BUTTON \"完成\"\n" + anchor, 1)
+    # 卸载程序：同样简体中文
+    assert "Function un.onInit" not in t
+    anchor = "; Uninstaller\n"
+    assert anchor in t, "nsi: uninstaller anchor missing"
+    t = t.replace(anchor, "Function un.onInit\n  StrCpy $LANGUAGE ${LANG_SIMPCHINESE}\nFunctionEnd\n\n" + anchor, 1)
     t = t.replace("!define MUI_ICON ..\\resource\\weasel.ico\n",
                   "!define MUI_ICON ..\\resource\\weasel.ico\n!define MUI_UNICON ..\\resource\\weasel.ico\n"
                   "!define MUI_WELCOMEFINISHPAGE_BITMAP ..\\resource\\installer-welcome.bmp\n"
