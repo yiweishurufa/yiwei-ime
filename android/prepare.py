@@ -326,7 +326,7 @@ def install_toolbox():
     J = os.path.join(MAIN, "java", "com", "osfans", "trime", "ime")
     src = open(os.path.join(HERE, "kotlin", "YiweiToolbox.kt"), encoding="utf-8").read()
     def gen(lst):
-        return ",\n".join('                YiweiGridWindow.Item("%s", "%s", "%s")' % t for t in lst)
+        return ",\n".join('        YiweiGridWindow.Item("%s", "%s", "%s")' % t for t in lst)
     for marker in ("/*YIWEI_TOOLBOX*/", "/*YIWEI_KEYBOARDS*/"):
         if marker not in src:
             raise SystemExit("YiweiToolbox.kt: %s missing" % marker)
@@ -341,7 +341,21 @@ def install_toolbox():
                          '                    "yiwei_kbdchooser" -> windowManager.attachWindow(YiweiGridWindow.keyboards())\n                    ' + old, 1)
     edit(os.path.join(J, "keyboard", "CommonKeyboardActionListener.kt"), ckal)
 
+    shutil.copy(os.path.join(HERE, "kotlin", "YiweiToolbarOrder.kt"), os.path.join(J, "keyboard", "YiweiToolbarOrder.kt"))
+
+    def svc(t):
+        a = "    private fun replaceCandidateView(theme: Theme): CandidatesView {\n"
+        if a not in t:
+            raise SystemExit("TrimeInputMethodService: replaceCandidateView not found")
+        return t.replace(a, "    // 一维输入法：工具栏顺序改了以后重建键盘界面\n"
+                            "    fun yiweiRebuildInputView() {\n        replaceInputView(ThemeManager.activeTheme)\n    }\n\n" + a, 1)
+    edit(os.path.join(J, "core", "TrimeInputMethodService.kt"), svc)
+
     def bar(t):
+        a = "        val buttons = theme.toolBar.buttons\n"
+        if a not in t:
+            raise SystemExit("ButtonsBarUi: buttons list not found")
+        t = t.replace(a, "        val buttons = com.osfans.trime.ime.keyboard.YiweiToolbarOrder.arrange(ctx, theme.toolBar.buttons)\n", 1)
         # buttons in natural left-to-right order, inside a horizontal scroller
         t = t.replace("flexDirection = FlexDirection.ROW_REVERSE", "flexDirection = FlexDirection.ROW", 1)
         old = "    val firstButton: ToolButton?\n"
