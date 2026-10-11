@@ -107,6 +107,7 @@ namespace Yiwei
         public static void Start()
         {
             EnsureRegistered();
+            CrashDumps.Install(); // W45
             try { _hk = new HotkeyWindow(); _hk.Apply(); } catch (Exception e) { Log.Write("tools hotkeys: " + e.Message); }
             void RunStarters() { foreach (var s in _starters) { try { s(); } catch (Exception e) { Log.Write("tools start: " + e.Message); } } }
             int delay = StartupMode.DelayMs(); // W41：开机自启时推迟后台任务

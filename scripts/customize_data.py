@@ -211,6 +211,18 @@ NSI_HELPER_RUN = r'''
   WriteRegStr HKCR "yiwei-ime\DefaultIcon" "" '"$INSTDIR\YiweiHelper.exe",0'
   WriteRegStr HKCR "yiwei-ime\shell\open\command" "" '"$INSTDIR\YiweiHelper.exe" "%1"'
   Exec '"$INSTDIR\YiweiHelper.exe" /background'
+  ; W45 崩溃时 Windows 错误报告自动保存 minidump（每个程序最多 5 个），「导出诊断信息」会带上最近 3 个
+  SetRegView 64
+  WriteRegExpandStr HKLM "SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\YiweiServer.exe" "DumpFolder" "%LOCALAPPDATA%\YiweiIME\CrashDumps"
+  WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\YiweiServer.exe" "DumpCount" 5
+  WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\YiweiServer.exe" "DumpType" 1
+  WriteRegExpandStr HKLM "SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\YiweiDeployer.exe" "DumpFolder" "%LOCALAPPDATA%\YiweiIME\CrashDumps"
+  WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\YiweiDeployer.exe" "DumpCount" 5
+  WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\YiweiDeployer.exe" "DumpType" 1
+  WriteRegExpandStr HKLM "SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\YiweiHelper.exe" "DumpFolder" "%LOCALAPPDATA%\YiweiIME\CrashDumps"
+  WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\YiweiHelper.exe" "DumpCount" 5
+  WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\YiweiHelper.exe" "DumpType" 1
+  SetRegView lastused
 '''
 
 NSI_SHORTCUT = r'''  CreateShortCut "$SMPROGRAMS\$(DISPLAYNAME)\【一维输入法】设置.lnk" "$INSTDIR\YiweiHelper.exe" "/settings" "$INSTDIR\YiweiHelper.exe" 0
@@ -220,6 +232,11 @@ NSI_UNINSTALL = r'''
   ExecWait 'taskkill /f /im YiweiHelper.exe'
   DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "YiweiHelper"
   DeleteRegKey HKCR "yiwei-ime"
+  SetRegView 64
+  DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\YiweiServer.exe"
+  DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\YiweiDeployer.exe"
+  DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\YiweiHelper.exe"
+  SetRegView lastused
   RMDir /r "$INSTDIR\data\lua"
   RMDir /r "$INSTDIR\data\cn_dicts"
   RMDir /r "$INSTDIR\data\en_dicts"

@@ -75,9 +75,11 @@ namespace Yiwei
                     }
                     AddText(zip, "用户文件夹清单.txt", Listing(user));
                 }
+                CrashDumps.AddTo(zip); // W45：最近 3 个崩溃转储
                 AddText(zip, "说明.txt",
                     "一维输入法诊断信息\r\n生成时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n\r\n" +
                     "包含：版本与环境、RIME 日志（最近 7 天）、一维助手日志、用户文件夹里的配置文件（*.yaml、*.lua）、一维设置（已去除 AI 密钥）。\r\n" +
+                    "崩溃转储（如有，最近 3 个 .dmp）。\r\n" +
                     "不包含：用户词库（*.userdb）、输入统计、常用语、剪贴板、同步快照、词典正文。\r\n" +
                     (skipped.Count > 0 ? "已跳过：" + string.Join("、", skipped.Distinct()) + "\r\n" : "") +
                     "\r\n反馈问题：https://github.com/yiweishurufa/yiwei-ime/issues （把这个 zip 拖进去即可）\r\n");
