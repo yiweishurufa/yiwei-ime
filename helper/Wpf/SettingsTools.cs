@@ -22,7 +22,7 @@ namespace Yiwei
         {
             var p = new StackPanel();
             p.Children.Add(K.PageTitle("工具"));
-            p.Children.Add(K.Card("长按 Alt 工具手势", "长按 Alt + T 文字工具菜单（对选中文字：翻译、拼音、繁简、大小写、Markdown…）；长按 Alt + S 截图翻译",
+            p.Children.Add(K.Card("长按 Alt 工具手势", "长按 Alt + T 文字工具菜单（对选中文字：翻译、拼音、繁简、大小写、Markdown…）；长按 Alt + S 截图翻译；长按 Alt + M Markdown 符号",
                 K.Toggle(T.AltGestures, v => { T.AltGestures = v; SaveTools(); }), Ui.SymbolRegular.Toolbox24));
             foreach (var build in ToolSections()) { try { foreach (var e in build()) p.Children.Add(e); } catch (Exception ex) { Log.Write("tools page: " + ex); } }
             return p;

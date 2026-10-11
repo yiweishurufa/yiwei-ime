@@ -39,6 +39,9 @@ namespace Yiwei
             T("halfwidth", "转为半角", "ＡＢＣ　１２３ → ABC 123", TextConvert.HalfWidth);
             T("punct-ascii", "中文标点→英文标点", "，。！？ → ,.!?", TextConvert.PunctToAscii);
             T("punct-zh", "英文标点→中文标点", ",.!?\"\" → ，。！？“”", TextConvert.PunctToChinese);
+            // W33 Markdown 快捷符号
+            ToolsHub.Register(new ToolAction { Id = "markdown", Name = "Markdown 符号…", Group = "Markdown", AltKey = Keys.M, Run = MarkdownTools.ShowMenu,
+                Help = "加粗、斜体、代码、链接、标题、列表、待办、引用、表格：选中文字就包起来，没选中就插入" });
         }
     }
 
