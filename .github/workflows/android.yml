@@ -80,13 +80,14 @@ jobs:
           test -s "$S/build/rime_ice.table.bin" && test -s "$S/build/rime_ice.prism.bin" && test -s "$S/build/t9.prism.bin"
           rm -rf "$S/build/"*.userdb "$S/build/user.yaml" "$S/build/installation.yaml"
 
-      - name: 词库测试（像手机首次启动一样：部署前后 26 键 nihao、九键 64426 都必须出「你好」）
+      - name: 词库测试（像手机首次启动一样：部署前后 26 键 nihao、九键 64426 都必须出「你好」；X1 分次选 苑/祎/玮 两次后 yuanyiwei 首选 苑祎玮）
         run: |
           S=trime/app/src/main/assets/shared
           rm -rf /tmp/gate-user && mkdir -p /tmp/gate-user
           cp trime/yiwei-default.custom.yaml /tmp/gate-user/default.custom.yaml   # what the app writes on first start
           $HOME/rime-host/bin/rime_gate "$PWD/$S" /tmp/gate-user --no-table-rebuild \
             "rime_ice:nihao:你好" "rime_ice:hello:hello" "t9:64426:你好:ni hao" \
+            "pick:rime_ice:yuanyiwei:苑|祎|玮:2:苑祎玮" \
             || { cat /tmp/gate-user/*.ERROR 2>/dev/null | tail -40; exit 1; }
 
       - uses: actions/setup-java@v4
@@ -141,7 +142,7 @@ jobs:
           unzip -q "$apk" 'assets/*' -d /tmp/apk-x
           cp trime/yiwei-default.custom.yaml /tmp/apk-user/default.custom.yaml
           $HOME/rime-host/bin/rime_gate /tmp/apk-x/assets/shared /tmp/apk-user --no-table-rebuild \
-            "rime_ice:nihao:你好" "t9:64426:你好:ni hao" \
+            "rime_ice:nihao:你好" "t9:64426:你好:ni hao" "pick:rime_ice:yuanyiwei:苑|祎|玮:2:苑祎玮" \
             || { cat /tmp/apk-user/*.ERROR 2>/dev/null | tail -40; exit 1; }
 
       - uses: actions/upload-artifact@v4

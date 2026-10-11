@@ -4,6 +4,10 @@
  *        rime_gate --version
  * case:  schema:keys:expected_candidate[:expected_preedit]
  *        e.g. rime_ice:nihao:你好   t9:64426:你好:ni hao
+ *        pick:schema:keys:piece|piece|...:times:expected_first
+ *        X1 按习惯调候选: type keys, choose the pieces one after another (anywhere in the candidate list,
+ *        like paging and tapping), commit; do that <times> times, then typing keys must give expected_first
+ *        as the FIRST candidate.  e.g. pick:rime_ice:yuanyiwei:苑|祎|玮:2:苑祎玮
  *
  * Like the phone on first start: shared_dir is the APK's assets/shared (with the precompiled build/),
  * user_dir holds only what Trime itself writes there (default.custom.yaml). Every case is typed twice:
@@ -43,7 +47,82 @@ static int staging_bins(const char* user_dir, int tables_only) {
   return n;
 }
 
+/* index of text in the whole candidate list, -1 if absent (first 400) */
+static int find_candidate(RimeApi* rime, RimeSessionId s, const char* text) {
+  RimeCandidateListIterator it = {0};
+  int idx = -1;
+  if (!rime->candidate_list_begin(s, &it)) return -1;
+  while (rime->candidate_list_next(&it)) {
+    if (it.index >= 400) break;
+    if (it.candidate.text && strcmp(it.candidate.text, text) == 0) {
+      idx = it.index;
+      break;
+    }
+  }
+  rime->candidate_list_end(&it);
+  return idx;
+}
+
+static void run_pick_case(RimeApi* rime, RimeSessionId s, char* spec) {
+  char* schema = strtok(spec, ":");
+  char* keys = strtok(NULL, ":");
+  char* pieces = strtok(NULL, ":");
+  char* times_s = strtok(NULL, ":");
+  char* expect = strtok(NULL, "");
+  if (!schema || !keys || !pieces || !times_s || !expect) {
+    printf("FAIL bad pick case\n");
+    fail = 1;
+    return;
+  }
+  if (!rime->select_schema(s, schema)) {
+    printf("FAIL %s: cannot select schema\n", schema);
+    fail = 1;
+    return;
+  }
+  int times = atoi(times_s);
+  for (int round = 0; round < times; round++) {
+    rime->clear_composition(s);
+    rime->simulate_key_sequence(s, keys);
+    char buf[512];
+    snprintf(buf, sizeof buf, "%s", pieces);
+    char* save = NULL;
+    for (char* p = strtok_r(buf, "|", &save); p; p = strtok_r(NULL, "|", &save)) {
+      int i = find_candidate(rime, s, p);
+      if (i < 0) {
+        printf("FAIL pick %s %s: %s not among the candidates\n", schema, keys, p);
+        fail = 1;
+        rime->clear_composition(s);
+        return;
+      }
+      rime->select_candidate(s, i);
+    }
+    RIME_STRUCT(RimeCommit, commit);
+    if (rime->get_commit(s, &commit)) {
+      printf("  pick round %d: committed %s\n", round + 1, commit.text ? commit.text : "");
+      rime->free_commit(&commit);
+    } else {
+      printf("  pick round %d: nothing committed (composition: still open)\n", round + 1);
+      rime->clear_composition(s);
+    }
+  }
+  rime->simulate_key_sequence(s, keys);
+  RIME_STRUCT(RimeContext, ctx);
+  const char* first = "";
+  if (rime->get_context(s, &ctx) && ctx.menu.num_candidates > 0) first = ctx.menu.candidates[0].text;
+  printf("  %s %s after %d picks -> first %s\n", schema, keys, times, first);
+  if (strcmp(first, expect) != 0) {
+    printf("FAIL pick %s %s: first candidate %s, expected %s\n", schema, keys, first, expect);
+    fail = 1;
+  }
+  rime->free_context(&ctx);
+  rime->clear_composition(s);
+}
+
 static void run_case(RimeApi* rime, RimeSessionId s, char* spec) {
+  if (strncmp(spec, "pick:", 5) == 0) {
+    run_pick_case(rime, s, spec + 5);
+    return;
+  }
   char* schema = strtok(spec, ":");
   char* keys = strtok(NULL, ":");
   char* expect = strtok(NULL, ":");
