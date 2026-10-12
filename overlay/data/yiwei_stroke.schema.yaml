@@ -1,0 +1,23 @@
+# 一维输入法 · 笔画输入（W4）。不单独作为方案使用：雾凇全拼里打 u + 笔画（h 横 s 竖 p 撇 n 点 z 折）反查，
+# 这里只是为了让部署时编译 yiwei_stroke 词典（rime_ice 的 schema/dependencies 里引用）。
+schema:
+  schema_id: yiwei_stroke
+  name: 笔画
+  version: "1"
+  description: "h 横 s 竖 p 撇 n 点 z 折"
+engine:
+  processors:
+    - speller
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - abc_segmentor
+  translators:
+    - table_translator
+speller:
+  alphabet: hspnz
+translator:
+  dictionary: yiwei_stroke
+  enable_completion: true
+  enable_user_dict: false

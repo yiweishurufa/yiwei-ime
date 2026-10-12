@@ -117,6 +117,7 @@ namespace Yiwei
         public static readonly string[][] AlwaysOn =
         {
             R("拼音 + ` + 部件拼音", "辅码筛字：ni`r 只留带「亻」的字，如 你"),
+            R("u + 笔画（全拼）", "笔画输入：h 横 s 竖 p 撇 n 点 z 折，至少两笔，如 uhs → 十、upspzspn → 你"),
             R("v + 缩写", "符号：vfh 符号、vjt 箭头、vsx 数学、vhelp 全部列表（双拼用大写 V）"),
             R("Ctrl+Delete", "删除或降权选中的候选词"),
         };

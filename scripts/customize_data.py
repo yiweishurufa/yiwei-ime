@@ -149,6 +149,39 @@ yiwei_tech:
 """
 
 
+STROKE_BLOCK = """
+# 一维输入法：笔画输入（W4），u + hspnz（横竖撇点折），至少两笔；候选注释是拼音
+yiwei_stroke:
+  tag: yiwei_stroke
+  dictionary: yiwei_stroke
+  enable_user_dict: false
+  enable_completion: true
+  prefix: "u"
+  tips: "  〔笔画 h横 s竖 p撇 n点 z折〕"
+  preedit_format:
+    - xlit/hspnz/一丨丿丶乙/
+yiwei_stroke_reverse:
+  tags: [ yiwei_stroke ]
+  dictionary: rime_ice
+"""
+
+
+def mount_stroke(text):
+    """W4 笔画：雾凇全拼里 u + 笔画（u 不是拼音声母；至少两笔，避免吞掉英文 up / us）。"""
+    steps = [
+        (r"(\n  dependencies:\n)", r"\1    - yiwei_stroke  # 一维输入法：笔画输入词典\n"),
+        (r"(\n(\s+)- affix_segmentor@radical_lookup[^\n]*\n)", r"\1\2- affix_segmentor@yiwei_stroke  # 一维输入法：u + 笔画\n"),
+        (r"(\n(\s+)- table_translator@radical_lookup[^\n]*\n)", r"\1\2- table_translator@yiwei_stroke  # 一维输入法：笔画输入\n"),
+        (r"(\n(\s+)- reverse_lookup_filter@radical_reverse_lookup[^\n]*\n)", r"\1\2- reverse_lookup_filter@yiwei_stroke_reverse  # 一维输入法：笔画候选注拼音\n"),
+        (r"(\nrecognizer:\n(?:  [^\n]*\n)*?  patterns:[^\n]*\n)", r'\1    yiwei_stroke: "^u[hspnz]{2,}$"\n'),
+    ]
+    for pat, rep in steps:
+        text, n = re.subn(pat, rep, text, count=1)
+        if n != 1:
+            raise SystemExit("rime_ice.schema.yaml: stroke mount failed at %r" % pat)
+    return text + STROKE_BLOCK
+
+
 def mount_into_schemas():
     count = 0
     for fn in os.listdir(DATA):
@@ -178,6 +211,8 @@ def mount_into_schemas():
         text, n = re.subn(r"(\nrecognizer:\n(?:  [^\n]*\n)*?  patterns:[^\n]*\n)", r'\1    yiwei_convert: "^hs[0-9][0-9.]*[a-z]*$"\n', text, count=1)
         if n != 1:
             raise SystemExit("%s: recognizer/patterns not found" % fn)
+        if fn == "rime_ice.schema.yaml" and not ANDROID:
+            text = mount_stroke(text)
         text = text.rstrip("\n") + "\n" + TECH_BLOCK
         open(path, "w", encoding="utf-8", newline="\n").write(text)
         count += 1

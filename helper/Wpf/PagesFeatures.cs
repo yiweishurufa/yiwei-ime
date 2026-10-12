@@ -75,10 +75,11 @@ namespace Yiwei
             p.Children.Add(K.Card("候选字体回退", fontDesc,
                 K.Toggle(f.FontFallback, v => { f.FontFallback = v; ApplyFeatures(v ? "已开启字体回退" : "已关闭字体回退"); }),
                 Ui.SymbolRegular.TextFont24));
-            p.Children.Add(K.Block("不会读的字怎么打", "三种办法",
+            p.Children.Add(K.Block("不会读的字怎么打", "四种办法",
                 CheatTable(new[]
                 {
                     new[] { "uUmumumu", "拆字：按部件读音打出「森」" },
+                    new[] { "uhs", "笔画：u 后按 横h 竖s 撇p 点n 折z 的顺序，打出「十」" },
                     new[] { "U4e00", "Unicode 码位：直接打出「一」" },
                     new[] { "ni`r", "辅码：在「ni」的候选里只留带「亻」的字" },
                 }), Ui.SymbolRegular.Search24));

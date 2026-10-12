@@ -233,3 +233,22 @@ def w12_custom_punct(r):
     r.key("`"); assert r.commit() == "·"
     r.key("~"); p = r.context()["page"]; r.clear()
     assert p[:2] == ["～", "〜"], p
+
+
+@case
+def w4_stroke(r):
+    """W4 笔画：u + hspnz（横竖撇点折）。uhs → 十 在前几个；完整笔画 upspzspn 首选 你；up / us 仍是普通输入。"""
+    r.open("rime_ice")
+    r.type("uhs")
+    page = r.context()["page"]
+    assert "十" in page[:3], page
+    r.clear()
+    r.type("upspzspn")
+    page = r.context()["page"]
+    assert page and page[0] == "你", page
+    c = r.candidates(10)
+    print("    upspzspn →", page[:5], c[0] if c else "")
+    r.clear()
+    r.type("us")
+    assert "十" not in r.context()["page"], r.context()["page"]
+    r.clear()
