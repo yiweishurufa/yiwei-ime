@@ -145,7 +145,11 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $rel = Invoke-RestMethod -Headers @{ Authorization = "Bearer $env:GH_TOKEN" } https://api.github.com/repos/iDvel/rime-ice/releases/latest
           $asset = $rel.assets | Where-Object { $_.name -eq 'full.zip' }
-          Invoke-WebRequest $asset.browser_download_url -OutFile rime-ice-full.zip
+          # GitHub 下载偶尔 504（run 85）：最多试 4 次
+          for ($i = 1; $i -le 4; $i++) {
+            try { Invoke-WebRequest $asset.browser_download_url -OutFile rime-ice-full.zip; break }
+            catch { if ($i -eq 4) { throw }; Write-Host "下载雾凇拼音失败（$($_.Exception.Message)），$($i * 15) 秒后重试"; Start-Sleep ($i * 15) }
+          }
           $hash = (Get-FileHash rime-ice-full.zip -Algorithm SHA256).Hash.ToLower()
           if ($asset.digest -and ("sha256:" + $hash) -ne $asset.digest) { throw "rime-ice checksum mismatch" }
           Write-Host "rime-ice $($rel.tag_name) $hash"
@@ -237,8 +241,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          url=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/iDvel/rime-ice/releases/latest | python3 -c "import json,sys; print([a['browser_download_url'] for a in json.load(sys.stdin)['assets'] if a['name']=='full.zip'][0])")
-          curl -fsSL -o rime-ice-full.zip "$url"
+          url=$(curl -fsSL --retry 4 --retry-all-errors -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/repos/iDvel/rime-ice/releases/latest | python3 -c "import json,sys; print([a['browser_download_url'] for a in json.load(sys.stdin)['assets'] if a['name']=='full.zip'][0])")
+          curl -fsSL --retry 4 --retry-delay 15 --retry-all-errors -o rime-ice-full.zip "$url"  # 偶尔 504（run 83）
       - name: 输入测试（scripts/rime_test）
         run: |
           python3 scripts/rime_test/run.py prepare rime-ice-full.zip /tmp/rt/shared
