@@ -41,6 +41,7 @@ namespace Yiwei
             yield return WebDavSection;
             yield return BackupSection;
             yield return PerformanceSection;
+            yield return RimeKeysSection;
             yield return HotkeysSection;
         }
 
@@ -208,6 +209,26 @@ namespace Yiwei
             yield return K.Card("更新通道", "测试版：每次构建都推送，新功能最快；稳定版：经过验证后才推送（稳定版发布前选它暂时收不到更新）",
                 K.Combo(new[] { KS("beta", "测试版"), KS("stable", "稳定版") }, T.UpdateChannel ?? "beta", v => { T.UpdateChannel = v; SaveTools(); }, 160), Ui.SymbolRegular.ArrowSync24);
             yield return K.CardBorder(K.Row(K.Btn("现在回收内存", () => { LowSpec.Trim(); Refresh(); }), mem));
+        }
+
+        /// <summary>W47：输入法开关（简繁、全半角、中英标点、Emoji、切换方案）的快捷键，写进 default.custom.yaml 由 RIME 处理。</summary>
+        IEnumerable<UIElement> RimeKeysSection()
+        {
+            yield return K.Section("输入法开关快捷键");
+            yield return K.Text("在打字时一键切换，由输入法自己处理（助手没开也有效）。注意：选中的组合键在所有程序里都会被输入法拿走。改完自动重新部署。", 12, true);
+            var keys = RimeToggleKeys.Keys.Select(k => KS(k.Id, k.Name)).ToList();
+            foreach (var sw in RimeToggleKeys.Switches)
+            {
+                var id = sw.Id;
+                yield return K.Card(sw.Name, string.IsNullOrEmpty(sw.Builtin) ? "默认没有快捷键" : "自带：" + sw.Builtin + "（一直有效），这里可以再加一个",
+                    K.Combo(keys, T.RimeKeys.TryGetValue(id, out var cur) ? cur : "", v =>
+                    {
+                        if (string.IsNullOrEmpty(v)) T.RimeKeys.Remove(id); else T.RimeKeys[id] = v;
+                        SaveTools();
+                        Rime.ApplySoon();
+                        _toast.Show("已更新输入法开关快捷键，正在重新部署");
+                    }, 180), Ui.SymbolRegular.Keyboard24);
+            }
         }
 
         /// <summary>W47：每个工具动作都可以绑一个全局快捷键（RegisterHotKey，被别的程序占用时会提示）。</summary>

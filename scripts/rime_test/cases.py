@@ -10,6 +10,11 @@ CUSTOM = {
     # W1：双拼模糊音插在最前（zh = z）
     # W12：自定义标点（yiwei/punct.txt「`  ·」「~  ～|〜」→ half_shape 合并补丁）
     "double_pinyin.custom.yaml": 'patch:\n  "punctuator/half_shape/+": {"`": "·", "~": ["～", "〜"]}\n',
+    # W47：输入法开关快捷键（RimeToggleKeys.PatchLines 写进 default.custom.yaml 的格式）
+    "default.custom.yaml": 'patch:\n  "key_binder/bindings/+":\n'
+                           '    - { when: always, toggle: full_shape, accept: Control+Shift+5 }\n'
+                           '    - { when: always, toggle: full_shape, accept: Control+Shift+percent }\n'
+                           '    - { when: always, toggle: emoji, accept: Control+period }\n',
     "double_pinyin_flypy.custom.yaml": 'patch:\n  "speller/algebra/@before 0": derive/^zh/z/\n  "speller/algebra/@before 1": derive/^z([^h])/zh$1/\n',
 }
 
@@ -313,3 +318,23 @@ def w6_person_names(r):
     r.clear()
     yiwei_file(r, "names.disabled")
     wait_flags()
+
+
+@case
+def w47_switch_hotkeys(r):
+    """W47 输入法开关快捷键：default.custom.yaml 加的 Ctrl+Shift+5 切全角、Ctrl+. 切 Emoji，全拼和双拼都生效；自带 Ctrl+Shift+4 简繁仍在。"""
+    for schema in ("rime_ice", "double_pinyin_flypy"):
+        r.open(schema)
+        before = r.option("full_shape")
+        r.key("Control+Shift+5")
+        assert r.option("full_shape") != before, schema + " full_shape 没切换"
+        r.key("Control+Shift+5")
+        assert r.option("full_shape") == before
+        e = r.option("emoji")
+        r.key("Control+.")
+        assert r.option("emoji") != e, schema + " emoji 没切换"
+        r.key("Control+.")
+        t = r.option("traditionalization")
+        r.key("Control+Shift+4")
+        assert r.option("traditionalization") != t, schema + " 自带简繁快捷键丢了"
+        r.key("Control+Shift+4")

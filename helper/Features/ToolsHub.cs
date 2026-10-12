@@ -48,6 +48,8 @@ namespace Yiwei
         public bool LowSpecHinted { get; set; } = false;
         /// <summary>W41 开机时延迟工具组后台任务、低优先级启动。</summary>
         public bool DelayAtBoot { get; set; } = true;
+        /// <summary>W47 输入法开关快捷键：开关 id（traditionalization / full_shape / ascii_punct / emoji / .next）→ RimeToggleKeys.Keys 的 id。</summary>
+        public Dictionary<string, string> RimeKeys { get; set; } = new Dictionary<string, string>();
         /// <summary>W28 搜索前缀 sS 用的搜索引擎（WebSearch.Engines 的 id）。</summary>
         public string SearchEngine { get; set; } = "baidu";
         /// <summary>W44 更新通道：beta（测试版，每次构建）/ stable（稳定版）。</summary>
@@ -64,6 +66,7 @@ namespace Yiwei
                 try { _current = Json.Load<ToolSettings>(FilePath); } catch (Exception e) { Log.Write("tools.json: " + e.Message); }
                 if (_current == null) _current = new ToolSettings();
                 if (_current.Hotkeys == null) _current.Hotkeys = new Dictionary<string, string>();
+                if (_current.RimeKeys == null) _current.RimeKeys = new Dictionary<string, string>();
                 if (_current.EmailSuffixes == null) _current.EmailSuffixes = new List<string>();
                 if (_current.EmailUse == null) _current.EmailUse = new Dictionary<string, int>();
                 return _current;

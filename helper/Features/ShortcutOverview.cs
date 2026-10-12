@@ -25,6 +25,12 @@ namespace Yiwei
             Add("打字", "Ctrl+Backspace（刚上屏后）", "反悔重选：删掉刚上屏的词，拼音回到输入框");
             Add("打字", "Ctrl+T / Ctrl+Delete（候选高亮时）", "置顶 / 隐藏这个候选");
             Add("打字", "Esc", "清空输入");
+            foreach (var sw in RimeToggleKeys.Switches)
+            {
+                if (!string.IsNullOrEmpty(sw.Builtin)) Add("输入法开关", sw.Builtin, sw.Name);
+                if (t.RimeKeys != null && t.RimeKeys.TryGetValue(sw.Id, out var k) && !string.IsNullOrEmpty(k))
+                    Add("输入法开关", RimeToggleKeys.Keys.FirstOrDefault(x => x.Id == k).Name ?? k, sw.Name);
+            }
             bool alt = s.AltHotkeys;
             Add("长按 Alt", "Alt + 1–9", "常用语分组", alt && s.SnippetsHotkey);
             Add("长按 Alt", "Alt + V", "剪贴板历史", alt && s.SnippetsHotkey && s.ClipHistory);

@@ -45,6 +45,7 @@ namespace Yiwei
             y.AppendLine("    - schema: " + first);
             foreach (var other in Schemas.Where(x => x.Id != first)) y.AppendLine("    - schema: " + other.Id);
             y.AppendLine("  \"menu/page_size\": " + s.CandidateCount);
+            y.Append(RimeToggleKeys.PatchLines(ToolSettings.Current.RimeKeys)); // W47 输入法开关快捷键
             File.WriteAllText(path, y.ToString(), new UTF8Encoding(false));
             SetPreviouslySelected(first);
         }
