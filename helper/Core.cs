@@ -191,6 +191,9 @@ namespace Yiwei
 
         // 快捷键
         public bool AltHotkeys { get; set; } = true;
+        /// <summary>44 单独轻按 Alt 切中英："" 关（默认）/ left / right / any；AltTapApps 为空 = 所有程序（仍排除 Alt 手势停用名单），否则只在这些程序里。</summary>
+        public string AltTapToggle { get; set; } = "";
+        public List<string> AltTapApps { get; set; } = new List<string>();
         public int HoldMs { get; set; } = 300;
         public bool SnippetsHotkey { get; set; } = true;
         public bool AiHotkey { get; set; } = true;

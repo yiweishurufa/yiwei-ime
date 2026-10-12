@@ -314,6 +314,14 @@ namespace Yiwei
             Native.SendInput((uint)list.Count, list.ToArray(), Marshal.SizeOf(typeof(Native.INPUT)));
         }
 
+        /// <summary>轻按一下左 Shift（RIME 的 ascii_composer 据此切换中英）。</summary>
+        public static void TapShift()
+        {
+            var list = new System.Collections.Generic.List<Native.INPUT>();
+            AddVk(list, (ushort)Keys.LShiftKey);
+            Native.SendInput((uint)list.Count, list.ToArray(), Marshal.SizeOf(typeof(Native.INPUT)));
+        }
+
         static void Chord(Keys mod, Keys key)
         {
             var list = new System.Collections.Generic.List<Native.INPUT>
@@ -482,8 +490,11 @@ namespace Yiwei
                 if (down) { if (_altDownAt == 0) { _altDownAt = Environment.TickCount; _altUsed = false; } }
                 else
                 {
+                    // 44：单独轻按 Alt（没按别的键、不到 400 毫秒）切换中英
+                    bool tap = _altDownAt != 0 && !_altUsed && !_swallowedChord && unchecked(Environment.TickCount - _altDownAt) < 400;
                     _altDownAt = 0;
                     if (_swallowedChord) { _swallowedChord = false; TextOut.MaskAlt(); }
+                    else if (tap && AltTap.Wants(vk)) { TextOut.MaskAlt(); AltTap.ToggleSoon(); }
                 }
                 return false;
             }

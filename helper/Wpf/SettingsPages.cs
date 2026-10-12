@@ -389,6 +389,12 @@ namespace Yiwei
                 K.Toggle(S.AddWordHotkey, v => { S.AddWordHotkey = v; Save(); }), Ui.SymbolRegular.BookAdd24));
             p.Children.Add(K.Card("长按 Alt + E 符号与表情", "标点、数学、箭头、单位、序号、希腊字母、拼音声调、表情、颜文字，点一下上屏",
                 K.Toggle(S.SymbolsHotkey, v => { S.SymbolsHotkey = v; Save(); }), Ui.SymbolRegular.Emoji24));
+            var tapApps = new Ui.TextBox { PlaceholderText = "留空 = 所有程序；例如 code.exe, notepad.exe", MinWidth = 300, Text = string.Join(", ", S.AltTapApps ?? new List<string>()) };
+            tapApps.LostFocus += (s, e) => { S.AltTapApps = AltTap.ParseApps(tapApps.Text); tapApps.Text = string.Join(", ", S.AltTapApps); Save(); };
+            p.Children.Add(K.Card("单独按 Alt 切换中英", "轻按一下 Alt（不按别的键）就切换中/英，和按 Shift 一样；不会弹出程序的菜单栏。长按 Alt 手势照常可用",
+                K.Combo(new[] { new KeyValuePair<string, string>("", "关闭"), new KeyValuePair<string, string>("left", "左 Alt"), new KeyValuePair<string, string>("right", "右 Alt"), new KeyValuePair<string, string>("any", "左右 Alt 都行") },
+                    S.AltTapToggle ?? "", v => { S.AltTapToggle = v; Save(); }, 160), Ui.SymbolRegular.KeyboardShift24));
+            p.Children.Add(K.Card("只在这些程序里用 Alt 切中英", "程序名（.exe），逗号分隔；留空则所有程序（下面「不响应 Alt 手势的应用」除外）", tapApps));
             p.Children.Add(K.Card("长按判定时间", "按住 Alt 多久之后再按数字或空格才算手势（毫秒）",
                 Slider(150, 1000, S.HoldMs, v => { S.HoldMs = (v / 50) * 50; Save(); })));
             p.Children.Add(K.Card("游戏模式", "全屏游戏里自动切英文、Shift 直接交给游戏（不切换中英）、不弹候选框；退出全屏自动恢复。浏览器、播放器和演示文稿全屏不算",
