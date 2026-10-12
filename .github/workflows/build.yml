@@ -391,6 +391,30 @@ jobs:
             [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
             [DllImport("user32.dll")] public static extern IntPtr LoadKeyboardLayout(string id, uint f);
             [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+            [DllImport("user32.dll")] public static extern bool PostMessage(IntPtr h, uint msg, IntPtr w, IntPtr l);
+          }
+          [ComImport, Guid("71C6E74C-0F28-11D8-A82A-00065B84435C"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+          public interface ITfInputProcessorProfileMgr {
+            void ActivateProfile(uint type, ushort langid, ref Guid clsid, ref Guid profile, IntPtr hkl, uint flags);
+          }
+          public static class Tip {
+            // 当前会话里直接激活一维 TSF 输入法（语言列表改动要重新登录才生效，CI 等不了）
+            public static string Activate() {
+              string r = "?";
+              var th = new System.Threading.Thread(() => { r = ActivateSta(); });
+              th.SetApartmentState(System.Threading.ApartmentState.STA); th.Start(); th.Join();
+              return r;
+            }
+            static string ActivateSta() {
+              try {
+                var t = Type.GetTypeFromCLSID(new Guid("33C53A50-F456-4884-B049-85FD643ECFED"));
+                var mgr = (ITfInputProcessorProfileMgr)Activator.CreateInstance(t);
+                var clsid = new Guid("54C92C2A-5FE9-43A0-A9EC-D05B42C996D4");
+                var prof = new Guid("B7D08A98-C73D-4BBF-8938-F1164EC9AC7F");
+                mgr.ActivateProfile(1, 0x0804, ref clsid, ref prof, IntPtr.Zero, 0x20000000 | 0x1);
+                return "ok";
+              } catch (Exception e) { return e.Message; }
+            }
           }
           '@
           function Shot($name) {
@@ -404,7 +428,11 @@ jobs:
             Get-Process notepad -ErrorAction SilentlyContinue | Stop-Process -Force
             $np = Start-Process notepad -PassThru; Start-Sleep 4
             [W]::SetForegroundWindow($np.MainWindowHandle) | Out-Null; Start-Sleep 1
-            [W]::LoadKeyboardLayout('00000804', 1) | Out-Null; Start-Sleep 1
+            [W]::LoadKeyboardLayout('00000804', 1) | Out-Null
+            Write-Host "激活一维 TSF：$([Tip]::Activate())"
+            # WM_INPUTLANGCHANGEREQUEST：让记事本切到中文（HKL 0x08040804）
+            [W]::PostMessage($np.MainWindowHandle, 0x0050, [IntPtr]0, [IntPtr]0x08040804) | Out-Null; Start-Sleep 1
+            [W]::SetForegroundWindow($np.MainWindowHandle) | Out-Null; Start-Sleep 1
             [System.Windows.Forms.SendKeys]::SendWait('nihao'); Start-Sleep 2
             Shot "typing-nihao-$try"
             [System.Windows.Forms.SendKeys]::SendWait(' '); Start-Sleep 1
