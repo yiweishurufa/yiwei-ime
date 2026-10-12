@@ -1,0 +1,201 @@
+Log file created at: 2026/10/12 12:19:13
+Running on machine: runnervmtn0fv
+Running duration (h:mm:ss): 0:00:00
+Log line format: [IWEF]yyyymmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I20261012 12:19:13.507945  4060 core_module.cc:20] registering core components.
+I20261012 12:19:14.645562  4060 registry.cc:14] registering component: config_builder
+I20261012 12:19:14.645572  4060 registry.cc:14] registering component: config
+I20261012 12:19:14.645575  4060 registry.cc:14] registering component: schema
+I20261012 12:19:14.645579  4060 registry.cc:14] registering component: user_config
+I20261012 12:19:14.645585  4060 dict_module.cc:25] registering components from module 'dict'.
+I20261012 12:19:14.645591  4060 registry.cc:14] registering component: tabledb
+I20261012 12:19:14.645596  4060 registry.cc:14] registering component: stabledb
+I20261012 12:19:14.645599  4060 registry.cc:14] registering component: plain_userdb
+I20261012 12:19:14.645603  4060 registry.cc:14] registering component: userdb
+I20261012 12:19:14.645608  4060 registry.cc:14] registering component: corrector
+I20261012 12:19:14.645614  4060 registry.cc:14] registering component: dictionary
+I20261012 12:19:14.645620  4060 registry.cc:14] registering component: reverse_lookup_dictionary
+I20261012 12:19:14.645626  4060 registry.cc:14] registering component: user_dictionary
+I20261012 12:19:14.645629  4060 registry.cc:14] registering component: userdb_recovery_task
+I20261012 12:19:14.645644  4060 gears_module.cc:42] registering components from module 'gears'.
+I20261012 12:19:14.645653  4060 registry.cc:14] registering component: ascii_composer
+I20261012 12:19:14.645656  4060 registry.cc:14] registering component: chord_composer
+I20261012 12:19:14.645658  4060 registry.cc:14] registering component: express_editor
+I20261012 12:19:14.645661  4060 registry.cc:14] registering component: fluid_editor
+I20261012 12:19:14.645663  4060 registry.cc:14] registering component: fluency_editor
+I20261012 12:19:14.645666  4060 registry.cc:14] registering component: key_binder
+I20261012 12:19:14.645669  4060 registry.cc:14] registering component: navigator
+I20261012 12:19:14.645671  4060 registry.cc:14] registering component: punctuator
+I20261012 12:19:14.645674  4060 registry.cc:14] registering component: recognizer
+I20261012 12:19:14.645676  4060 registry.cc:14] registering component: selector
+I20261012 12:19:14.645679  4060 registry.cc:14] registering component: speller
+I20261012 12:19:14.645682  4060 registry.cc:14] registering component: shape_processor
+I20261012 12:19:14.645684  4060 registry.cc:14] registering component: abc_segmentor
+I20261012 12:19:14.645687  4060 registry.cc:14] registering component: affix_segmentor
+I20261012 12:19:14.645690  4060 registry.cc:14] registering component: ascii_segmentor
+I20261012 12:19:14.645694  4060 registry.cc:14] registering component: matcher
+I20261012 12:19:14.645698  4060 registry.cc:14] registering component: punct_segmentor
+I20261012 12:19:14.645702  4060 registry.cc:14] registering component: fallback_segmentor
+I20261012 12:19:14.645705  4060 registry.cc:14] registering component: echo_translator
+I20261012 12:19:14.645708  4060 registry.cc:14] registering component: punct_translator
+I20261012 12:19:14.645714  4060 registry.cc:14] registering component: table_translator
+I20261012 12:19:14.645717  4060 registry.cc:14] registering component: script_translator
+I20261012 12:19:14.645720  4060 registry.cc:14] registering component: r10n_translator
+I20261012 12:19:14.645723  4060 registry.cc:14] registering component: reverse_lookup_translator
+I20261012 12:19:14.645726  4060 registry.cc:14] registering component: schema_list_translator
+I20261012 12:19:14.645729  4060 registry.cc:14] registering component: switch_translator
+I20261012 12:19:14.645731  4060 registry.cc:14] registering component: history_translator
+I20261012 12:19:14.645739  4060 registry.cc:14] registering component: simplifier
+I20261012 12:19:14.645742  4060 registry.cc:14] registering component: uniquifier
+I20261012 12:19:14.645745  4060 registry.cc:14] registering component: charset_filter
+I20261012 12:19:14.645748  4060 registry.cc:14] registering component: cjk_minifier
+I20261012 12:19:14.645750  4060 registry.cc:14] registering component: reverse_lookup_filter
+I20261012 12:19:14.645753  4060 registry.cc:14] registering component: single_char_filter
+I20261012 12:19:14.674919  4060 registry.cc:14] registering component: shape_formatter
+I20261012 12:19:14.674936  4060 modules.cc:96] registering components from module 'lua'.
+I20261012 12:19:14.678300  4060 modules.cc:87] rime.lua info: rime.lua should be either in the rime user data directory or in the rime shared data directory
+I20261012 12:19:14.678315  4060 registry.cc:14] registering component: lua_translator
+I20261012 12:19:14.678321  4060 registry.cc:14] registering component: lua_filter
+I20261012 12:19:14.678325  4060 registry.cc:14] registering component: lua_segmentor
+I20261012 12:19:14.678329  4060 registry.cc:14] registering component: lua_processor
+I20261012 12:19:14.678336  4060 grammar_module.cc:15] registering components from module 'grammar'.
+I20261012 12:19:14.678342  4060 registry.cc:14] registering component: grammar
+I20261012 12:19:14.678361  4060 registry.cc:14] registering component: predictor
+I20261012 12:19:14.678366  4060 registry.cc:14] registering component: predict_translator
+I20261012 12:19:14.678384  4060 levers_module.cc:16] registering components from module 'levers'.
+I20261012 12:19:14.678389  4060 registry.cc:14] registering component: detect_modifications
+I20261012 12:19:14.678394  4060 registry.cc:14] registering component: installation_update
+I20261012 12:19:14.678399  4060 registry.cc:14] registering component: workspace_update
+I20261012 12:19:14.678413  4060 registry.cc:14] registering component: schema_update
+I20261012 12:19:14.678418  4060 registry.cc:14] registering component: config_file_update
+I20261012 12:19:14.678422  4060 registry.cc:14] registering component: prebuild_all_schemas
+I20261012 12:19:14.678427  4060 registry.cc:14] registering component: user_dict_upgrade
+I20261012 12:19:14.678432  4060 registry.cc:14] registering component: cleanup_trash
+I20261012 12:19:14.678436  4060 registry.cc:14] registering component: user_dict_sync
+I20261012 12:19:14.678441  4060 registry.cc:14] registering component: backup_config_files
+I20261012 12:19:14.678445  4060 registry.cc:14] registering component: clean_old_log_files
+I20261012 12:19:14.678647  4060 deployment_tasks.cc:83] updating rime installation info.
+I20261012 12:19:14.678695  4060 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\installation.yaml'.
+I20261012 12:19:14.678950  4060 deployment_tasks.cc:101] installation info exists. installation id: 978dbd50-4677-4bd8-8c8e-b9e1726735e1
+I20261012 12:19:14.678958  4060 deployment_tasks.cc:112] sync dir: C:\Users\runneradmin\AppData\Roaming\YiweiIME\sync
+I20261012 12:19:14.678965  4060 deployment_tasks.cc:118] previous distribution: Yiwei
+I20261012 12:19:14.678970  4060 deployment_tasks.cc:121] previous distribution version: 0.1.0
+I20261012 12:19:14.678975  4060 deployment_tasks.cc:124] previous Rime version: 1.17.0
+I20261012 12:19:14.683811  4060 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\user.yaml'.
+I20261012 12:19:14.683978  4060 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\weasel.yaml'.
+I20261012 12:19:21.867764  5236 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\default.yaml'.
+I20261012 12:19:21.869156  5236 engine.cc:72] starting engine.
+I20261012 12:19:21.869247  5236 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\user.yaml'.
+I20261012 12:19:21.869551  5236 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.schema.yaml'.
+I20261012 12:19:21.884091  5236 engine.cc:133] updated option: _auto_commit
+I20261012 12:19:21.884385  5236 dictionary.cc:380] loading dictionary 'rime_ice'.
+I20261012 12:19:21.884397  5236 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261012 12:19:21.884544  5236 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.prism.bin
+I20261012 12:19:21.884592  5236 prism.cc:121] found double array image of size 2304.
+I20261012 12:19:21.918795  5236 db.cc:55] creating metadata for db 'rime_ice'.
+I20261012 12:19:21.919560  5236 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Program Files\Yiwei\yiwei-0.1.0\data\lua/lunar.db
+I20261012 12:19:21.919836  5236 tsv.cc:18] reading tsv file: C:\Program Files\Yiwei\yiwei-0.1.0\data\custom_phrase.txt
+I20261012 12:19:21.920042  5236 tsv.cc:18] reading tsv file: C:\Program Files\Yiwei\yiwei-0.1.0\data\yiwei_tech.txt
+I20261012 12:19:21.921702  5236 dictionary.cc:380] loading dictionary 'melt_eng'.
+I20261012 12:19:21.921708  5236 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.table.bin
+I20261012 12:19:21.921758  5236 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.prism.bin
+I20261012 12:19:21.921784  5236 prism.cc:121] found double array image of size 799232.
+I20261012 12:19:21.921863  5236 tsv.cc:18] reading tsv file: C:\Program Files\Yiwei\yiwei-0.1.0\data\en_dicts\cn_en.txt
+I20261012 12:19:21.923964  5236 dictionary.cc:380] loading dictionary 'radical_pinyin'.
+I20261012 12:19:21.923969  5236 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.table.bin
+I20261012 12:19:21.924023  5236 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.prism.bin
+I20261012 12:19:21.924048  5236 prism.cc:121] found double array image of size 244480.
+I20261012 12:19:21.924079  5236 dictionary.cc:380] loading dictionary 'rime_ice'.
+I20261012 12:19:21.924124  5236 dictionary.cc:380] loading dictionary 'yiwei_stroke'.
+I20261012 12:19:21.924127  5236 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.table.bin
+I20261012 12:19:21.924178  5236 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.prism.bin
+I20261012 12:19:21.924201  5236 prism.cc:121] found double array image of size 385536.
+I20261012 12:19:21.927093  5236 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.schema.yaml'.
+I20261012 12:19:21.928568  5236 dictionary.cc:380] loading dictionary 'radical_pinyin'.
+I20261012 12:19:21.929791  5236 engine.cc:377] ConcreteEngine::InitializeOptions
+I20261012 12:19:21.929814  5236 engine.cc:382] found switch option: ascii_mode, reset: -1
+I20261012 12:19:21.929818  5236 engine.cc:382] found switch option: ascii_punct, reset: -1
+I20261012 12:19:21.929823  5236 engine.cc:382] found switch option: traditionalization, reset: 0
+I20261012 12:19:21.929828  5236 engine.cc:133] updated option: traditionalization
+I20261012 12:19:21.929835  5236 engine.cc:382] found switch option: emoji, reset: 1
+I20261012 12:19:21.929838  5236 engine.cc:133] updated option: emoji
+I20261012 12:19:21.929842  5236 engine.cc:382] found switch option: full_shape, reset: -1
+I20261012 12:19:21.929846  5236 engine.cc:382] found switch option: search_single_char, reset: -1
+I20261012 12:19:21.929902  5236 engine.cc:147] updated property: client_app
+I20261012 12:19:21.929913  5236 engine.cc:133] updated option: inline_preedit
+I20261012 12:19:21.929922  5236 engine.cc:133] updated option: soft_cursor
+I20261012 12:19:21.930135  5236 engine.cc:133] updated option: inline_preedit
+I20261012 12:19:21.930143  5236 engine.cc:133] updated option: soft_cursor
+I20261012 12:19:21.930838  5768 engine.cc:72] starting engine.
+I20261012 12:19:21.931473  5768 engine.cc:133] updated option: _auto_commit
+I20261012 12:19:21.931594  5768 dictionary.cc:380] loading dictionary 'rime_ice'.
+I20261012 12:19:21.931717  5768 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Program Files\Yiwei\yiwei-0.1.0\data\lua/lunar.db
+I20261012 12:19:21.931859  5768 dictionary.cc:380] loading dictionary 'melt_eng'.
+I20261012 12:19:21.931906  5768 dictionary.cc:380] loading dictionary 'radical_pinyin'.
+I20261012 12:19:21.931933  5768 dictionary.cc:380] loading dictionary 'rime_ice'.
+I20261012 12:19:21.931954  5768 dictionary.cc:380] loading dictionary 'yiwei_stroke'.
+I20261012 12:19:21.932478  5768 dictionary.cc:380] loading dictionary 'radical_pinyin'.
+I20261012 12:19:21.932554  5768 engine.cc:377] ConcreteEngine::InitializeOptions
+I20261012 12:19:21.932559  5768 engine.cc:382] found switch option: ascii_mode, reset: -1
+I20261012 12:19:21.932563  5768 engine.cc:382] found switch option: ascii_punct, reset: -1
+I20261012 12:19:21.932567  5768 engine.cc:382] found switch option: traditionalization, reset: 0
+I20261012 12:19:21.932570  5768 engine.cc:133] updated option: traditionalization
+I20261012 12:19:21.932576  5768 engine.cc:382] found switch option: emoji, reset: 1
+I20261012 12:19:21.932579  5768 engine.cc:133] updated option: emoji
+I20261012 12:19:21.932582  5768 engine.cc:382] found switch option: full_shape, reset: -1
+I20261012 12:19:21.932585  5768 engine.cc:382] found switch option: search_single_char, reset: -1
+I20261012 12:19:21.932613  5768 engine.cc:147] updated property: client_app
+I20261012 12:19:21.932627  5768 engine.cc:133] updated option: inline_preedit
+I20261012 12:19:21.932635  5768 engine.cc:133] updated option: soft_cursor
+I20261012 12:19:21.932838  5768 engine.cc:133] updated option: inline_preedit
+I20261012 12:19:21.932846  5768 engine.cc:133] updated option: soft_cursor
+I20261012 12:19:21.933257  1120 engine.cc:72] starting engine.
+I20261012 12:19:21.933829  1120 engine.cc:133] updated option: _auto_commit
+I20261012 12:19:21.933941  1120 dictionary.cc:380] loading dictionary 'rime_ice'.
+I20261012 12:19:21.934066  1120 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Program Files\Yiwei\yiwei-0.1.0\data\lua/lunar.db
+I20261012 12:19:21.934213  1120 dictionary.cc:380] loading dictionary 'melt_eng'.
+I20261012 12:19:21.934261  1120 dictionary.cc:380] loading dictionary 'radical_pinyin'.
+I20261012 12:19:21.934287  1120 dictionary.cc:380] loading dictionary 'rime_ice'.
+I20261012 12:19:21.934307  1120 dictionary.cc:380] loading dictionary 'yiwei_stroke'.
+I20261012 12:19:21.935160  1120 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.schema.yaml'.
+I20261012 12:19:21.936606  1120 dictionary.cc:380] loading dictionary 'radical_pinyin'.
+I20261012 12:19:21.936692  1120 engine.cc:377] ConcreteEngine::InitializeOptions
+I20261012 12:19:21.936698  1120 engine.cc:382] found switch option: ascii_mode, reset: -1
+I20261012 12:19:21.936702  1120 engine.cc:382] found switch option: ascii_punct, reset: -1
+I20261012 12:19:21.936706  1120 engine.cc:382] found switch option: traditionalization, reset: 0
+I20261012 12:19:21.936710  1120 engine.cc:133] updated option: traditionalization
+I20261012 12:19:21.936716  1120 engine.cc:382] found switch option: emoji, reset: 1
+I20261012 12:19:21.936720  1120 engine.cc:133] updated option: emoji
+I20261012 12:19:21.936724  1120 engine.cc:382] found switch option: full_shape, reset: -1
+I20261012 12:19:21.936727  1120 engine.cc:382] found switch option: search_single_char, reset: -1
+I20261012 12:19:21.936756  1120 engine.cc:147] updated property: client_app
+I20261012 12:19:21.936767  1120 engine.cc:133] updated option: ascii_mode
+I20261012 12:19:21.936989  1120 engine.cc:133] updated option: vim_mode
+I20261012 12:19:21.937006  1120 engine.cc:133] updated option: inline_preedit
+I20261012 12:19:21.937014  1120 engine.cc:133] updated option: soft_cursor
+I20261012 12:19:21.937221  1120 engine.cc:133] updated option: inline_preedit
+I20261012 12:19:21.937230  1120 engine.cc:133] updated option: soft_cursor
+I20261012 12:19:32.274733  1260 engine.cc:72] starting engine.
+I20261012 12:19:32.275398  1260 engine.cc:133] updated option: _auto_commit
+I20261012 12:19:32.275545  1260 dictionary.cc:380] loading dictionary 'rime_ice'.
+I20261012 12:19:32.275705  1260 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Program Files\Yiwei\yiwei-0.1.0\data\lua/lunar.db
+I20261012 12:19:32.275873  1260 dictionary.cc:380] loading dictionary 'melt_eng'.
+I20261012 12:19:32.275931  1260 dictionary.cc:380] loading dictionary 'radical_pinyin'.
+I20261012 12:19:32.275957  1260 dictionary.cc:380] loading dictionary 'rime_ice'.
+I20261012 12:19:32.276053  1260 dictionary.cc:380] loading dictionary 'yiwei_stroke'.
+I20261012 12:19:32.276591  1260 dictionary.cc:380] loading dictionary 'radical_pinyin'.
+I20261012 12:19:32.276684  1260 engine.cc:377] ConcreteEngine::InitializeOptions
+I20261012 12:19:32.276691  1260 engine.cc:382] found switch option: ascii_mode, reset: -1
+I20261012 12:19:32.276695  1260 engine.cc:382] found switch option: ascii_punct, reset: -1
+I20261012 12:19:32.276699  1260 engine.cc:382] found switch option: traditionalization, reset: 0
+I20261012 12:19:32.276703  1260 engine.cc:133] updated option: traditionalization
+I20261012 12:19:32.276709  1260 engine.cc:382] found switch option: emoji, reset: 1
+I20261012 12:19:32.276712  1260 engine.cc:133] updated option: emoji
+I20261012 12:19:32.276716  1260 engine.cc:382] found switch option: full_shape, reset: -1
+I20261012 12:19:32.276719  1260 engine.cc:382] found switch option: search_single_char, reset: -1
+I20261012 12:19:32.276758  1260 engine.cc:147] updated property: client_app
+I20261012 12:19:32.276768  1260 engine.cc:133] updated option: inline_preedit
+I20261012 12:19:32.276777  1260 engine.cc:133] updated option: soft_cursor
+I20261012 12:19:32.276988  1260 engine.cc:133] updated option: inline_preedit
+I20261012 12:19:32.276996  1260 engine.cc:133] updated option: soft_cursor
+I20261012 12:20:24.314277  2564 engine.cc:72] starting engine.

@@ -1,0 +1,36 @@
+Log file created at: 2026/10/12 12:18:44
+Running on machine: runnervmtn0fv
+Running duration (h:mm:ss): 0:00:00
+Log line format: [IWEF]yyyymmdd hh:mm:ss.uuuuuu threadid file:line] msg
+W20261012 12:18:44.276653  2568 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261012 12:18:44.484490  2568 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261012 12:18:44.679502  2568 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261012 12:18:44.681725  2568 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261012 12:18:44.681747  2568 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261012 12:18:44.681752  2568 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261012 12:18:44.681782  2568 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261012 12:18:44.681787  2568 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261012 12:18:44.681800  2568 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261012 12:18:44.681804  2568 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261012 12:18:44.681816  2568 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261012 12:18:44.681820  2568 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261012 12:18:44.681881  2568 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261012 12:18:44.681885  2568 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261012 12:18:44.681898  2568 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261012 12:18:44.681901  2568 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261012 12:18:44.681914  2568 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261012 12:18:44.681918  2568 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261012 12:18:44.681931  2568 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261012 12:18:44.681935  2568 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261012 12:18:44.681947  2568 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261012 12:18:44.681951  2568 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261012 12:18:44.683541  2568 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261012 12:18:50.554334  2568 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261012 12:18:50.554361  2568 config_compiler.cc:527] circular dependencies detected in radical_pinyin.schema:
+W20261012 12:18:50.554366  2568 config_compiler.cc:367] accessing blocking node with unresolved dependencies: radical_pinyin.schema:
+W20261012 12:18:51.162062  2568 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261012 12:18:51.361756  2568 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261012 12:18:51.554392  2568 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261012 12:18:51.883835  2568 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261012 12:18:52.096827  2568 config_compiler.cc:391] inaccessible node: default.custom:/patch
+W20261012 12:18:52.315040  2568 config_compiler.cc:391] inaccessible node: default.custom:/patch

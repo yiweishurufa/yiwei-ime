@@ -1,0 +1,6 @@
+{"conclusion":"success","name":"rime-test","steps":[]}
+{"conclusion":"success","name":"build","steps":[]}
+{"conclusion":"failure","name":"smoke","steps":["界面截图"]}
+{"conclusion":null,"name":"report","steps":[]}
+{"conclusion":null,"name":"screens","steps":[]}
+{"conclusion":"skipped","name":"release","steps":[]}

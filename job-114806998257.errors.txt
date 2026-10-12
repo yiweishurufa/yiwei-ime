@@ -1,0 +1,52 @@
+60:2026-10-12T12:17:29.9784430Z ##[group]Run $ErrorActionPreference = 'Stop'
+61:2026-10-12T12:17:29.9785354Z [36;1m$ErrorActionPreference = 'Stop'[0m
+73:2026-10-12T12:17:29.9791726Z [36;1m  Stop-Process -Id $ui.Id -Force -ErrorAction SilentlyContinue; Start-Sleep 2[0m
+78:2026-10-12T12:17:29.9794148Z [36;1m  $old = Get-ChildItem old-nightly -Filter 'yiwei-ime*.exe' -ErrorAction SilentlyContinue | Select-Object -First 1[0m
+82:2026-10-12T12:17:29.9796714Z [36;1m    if (-not $po.WaitForExit(600000)) { $po.Kill(); Write-Host "旧版安装超时，跳过升级测试" } else { Write-Host "旧版 exit code $($po.ExitCode)"; Start-Sleep 5 }[0m
+84:2026-10-12T12:17:29.9797599Z [36;1m} catch { Write-Host "没有拿到旧版 nightly，跳过旧版 → 新版升级测试：$_" }[0m
+86:2026-10-12T12:17:29.9798502Z [36;1mif (-not $p.WaitForExit(600000)) { $p.Kill(); throw "安装超时（可能弹出了对话框）" }[0m
+88:2026-10-12T12:17:29.9799327Z [36;1mif ($p.ExitCode -eq 3010) { throw "安装/升级要求重启电脑（退出码 3010）" }[0m
+93:2026-10-12T12:17:29.9801525Z [36;1mif (-not $root) { throw "注册表里没有 YiweiRoot" }[0m
+96:2026-10-12T12:17:29.9803404Z [36;1m  if (-not (Test-Path (Join-Path $root $f))) { throw "缺少文件 $f" }[0m
+100:2026-10-12T12:17:29.9807048Z [36;1mif (-not $rimeText.Contains('octagram')) { throw "rime.dll 不含 librime-octagram 插件，语法模型将不可用" }[0m
+103:2026-10-12T12:17:29.9808688Z [36;1mif (-not ((Test-Path "$sys\yiwei.dll") -or (Test-Path "$sys\yiweix64.dll"))) { Get-ChildItem $sys -Filter 'yiwei*' ; throw "系统目录里没有 yiwei 输入法模块" }[0m
+105:2026-10-12T12:17:29.9809813Z [36;1mif (-not (Test-Path $tip)) { throw "TSF 输入法没有注册：$tip" }[0m
+106:2026-10-12T12:17:29.9810419Z [36;1mif (Test-Path 'HKLM:\SOFTWARE\Microsoft\CTF\TIP\{A3F4CDED-B1E9-41EE-9CA6-7B4D0DE6CB0A}') { throw "注册了小狼毫的 CLSID，改名不彻底" }[0m
+110:2026-10-12T12:17:29.9812697Z [36;1mif (-not $dllText.Contains('显示/隐藏通知区域的一维图标') -or -not $dllText.Contains('YiweiHelper.exe')) { throw "语言栏菜单没有换成一维菜单：$dll" }[0m
+114:2026-10-12T12:17:29.9814879Z [36;1mif (-not $depW.Contains('/settings 外观') -or -not $depW.Contains('确定') -or -not $depA.Contains('yiwei_moblue')) { throw "YiweiDeployer 的界面风格对话框没有换成一维版本" }[0m
+117:2026-10-12T12:17:29.9816703Z [36;1mif (-not $notif -or $notif -match 'true|ascii_mode') { throw "小狼毫的中/英状态提示没有关掉（会和一维提示一起弹）" }[0m
+120:2026-10-12T12:17:29.9818023Z [36;1mif (-not $d.WaitForExit(600000)) { $d.Kill(); throw "部署超时" }[0m
+123:2026-10-12T12:17:29.9819347Z [36;1mGet-ChildItem (Join-Path $user 'build') -ErrorAction SilentlyContinue | Select-Object Name, Length | Format-Table | Out-String | Write-Host[0m
+124:2026-10-12T12:17:29.9820054Z [36;1mif (-not (Test-Path (Join-Path $user 'build\rime_ice.prism.bin'))) { throw "雾凇拼音没有部署成功" }[0m
+125:2026-10-12T12:17:29.9820694Z [36;1mif (-not (Test-Path (Join-Path $user 'build\yiwei_stroke.table.bin'))) { throw "笔画输入词典（yiwei_stroke）没有编译" }[0m
+132:2026-10-12T12:17:29.9823494Z [36;1mfor ($i = 0; $i -lt 20 -and -not $ok; $i++) { if (Get-Process YiweiServer -ErrorAction SilentlyContinue) { $ok = $true } else { Start-Sleep 1 } }[0m
+134:2026-10-12T12:17:29.9825333Z [36;1mif (-not (Get-Process YiweiServer -ErrorAction SilentlyContinue)) { throw "YiweiServer 没有启动" }[0m
+135:2026-10-12T12:17:29.9825979Z [36;1mif (-not (Get-Process YiweiHelper -ErrorAction SilentlyContinue)) { throw "YiweiHelper 启动后退出了" }[0m
+140:2026-10-12T12:17:29.9828170Z [36;1mif (-not (Test-Path $pc)) { throw "性能体检（/perfcheck）没有生成报告" }[0m
+142:2026-10-12T12:17:29.9829051Z [36;1mif (-not ((Get-Content $pc -Raw -Encoding utf8) -match '输入法服务内存')) { throw "性能体检报告内容不对" }[0m
+146:2026-10-12T12:17:29.9831457Z [36;1mAdd-Type -Namespace YwTest -Name K -MemberDefinition '[System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)] public static extern System.IntPtr LoadLibraryExW(string p, System.IntPtr h, uint f);'[0m
+150:2026-10-12T12:17:29.9834033Z [36;1mif (-not $p2.WaitForExit(600000)) { $p2.Kill(); throw "覆盖安装超时（可能弹出了对话框）" }[0m
+153:2026-10-12T12:17:29.9835645Z [36;1mif ($p2.ExitCode -eq 3010) { throw "覆盖安装要求重启电脑（退出码 3010）" }[0m
+154:2026-10-12T12:17:29.9836095Z [36;1mif ($p2.ExitCode -ne 0) { throw "覆盖安装失败，退出码 $($p2.ExitCode)" }[0m
+155:2026-10-12T12:17:29.9836501Z [36;1mif (-not (Test-Path $sysDll)) { throw "覆盖安装后系统目录里没有输入法模块" }[0m
+156:2026-10-12T12:17:29.9837164Z [36;1mif ($hmod -ne [IntPtr]::Zero -and -not (Get-ChildItem $sys -Filter ((Split-Path $sysDll -Leaf) + '.old.*'))) { Write-Host "提示：被占用的 DLL 没有改名（可能复制时未被锁）" }[0m
+157:2026-10-12T12:17:29.9837836Z [36;1mif (-not (Test-Path $tip)) { throw "覆盖安装后 TSF 输入法注册丢了" }[0m
+160:2026-10-12T12:17:29.9839308Z [36;1m  for ($i = 0; $i -lt 40 -and -not $ok; $i++) { if (Get-Process $proc -ErrorAction SilentlyContinue) { $ok = $true } else { Start-Sleep 1 } }[0m
+161:2026-10-12T12:17:29.9839844Z [36;1m  if (-not $ok) { throw "覆盖安装后 $proc 没有自动启动" }[0m
+223:2026-10-12T12:19:01.5937122Z 每次按键出候选：还没有数据（用全拼或双拼打几个字后再体检）
+239:2026-10-12T12:19:14.7953544Z ##[group]Run $ErrorActionPreference = 'Continue'
+240:2026-10-12T12:19:14.7954289Z [36;1m$ErrorActionPreference = 'Continue'[0m
+248:2026-10-12T12:19:14.7958110Z [36;1mif (-not (Get-Process YiweiServer -ErrorAction SilentlyContinue)) {[0m
+249:2026-10-12T12:19:14.7958774Z [36;1m  $root = (Get-ItemProperty 'HKLM:\SOFTWARE\WOW6432Node\Yiwei\YiweiIME' -ErrorAction SilentlyContinue).YiweiRoot[0m
+281:2026-10-12T12:19:14.7973985Z [36;1m    } catch (Exception e) { return e.Message; }[0m
+293:2026-10-12T12:19:14.7978697Z [36;1m  Get-Process notepad -ErrorAction SilentlyContinue | Stop-Process -Force[0m
+310:2026-10-12T12:19:14.7987214Z [36;1mGet-Process notepad -ErrorAction SilentlyContinue | Stop-Process -Force[0m
+314:2026-10-12T12:19:14.7989074Z [36;1m  Write-Host "::warning::真实输入测试未通过（nihao 没有上屏「你好」），见 ci-shots 分支 typing-nihao-*.png"[0m
+368:2026-10-12T12:19:44.1814442Z [36;1m$root = (Get-ItemProperty 'HKLM:\SOFTWARE\WOW6432Node\Yiwei\YiweiIME' -ErrorAction SilentlyContinue).YiweiRoot[0m
+375:2026-10-12T12:19:44.1817733Z [36;1mGet-Process YiweiHelper -ErrorAction SilentlyContinue | Stop-Process -Force[0m
+379:2026-10-12T12:19:44.1820533Z [36;1mGet-ChildItem "$env:APPDATA\YiweiIME" -Filter '*.log' -Recurse -ErrorAction SilentlyContinue | Copy-Item -Destination screens[0m
+380:2026-10-12T12:19:44.1821490Z [36;1mGet-ChildItem "$env:LOCALAPPDATA" -Filter 'Yiwei*' -Directory -ErrorAction SilentlyContinue | ForEach-Object { Get-ChildItem $_.FullName -Filter *.log -Recurse | Copy-Item -Destination screens }[0m
+391:2026-10-12T12:20:42.5889606Z [31;1m[0m[36;1m[36;1m  21 | [0m … ecurse -ErrorAction SilentlyContinue | [36;1mCopy-Item -Destination screens[0m
+395:2026-10-12T12:20:42.6187938Z ##[error]Process completed with exit code 1.
+424:2026-10-12T12:20:44.5558958Z [36;1mGet-ChildItem $env:TEMP -Directory -Filter 'rime*' -ErrorAction SilentlyContinue | ForEach-Object { Copy-Item $_.FullName smoke-logs -Recurse -Force }[0m
+425:2026-10-12T12:20:44.5560117Z [36;1mCopy-Item "$env:APPDATA\YiweiIME\*.yaml" smoke-logs -ErrorAction SilentlyContinue[0m
