@@ -55,4 +55,4 @@
 - 符号面板：左侧分类竖栏（当前分类一维蓝加粗）+ 底部「返回」，工具栏位置显示当前分类名（YiweiSymbolSide.kt）。
 - 工具箱新增：夜间模式（跟随系统 ⇄ 强制深/浅，ColorManager 按开关选配色的深色版）、单手模式（键盘 78% 宽靠右；空白处点一下换边，长按退出；横屏不生效）、长辈模式（按键/候选文字 ×1.25、键盘加高 10%）、输入设置（YiweiInputPrefs.kt）。
 - 输入设置（移植 Windows 一维助手）：模糊音地区预设 + 11 组开关、Emoji 候选开关、自定义标点（/→、 \→、 `→· []→「」）、按习惯调候选（开关、学习强度、清除最近 1 小时/1 天/全部）。文件与 Windows 相同（用户目录 yiwei/ 下 learn.*、emoji.disabled、punct.txt、fuzzy.txt）；模糊音/Emoji/标点写进 rime_ice / double_pinyin_flypy / t9 的 *.custom.yaml 的 `# yiwei-begin … # yiwei-end` 段并重新部署（双拼、九键的模糊音规则用 `@before N` 插在最前）。
-- 未做：悬浮键盘（IME 窗口要改成可拖动的浮窗，改动大，后续单独做）。
+- 悬浮键盘（工具箱「悬浮键盘」）：键盘 86% 宽、圆角阴影，拖上方蓝色小横条移动（位置记住），长按小横条退出；onComputeInsets 用 TOUCHABLE_INSETS_REGION 只让键盘区域可点，应用不被顶起。悬浮时单手模式不生效。

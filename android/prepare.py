@@ -532,6 +532,9 @@ def install_sogou_ui():
         val yiweiOneHand = int("yiwei_one_hand", 0)
         val yiweiElder = switch(R.string.yiwei_elder, "yiwei_elder", false)
         val yiweiCandidateScroll = switch(R.string.yiwei_candidate_scroll, "yiwei_candidate_scroll", true)
+        val yiweiFloating = bool("yiwei_floating", false)
+        val yiweiFloatX = int("yiwei_float_x", 0)
+        val yiweiFloatY = int("yiwei_float_y", 0)
 
 """ + a, 1)
     edit(os.path.join(J, "data", "prefs", "AppPrefs.kt"), prefs)
@@ -546,7 +549,7 @@ def install_sogou_ui():
         a = "        prefs.keyboard.keyboardHeightPercent,\n"
         must(t, a, "TrimeInputMethodService: keyboardHeightPercent in recreateInputViewPrefs (install_feedback first)")
         return t.replace(a, a + "        prefs.keyboard.yiweiOneHand,\n        prefs.keyboard.yiweiElder,\n"
-                            "        prefs.keyboard.yiweiCandidateScroll,\n", 1)
+                            "        prefs.keyboard.yiweiCandidateScroll,\n        prefs.keyboard.yiweiFloating,\n", 1)
     edit(os.path.join(J, "ime", "core", "TrimeInputMethodService.kt"), svc)
 
     # --- 工具箱命令 ---
@@ -556,7 +559,8 @@ def install_sogou_ui():
         return t.replace(a, a + '\n                    "yiwei_night" -> %s.toggleNight(service)'
                                 '\n                    "yiwei_onehand" -> %s.toggleOneHand(service)'
                                 '\n                    "yiwei_elder" -> %s.toggleElder(service)'
-                                '\n                    "yiwei_inputprefs" -> windowManager.attachWindow(YiweiInputPrefsWindow())' % (Y, Y, Y), 1)
+                                '\n                    "yiwei_floating" -> %s.toggleFloating(service)'
+                                '\n                    "yiwei_inputprefs" -> windowManager.attachWindow(YiweiInputPrefsWindow())' % (Y, Y, Y, Y), 1)
     edit(os.path.join(K, "CommonKeyboardActionListener.kt"), ckal)
 
     # --- 夜间模式：ColorManager 按手动开关选深/浅配色 ---
@@ -590,6 +594,22 @@ def install_sogou_ui():
                             "            rightPaddingSpace.updateLayoutParams {\n                width = (sidePadding + ywOneHand.second).coerceAtLeast(1)\n            }\n"
                             "            %s.bindBlankSides(leftPaddingSpace, rightPaddingSpace)\n" % Y, 1)
     edit(os.path.join(J, "ime", "core", "InputView.kt"), iv)
+
+    # --- 悬浮键盘：键盘缩窄 + 拖动条；只有键盘可点，应用不被顶起 ---
+    def ivf(t):
+        a = "        add(\n            keyboardView,\n            lParams(matchParent, wrapContent) {\n                centerHorizontally()\n                bottomOfParent()\n            },\n        )\n"
+        must(t, a, "InputView: add keyboardView")
+        return t.replace(a, a.replace("lParams(matchParent, wrapContent)", "lParams(%s.keyboardWidth(context), wrapContent)" % Y)
+                         + "        %s.setupFloating(this, keyboardView, listOf(preedit.ui.root))\n" % Y, 1)
+    edit(os.path.join(J, "ime", "core", "InputView.kt"), ivf)
+
+    def svf(t):
+        a = "    override fun onComputeInsets(outInsets: Insets) {\n        if (inputDeviceManager.useVirtualKeyboard) {\n"
+        must(t, a, "TrimeInputMethodService: onComputeInsets")
+        return t.replace(a, "    override fun onComputeInsets(outInsets: Insets) {\n"
+                            "        if (inputDeviceManager.useVirtualKeyboard && %s.computeInsets(decorView.height, outInsets)) return\n"
+                            "        if (inputDeviceManager.useVirtualKeyboard) {\n" % Y, 1)
+    edit(os.path.join(J, "ime", "core", "TrimeInputMethodService.kt"), svf)
 
     # --- 长辈模式：按键 / 候选文字放大，键盘加高 ---
     def kv(t):
@@ -861,9 +881,10 @@ def check_keys():
     if "phrases" not in ((y.get("liquid_keyboard") or {}).get("keyboards") or []):
         bad.append("liquid_keyboard: 常用语 tab missing")
     # 搜狗式界面余项（install_sogou_ui）都在
-    for f, needles in (("ime/keyboard/CommonKeyboardActionListener.kt", ('"yiwei_night" ->', '"yiwei_onehand" ->', '"yiwei_elder" ->', '"yiwei_inputprefs" ->')),
+    for f, needles in (("ime/keyboard/CommonKeyboardActionListener.kt", ('"yiwei_night" ->', '"yiwei_onehand" ->', '"yiwei_elder" ->', '"yiwei_floating" ->', '"yiwei_inputprefs" ->')),
                        ("data/theme/ColorManager.kt", ("YiweiModes.effectiveNight", "fun yiweiRefresh")),
-                       ("ime/core/InputView.kt", ("YiweiModes.oneHandExtra", "bindBlankSides")),
+                       ("ime/core/InputView.kt", ("YiweiModes.oneHandExtra", "bindBlankSides", "YiweiModes.setupFloating", "YiweiModes.keyboardWidth")),
+                       ("ime/core/TrimeInputMethodService.kt", ("YiweiModes.computeInsets",)),
                        ("ime/keyboard/KeyboardView.kt", ("YiweiModes.textScale",)),
                        ("ime/candidates/CandidateItemUi.kt", ("yiweiBoldFont",)),
                        ("ime/candidates/compact/CompactCandidateDelegate.kt", ("yiweiLinear",)),
@@ -873,7 +894,7 @@ def check_keys():
         for n in needles:
             if n not in src:
                 bad.append("sogou-ui patch missing in %s: %s" % (f, n))
-    for act in ("yw_night", "yw_onehand", "yw_elder", "yw_inputprefs"):
+    for act in ("yw_night", "yw_onehand", "yw_floating", "yw_elder", "yw_inputprefs"):
         if not any(t[2] == act for t in layouts.TOOLBOX):
             bad.append("toolbox: %s entry missing" % act)
     if bad:

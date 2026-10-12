@@ -32,6 +32,7 @@ PRESET_KEYS = """
   yw_keepalive: {label: "保活", send: FUNCTION, command: yiwei_keepalive, functional: true}
   yw_night: {label: "夜间", send: FUNCTION, command: yiwei_night, functional: true}
   yw_onehand: {label: "单手", send: FUNCTION, command: yiwei_onehand, functional: true}
+  yw_floating: {label: "悬浮", send: FUNCTION, command: yiwei_floating, functional: true}
   yw_elder: {label: "大字", send: FUNCTION, command: yiwei_elder, functional: true}
   yw_inputprefs: {label: "输入设置", send: FUNCTION, command: yiwei_inputprefs, functional: true}
   yw_kbd_chooser: {label: "键盘选择", send: FUNCTION, command: yiwei_kbdchooser, functional: true}
@@ -236,6 +237,7 @@ TOOLBOX = [
     ("键盘调节", "arrow_expand_vertical", "yw_resize"),
     ("夜间模式", "weather_night", "yw_night"),
     ("单手模式", "hand_back_right_outline", "yw_onehand"),
+    ("悬浮键盘", "dock_window", "yw_floating"),
     ("长辈模式", "format_font_size_increase", "yw_elder"),
     ("输入设置", "tune_variant", "yw_inputprefs"),
     ("换配色", "palette_outline", "yw_color"),
