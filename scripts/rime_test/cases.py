@@ -338,3 +338,37 @@ def w47_switch_hotkeys(r):
         r.key("Control+Shift+4")
         assert r.option("traditionalization") != t, schema + " 自带简繁快捷键丢了"
         r.key("Control+Shift+4")
+
+
+@case
+def p32_lite_dict(r):
+    """32 标准词库（放最后：要重新部署两次）：用户文件夹的 rime_ice.dict.yaml 注释掉 tencent（和 helper/Features/DictLite.cs 同一规则）后，
+    只在腾讯词库里的「龚古尔奖」不再整词出现、日常词照常；删掉后恢复完整。"""
+    import re
+    import shutil
+    import time
+    word, code = "龚古尔奖", "gongguerjiang"
+    r.reopen("rime_ice")
+    r.type(code); full = r.texts(5); r.clear()
+    assert word in full, full
+    src = open(os.path.join(r.shared, "rime_ice.dict.yaml"), encoding="utf-8").read()
+    lite, n = re.subn(r"(?m)^  - cn_dicts/tencent\b.*$",
+                      "  # - cn_dicts/tencent  # 一维输入法：标准词库不含腾讯词向量（设置 → 词库 可改回完整）", src)
+    assert n == 1, "rime_ice.dict.yaml 里找不到 cn_dicts/tencent"
+    user_dict = os.path.join(r.user, "rime_ice.dict.yaml")
+    open(user_dict, "w", encoding="utf-8").write(lite)
+    try:
+        t0 = time.time()
+        r.deploy(True)
+        print("    标准词库部署 %.0fs" % (time.time() - t0))
+        r.reopen("rime_ice")
+        r.type(code); got = r.texts(5); r.clear()
+        assert word not in got, got
+        r.type("nihao"); assert first(r) == "你好"; r.clear()
+        r.type("shijian"); assert first(r) == "时间"; r.clear()
+    finally:
+        os.remove(user_dict)
+        r.deploy(True)
+    r.reopen("rime_ice")
+    r.type(code); back = r.texts(5); r.clear()
+    assert word in back, back

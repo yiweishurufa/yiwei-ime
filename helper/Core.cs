@@ -248,6 +248,8 @@ namespace Yiwei
 
         // 简繁
         public bool Traditional { get; set; } = false;
+        /// <summary>32 标准词库（不含腾讯词向量大词库），见 Features/DictLite.cs。</summary>
+        public bool LiteDict { get; set; } = false;
 
         // 快捷输入、模糊音、生僻字（Features/RimeFeatures.cs）
         public RimeFeatureSettings Features { get; set; } = new RimeFeatureSettings();

@@ -15,6 +15,12 @@ namespace Yiwei
                 "每天检查一次 iDvel/rime-ice 的 GitHub 发布（只访问 GitHub）。SHA-256 校验通过才安装，先备份旧词库，失败自动回滚",
                 K.Toggle(S.DictAutoUpdate, v => { S.DictAutoUpdate = v; Save(); }), Ui.SymbolRegular.ArrowDownload24));
 
+            p.Children.Add(K.Card("词库大小",
+                "标准：不含腾讯词向量大词库（约 50 万个不常用词），部署快好几倍、占内存少，适合老电脑；完整：雾凇全部词库（默认）。切换后自动重新部署",
+                K.Combo(new[] { new System.Collections.Generic.KeyValuePair<bool, string>(false, "完整"), new System.Collections.Generic.KeyValuePair<bool, string>(true, "标准（更快）") },
+                    S.LiteDict, v => { S.LiteDict = v; Save(); if (DictLite.Apply(v)) Rime.ApplySoon(100); }, 160),
+                Ui.SymbolRegular.Library24));
+
             var info = K.Text(DictUpdater.Describe(), 12, true);
             var err = DictUpdater.Load();
             if (!string.IsNullOrEmpty(err.LastError) && DateTime.TryParse(err.LastErrorAt, out var et))

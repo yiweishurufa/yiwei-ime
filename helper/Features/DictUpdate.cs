@@ -381,6 +381,7 @@ namespace Yiwei
                     {
                         status?.Report("正在替换词库…");
                         Replace(staging);
+                        if (Settings.Current.LiteDict) DictLite.Apply(true); // 32 标准词库：新词库同样不挂腾讯词向量
                         status?.Report("正在重新部署（编译词库可能需要一两分钟）…");
                         var started = DateTime.Now.AddSeconds(-2);
                         if (!GitHubNet.DeployAndWait() || !Rebuilt(started)) throw new Exception("新词库部署失败");
