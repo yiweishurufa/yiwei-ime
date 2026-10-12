@@ -182,6 +182,33 @@ def mount_stroke(text):
     return text + STROKE_BLOCK
 
 
+SEARCH_BLOCK = """
+# 一维输入法：搜索前缀（W28），sS + 拼音，选中后交给一维助手用浏览器搜索
+yiwei_search:
+  tag: yiwei_search
+  dictionary: rime_ice
+  prism: rime_ice
+  enable_user_dict: false
+  prefix: "sS"
+  tips: "  〔搜索〕"
+"""
+
+
+def mount_search(text):
+    """W28 搜索：sS + 拼音（和雾凇 uU 拆字、cC 计算器一样用大写字母做第二个前缀字母）。"""
+    steps = [
+        (r"(\n(\s+)- ascii_composer[^\n]*\n)", r"\1\2- lua_processor@*yiwei_search  # 一维输入法：sS 搜索，选词后打开浏览器\n"),
+        (r"(\n(\s+)- affix_segmentor@radical_lookup[^\n]*\n)", r"\1\2- affix_segmentor@yiwei_search  # 一维输入法：sS + 拼音\n"),
+        (r"(\n(\s+)- table_translator@radical_lookup[^\n]*\n)", r"\1\2- script_translator@yiwei_search  # 一维输入法：搜索词\n"),
+        (r"(\nrecognizer:\n(?:  [^\n]*\n)*?  patterns:[^\n]*\n)", r'\1    yiwei_search: "^sS[a-z]*$"\n'),
+    ]
+    for pat, rep in steps:
+        text, n = re.subn(pat, rep, text, count=1)
+        if n != 1:
+            raise SystemExit("rime_ice.schema.yaml: search mount failed at %r" % pat)
+    return text + SEARCH_BLOCK
+
+
 def mount_into_schemas():
     count = 0
     for fn in os.listdir(DATA):
@@ -213,6 +240,7 @@ def mount_into_schemas():
             raise SystemExit("%s: recognizer/patterns not found" % fn)
         if fn == "rime_ice.schema.yaml" and not ANDROID:
             text = mount_stroke(text)
+            text = mount_search(text)
         text = text.rstrip("\n") + "\n" + TECH_BLOCK
         open(path, "w", encoding="utf-8", newline="\n").write(text)
         count += 1

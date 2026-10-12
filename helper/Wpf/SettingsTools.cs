@@ -35,6 +35,7 @@ namespace Yiwei
             yield return TranslateSection;
             yield return SkinColorSection;
             yield return TextSection;
+            yield return SearchSection;
             yield return ClipLinkSection;
             yield return CompletionSection;
             yield return WebDavSection;
@@ -59,6 +60,13 @@ namespace Yiwei
             yield return K.Section("选中文字");
             yield return K.Card("加注拼音样式", "长按 Alt + T →「加注拼音」：多音字按雾凇词库里的词来读；词库不带声调，所以拼音不带声调",
                 K.Combo(PinyinAnnotate.Styles, T.PinyinStyle ?? "after", v => { T.PinyinStyle = v; SaveTools(); }, 260), Ui.SymbolRegular.TextFont24);
+        }
+
+        IEnumerable<UIElement> SearchSection()
+        {
+            yield return K.Section("搜索");
+            yield return K.Card("sS 搜索前缀", "全拼里打 sS + 拼音（如 sSbeijing），选中的词不上屏，直接用浏览器搜索",
+                K.Combo(WebSearch.Engines.Select(e => KS(e.Id, e.Name)), T.SearchEngine ?? "baidu", v => { T.SearchEngine = v; SaveTools(); }, 200), Ui.SymbolRegular.Search24);
         }
 
         IEnumerable<UIElement> ClipLinkSection()

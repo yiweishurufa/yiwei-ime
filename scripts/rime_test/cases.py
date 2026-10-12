@@ -272,3 +272,21 @@ def w2_shuangpin_keymap(r):
     r.type("nihc")
     assert first(r) == "你好", r.context()["page"]
     r.clear()
+
+
+@case
+def w28_search_prefix(r):
+    """W28 搜索：sSnihao 候选是「你好」，空格不上屏、发 search:你好 给助手（Linux 上命名管道是当前目录里的普通文件）。"""
+    pipe = os.path.join(r.user, "\\\\.\\pipe\\YiweiHelper.Commands")
+    if os.path.exists(pipe):
+        os.remove(pipe)
+    r.open("rime_ice")
+    r.type("sSnihao")
+    assert first(r) == "你好", r.context()["page"]
+    r.key(" ")
+    assert r.commit() == "", "搜索词不该上屏"
+    assert open(pipe, encoding="utf-8").read() == "search:你好"
+    r.type("sSbeijing")
+    r.key("1")
+    assert open(pipe, encoding="utf-8").read() == "search:北京"
+    os.remove(pipe)

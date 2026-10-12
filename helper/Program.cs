@@ -152,6 +152,12 @@ namespace Yiwei
                     if (pair.Length == 2) AutoPair.Type(pair[0].ToString(), pair[1].ToString());
                     return;
                 }
+                if (command.StartsWith("search:"))
+                {
+                    // yiwei_search.lua（W28）：sS + 拼音选中的词 → 浏览器搜索
+                    WebSearch.Open(command.Substring(7));
+                    return;
+                }
                 if (command == "caret:left")
                 {
                     // yiwei_autopair.lua just committed a pair such as （）; put the caret between the halves.

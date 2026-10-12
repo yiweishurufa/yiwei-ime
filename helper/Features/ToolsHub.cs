@@ -48,6 +48,8 @@ namespace Yiwei
         public bool LowSpecHinted { get; set; } = false;
         /// <summary>W41 开机时延迟工具组后台任务、低优先级启动。</summary>
         public bool DelayAtBoot { get; set; } = true;
+        /// <summary>W28 搜索前缀 sS 用的搜索引擎（WebSearch.Engines 的 id）。</summary>
+        public string SearchEngine { get; set; } = "baidu";
         /// <summary>W44 更新通道：beta（测试版，每次构建）/ stable（稳定版）。</summary>
         public string UpdateChannel { get; set; } = "beta";
 
