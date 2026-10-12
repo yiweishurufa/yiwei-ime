@@ -510,6 +510,174 @@ def install_sidecolumn():
     edit(os.path.join(J, "keyboard", "CommonKeyboardActionListener.kt"), ckal)
 
 
+def install_sogou_ui():
+    """搜狗式界面余项：候选栏首选加粗 + 横滑、符号面板左侧分类竖栏、夜间模式手动开关、单手模式、长辈模式（大字）、
+    输入设置面板（模糊音 / Emoji / 自定义标点 / 学习强度与清除，移植 Windows 一维助手）。"""
+    J = os.path.join(MAIN, "java", "com", "osfans", "trime")
+    K = os.path.join(J, "ime", "keyboard")
+    for f in ("YiweiModes.kt", "YiweiSymbolSide.kt", "YiweiInputPrefs.kt"):
+        shutil.copy(os.path.join(HERE, "kotlin", f), os.path.join(K, f))
+    Y = "com.osfans.trime.ime.keyboard.YiweiModes"
+
+    def must(t, a, what):
+        if a not in t:
+            raise SystemExit("%s not found" % what)
+
+    # --- 设置项 ---
+    def prefs(t):
+        a = "        val useSoftCursor = switch("
+        must(t, a, "AppPrefs: useSoftCursor")
+        return t.replace(a, """        // 一维输入法：夜间模式手动开关（0 跟随系统 1 深色 2 浅色）、单手模式（0 关 1 左 2 右）、长辈模式、候选栏横滑
+        val yiweiNightMode = int("yiwei_night_mode", 0)
+        val yiweiOneHand = int("yiwei_one_hand", 0)
+        val yiweiElder = switch(R.string.yiwei_elder, "yiwei_elder", false)
+        val yiweiCandidateScroll = switch(R.string.yiwei_candidate_scroll, "yiwei_candidate_scroll", true)
+
+""" + a, 1)
+    edit(os.path.join(J, "data", "prefs", "AppPrefs.kt"), prefs)
+    for d, e, c in (("values", "Elder mode (large text)", "Scrollable candidate bar"),
+                    ("values-zh-rCN", "长辈模式（大字）", "候选栏左右滑动"),
+                    ("values-zh-rTW", "長輩模式（大字）", "候選欄左右滑動")):
+        edit(os.path.join(MAIN, "res", d, "strings.xml"),
+             lambda t, e=e, c=c: t.replace("</resources>", '    <string name="yiwei_elder">%s</string>\n'
+                                           '    <string name="yiwei_candidate_scroll">%s</string>\n</resources>' % (e, c), 1))
+
+    def svc(t):
+        a = "        prefs.keyboard.keyboardHeightPercent,\n"
+        must(t, a, "TrimeInputMethodService: keyboardHeightPercent in recreateInputViewPrefs (install_feedback first)")
+        return t.replace(a, a + "        prefs.keyboard.yiweiOneHand,\n        prefs.keyboard.yiweiElder,\n"
+                            "        prefs.keyboard.yiweiCandidateScroll,\n", 1)
+    edit(os.path.join(J, "ime", "core", "TrimeInputMethodService.kt"), svc)
+
+    # --- 工具箱命令 ---
+    def ckal(t):
+        a = '"yiwei_toolbox" -> windowManager.attachWindow(YiweiGridWindow.toolbox())'
+        must(t, a, "CommonKeyboardActionListener: yiwei_toolbox (install_toolbox first)")
+        return t.replace(a, a + '\n                    "yiwei_night" -> %s.toggleNight(service)'
+                                '\n                    "yiwei_onehand" -> %s.toggleOneHand(service)'
+                                '\n                    "yiwei_elder" -> %s.toggleElder(service)'
+                                '\n                    "yiwei_inputprefs" -> windowManager.attachWindow(YiweiInputPrefsWindow())' % (Y, Y, Y), 1)
+    edit(os.path.join(K, "CommonKeyboardActionListener.kt"), ckal)
+
+    # --- 夜间模式：ColorManager 按手动开关选深/浅配色 ---
+    def cm(t):
+        a = "    private fun evaluateActiveColorScheme(): ColorScheme = when {\n"
+        must(t, a, "ColorManager: evaluateActiveColorScheme")
+        return t.replace(a, """    // 一维输入法：工具箱「夜间模式」手动开关
+    fun yiweiRefresh() {
+        activeColorScheme = evaluateActiveColorScheme()
+    }
+
+    private fun evaluateActiveColorScheme(): ColorScheme {
+        val override = %s.nightOverride()
+        return yiweiEvaluate(%s.effectiveNight(isNightMode), followSystemDayNight || override != 0)
+    }
+
+    private fun yiweiEvaluate(isNightMode: Boolean, followSystemDayNight: Boolean): ColorScheme = when {
+""" % (Y, Y), 1)
+    edit(os.path.join(J, "data", "theme", "ColorManager.kt"), cm)
+
+    # --- 单手模式：键盘一侧留白 ---
+    def iv(t):
+        a = "        val sidePadding = keyboardSidePaddingPx\n        val unset = LayoutParams.UNSET\n        if (sidePadding == 0) {\n"
+        b = "            leftPaddingSpace.updateLayoutParams {\n                width = sidePadding\n            }\n            rightPaddingSpace.updateLayoutParams {\n                width = sidePadding\n            }\n"
+        must(t, a, "InputView: updateKeyboardSize head")
+        must(t, b, "InputView: side widths")
+        t = t.replace(a, "        val sidePadding = keyboardSidePaddingPx\n        val unset = LayoutParams.UNSET\n"
+                         "        val ywOneHand = %s.oneHandExtra(context)\n"
+                         "        if (sidePadding == 0 && ywOneHand.first == 0 && ywOneHand.second == 0) {\n" % Y, 1)
+        return t.replace(b, "            leftPaddingSpace.updateLayoutParams {\n                width = (sidePadding + ywOneHand.first).coerceAtLeast(1)\n            }\n"
+                            "            rightPaddingSpace.updateLayoutParams {\n                width = (sidePadding + ywOneHand.second).coerceAtLeast(1)\n            }\n"
+                            "            %s.bindBlankSides(leftPaddingSpace, rightPaddingSpace)\n" % Y, 1)
+    edit(os.path.join(J, "ime", "core", "InputView.kt"), iv)
+
+    # --- 长辈模式：按键 / 候选文字放大，键盘加高 ---
+    def kv(t):
+        a = "    internal val keyTextSize = theme.generalStyle.keyTextSize\n"
+        b = "    internal val keyLongTextSize = theme.generalStyle.keyLongTextSize.takeIf { it > 0 } ?: keyTextSize\n"
+        must(t, a + b, "KeyboardView: text sizes")
+        return t.replace(a + b, "    internal val keyTextSize = theme.generalStyle.keyTextSize * %s.textScale()\n"
+                                "    internal val keyLongTextSize = (theme.generalStyle.keyLongTextSize.takeIf { it > 0 } ?: theme.generalStyle.keyTextSize) * %s.textScale()\n" % (Y, Y), 1)
+    edit(os.path.join(K, "KeyboardView.kt"), kv)
+
+    def rz(t):
+        a = "        val h = base * percent() / 100\n"
+        must(t, a, "YiweiResize: scaled")
+        return t.replace(a, "        val h = (base * percent() / 100 * YiweiModes.heightScale()).toInt()\n", 1)
+    edit(os.path.join(K, "YiweiResize.kt"), rz)
+
+    # --- 候选栏：首选加粗（一维蓝由配色 hilited_candidate_text_color 给） ---
+    def ci(t):
+        a = "        text.text = item.text\n        text.setTextColor(tColor)\n"
+        b = "    private val textFont = FontManager.getTypeface(\"candidate_font\")\n"
+        c = "    private val textSize = theme.generalStyle.candidateTextSize\n"
+        for x, w in ((a, "update"), (b, "textFont"), (c, "textSize")):
+            must(t, x, "CandidateItemUi: " + w)
+        t = t.replace(c, "    private val textSize = theme.generalStyle.candidateTextSize * %s.textScale()\n" % Y, 1)
+        t = t.replace(b, b + "    private val yiweiBoldFont = android.graphics.Typeface.create(textFont, android.graphics.Typeface.BOLD)\n", 1)
+        return t.replace(a, a + "        text.typeface = if (highlighted) yiweiBoldFont else textFont\n", 1)
+    edit(os.path.join(J, "ime", "candidates", "CandidateItemUi.kt"), ci)
+
+    # --- 候选栏横滑：一行排开 16 个候选可左右滑，⌄ 展开从第 1 个起的全部候选 ---
+    def cd(t):
+        a = "            layoutManager = this@CompactCandidateDelegate.layoutManager\n"
+        b = "    private val separatorDrawable by lazy {\n"
+        c = "        adapter.updateCandidates(candidates, total, highlighted)\n"
+        for x, w in ((a, "layoutManager"), (b, "separatorDrawable"), (c, "updateCandidates")):
+            must(t, x, "CompactCandidateDelegate: " + w)
+        t = t.replace(a, "            layoutManager = if (yiweiScroll) yiweiLinear else this@CompactCandidateDelegate.layoutManager\n", 1)
+        t = t.replace(b, """    // 一维输入法：候选栏左右滑动（像搜狗）
+    private val yiweiScroll = AppPrefs.defaultInstance().keyboard.yiweiCandidateScroll.getValue()
+
+    private val yiweiLinear by lazy {
+        object : androidx.recyclerview.widget.LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
+            override fun onLayoutCompleted(state: RecyclerView.State?) {
+                super.onLayoutCompleted(state)
+                // 展开面板从第一个候选开始列全部；没有候选时收起按钮
+                _unrolledCandidateOffset.tryEmit(0)
+                bar.unrollButtonStateMachine.push(
+                    UnrollButtonStateMachine.TransitionEvent.UnrolledCandidatesUpdated,
+                    UnrollButtonStateMachine.BooleanKey.UnrolledCandidatesEmpty to (adapter.itemCount == 0),
+                )
+            }
+        }
+    }
+
+""" + b, 1)
+        return t.replace(c, c + "        if (yiweiScroll) view.scrollToPosition(0)\n", 1)
+    edit(os.path.join(J, "ime", "candidates", "compact", "CompactCandidateDelegate.kt"), cd)
+
+    def deco(t):
+        a = "        val layoutManager = parent.layoutManager as FlexboxLayoutManager\n"
+        b = "            val lp = view.layoutParams as FlexboxLayoutManager.LayoutParams\n"
+        must(t, a + "        for", "FlexboxVerticalDecoration: layoutManager cast")
+        must(t, b, "FlexboxVerticalDecoration: lp cast")
+        return t.replace(a, "        val layoutManager = parent.layoutManager ?: return\n", 1).replace(
+            b, "            val lp = view.layoutParams as android.view.ViewGroup.MarginLayoutParams\n", 1)
+    edit(os.path.join(J, "ime", "candidates", "unrolled", "decoration", "FlexboxVerticalDecoration.kt"), deco)
+
+    # --- 符号面板：左侧分类竖栏 + 底部返回，工具栏位置显示当前分类名 ---
+    def lw(t):
+        a = "    override fun onCreateView(): View = LiquidLayout(context, theme, commonKeyboardActionListener).apply {\n"
+        b = "    }\n\n    override fun onCreateBarView() = liquidLayout.tabsUi.root\n"
+        c = "        liquidLayout.tabsUi.activateTab(i)\n"
+        d = "    private lateinit var liquidLayout: LiquidLayout\n"
+        for x, w in ((a, "onCreateView"), (b, "onCreateBarView"), (c, "activateTab"), (d, "liquidLayout")):
+            must(t, x, "LiquidWindow: " + w)
+        t = t.replace(d, d + """
+    // 一维输入法：左侧分类竖栏（YiweiSymbolSide）
+    private val yiweiSide = com.osfans.trime.ime.keyboard.YiweiSymbolSide(
+        onPick = { i -> setDataByIndex(i) },
+        onBack = { windowManager.attachWindow(KeyboardWindow) },
+    )
+""", 1)
+        t = t.replace(a, "    override fun onCreateView(): View = yiweiSide.wrap(\n        context,\n        LiquidData.getTagList().map { it.label },\n"
+                         "        LiquidLayout(context, theme, commonKeyboardActionListener).apply {\n", 1)
+        t = t.replace(b, "    },\n    )\n\n    override fun onCreateBarView() = yiweiSide.barView(context)\n", 1)
+        return t.replace(c, c + "        yiweiSide.activate(i)\n", 1)
+    edit(os.path.join(J, "ime", "symbol", "LiquidWindow.kt"), lw)
+
+
 def install_safe_upgrade():
     """Upgrades: the APK ships dictionaries precompiled with Trime's own librime (assets/shared/build).
     Compiled files an older version left in the user build dir would shadow them (librime looks there first),
@@ -692,6 +860,22 @@ def check_keys():
         bad.append("toolbox: 后台保活 entry missing")
     if "phrases" not in ((y.get("liquid_keyboard") or {}).get("keyboards") or []):
         bad.append("liquid_keyboard: 常用语 tab missing")
+    # 搜狗式界面余项（install_sogou_ui）都在
+    for f, needles in (("ime/keyboard/CommonKeyboardActionListener.kt", ('"yiwei_night" ->', '"yiwei_onehand" ->', '"yiwei_elder" ->', '"yiwei_inputprefs" ->')),
+                       ("data/theme/ColorManager.kt", ("YiweiModes.effectiveNight", "fun yiweiRefresh")),
+                       ("ime/core/InputView.kt", ("YiweiModes.oneHandExtra", "bindBlankSides")),
+                       ("ime/keyboard/KeyboardView.kt", ("YiweiModes.textScale",)),
+                       ("ime/candidates/CandidateItemUi.kt", ("yiweiBoldFont",)),
+                       ("ime/candidates/compact/CompactCandidateDelegate.kt", ("yiweiLinear",)),
+                       ("ime/symbol/LiquidWindow.kt", ("yiweiSide.wrap", "yiweiSide.activate")),
+                       ("ime/keyboard/YiweiInputPrefs.kt", ("class YiweiInputPrefsWindow",))):
+        src = open(os.path.join(MAIN, "java", "com", "osfans", "trime", *f.split("/")), encoding="utf-8").read()
+        for n in needles:
+            if n not in src:
+                bad.append("sogou-ui patch missing in %s: %s" % (f, n))
+    for act in ("yw_night", "yw_onehand", "yw_elder", "yw_inputprefs"):
+        if not any(t[2] == act for t in layouts.TOOLBOX):
+            bad.append("toolbox: %s entry missing" % act)
     if bad:
         raise SystemExit("undefined key actions (would be typed as text):\n  " + "\n  ".join(bad))
     print("keys ok: %d preset keys, tool bar and %s checked" % (len(presets), "/".join(layouts.OUR_KEYBOARDS)))
@@ -767,6 +951,7 @@ if __name__ == "__main__":
     install_oppo()
     install_preedit()
     install_sidecolumn()
+    install_sogou_ui()
     check_keys()  # after install_feedback: also checks the keyboard_resize handler it patches in
     install_brand()
     install_slogan()

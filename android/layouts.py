@@ -30,6 +30,10 @@ PRESET_KEYS = """
   yw_settings: {label: "设置", send: SETTINGS, functional: true}
   yw_resize: {label: "调整高度", send: FUNCTION, command: keyboard_resize, functional: true}
   yw_keepalive: {label: "保活", send: FUNCTION, command: yiwei_keepalive, functional: true}
+  yw_night: {label: "夜间", send: FUNCTION, command: yiwei_night, functional: true}
+  yw_onehand: {label: "单手", send: FUNCTION, command: yiwei_onehand, functional: true}
+  yw_elder: {label: "大字", send: FUNCTION, command: yiwei_elder, functional: true}
+  yw_inputprefs: {label: "输入设置", send: FUNCTION, command: yiwei_inputprefs, functional: true}
   yw_kbd_chooser: {label: "键盘选择", send: FUNCTION, command: yiwei_kbdchooser, functional: true}
   yw_s_t9: {label: "九键", send: FUNCTION, command: select_schema, option: "t9", functional: true}
   yw_s_qp: {label: "26键", send: FUNCTION, command: select_schema, option: "rime_ice", functional: true}
@@ -230,6 +234,10 @@ TOOLBOX = [
     ("符号", "ideogram_cjk", "yw_sym"),
     ("数字键盘", "numeric", "yw_num"),
     ("键盘调节", "arrow_expand_vertical", "yw_resize"),
+    ("夜间模式", "weather_night", "yw_night"),
+    ("单手模式", "hand_back_right_outline", "yw_onehand"),
+    ("长辈模式", "format_font_size_increase", "yw_elder"),
+    ("输入设置", "tune_variant", "yw_inputprefs"),
     ("换配色", "palette_outline", "yw_color"),
     ("按键音", "volume_high", "yw_sound"),
     ("繁体输入", "translate", "yw_trad"),
