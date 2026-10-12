@@ -299,7 +299,7 @@ jobs:
           }
           if (-not $root) { throw "注册表里没有 YiweiRoot" }
           Write-Host "YiweiRoot = $root"
-          foreach ($f in 'YiweiServer.exe','YiweiDeployer.exe','YiweiSetup.exe','YiweiHelper.exe','rime.dll','data\rime_ice.schema.yaml','data\lua\yiwei_stats.lua') {
+          foreach ($f in 'YiweiServer.exe','YiweiDeployer.exe','YiweiSetup.exe','YiweiHelper.exe','rime.dll','data\rime_ice.schema.yaml','data\lua\yiwei_stats.lua','data\yiwei_shuangpin.txt','data\yiwei_stroke.dict.yaml') {
             if (-not (Test-Path (Join-Path $root $f))) { throw "缺少文件 $f" }
           }
           # 语法模型依赖 librime-octagram（librime 官方发行包静态链接了 lua / octagram / predict）
@@ -329,6 +329,7 @@ jobs:
           Write-Host "user dir: $user"
           Get-ChildItem (Join-Path $user 'build') -ErrorAction SilentlyContinue | Select-Object Name, Length | Format-Table | Out-String | Write-Host
           if (-not (Test-Path (Join-Path $user 'build\rime_ice.prism.bin'))) { throw "雾凇拼音没有部署成功" }
+          if (-not (Test-Path (Join-Path $user 'build\yiwei_stroke.table.bin'))) { throw "笔画输入词典（yiwei_stroke）没有编译" }
           # 输入法服务与助手能否启动
           Start-Process (Join-Path $root 'YiweiServer.exe')
           Start-Process (Join-Path $root 'YiweiHelper.exe') -ArgumentList '/background'
@@ -430,6 +431,7 @@ jobs:
           foreach ($pg in '常规','外观','快捷键','常用语','AI','统计','关于') {
             Start-Process $h -ArgumentList '/settings', $pg; Start-Sleep 5; Shot "settings-$pg"
           }
+          Start-Process $h -ArgumentList '/tool', 'shuangpin-map'; Start-Sleep 4; Shot 'tool-shuangpin-map'
           Get-Process YiweiHelper -ErrorAction SilentlyContinue | Stop-Process -Force
           Start-Process $h -ArgumentList '/wizard'; Start-Sleep 6; Shot 'wizard-1'
           Add-Type -AssemblyName Microsoft.VisualBasic

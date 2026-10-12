@@ -68,6 +68,9 @@ namespace Yiwei
             // W25 快捷键总览
             ToolsHub.Register(new ToolAction { Id = "shortcuts", Name = "快捷键总览", Group = "菜单", AltKey = Keys.K, InMenu = false, Help = "列出所有快捷键（按当前设置）",
                 Run = () => Program.ShowSettings("工具") });
+            // W2 双拼键位图浮窗
+            ToolsHub.Register(new ToolAction { Id = "shuangpin-map", Name = "双拼键位图", Group = "菜单", AltKey = Keys.P, InMenu = false, Run = ShuangpinMap.Toggle,
+                Help = "显示/关闭当前双拼方案的键位图（置顶小窗，不抢焦点，可拖动）" });
             // W40 低配机模式
             starters.Add(LowSpec.Start);
         }

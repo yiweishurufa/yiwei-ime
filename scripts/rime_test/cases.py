@@ -252,3 +252,23 @@ def w4_stroke(r):
     r.type("us")
     assert "十" not in r.context()["page"], r.context()["page"]
     r.clear()
+
+
+@case
+def w2_shuangpin_keymap(r):
+    """W2 双拼键位图：从方案 algebra 生成的 yiwei_shuangpin.txt 与真实输入一致（小鹤 nihc → 你好）。"""
+    km = {}
+    for line in open(os.path.join(r.shared, "yiwei_shuangpin.txt"), encoding="utf-8"):
+        if line.startswith("#") or not line.strip():
+            continue
+        sid, _, k, labels = line.rstrip("\n").split("\t")
+        km[(sid, k)] = labels.split(",")
+    assert km[("double_pinyin_flypy", "q")] == ["iu"], km.get(("double_pinyin_flypy", "q"))
+    assert "ao" in km[("double_pinyin_flypy", "c")]
+    assert "sh" in km[("double_pinyin_flypy", "u")]
+    assert km[("double_pinyin_mspy", ";")] == ["ing"]
+    assert "ing" in km[("double_pinyin", "y")]
+    r.open("double_pinyin_flypy")
+    r.type("nihc")
+    assert first(r) == "你好", r.context()["page"]
+    r.clear()

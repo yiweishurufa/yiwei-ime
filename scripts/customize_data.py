@@ -219,6 +219,95 @@ def mount_into_schemas():
     if count == 0:
         raise SystemExit("no rime-ice schema patched")
     print("patched %d schemas" % count)
+    if not ANDROID:
+        write_shuangpin_keymaps()
+
+CIRCLED = "ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ"
+
+
+def _expand(alt):
+    """'[iu]ang' → iang, uang；'i?ong' → ong, iong；去掉 (.) 与锚点。v 显示成 ü。"""
+    alt = alt.replace("(.)", "").replace("$", "")
+    outs = [""]
+    i = 0
+    while i < len(alt):
+        c = alt[i]
+        if c == "[":
+            j = alt.index("]", i)
+            opts = list(alt[i + 1:j])
+            i = j + 1
+        else:
+            opts = [c]
+            i += 1
+        if i < len(alt) and alt[i] == "?":
+            opts = [""] + opts
+            i += 1
+        outs = [o + x for o in outs for x in opts]
+    return [o.replace("v", "ü") for o in outs if o]
+
+
+def shuangpin_keymap(schema_text):
+    """从雾凇双拼方案的 speller/algebra（xform/韵母$/Ⓧ/ … xlit/Ⓧ…/x…/）推出键位：{键: [声母或韵母…]}。"""
+    m = re.search(r"\n  algebra:\n((?:    [^\n]*\n)+)", schema_text)
+    if not m:
+        return None
+    lines = [l.strip()[2:].strip() for l in m.group(1).splitlines() if l.strip().startswith("- ")]
+    xl = [l for l in lines if l.startswith("xlit/") and any(c in l for c in CIRCLED)]
+    if not xl:
+        return None
+    _, src, dst, _ = xl[-1].split("/")
+    to_key = dict(zip(src, dst))
+    by_mark = {}
+    for l in lines:
+        parts = l.split("/")
+        if len(parts) < 4:
+            continue
+        op, pat, rep = parts[0], parts[1], parts[2]
+        mark = rep[-1:] if rep else ""
+        if op == "derive" and len(pat) == 2 and pat[0] in CIRCLED and pat[1] == "$" and mark in CIRCLED:
+            by_mark.setdefault(mark, []).extend(x for x in by_mark.get(pat[0], []) if x not in by_mark.get(mark, []))
+            continue
+        if op != "xform" or not (mark in CIRCLED or rep == ";"):
+            continue
+        labels = []
+        for alt in pat.split("|"):
+            alt = alt.lstrip("^")
+            labels += _expand(alt)
+        by_mark.setdefault(mark, []).extend(x for x in labels if x not in by_mark.get(mark, []))
+    keys = {}
+    for mark, labels in by_mark.items():
+        k = to_key.get(mark, mark)
+        keys.setdefault(k, []).extend(labels)
+    # 单个字母的韵母落在自己键上
+    for v in "aoeiu":
+        keys.setdefault(v, []).insert(0, v)
+    keys.setdefault("v", []).insert(0, "ü")
+    return keys
+
+
+SHUANGPIN_NAMES = {"double_pinyin_flypy": "小鹤双拼", "double_pinyin": "自然码双拼", "double_pinyin_mspy": "微软双拼",
+                   "double_pinyin_sogou": "搜狗双拼", "double_pinyin_ziguang": "紫光双拼", "double_pinyin_abc": "智能ABC双拼",
+                   "double_pinyin_jiajia": "拼音加加双拼"}
+
+
+def write_shuangpin_keymaps():
+    """W2 双拼键位图：data/yiwei_shuangpin.txt（方案<TAB>名称<TAB>键<TAB>声母韵母,…），一维助手的键位图浮窗读它。"""
+    out = []
+    for fn in sorted(os.listdir(DATA)):
+        sid = fn[:-len(".schema.yaml")] if fn.endswith(".schema.yaml") else ""
+        if not sid.startswith("double_pinyin"):
+            continue
+        km = shuangpin_keymap(open(os.path.join(DATA, fn), encoding="utf-8").read())
+        if not km:
+            continue
+        for k in sorted(km):
+            out.append("%s\t%s\t%s\t%s" % (sid, SHUANGPIN_NAMES.get(sid, sid), k, ",".join(km[k])))
+    if not out:
+        raise SystemExit("no double pinyin keymap generated")
+    with open(os.path.join(DATA, "yiwei_shuangpin.txt"), "w", encoding="utf-8", newline="\n") as f:
+        f.write("# 一维输入法 · 双拼键位图（由 customize_data.py 从各双拼方案的 speller/algebra 生成）\n")
+        f.write("\n".join(out) + "\n")
+    print("shuangpin keymaps: %d lines" % len(out))
 
 
 NSI_DATA = r'''
