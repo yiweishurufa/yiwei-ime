@@ -209,6 +209,41 @@ def mount_search(text):
     return text + SEARCH_BLOCK
 
 
+def write_names_data():
+    """W6 人名候选：lua/yiwei_names_data.lua（姓氏读音表、名字用字按读音分组、全部拼音音节）。"""
+    import name_data as nd
+    reading, syll = {}, set()
+    for line in open(os.path.join(DATA, "cn_dicts", "8105.dict.yaml"), encoding="utf-8"):
+        m = re.match(r"^(\S)\t([a-z]+)(?:\t(\d+))?", line)
+        if not m:
+            continue
+        syll.add(m.group(2))
+        w = int(m.group(3) or 0)
+        if m.group(1) not in reading or w > reading[m.group(1)][1]:
+            reading[m.group(1)] = (m.group(2), w)
+    sur, giv = {}, {}
+    for tok in nd.SURNAMES.split():
+        m = re.match(r"^(\D+?)([a-z]+)$", tok)
+        sur.setdefault(m.group(2), []).append(m.group(1))
+        syll.add(m.group(2)) if len(m.group(1)) == 1 else None
+    seen = set()
+    for ch in nd.GIVEN.split():
+        if ch in seen:
+            continue
+        seen.add(ch)
+        py = nd.GIVEN_READING.get(ch) or (reading.get(ch) or (None,))[0]
+        if py:
+            giv.setdefault(py, []).append(ch)
+
+    def table(d):
+        return "{\n" + "".join('  ["%s"] = {%s},\n' % (k, ", ".join('"%s"' % c for c in v)) for k, v in sorted(d.items())) + "}"
+    lua = ("-- 由 scripts/customize_data.py 生成（W6 人名候选数据），不要手改\nreturn {\n"
+           "surnames = %s,\ngiven = %s,\nsyllables = {%s},\n}\n") % (
+        table(sur), table(giv), ", ".join('["%s"]=true' % x for x in sorted(syll)))
+    open(os.path.join(DATA, "lua", "yiwei_names_data.lua"), "w", encoding="utf-8", newline="\n").write(lua)
+    print("names data: %d surname syllables, %d given syllables" % (len(sur), len(giv)))
+
+
 def mount_into_schemas():
     count = 0
     for fn in os.listdir(DATA):
@@ -241,6 +276,9 @@ def mount_into_schemas():
         if fn == "rime_ice.schema.yaml" and not ANDROID:
             text = mount_stroke(text)
             text = mount_search(text)
+            text, n = re.subn(r"(\n  filters:\n(?:    [^\n]*\n)*)", r"\1    - lua_filter@*yiwei_names  # 一维输入法：人名候选（W6）\n", text, count=1)
+            if n != 1:
+                raise SystemExit("rime_ice.schema.yaml: names filter mount failed")
         text = text.rstrip("\n") + "\n" + TECH_BLOCK
         open(path, "w", encoding="utf-8", newline="\n").write(text)
         count += 1
@@ -249,6 +287,7 @@ def mount_into_schemas():
     print("patched %d schemas" % count)
     if not ANDROID:
         write_shuangpin_keymaps()
+        write_names_data()
 
 CIRCLED = "ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ"
 

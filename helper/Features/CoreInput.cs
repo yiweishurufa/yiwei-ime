@@ -47,6 +47,8 @@ namespace Yiwei
 
         // ---------- W10 Emoji 候选（雾凇 emoji 开关的默认值；F4 菜单里也能临时切换） ----------
         public static bool Emoji { get => !Has("emoji.disabled"); set => Set("emoji.disabled", !value); }
+        /// <summary>W6 人名候选（yiwei_names.lua）。</summary>
+        public static bool Names { get => !Has("names.disabled"); set => Set("names.disabled", !value); }
 
         // ---------- W12 自定义标点映射：yiwei/punct.txt，每行「按键<Tab或空格>输出」，# 开头为注释 ----------
         public static string PunctFile => F("punct.txt");

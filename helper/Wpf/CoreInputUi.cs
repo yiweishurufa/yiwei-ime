@@ -36,6 +36,10 @@ namespace Yiwei
                     K.Btn("应用", () => ApplyFeatures("自定义标点已更新"), Ui.ControlAppearance.Primary)),
                 Ui.SymbolRegular.NumberSymbol24));
 
+            p.Children.Add(K.Card("人名候选（全拼）",
+                "打「姓 + 名」的拼音（如 liuxinyi、ouyangxue）时，在第 5 位起补几个常见的人名写法，注释「人名」；日常词语不受影响",
+                K.Toggle(CoreInput.Names, v => { CoreInput.Names = v; Toast(v ? "已开启人名候选" : "已关闭人名候选"); }),
+                Ui.SymbolRegular.Person24));
             p.Children.Add(K.Section("按习惯调整候选"));
             p.Children.Add(K.Card("按习惯调整候选",
                 "分几次选出来的词（如 yuanyiwei 依次选 苑、祎、玮）会记成一个词，下次排第一；常选的字词持续靠前。只在本机记录，无痕窗口不记",

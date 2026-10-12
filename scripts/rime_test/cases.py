@@ -290,3 +290,26 @@ def w28_search_prefix(r):
     r.key("1")
     assert open(pipe, encoding="utf-8").read() == "search:北京"
     os.remove(pipe)
+
+
+@case
+def w6_person_names(r):
+    """W6 人名候选：liuxinyi 补出「刘欣怡」（注释 人名），sunjiahao 有「孙嘉豪」；nihao 不加；names.disabled 后不再出现。"""
+    r.reopen("rime_ice")
+    r.type("liuxinyi")
+    c = r.candidates(12)
+    r.clear()
+    assert ("刘欣怡", "人名") in c, c
+    r.type("sunjiahao")
+    assert "孙嘉豪" in r.texts(12), r.texts(12)
+    r.clear()
+    r.type("nihao")
+    assert not any(cm == "人名" for _, cm in r.candidates(12)), r.candidates(12)
+    r.clear()
+    yiwei_file(r, "names.disabled", "1")
+    wait_flags()
+    r.type("liuxinyi")
+    assert not any(cm == "人名" for _, cm in r.candidates(12)), r.candidates(12)
+    r.clear()
+    yiwei_file(r, "names.disabled")
+    wait_flags()
