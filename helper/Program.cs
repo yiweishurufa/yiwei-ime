@@ -218,6 +218,7 @@ namespace Yiwei
                     case "/symbols": ShowSymbols(); return;
                     case "/addword": AddWordWindow.ShowFor(""); return;
                     case "/handwrite": ShowHandwriting(); return;
+                    case "/perfcheck": PerfCheck.RunToFile(); return;
                 }
                 if (command.StartsWith("/settings") || command.Length == 0)
                 {

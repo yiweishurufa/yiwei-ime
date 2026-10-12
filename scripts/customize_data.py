@@ -254,7 +254,7 @@ def mount_into_schemas():
         if "table_translator@custom_phrase" not in text:
             continue  # only full pinyin / double pinyin schemas of rime-ice
         if not ANDROID:
-            text = re.sub(r"(\n  processors:\n)", r"\1    - lua_processor@*yiwei_game  # 一维输入法：全屏游戏自动英文、Shift 交给游戏\n    - lua_processor@*yiwei_appmode  # 一维输入法：按程序记住中英状态（重启后也记得）\n    - lua_processor@*yiwei_stats  # 一维输入法：输入统计（默认关闭）\n    - lua_processor@*yiwei_toast  # 一维输入法：中/英切换提示\n    - lua_processor@*yiwei_regret  # 一维输入法：上屏后 Ctrl+Backspace 反悔重选\n    - lua_processor@*yiwei_private  # 一维输入法：无痕窗口里选词不进用户词库\n", text, count=1)
+            text = re.sub(r"(\n  processors:\n)", r"\1    - lua_processor@*yiwei_perf  # 一维输入法：性能体检计时（只记耗时）\n    - lua_processor@*yiwei_game  # 一维输入法：全屏游戏自动英文、Shift 交给游戏\n    - lua_processor@*yiwei_appmode  # 一维输入法：按程序记住中英状态（重启后也记得）\n    - lua_processor@*yiwei_stats  # 一维输入法：输入统计（默认关闭）\n    - lua_processor@*yiwei_toast  # 一维输入法：中/英切换提示\n    - lua_processor@*yiwei_regret  # 一维输入法：上屏后 Ctrl+Backspace 反悔重选\n    - lua_processor@*yiwei_private  # 一维输入法：无痕窗口里选词不进用户词库\n", text, count=1)
         # after ascii_composer, so a swallowed Shift+( never looks like a lone Shift tap
         extra = "" if ANDROID else r"\2- lua_processor@*yiwei_autopair  # 一维输入法：括号自动配对\n"
         text, n = re.subn(r"(\n(\s+)- ascii_composer[^\n]*\n)",
@@ -263,7 +263,7 @@ def mount_into_schemas():
                           r"\2- lua_processor@*yiwei_pin  # 一维输入法：Ctrl+T 置顶 / Ctrl+Delete 隐藏候选\n", text, count=1)
         if n != 1:
             raise SystemExit("%s: ascii_composer not found" % fn)
-        text, n = re.subn(r"(\n  filters:\n(?:    [^\n]*\n)*)", r"\1    - lua_filter@*yiwei_learn  # 一维输入法：按习惯自动调候选（可关、可清除）\n    - lua_filter@*yiwei_pin_filter  # 一维输入法：置顶 / 隐藏候选\n    - lua_filter@*yiwei_pangu_filter  # 一维输入法：中英之间自动加空格\n", text, count=1)
+        text, n = re.subn(r"(\n  filters:\n(?:    [^\n]*\n)*)", r"\1    - lua_filter@*yiwei_learn  # 一维输入法：按习惯自动调候选（可关、可清除）\n    - lua_filter@*yiwei_pin_filter  # 一维输入法：置顶 / 隐藏候选\n    - lua_filter@*yiwei_pangu_filter  # 一维输入法：中英之间自动加空格\n" + ("" if ANDROID else "    - lua_filter@*yiwei_perf_filter  # 一维输入法：性能体检计时\n"), text, count=1)
         if n != 1:
             raise SystemExit("%s: filters not found" % fn)
         text = re.sub(r"(\n(\s+)- table_translator@custom_phrase[^\n]*\n)",

@@ -209,6 +209,13 @@ namespace Yiwei
             yield return K.Card("更新通道", "测试版：每次构建都推送，新功能最快；稳定版：经过验证后才推送（稳定版发布前选它暂时收不到更新）",
                 K.Combo(new[] { KS("beta", "测试版"), KS("stable", "稳定版") }, T.UpdateChannel ?? "beta", v => { T.UpdateChannel = v; SaveTools(); }, 160), Ui.SymbolRegular.ArrowSync24);
             yield return K.CardBorder(K.Row(K.Btn("现在回收内存", () => { LowSpec.Trim(); Refresh(); }), mem));
+            // 34 性能体检
+            var report = K.Text("测内存、每次按键出候选的耗时、词库大小，并给出建议（只在本机计算）", 12, true);
+            yield return K.Card("性能体检", "", K.Btn("开始体检", () =>
+            {
+                try { report.Text = PerfCheck.Run().ToString(); } catch (Exception e) { report.Text = "体检失败：" + e.Message; }
+            }), Ui.SymbolRegular.HeartPulse24);
+            yield return K.CardBorder(report);
         }
 
         /// <summary>W47：输入法开关（简繁、全半角、中英标点、Emoji、切换方案）的快捷键，写进 default.custom.yaml 由 RIME 处理。</summary>

@@ -340,6 +340,13 @@ jobs:
           if (-not $ok) { Write-Host "YiweiServer 不在，重新启动一次"; Start-Process (Join-Path $root 'YiweiServer.exe'); Start-Sleep 6 }
           if (-not (Get-Process YiweiServer -ErrorAction SilentlyContinue)) { throw "YiweiServer 没有启动" }
           if (-not (Get-Process YiweiHelper -ErrorAction SilentlyContinue)) { throw "YiweiHelper 启动后退出了" }
+          # 34 性能体检：命令行触发，写 yiwei\perfcheck.txt
+          Start-Process (Join-Path $root 'YiweiHelper.exe') -ArgumentList '/perfcheck'
+          $pc = Join-Path $user 'yiwei\perfcheck.txt'
+          for ($i = 0; $i -lt 20 -and -not (Test-Path $pc); $i++) { Start-Sleep 1 }
+          if (-not (Test-Path $pc)) { throw "性能体检（/perfcheck）没有生成报告" }
+          Get-Content $pc -Encoding utf8 | Write-Host
+          if (-not ((Get-Content $pc -Raw -Encoding utf8) -match '输入法服务内存')) { throw "性能体检报告内容不对" }
           # 升级不需要重启：模拟正在打字的程序 —— 本进程把系统目录里的输入法 DLL 按映像映射（锁住不能覆盖），
           # 再静默覆盖安装同一个安装包：退出码不能是 3010，服务和助手要自己起来，输入法注册不能丢
           $sysDll = if (Test-Path "$sys\yiwei.dll") { "$sys\yiwei.dll" } else { "$sys\yiweix64.dll" }

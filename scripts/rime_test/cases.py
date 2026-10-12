@@ -341,6 +341,22 @@ def w47_switch_hotkeys(r):
 
 
 @case
+def p34_perf_timing(r):
+    """34 性能体检：每 20 次按键写一次 yiwei/perf.tsv（次数、平均毫秒、最慢毫秒、超过 50ms 次数、累计、时间）。"""
+    path = os.path.join(r.user, "yiwei", "perf.tsv")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    if os.path.exists(path):
+        os.remove(path)
+    r.reopen("rime_ice")
+    for w in ["nihao", "shijian", "women", "zhongguo", "shurufa"]:
+        r.type(w); r.clear()
+    assert os.path.exists(path), "没有写 perf.tsv"
+    n, avg, mx, slow, total, ts = open(path, encoding="utf-8").read().split("\t")
+    assert int(n) >= 20 and float(avg) >= 0 and float(mx) >= float(avg), (n, avg, mx)
+    print("    每键平均 %s ms，最慢 %s ms（%s 次）" % (avg, mx, n))
+
+
+@case
 def p32_lite_dict(r):
     """32 标准词库（放最后：要重新部署两次）：用户文件夹的 rime_ice.dict.yaml 注释掉 tencent（和 helper/Features/DictLite.cs 同一规则）后，
     只在腾讯词库里的「龚古尔奖」不再整词出现、日常词照常；删掉后恢复完整。"""
