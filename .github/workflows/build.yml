@@ -475,8 +475,9 @@ jobs:
           Start-Process $h -ArgumentList '/wizard'; Start-Sleep 6; Shot 'wizard-1'
           Add-Type -AssemblyName Microsoft.VisualBasic
           for ($i = 2; $i -le 7; $i++) { [System.Windows.Forms.SendKeys]::SendWait('{ENTER}'); Start-Sleep 2; Shot "wizard-$i" }
-          Get-ChildItem "$env:APPDATA\YiweiIME" -Filter '*.log' -Recurse -ErrorAction SilentlyContinue | Copy-Item -Destination screens
-          Get-ChildItem "$env:LOCALAPPDATA" -Filter 'Yiwei*' -Directory -ErrorAction SilentlyContinue | ForEach-Object { Get-ChildItem $_.FullName -Filter *.log -Recurse | Copy-Item -Destination screens }
+          Get-ChildItem "$env:APPDATA\YiweiIME" -Filter '*.log' -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch '\.userdb\\' } | Copy-Item -Destination screens -ErrorAction SilentlyContinue
+          Get-ChildItem "$env:LOCALAPPDATA" -Filter 'Yiwei*' -Directory -ErrorAction SilentlyContinue | ForEach-Object { Get-ChildItem $_.FullName -Filter *.log -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch '\.userdb\\' } | Copy-Item -Destination screens -ErrorAction SilentlyContinue }
+          exit 0
       - uses: actions/upload-artifact@v6
         if: always()
         with:
