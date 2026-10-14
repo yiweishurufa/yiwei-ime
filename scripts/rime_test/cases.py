@@ -388,3 +388,11 @@ def p32_lite_dict(r):
     r.reopen("rime_ice")
     r.type(code); back = r.texts(5); r.clear()
     assert word in back, back
+
+
+@case
+def enter_commits_letters(r):
+    """回车上屏英文字母、空格才上屏候选（用户 2026-10-14）。"""
+    r.open("rime_ice")
+    r.type("nihao"); r.key("RET"); assert r.commit() == "nihao", "回车"
+    r.type("nihao"); r.key(" "); assert r.commit() == "你好", "空格"
