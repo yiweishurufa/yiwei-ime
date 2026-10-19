@@ -1,7 +1,8 @@
--- 一维输入法 · 上屏后反悔重选（Ctrl+Backspace）
--- 刚用拼音上屏一段字（30 秒内、之后没再上屏别的），没有正在输入的拼音时按 Ctrl+Backspace：
+-- 一维输入法 · 上屏后反悔重选（默认 Ctrl+Shift+Z，可改成 Ctrl+Backspace 或两个都用）
+-- 刚用拼音上屏一段字（30 秒内、之后没再上屏别的），没有正在输入的拼音时按快捷键：
 -- 请一维助手删掉刚上屏的字，再把原来的拼音重新敲回来，候选重新出现，可以改选别的词。
 -- 关闭方式：设置 → 常规 → 反悔重选（存在 yiwei/regret.disabled 即关闭）。
+-- 快捷键：yiwei/regret.key 里写 shiftz（默认，没有这个文件也是）/ backspace / both。
 local PIPE = "\\\\.\\pipe\\YiweiHelper.Commands"
 local WINDOW = 30
 
@@ -34,7 +35,32 @@ local function ulen(s)
   return c
 end
 
+-- 读 yiwei/regret.key（3 秒缓存）：shiftz / backspace / both
+local function keymode(env)
+  local now = os.time()
+  if env.kchecked and now - env.kchecked < 3 then return env.kmode end
+  env.kchecked = now
+  env.kmode = "shiftz"
+  local f = io.open(env.keyfile, "r")
+  if f then
+    local v = (f:read("*l") or ""):gsub("%s+", ""):lower()
+    f:close()
+    if v == "backspace" or v == "both" then env.kmode = v end
+  end
+  return env.kmode
+end
+
+local function is_regret_key(key, env)
+  if not key:ctrl() or key:alt() then return false end
+  local mode = keymode(env)
+  local kc = key.keycode
+  if kc == 0xff08 and not key:shift() then return mode ~= "shiftz" end -- Control+BackSpace
+  if (kc == 0x5a or kc == 0x7a) and key:shift() then return mode ~= "backspace" end -- Control+Shift+Z
+  return false
+end
+
 function P.init(env)
+  env.keyfile = rime_api.get_user_data_dir() .. sep() .. "yiwei" .. sep() .. "regret.key"
   env.flag = rime_api.get_user_data_dir() .. sep() .. "yiwei" .. sep() .. "regret.disabled"
   local ctx = env.engine.context
   env.conn = ctx.commit_notifier:connect(function(c)
@@ -53,8 +79,7 @@ function P.fini(env)
 end
 
 function P.func(key, env)
-  if key:release() or not key:ctrl() or key:alt() or key:shift() then return 2 end
-  if key:repr() ~= "Control+BackSpace" then return 2 end
+  if key:release() or not is_regret_key(key, env) then return 2 end
   local ctx = env.engine.context
   if ctx:is_composing() or not env.last_text or os.time() - env.last_at > WINDOW then return 2 end
   if disabled(env) then return 2 end

@@ -422,3 +422,71 @@ def autopair_skip_kinds(r):
         yiwei_file(r, "autopair.skip", None)
         if os.path.exists(pipe):
             os.remove(pipe)
+
+
+@case
+def regret_hotkeys(r):
+    """上屏后反悔重选：默认 Ctrl+Shift+Z；yiwei/regret.key 可改成 backspace / both；没有刚上屏的拼音或正在输入时不拦截。"""
+    pipe = os.path.join(r.user, "\\\\.\\pipe\\YiweiHelper.Commands")
+
+    def reset():
+        if os.path.exists(pipe):
+            os.remove(pipe)
+
+    def commit_nihao():
+        r.type("nihao"); r.key(" ")
+        assert r.commit() == "你好"
+
+    def sent():
+        return open(pipe, encoding="utf-8").read() if os.path.exists(pipe) else None
+
+    try:
+        yiwei_file(r, "regret.key", None)
+        yiwei_file(r, "regret.disabled", None)
+        wait_flags()
+        r.open("rime_ice")
+        reset()
+        commit_nihao()
+        r.key("Control+BS")
+        assert sent() is None, "默认不再用 Ctrl+Backspace"
+        r.key("Control+Shift+Z")
+        assert sent() == "regret:2:nihao", sent()
+        reset()
+        r.key("Control+Shift+Z")
+        assert sent() is None, "同一次上屏只能反悔一次"
+        # 正在输入拼音时不拦截
+        commit_nihao()
+        r.type("ni")
+        r.key("Control+Shift+Z")
+        assert sent() is None, "正在输入时不该拦截"
+        r.clear()
+        # backspace 模式
+        yiwei_file(r, "regret.key", "backspace")
+        wait_flags()
+        commit_nihao()
+        r.key("Control+Shift+Z")
+        assert sent() is None, "backspace 模式不响应 Ctrl+Shift+Z"
+        r.key("Control+BS")
+        assert sent() == "regret:2:nihao", sent()
+        reset()
+        # both 模式
+        yiwei_file(r, "regret.key", "both")
+        wait_flags()
+        commit_nihao()
+        r.key("Control+Shift+Z")
+        assert sent() == "regret:2:nihao", sent()
+        reset()
+        commit_nihao()
+        r.key("Control+BS")
+        assert sent() == "regret:2:nihao", sent()
+        reset()
+        # 总开关
+        yiwei_file(r, "regret.disabled", "1")
+        wait_flags()
+        commit_nihao()
+        r.key("Control+Shift+Z")
+        assert sent() is None, "关闭后不该拦截"
+    finally:
+        yiwei_file(r, "regret.key", None)
+        yiwei_file(r, "regret.disabled", None)
+        reset()

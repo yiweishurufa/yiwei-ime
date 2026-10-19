@@ -30,8 +30,11 @@ namespace Yiwei
             p.Children.Add(K.Card("括号自动配对", "中文标点下输入（ 【 《 「 “ ‘ 时自动补上右半边，光标停在中间；终端、代码编辑器和游戏里不配对",
                 K.Toggle(S.AutoPair, v => { S.AutoPair = v; }), Ui.SymbolRegular.Document24));
             p.Children.Add(K.Block("配对哪些括号", "取消勾选的那种只输入左半边，不自动补右半边（总开关打开时才生效）", AutoPairChoices(), Ui.SymbolRegular.Document24));
-            p.Children.Add(K.Card("上屏后反悔重选", "刚上屏的词选错了？30 秒内按 Ctrl+Backspace，删掉它并重新出现原来的拼音和候选",
+            p.Children.Add(K.Card("上屏后反悔重选", "刚上屏的词选错了？30 秒内按快捷键，删掉它并重新出现原来的拼音和候选，改选别的词（只在没有正在输入的拼音时生效）",
                 K.Toggle(S.Regret, v => { S.Regret = v; }), Ui.SymbolRegular.ArrowUndo24));
+            p.Children.Add(K.Card("反悔重选快捷键", "默认 Ctrl+Shift+Z；Ctrl+Backspace 是旧版的按法",
+                K.Combo(new[] { new KeyValuePair<string, string>("shiftz", "Ctrl+Shift+Z"), new KeyValuePair<string, string>("backspace", "Ctrl+Backspace"), new KeyValuePair<string, string>("both", "两个都可以") },
+                    S.RegretKey, v => { S.RegretKey = v; }, 160), Ui.SymbolRegular.KeyboardShift24));
             p.Children.Add(K.Card("密码框自动切英文", "光标进入密码框时自动切到英文，离开后切回中文（浏览器网页里的密码框也算）",
                 K.Toggle(S.PasswordAscii, v => { S.PasswordAscii = v; Save(); }), Ui.SymbolRegular.Password24));
             p.Children.Add(K.Card("无痕窗口不学词、不统计", "浏览器无痕 / InPrivate 窗口里选的词不进用户词库，也不计入输入统计和剪贴板历史",

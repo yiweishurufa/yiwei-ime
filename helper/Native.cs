@@ -218,7 +218,7 @@ namespace Yiwei
         {
             if (string.IsNullOrEmpty(pinyin) || pinyin.Length > 64) return;
             foreach (var c in pinyin) if (!(c >= 'a' && c <= 'z' || c == '\'')) return;
-            for (int i = 0; i < 100 && (Native.GetAsyncKeyState((int)Keys.ControlKey) & 0x8000) != 0; i++) Pump(10);
+            for (int i = 0; i < 100 && ((Native.GetAsyncKeyState((int)Keys.ControlKey) | Native.GetAsyncKeyState((int)Keys.ShiftKey)) & 0x8000) != 0; i++) Pump(10);
             ReleaseModifiers();
             var list = new System.Collections.Generic.List<Native.INPUT>();
             for (int i = 0; i < chars; i++) AddVk(list, (ushort)Keys.Back);

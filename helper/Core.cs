@@ -63,6 +63,7 @@ namespace Yiwei
         public static string StatsFlag => Path.Combine(YiweiDir, "stats.enabled");
         public static string AutoPairOff => Path.Combine(YiweiDir, "autopair.disabled");
         public static string AutoPairSkip => Path.Combine(YiweiDir, "autopair.skip");
+        public static string RegretKey => Path.Combine(YiweiDir, "regret.key");
         public static string RegretOff => Path.Combine(YiweiDir, "regret.disabled");
         public static string AppModeOff => Path.Combine(YiweiDir, "appmode.disabled");
         public static string PanguFlag => Path.Combine(YiweiDir, "pangu.enabled");
@@ -365,7 +366,23 @@ namespace Yiwei
             set { if (!value) { Directory.CreateDirectory(Paths.YiweiDir); File.WriteAllText(Paths.AppModeOff, "1"); } else if (File.Exists(Paths.AppModeOff)) File.Delete(Paths.AppModeOff); }
         }
 
-        /// <summary>上屏后 Ctrl+Backspace 反悔重选（yiwei_regret.lua 读这个标记文件，默认开启）。</summary>
+        /// <summary>反悔重选的快捷键（yiwei_regret.lua 读 yiwei/regret.key）："shiftz"（默认，Ctrl+Shift+Z）/ "backspace" / "both"。</summary>
+        [ScriptIgnore]
+        public string RegretKey
+        {
+            get
+            {
+                try { var v = (File.ReadAllText(Paths.RegretKey) ?? "").Trim().ToLowerInvariant(); if (v == "backspace" || v == "both") return v; } catch { }
+                return "shiftz";
+            }
+            set
+            {
+                if (value == "backspace" || value == "both") { Directory.CreateDirectory(Paths.YiweiDir); File.WriteAllText(Paths.RegretKey, value); }
+                else if (File.Exists(Paths.RegretKey)) File.Delete(Paths.RegretKey);
+            }
+        }
+
+        /// <summary>上屏后反悔重选（yiwei_regret.lua 读这个标记文件，默认开启）。</summary>
         [ScriptIgnore]
         public bool Regret
         {
