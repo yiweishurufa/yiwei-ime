@@ -490,3 +490,44 @@ def regret_hotkeys(r):
         yiwei_file(r, "regret.key", None)
         yiwei_file(r, "regret.disabled", None)
         reset()
+
+
+@case
+def toast_only_manual_toggle(r):
+    """中/英提示只在用户按键切换时弹（toast:），程序自动切换（如切到自动英文的程序）只同步状态（mode:），不再乱弹「A」。"""
+    pipe = os.path.join(r.user, "\\\\.\\pipe\\YiweiHelper.Commands")
+
+    def reset():
+        if os.path.exists(pipe):
+            os.remove(pipe)
+
+    def sent():
+        return open(pipe, encoding="utf-8").read() if os.path.exists(pipe) else None
+
+    try:
+        r.reopen("rime_ice")
+        r.option("ascii_mode", False)
+        reset()
+        # 小狼毫按程序设置（app_options）或助手命令改中英：不弹
+        r.option("ascii_mode", True)
+        assert sent() == "mode:A", sent()
+        reset()
+        r.option("ascii_mode", False)
+        assert sent() == "mode:中", sent()
+        # 打了字之后的自动切换也不弹
+        r.type("a"); r.key("\x1b")
+        reset()
+        r.option("ascii_mode", True)
+        assert sent() == "mode:A", sent()
+        r.option("ascii_mode", False)
+        # 单按 Shift 切换：弹
+        reset()
+        r.key("Shift_L"); r.key("Release+Shift_L")
+        assert r.option("ascii_mode") is True, "Shift_L 应切到英文"
+        assert sent() == "toast:A", sent()
+        reset()
+        r.key("Shift_L"); r.key("Release+Shift_L")
+        assert sent() == "toast:中", sent()
+    finally:
+        reset()
+        r.option("ascii_mode", False)

@@ -62,8 +62,9 @@ def _d(b):
 
 KEYS = {" ": 0x20, "\r": 0xff0d, "\b": 0xff08, "\x1b": 0xff1b, "LEFT": 0xff51, "RIGHT": 0xff53,
         "UP": 0xff52, "DOWN": 0xff54, "HOME": 0xff50, "END": 0xff57, "PGUP": 0xff55, "PGDN": 0xff56,
-        "TAB": 0xff09, "DEL": 0xffff, "BS": 0xff08, "RET": 0xff0d, "ESC": 0xff1b}
-MODS = {"Shift": 1, "Control": 4, "Alt": 8}
+        "TAB": 0xff09, "DEL": 0xffff, "BS": 0xff08, "RET": 0xff0d, "ESC": 0xff1b,
+        "Shift_L": 0xffe1, "Shift_R": 0xffe2, "Control_L": 0xffe3}
+MODS = {"Shift": 1, "Control": 4, "Alt": 8, "Release": 1 << 30}
 
 
 class Rime:

@@ -9,7 +9,7 @@ namespace Yiwei
 {
     /// <summary>
     /// The small 中 / A bubble shown near the caret for ~600 ms when the input mode changes.
-    /// Triggered by the pipe command "toast:中" / "toast:A" (sent by the IME), or by the optional IMM poller.
+    /// Triggered by the pipe command "toast:中" / "toast:A" (sent by the IME only when the user toggled with a key; automatic switches send "mode:…" and do not flash), or by the optional IMM poller.
     /// </summary>
     sealed class ImeToast : FloatingWindow
     {

@@ -11,7 +11,7 @@ namespace Yiwei
 {
     /// <summary>
     /// 一维助手: tray icon, Alt-hold panels, settings, first-run wizard and the command pipe.
-    /// Command line: (none) or /settings [页面] · /wizard · /background · /deploy · /quit · toast:中 · toast:A · yiwei-ime://theme?…
+    /// Command line: (none) or /settings [页面] · /wizard · /background · /deploy · /quit · toast:中 · toast:A · mode:中 · mode:A · yiwei-ime://theme?…
     /// A second launch forwards its command to the running instance over the named pipe.
     /// </summary>
     static class Program
@@ -170,6 +170,15 @@ namespace Yiwei
                     // yiwei_regret.lua: "regret:<字数>:<拼音>" → delete what was just committed and retype the pinyin.
                     var parts = command.Split(new[] { ':' }, 3);
                     if (parts.Length == 3 && int.TryParse(parts[1], out var n) && n > 0 && n <= 200) TextOut.Regret(n, parts[2]);
+                    return;
+                }
+                if (command.StartsWith("mode:", StringComparison.OrdinalIgnoreCase))
+                {
+                    // yiwei_toast.lua: 程序自动切换中英（切到设了自动英文的程序、恢复上次状态、游戏模式等）——只同步状态，不弹「中/A」
+                    var m = command.Substring(5).Trim();
+                    bool zh = m == "中" || m.Equals("zh", StringComparison.OrdinalIgnoreCase) || m.Equals("cn", StringComparison.OrdinalIgnoreCase);
+                    Tray.SetMode(zh);
+                    PrivacyGuard.ModeChanged(zh);
                     return;
                 }
                 if (command.StartsWith("toast:", StringComparison.OrdinalIgnoreCase))
