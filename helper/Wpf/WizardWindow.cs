@@ -33,7 +33,7 @@ namespace Yiwei
             WindowBackdropType = UiTheme.Backdrop;
             WindowCornerPreference = Ui.WindowCornerPreference.Round;
 
-            _steps = new Func<UIElement>[] { Welcome, Schema, Look, AiStep, Practice, Done }  // 「把旧习惯带过来」导入页已去掉（用户 2026-10-19：没意义）;
+            _steps = new Func<UIElement>[] { Welcome, Schema, Look, AiStep, Practice, Done }; // 「把旧习惯带过来」导入页已去掉（用户 2026-10-19：没意义）
 
             var root = new Grid();
             root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
