@@ -1,0 +1,11 @@
+
+FullName
+--------
+D:\a\yiwei-ime\yiwei-ime\weasel\output\Win32\rime.dll
+D:\a\yiwei-ime\yiwei-ime\weasel\output\Win32\WinSparkle.dll
+D:\a\yiwei-ime\yiwei-ime\weasel\output\7z.dll
+D:\a\yiwei-ime\yiwei-ime\weasel\output\7z.exe
+D:\a\yiwei-ime\yiwei-ime\weasel\output\curl.exe
+D:\a\yiwei-ime\yiwei-ime\weasel\output\rime.dll
+D:\a\yiwei-ime\yiwei-ime\weasel\output\WinSparkle.dll
+

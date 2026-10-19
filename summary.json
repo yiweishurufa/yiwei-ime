@@ -1,0 +1,6 @@
+{"conclusion":"success","name":"rime-test","steps":[]}
+{"conclusion":"failure","name":"build","steps":["编译一维助手"]}
+{"conclusion":"success","name":"screens","steps":[]}
+{"conclusion":null,"name":"report","steps":[]}
+{"conclusion":"skipped","name":"smoke","steps":[]}
+{"conclusion":"skipped","name":"release","steps":[]}
