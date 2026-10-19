@@ -198,6 +198,16 @@ static bool YiweiRunHelper(const std::wstring& root, const wchar_t* args) {
     return false;
   AllowSetForegroundWindow(ASFW_ANY);
   std::wstring a(args);
+  // 直接 CreateProcess（不依赖 COM/外壳），失败再退回 ShellExecute
+  std::wstring cmdline = L"\"" + exe + L"\" " + a;
+  STARTUPINFOW si = {sizeof(si)};
+  PROCESS_INFORMATION pi = {};
+  if (CreateProcessW(exe.c_str(), &cmdline[0], NULL, NULL, FALSE, 0, NULL,
+                     root.c_str(), &si, &pi)) {
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+    return true;
+  }
   std::thread th([exe, a, root]() {
     ShellExecuteW(NULL, L"open", exe.c_str(), a.c_str(), root.c_str(),
                   SW_SHOWNORMAL);

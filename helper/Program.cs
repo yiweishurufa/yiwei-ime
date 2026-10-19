@@ -37,6 +37,7 @@ namespace Yiwei
         static void Main(string[] args)
         {
             var command = string.Join(" ", args).Trim();
+            if (command.StartsWith("/")) Log.Write("start: " + command);
             using (var mutex = new Mutex(true, MutexName, out bool first))
             {
                 if (!first) { Send(command.Length == 0 ? "/settings" : command); return; }
@@ -326,12 +327,17 @@ namespace Yiwei
                 {
                     try
                     {
-                        using (var s = new NamedPipeServerStream(PipeName, PipeDirection.In, 1))
+                        // 允许同一会话里权限不同的进程（如以管理员运行的助手 vs 普通权限的语言栏菜单）连管道，否则 Connect 会被拒绝而「点了没反应」
+                        var ps = new System.IO.Pipes.PipeSecurity();
+                        ps.AddAccessRule(new System.IO.Pipes.PipeAccessRule(new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.AuthenticatedUserSid, null), System.IO.Pipes.PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow));
+                        ps.AddAccessRule(new System.IO.Pipes.PipeAccessRule(System.Security.Principal.WindowsIdentity.GetCurrent().User, System.IO.Pipes.PipeAccessRights.FullControl, System.Security.AccessControl.AccessControlType.Allow));
+                        using (var s = new NamedPipeServerStream(PipeName, PipeDirection.In, 1, System.IO.Pipes.PipeTransmissionMode.Byte, System.IO.Pipes.PipeOptions.None, 0, 0, ps))
                         {
                             s.WaitForConnection();
                             using (var r = new StreamReader(s, Encoding.UTF8))
                             {
                                 var cmd = r.ReadToEnd().Trim();
+                                Log.Write("pipe: got " + cmd);
                                 if (cmd.Length > 4096) cmd = cmd.Substring(0, 4096);
                                 Ui.BeginInvoke(new Action(() => Execute(cmd)));
                             }
