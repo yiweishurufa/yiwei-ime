@@ -53,12 +53,35 @@ namespace Yiwei
             var t = Dark ? ApplicationTheme.Dark : ApplicationTheme.Light;
             try { ApplicationThemeManager.Apply(t, Ui.WindowBackdropType.None, false); } catch (Exception e) { Log.Write("theme: " + e.Message); }
             try { ApplicationAccentColorManager.Apply(Accent, t, false); } catch (Exception e) { Log.Write("accent: " + e.Message); }
+            RefreshAccentBrushes();
             var app = Application.Current;
             if (app != null)
                 foreach (Window w in app.Windows)
                     if (w is Ui.FluentWindow fw && fw.IsLoaded)
                         try { WindowBackgroundManager.UpdateBackground(fw, t, fw.WindowBackdropType); } catch { }
             Changed?.Invoke();
+        }
+
+        // WPF-UI 3.0.5 的主题字典里，主按钮、开关、勾选框等画刷写成 <SolidColorBrush Color="{DynamicResource SystemAccentColorPrimary}"/>，
+        // 字典里画刷的 DynamicResource 不会跟着强调色更新（会停在上一次的颜色）：引导页换了青碧，下一步/横排按钮还是朱砂红（用户 2026-10-19 反馈）。
+        // 每次换强调色后，用新的颜色重建这些画刷，放在 Application.Resources 顶层覆盖主题字典里的旧画刷。
+        static readonly (string Brush, string Color)[] AccentBrushKeys =
+        {
+            ("AccentButtonBackground", "SystemAccentColorPrimary"), ("AccentButtonBackgroundPointerOver", "SystemAccentColorSecondary"), ("AccentButtonBackgroundPressed", "SystemAccentColorTertiary"), ("CalendarViewSelectedBackground", "SystemAccentColorPrimary"), ("CalendarViewSelectedBorderBrush", "SystemAccentColorPrimary"), ("CalendarViewTodayBackground", "SystemAccentColorPrimary"), ("CheckBoxCheckBackgroundFillChecked", "SystemAccentColorPrimary"), ("CheckBoxCheckBackgroundFillCheckedPointerOver", "SystemAccentColorSecondary"), ("ComboBoxBorderBrushFocused", "SystemAccentColorSecondary"), ("ComboBoxItemPillFillBrush", "SystemAccentColorPrimary"), ("HyperlinkButtonForeground", "SystemAccentColorPrimary"), ("HyperlinkButtonForegroundPointerOver", "SystemAccentColorSecondary"), ("HyperlinkButtonForegroundPressed", "SystemAccentColorTertiary"), ("InfoBarInformationalSeverityIconBackground", "SystemAccentColorPrimary"), ("ListBoxItemSelectedBackgroundThemeBrush", "SystemAccentColorPrimary"), ("ListViewItemPillFillBrush", "SystemAccentColorPrimary"), ("NavigationViewSelectionIndicatorForeground", "SystemAccentColorPrimary"), ("ProgressBarForeground", "SystemAccentColorPrimary"), ("ProgressRingForegroundThemeBrush", "SystemAccentColorPrimary"), ("RadioButtonOuterEllipseCheckedStroke", "SystemAccentColorPrimary"), ("RadioButtonOuterEllipseCheckedStrokePointerOver", "SystemAccentColorSecondary"), ("RatingControlSelectedForeground", "SystemAccentColorPrimary"), ("SliderThumbBackground", "SystemAccentColorPrimary"), ("SliderThumbBackgroundPointerOver", "SystemAccentColorSecondary"), ("TextControlFocusedBorderBrush", "SystemAccentColorPrimary"), ("ThumbRateForeground", "SystemAccentColorPrimary"), ("ToggleButtonBackgroundChecked", "SystemAccentColorPrimary"), ("ToggleButtonBackgroundCheckedPressed", "SystemAccentColorTertiary"), ("ToggleButtonForegroundCheckedPointerOver", "SystemAccentColorSecondary"), ("ToggleSwitchFillOn", "SystemAccentColorPrimary"), ("ToggleSwitchFillOnPointerOver", "SystemAccentColorSecondary"), ("ToggleSwitchStrokeOn", "SystemAccentColorPrimary"), ("ToggleSwitchStrokeOnPointerOver", "SystemAccentColorSecondary"), ("TreeViewItemSelectionIndicatorForeground", "SystemAccentColorPrimary")
+        };
+
+        static void RefreshAccentBrushes()
+        {
+            var app = Application.Current;
+            if (app == null) return;
+            foreach (var (brush, color) in AccentBrushKeys)
+            {
+                try
+                {
+                    if (app.TryFindResource(color) is Color c) { var b = new SolidColorBrush(c); b.Freeze(); app.Resources[brush] = b; }
+                }
+                catch (Exception e) { Log.Write("accent brush " + brush + ": " + e.Message); }
+            }
         }
 
         /// <summary>Backdrop to request: Mica on Windows 11, plain background elsewhere.</summary>

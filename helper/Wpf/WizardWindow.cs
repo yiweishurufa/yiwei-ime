@@ -33,7 +33,7 @@ namespace Yiwei
             WindowBackdropType = UiTheme.Backdrop;
             WindowCornerPreference = Ui.WindowCornerPreference.Round;
 
-            _steps = new Func<UIElement>[] { Welcome, Schema, Look, Import, AiStep, Practice, Done };
+            _steps = new Func<UIElement>[] { Welcome, Schema, Look, AiStep, Practice, Done }  // 「把旧习惯带过来」导入页已去掉（用户 2026-10-19：没意义）;
 
             var root = new Grid();
             root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -197,45 +197,6 @@ namespace Yiwei
             sp.Children.Add(K.Card("候选个数", "每页显示几个候选",
                 K.Segmented(System.Linq.Enumerable.Range(5, 6).Select(n => new KeyValuePair<int, string>(n, n.ToString())), S.CandidateCount, v => { S.CandidateCount = v; Changed(); })));
             Refresh();
-            return sp;
-        }
-
-        UIElement Import()
-        {
-            var sp = new StackPanel();
-            sp.Children.Add(Head("把旧习惯带过来", "导入以前积累的词，打字一开始就顺手。没有找到的可以跳过。"));
-            List<HabitImport.Source> sources;
-            try { sources = HabitImport.Detect(); } catch (Exception e) { Log.Write("detect: " + e.Message); sources = new List<HabitImport.Source>(); }
-            foreach (var src in sources)
-            {
-                var s = src;
-                Ui.Button btn;
-                if (s.Name == "小狼毫")
-                {
-                    btn = K.Btn(s.Found ? "导入" : "未找到", () =>
-                    {
-                        try { var n = HabitImport.ImportWeasel(); _toast.Show($"已从小狼毫导入 {n} 个文件"); }
-                        catch (Exception ex) { Dialogs.Error(ex.Message); }
-                    }, s.Found ? Ui.ControlAppearance.Primary : Ui.ControlAppearance.Secondary);
-                    btn.IsEnabled = s.Found;
-                }
-                else
-                {
-                    btn = K.Btn("选择导出的文件…", () =>
-                    {
-                        var dlg = new Microsoft.Win32.OpenFileDialog { Filter = "文本词库 (*.txt)|*.txt|所有文件|*.*", Title = "选择从" + s.Name + "导出的词库" };
-                        if (dlg.ShowDialog(this) != true) return;
-                        try
-                        {
-                            int n = HabitImport.ImportTextFile(dlg.FileName);
-                            if (n == 0) Dialogs.Error("没有读到带拼音的词。请确认导出的是文本格式。"); else _toast.Show($"已导入 {n} 个词");
-                        }
-                        catch (Exception ex) { Dialogs.Error("导入失败：" + ex.Message); }
-                    });
-                }
-                var desc = (s.Found ? "已检测到。" : "这台电脑上没有检测到。") + s.Desc;
-                sp.Children.Add(K.Card(s.Name, desc, btn, s.Found ? Ui.SymbolRegular.Checkmark24 : Ui.SymbolRegular.Dismiss24));
-            }
             return sp;
         }
 
