@@ -62,6 +62,7 @@ namespace Yiwei
         public static string SnippetsFile => Path.Combine(YiweiDir, "snippets.json");
         public static string StatsFlag => Path.Combine(YiweiDir, "stats.enabled");
         public static string AutoPairOff => Path.Combine(YiweiDir, "autopair.disabled");
+        public static string AutoPairSkip => Path.Combine(YiweiDir, "autopair.skip");
         public static string RegretOff => Path.Combine(YiweiDir, "regret.disabled");
         public static string AppModeOff => Path.Combine(YiweiDir, "appmode.disabled");
         public static string PanguFlag => Path.Combine(YiweiDir, "pangu.enabled");
@@ -377,6 +378,18 @@ namespace Yiwei
         {
             get => !File.Exists(Paths.AutoPairOff);
             set { if (!value) { Directory.CreateDirectory(Paths.YiweiDir); File.WriteAllText(Paths.AutoPairOff, "1"); } else if (File.Exists(Paths.AutoPairOff)) File.Delete(Paths.AutoPairOff); }
+        }
+
+        /// <summary>不自动配对的左括号/左引号（如 "《“"），写在 yiwei/autopair.skip，yiwei_autopair.lua 读；空 = 全部配对。</summary>
+        [ScriptIgnore]
+        public string AutoPairSkip
+        {
+            get { try { return File.Exists(Paths.AutoPairSkip) ? File.ReadAllText(Paths.AutoPairSkip) : ""; } catch { return ""; } }
+            set
+            {
+                if (string.IsNullOrEmpty(value)) { if (File.Exists(Paths.AutoPairSkip)) File.Delete(Paths.AutoPairSkip); }
+                else { Directory.CreateDirectory(Paths.YiweiDir); File.WriteAllText(Paths.AutoPairSkip, value, new System.Text.UTF8Encoding(false)); }
+            }
         }
 
         /// <summary>中英之间自动加空格（yiwei_pangu*.lua 读这个标记文件，默认关闭）。</summary>

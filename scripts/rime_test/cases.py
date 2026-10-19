@@ -396,3 +396,29 @@ def enter_commits_letters(r):
     r.open("rime_ice")
     r.type("nihao"); r.key("RET"); assert r.commit() == "nihao", "回车"
     r.type("nihao"); r.key(" "); assert r.commit() == "你好", "空格"
+
+
+@case
+def autopair_skip_kinds(r):
+    """括号自动配对逐类开关：yiwei/autopair.skip 里的左半边不再发 pair:，其余照常（Linux 上命名管道是当前目录里的普通文件）。"""
+    pipe = os.path.join(r.user, "\\\\.\\pipe\\YiweiHelper.Commands")
+    if os.path.exists(pipe):
+        os.remove(pipe)
+    yiwei_file(r, "autopair.skip", "《“")
+    try:
+        wait_flags()
+        r.open("rime_ice")
+        r.key("<")
+        r.clear()
+        assert not os.path.exists(pipe), "《 已取消配对，不该发 pair:"
+        r.key("(")
+        assert open(pipe, encoding="utf-8").read() == "pair:（）"
+        os.remove(pipe)
+        yiwei_file(r, "autopair.skip", None)
+        wait_flags()
+        r.key("<")
+        assert open(pipe, encoding="utf-8").read() == "pair:《》", "删掉 skip 后 《 恢复配对"
+    finally:
+        yiwei_file(r, "autopair.skip", None)
+        if os.path.exists(pipe):
+            os.remove(pipe)

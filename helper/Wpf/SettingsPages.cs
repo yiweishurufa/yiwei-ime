@@ -29,6 +29,7 @@ namespace Yiwei
             p.Children.Add(K.PageTitle("常规"));
             p.Children.Add(K.Card("括号自动配对", "中文标点下输入（ 【 《 「 “ ‘ 时自动补上右半边，光标停在中间；终端、代码编辑器和游戏里不配对",
                 K.Toggle(S.AutoPair, v => { S.AutoPair = v; }), Ui.SymbolRegular.Document24));
+            p.Children.Add(K.Block("配对哪些括号", "取消勾选的那种只输入左半边，不自动补右半边（总开关打开时才生效）", AutoPairChoices(), Ui.SymbolRegular.Document24));
             p.Children.Add(K.Card("上屏后反悔重选", "刚上屏的词选错了？30 秒内按 Ctrl+Backspace，删掉它并重新出现原来的拼音和候选",
                 K.Toggle(S.Regret, v => { S.Regret = v; }), Ui.SymbolRegular.ArrowUndo24));
             p.Children.Add(K.Card("密码框自动切英文", "光标进入密码框时自动切到英文，离开后切回中文（浏览器网页里的密码框也算）",
@@ -67,6 +68,21 @@ namespace Yiwei
                 Program.ShowSettings();
             }));
             return p;
+        }
+
+        /// <summary>括号自动配对逐类开关：未勾选的左半边写进 yiwei/autopair.skip。</summary>
+        WrapPanel AutoPairChoices()
+        {
+            var wrap = new WrapPanel();
+            foreach (var pair in new[] { "（）", "【】", "《》", "「」", "“”", "‘’" })
+            {
+                var left = pair.Substring(0, 1);
+                var cb = new CheckBox { Content = pair, IsChecked = !S.AutoPairSkip.Contains(left), MinWidth = 72, Margin = new Thickness(0, 0, 12, 6) };
+                cb.Checked += (s, e) => { S.AutoPairSkip = S.AutoPairSkip.Replace(left, ""); };
+                cb.Unchecked += (s, e) => { if (!S.AutoPairSkip.Contains(left)) S.AutoPairSkip += left; };
+                wrap.Children.Add(cb);
+            }
+            return wrap;
         }
 
         /// <summary>
