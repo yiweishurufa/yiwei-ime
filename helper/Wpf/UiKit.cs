@@ -249,10 +249,34 @@ namespace Yiwei
 
     static class Dialogs
     {
+        // 助手是后台进程，从语言栏菜单 / 管道命令弹出的对话框常被 Windows 压到其它窗口后面（只在任务栏闪），
+        // 用户会以为「点了没反应」。这里用一个置顶的隐形窗口当 owner，把对话框带到最前面。
+        static MessageBoxResult Show(string text, string title, MessageBoxButton buttons, MessageBoxImage image)
+        {
+            Window owner = null;
+            try
+            {
+                owner = new Window
+                {
+                    Width = 0, Height = 0, WindowStyle = WindowStyle.None, ShowInTaskbar = false, Topmost = true,
+                    AllowsTransparency = true, Background = System.Windows.Media.Brushes.Transparent,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen, ShowActivated = true,
+                };
+                owner.Show();
+                owner.Activate();
+                return MessageBox.Show(owner, text, title, buttons, image);
+            }
+            catch
+            {
+                return MessageBox.Show(text, title, buttons, image);
+            }
+            finally { try { owner?.Close(); } catch { } }
+        }
+
         public static bool Confirm(string text, string title = "一维输入法") =>
-            MessageBox.Show(text, title, MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK;
-        public static void Info(string text) => MessageBox.Show(text, "一维输入法", MessageBoxButton.OK, MessageBoxImage.Information);
-        public static void Error(string text) => MessageBox.Show(text, "一维输入法", MessageBoxButton.OK, MessageBoxImage.Warning);
+            Show(text, title, MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK;
+        public static void Info(string text, string title = "一维输入法") => Show(text, title, MessageBoxButton.OK, MessageBoxImage.Information);
+        public static void Error(string text, string title = "一维输入法") => Show(text, title, MessageBoxButton.OK, MessageBoxImage.Warning);
 
         public static void Open(string path, string args = null)
         {

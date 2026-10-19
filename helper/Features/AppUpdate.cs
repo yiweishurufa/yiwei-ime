@@ -74,26 +74,40 @@ namespace Yiwei
             return new Info { Url = url, Version = v, Length = len, Sha256 = Regex.IsMatch(sha, "^[0-9a-f]{64}$") ? sha : null };
         }
 
-        /// <summary>manual = 用户点了「检查更新」：结果都要告诉用户；自动检查只在有新版本时提示一次。</summary>
+        /// <summary>manual = 用户点了「检查更新」：马上显示「正在检查」，结果用对话框告诉用户（托盘气泡常被系统勿扰/通知设置吞掉，
+        /// 用户 2026-10-19 反馈「点检查更新没有任何反应」）；自动检查只在有新版本时冒一次气泡。</summary>
         public static async Task CheckAsync(bool manual)
         {
-            if (_busy) return;
+            if (_busy)
+            {
+                if (manual) { if (_status != null) _status.Bring(); else Dialogs.Info("正在检查更新，请稍等几秒。", "检查更新"); }
+                return;
+            }
             if (!manual && !Settings.Current.AppAutoUpdate) return;
             _busy = true;
+            if (manual) _status = StatusWindow.Open("正在检查更新…");
             try
             {
                 var info = await Task.Run(() => Fetch());
-                if (info == null) { if (manual) Tray.Balloon("检查更新失败", "暂时连不上更新服务器，稍后再试。"); return; }
-                if (info.Version <= Current) { if (manual) Tray.Balloon("已是最新版本", "一维输入法 " + Current); return; }
+                if (info == null) { if (manual) { CloseStatus(); Dialogs.Error("检查更新失败：暂时连不上更新服务器，请检查网络后再试。", "检查更新"); } return; }
+                if (info.Version <= Current) { if (manual) { CloseStatus(); Dialogs.Info("已是最新版本（一维输入法 " + Current + "）。", "检查更新"); } return; }
                 if (!manual && _notified == info.Version.ToString()) return;
                 _notified = info.Version.ToString();
-                if (manual) { await InstallAsync(info, true); return; }
+                if (manual) { CloseStatus(); await InstallAsync(info, true); return; }
                 // 自动检查：不弹窗打断，只在托盘冒一个气泡，点一下再更新
                 _pending = info;
                 Tray.Balloon("一维输入法有新版本 " + info.Version, "点这里更新（约半分钟，设置和词库都会保留）。也可以右键任务栏上的 中/英 图标，点「检查更新」。");
             }
-            finally { _busy = false; }
+            catch (Exception e)
+            {
+                Log.Write("app update check: " + e.Message);
+                if (manual) { CloseStatus(); Dialogs.Error("检查更新出错：" + e.GetBaseException().Message, "检查更新"); }
+            }
+            finally { CloseStatus(); _busy = false; }
         }
+
+        static StatusWindow _status;
+        static void CloseStatus() { try { _status?.Close(); } catch { } _status = null; }
 
         static async Task InstallAsync(Info info, bool askFirst)
         {
@@ -101,6 +115,7 @@ namespace Yiwei
             if (!info.Url.StartsWith("https://github.com/yiweishurufa/", StringComparison.OrdinalIgnoreCase)) { Log.Write("app update: unexpected url " + info.Url); return; }
             var file = Path.Combine(Path.GetTempPath(), "yiwei-ime-" + info.Version + "-installer.exe");
             Tray.Balloon("正在下载更新", "一维输入法 " + info.Version);
+            var progress = askFirst ? StatusWindow.Open("正在下载一维输入法 " + info.Version + "…") : null;
             try
             {
                 await Task.Run(async () =>
@@ -116,9 +131,12 @@ namespace Yiwei
             catch (Exception e)
             {
                 Log.Write("app update download: " + e.Message);
+                try { progress?.Close(); } catch { }
                 Tray.Balloon("更新下载失败", e.GetBaseException().Message);
+                if (askFirst) Dialogs.Error("更新下载失败：" + e.GetBaseException().Message, "检查更新");
                 return;
             }
+            try { progress?.Close(); } catch { }
             try
             {
                 // 安装包需要管理员权限（会弹一次 UAC），/S 静默安装，装完会自己重启服务和助手。
@@ -129,7 +147,34 @@ namespace Yiwei
             {
                 Log.Write("app update run: " + e.Message);
                 Tray.Balloon("没有开始更新", "需要允许管理员权限才能安装更新。");
+                if (askFirst) Dialogs.Error("没有开始更新：需要允许管理员权限才能安装更新。", "检查更新");
             }
         }
+    }
+
+    /// <summary>检查 / 下载更新时屏幕中间的小提示窗（置顶、不抢焦点也能看到），点 × 或完成后关闭。</summary>
+    sealed class StatusWindow : System.Windows.Window
+    {
+        StatusWindow(string text)
+        {
+            Title = "一维输入法";
+            Width = 280; SizeToContent = System.Windows.SizeToContent.Height;
+            ResizeMode = System.Windows.ResizeMode.NoResize;
+            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+            Topmost = true; ShowInTaskbar = true;
+            Content = new System.Windows.Controls.TextBlock
+            {
+                Text = text, FontSize = 14, Margin = new System.Windows.Thickness(20, 18, 20, 18),
+                TextWrapping = System.Windows.TextWrapping.Wrap,
+            };
+        }
+
+        public static StatusWindow Open(string text)
+        {
+            try { var w = new StatusWindow(text); w.Show(); w.Activate(); return w; }
+            catch (Exception e) { Log.Write("status window: " + e.Message); return null; }
+        }
+
+        public void Bring() { try { Activate(); } catch { } }
     }
 }

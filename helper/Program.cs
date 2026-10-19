@@ -299,8 +299,13 @@ namespace Yiwei
 
         // ---------- single instance: later launches forward their command ----------
 
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern bool AllowSetForegroundWindow(int dwProcessId);
+
         static void Send(string command)
         {
+            // 菜单点出来的这个进程有前台权限，转交给常驻助手，让它弹的对话框（检查更新等）能出现在最前面
+            try { AllowSetForegroundWindow(-1 /* ASFW_ANY */); } catch { }
             try
             {
                 using (var c = new NamedPipeClientStream(".", PipeName, PipeDirection.Out))
