@@ -517,6 +517,7 @@ namespace Yiwei
             p.Children.Add(K.Card("自动检查更新", "每天检查一次新版本，有更新时在托盘提示，点一下就能升级（只访问 GitHub）",
                 K.Toggle(S.AppAutoUpdate, v => { S.AppAutoUpdate = v; Save(); }), Ui.SymbolRegular.ArrowSync24));
             p.Children.Add(K.Card("打开用户文件夹", Paths.UserDir, K.Btn("打开", () => { Directory.CreateDirectory(Paths.UserDir); Dialogs.Open(Paths.UserDir); }), Ui.SymbolRegular.FolderOpen24));
+            p.Children.Add(K.Card("生成维护报告", "手动生成 yiwei-report zip 放到桌面：常用字词、日志错误、性能数据（不含原文句子，不自动上传），可发给维护者做针对性改进", K.Btn("生成", () => MaintReport.ConfirmAndBuild(Toast)), Ui.SymbolRegular.DocumentArrowRight24));
             p.Children.Add(K.Card("编辑 YAML", "用记事本打开 default.custom.yaml（高级；一维生成的文件会被设置覆盖）", K.Btn("编辑", EditYaml), Ui.SymbolRegular.DocumentEdit24));
             p.Children.Add(K.Card("项目主页", "源代码、问题反馈与更新日志", K.Row(
                 K.Btn("主页", () => Dialogs.Open("https://github.com/yiweishurufa/yiwei-ime")),

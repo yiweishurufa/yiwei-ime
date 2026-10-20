@@ -116,7 +116,7 @@ namespace Yiwei
             return n.Contains(".userdb") || n.Contains("stats") || n.Contains("snippet") || n.Contains("clipboard") || n.StartsWith("custom_phrase");
         }
 
-        static string Environment_()
+        internal static string Environment_()
         {
             var sb = new StringBuilder();
             void L(string k, string v) => sb.Append(k).Append("：").Append(v ?? "").Append("\r\n");
@@ -184,7 +184,7 @@ namespace Yiwei
             try { return Directory.GetFiles(dir, pattern, opt); } catch { return new string[0]; }
         }
 
-        static void AddText(ZipArchive zip, string name, string text)
+        internal static void AddText(ZipArchive zip, string name, string text)
         {
             var e = zip.CreateEntry(name, CompressionLevel.Optimal);
             using (var w = new StreamWriter(e.Open(), new UTF8Encoding(true))) w.Write(text);
@@ -202,7 +202,7 @@ namespace Yiwei
         }
 
         /// <summary>Logs are shared-open by the running server; long ones keep only their last 2 MB.</summary>
-        static void AddLog(ZipArchive zip, string name, string path)
+        internal static void AddLog(ZipArchive zip, string name, string path)
         {
             try
             {
