@@ -1,0 +1,6 @@
+{"conclusion":"success","name":"rime-test","steps":[]}
+{"conclusion":"failure","name":"build","steps":["雾凇拼音、配色与扩展"]}
+{"conclusion":"success","name":"screens","steps":[]}
+{"conclusion":"skipped","name":"smoke","steps":[]}
+{"conclusion":"skipped","name":"release","steps":[]}
+{"conclusion":null,"name":"report","steps":[]}

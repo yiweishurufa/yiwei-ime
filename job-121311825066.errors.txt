@@ -1,0 +1,23 @@
+105:2026-10-25T22:33:41.3328232Z ##[group]Run $ErrorActionPreference = 'Stop'
+106:2026-10-25T22:33:41.3328702Z [36;1m$ErrorActionPreference = 'Stop'[0m
+172:2026-10-25T22:33:53.4084813Z ##[group]Run $ErrorActionPreference = 'Stop'
+173:2026-10-25T22:33:53.4085251Z [36;1m$ErrorActionPreference = 'Stop'[0m
+197:2026-10-25T22:33:54.7434972Z   fail-on-cache-miss: false
+218:2026-10-25T22:34:20.3424659Z ##[group]Run $ErrorActionPreference = 'Stop'
+219:2026-10-25T22:34:20.3425072Z [36;1m$ErrorActionPreference = 'Stop'[0m
+249:2026-10-25T22:34:26.8875864Z   fail-on-cache-miss: false
+317:2026-10-25T22:34:27.4830548Z ##[group]Run $ErrorActionPreference = 'Stop'
+318:2026-10-25T22:34:27.4830986Z [36;1m$ErrorActionPreference = 'Stop'[0m
+383:2026-10-25T22:34:27.8451635Z ##[group]Run $ErrorActionPreference = 'Stop'
+384:2026-10-25T22:34:27.8452068Z [36;1m$ErrorActionPreference = 'Stop'[0m
+392:2026-10-25T22:34:27.8454668Z [36;1mif (-not (Test-Path .\include\rime_api.h)) { throw "获取 RIME 引擎失败" }[0m
+474:2026-10-25T22:34:30.8604602Z ##[group]Run $ErrorActionPreference = 'Stop'
+475:2026-10-25T22:34:30.8605020Z [36;1m$ErrorActionPreference = 'Stop'[0m
+592:2026-10-25T22:34:41.7456779Z ##[group]Run $ErrorActionPreference = 'Stop'
+593:2026-10-25T22:34:41.7457338Z [36;1m$ErrorActionPreference = 'Stop'[0m
+599:2026-10-25T22:34:41.7461030Z [36;1m  catch { if ($i -eq 4) { throw }; Write-Host "下载雾凇拼音失败（$($_.Exception.Message)），$($i * 15) 秒后重试"; Start-Sleep ($i * 15) }[0m
+602:2026-10-25T22:34:41.7462557Z [36;1mif ($asset.digest -and ("sha256:" + $hash) -ne $asset.digest) { throw "rime-ice checksum mismatch" }[0m
+677:2026-10-25T22:34:43.1540131Z AssertionError: nsi: preview anchor missing
+678:2026-10-25T22:34:43.2275848Z ##[error]Process completed with exit code 1.
+681:2026-10-25T22:34:43.2439342Z [36;1mGet-ChildItem weasel -Filter *.log -ErrorAction SilentlyContinue | Copy-Item -Destination build-logs[0m
+682:2026-10-25T22:34:43.2440451Z [36;1mGet-ChildItem weasel\output -Recurse -Include *.exe,*.dll -ErrorAction SilentlyContinue | Select-Object FullName | Out-File build-logs\output-files.txt[0m
