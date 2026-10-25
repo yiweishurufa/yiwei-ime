@@ -261,12 +261,12 @@ LEVERS_HELPERS = """  RimeCustomSettings* settings() { return settings_; }
   }
 """
 
-DEPLOYER_RUN_OLD = """  bool installing = !wcscmp(L"/install", lpCmdLine);
+DEPLOYER_RUN_OLD = """  bool installing = IsOption(args.front(), L"/install") && args.size() == 1;
   return configurator.Run(installing);"""
-DEPLOYER_RUN_NEW = """  bool installing = !wcscmp(L"/install", lpCmdLine);
+DEPLOYER_RUN_NEW = """  bool installing = IsOption(args.front(), L"/install") && args.size() == 1;
   // 一维输入法：「输入法设定」「界面风格」直接打开一维助手的设置窗口（外观页）；
   // /classic 或找不到助手时才用Weasel 原来的对话框
-  bool classic = !wcscmp(L"/classic", lpCmdLine);
+  bool classic = IsOption(args.front(), L"/classic");
   if (!installing && !classic && YiweiHelperRun(L"/settings \\u5916\\u89c2"))
     return 0;
   return configurator.Run(installing);"""
@@ -302,18 +302,45 @@ def patch_deployer_sources(text, base):
         if old not in text:
             raise SystemExit("WeaselDeployer.cpp: Run() tail not found")
         text = text.replace(old, DEPLOYER_RUN_NEW.replace("\n", nl), 1)
-        decl = "static int Run(LPTSTR lpCmdLine) {"
+        decl = "static int Run(int argc, wchar_t* argv[]) {"
         if decl not in text:
             raise SystemExit("WeaselDeployer.cpp: Run() not found")
         text = text.replace(decl, "bool YiweiHelperRun(const wchar_t* args);  // UIStyleSettingsDialog.cpp" + nl + nl + decl, 1)
     return text
 
 
+YIWEI_LAUNCHER = """// 一维输入法：打开一维助手（与部署程序在同一文件夹）；找不到助手时返回 false
+bool YiweiHelperRun(const wchar_t* args) {
+  WCHAR path[MAX_PATH] = {0};
+  GetModuleFileNameW(NULL, path, _countof(path));
+  std::wstring exe(path);
+  size_t slash = exe.find_last_of(L"\\\\/");
+  if (slash == std::wstring::npos)
+    return false;
+  exe = exe.substr(0, slash + 1) + L"YiweiHelper.exe";
+  if (GetFileAttributesW(exe.c_str()) == INVALID_FILE_ATTRIBUTES)
+    return false;
+  AllowSetForegroundWindow(ASFW_ANY);
+  HINSTANCE h = ShellExecuteW(NULL, L"open", exe.c_str(), args, NULL, SW_SHOWNORMAL);
+  return (INT_PTR)h > 32;
+}
+"""
+
+
 def install_style_dialog():
     dst = os.path.join(ROOT, "WeaselDeployer")
     if not os.path.isdir(dst):
         return
-    old, _, _ = read(os.path.join(dst, "UIStyleSettingsDialog.cpp"))
+    old, enc0, bom0 = read(os.path.join(dst, "UIStyleSettingsDialog.cpp"))
+    if old is not None and "preview_ui_" in old:
+        # 上游 2026-10 重写了对话框（预览用真实候选窗、样式键列表）：保留上游对话框，
+        # 只追加 YiweiHelperRun（打开一维助手设置）；「/classic」才会用到上游对话框。
+        if "YiweiHelperRun" not in old:
+            nl = "\r\n" if "\r\n" in old else "\n"
+            add = YIWEI_LAUNCHER.replace("\n", nl)
+            with open(os.path.join(dst, "UIStyleSettingsDialog.cpp"), "wb") as f:
+                f.write(bom0 + (old.rstrip() + nl + nl + add).encode(enc0))
+        return
     if old is not None and "YiweiHelperRun" not in old and "select_font_.EnableWindow(FALSE);" not in old:
         raise SystemExit("UIStyleSettingsDialog.cpp: upstream changed, review scripts/weasel_patches")
     ids = ", ".join('"%s"' % i for i in upstream_scheme_ids())
@@ -493,7 +520,7 @@ def main():
         drc, _, _ = read(os.path.join(dep, "WeaselDeployer.rc"))
         dcpp, _, _ = read(os.path.join(dep, "WeaselDeployer.cpp"))
         dlg, _, _ = read(os.path.join(dep, "UIStyleSettingsDialog.cpp"))
-        if '"中",IDOK' in drc or "YiweiHelperRun(L\"/settings" not in dcpp or "kYiweiOrder" not in dlg or '"steam"' not in dlg:
+        if '"中",IDOK' in drc or "YiweiHelperRun(L\"/settings" not in dcpp or ("kYiweiOrder" not in dlg and "YiweiHelperRun" not in dlg) or ("preview_ui_" not in dlg and '"steam"' not in dlg):
             leftovers.append("WeaselDeployer: 界面风格对话框未换成一维版本")
     print("rebranded %d files" % changed)
     if leftovers:
