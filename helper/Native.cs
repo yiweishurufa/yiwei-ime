@@ -216,7 +216,7 @@ namespace Yiwei
         /// </summary>
         public static void Regret(int chars, string pinyin)
         {
-            if (string.IsNullOrEmpty(pinyin) || pinyin.Length > 64) return;
+            if (string.IsNullOrEmpty(pinyin) || pinyin.Length > 240) return; // 和 yiwei_regret.lua 的 MAX_INPUT 一致（阶段 2 整句合并后会更长）
             foreach (var c in pinyin) if (!(c >= 'a' && c <= 'z' || c == '\'')) return;
             for (int i = 0; i < 100 && ((Native.GetAsyncKeyState((int)Keys.ControlKey) | Native.GetAsyncKeyState((int)Keys.ShiftKey)) & 0x8000) != 0; i++) Pump(10);
             ReleaseModifiers();

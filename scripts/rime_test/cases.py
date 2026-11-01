@@ -480,6 +480,24 @@ def regret_hotkeys(r):
         r.key("Control+BS")
         assert sent() == "regret:2:nihao", sent()
         reset()
+        # 阶段 2：分两次上屏的一句话（3 秒内、中间没按别的键）整句退回，拼音用 ' 隔开
+        yiwei_file(r, "regret.key", None)
+        wait_flags()
+        commit_nihao()
+        r.type("shijie"); r.key(" ")
+        assert r.commit() == "世界"
+        r.key("Control+Shift+Z")
+        assert sent() == "regret:4:nihao'shijie", sent()
+        reset()
+        # 中间按了方向键（光标可能动了）：只退回最后一段
+        wait_flags()
+        commit_nihao()
+        r.key("LEFT")
+        r.type("shijie"); r.key(" ")
+        assert r.commit() == "世界"
+        r.key("Control+Shift+Z")
+        assert sent() == "regret:2:shijie", sent()
+        reset()
         # 总开关
         yiwei_file(r, "regret.disabled", "1")
         wait_flags()
