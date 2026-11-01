@@ -149,6 +149,18 @@ yiwei_tech:
 """
 
 
+MIXED_BLOCK = """
+# 一维输入法：中英混输词条（PPT、QQ、IC卡、C位……），不抢首选；设置 → 词库 可关（用户文件夹放一份空的 yiwei_mixed.txt）
+yiwei_mixed:
+  dictionary: ""
+  user_dict: yiwei_mixed
+  db_class: stabledb
+  enable_completion: false
+  enable_sentence: false
+  initial_quality: 0.5
+"""
+
+
 STROKE_BLOCK = """
 # 一维输入法：笔画输入（W4），u + hspnz（横竖撇点折），至少两笔；候选注释是拼音
 yiwei_stroke:
@@ -263,11 +275,12 @@ def mount_into_schemas():
                           r"\2- lua_processor@*yiwei_pin  # 一维输入法：Ctrl+T 置顶 / Ctrl+Delete 隐藏候选\n", text, count=1)
         if n != 1:
             raise SystemExit("%s: ascii_composer not found" % fn)
-        text, n = re.subn(r"(\n  filters:\n(?:    [^\n]*\n)*)", r"\1    - lua_filter@*yiwei_learn  # 一维输入法：按习惯自动调候选（可关、可清除）\n    - lua_filter@*yiwei_pin_filter  # 一维输入法：置顶 / 隐藏候选\n    - lua_filter@*yiwei_pangu_filter  # 一维输入法：中英之间自动加空格\n" + ("" if ANDROID else "    - lua_filter@*yiwei_perf_filter  # 一维输入法：性能体检计时\n"), text, count=1)
+        text, n = re.subn(r"(\n  filters:\n(?:    [^\n]*\n)*)", r"\1" + ("" if ANDROID else "    - lua_filter@*yiwei_mixed_filter  # 一维输入法：中英混输词条不抢首选\n") + "    - lua_filter@*yiwei_learn  # 一维输入法：按习惯自动调候选（可关、可清除）\n    - lua_filter@*yiwei_pin_filter  # 一维输入法：置顶 / 隐藏候选\n    - lua_filter@*yiwei_pangu_filter  # 一维输入法：中英之间自动加空格\n" + ("" if ANDROID else "    - lua_filter@*yiwei_perf_filter  # 一维输入法：性能体检计时\n"), text, count=1)
         if n != 1:
             raise SystemExit("%s: filters not found" % fn)
         text = re.sub(r"(\n(\s+)- table_translator@custom_phrase[^\n]*\n)",
                       r"\1\2- table_translator@yiwei_tech     # 一维输入法：科技与互联网词库\n"
+                      + ("" if ANDROID else r"\2- table_translator@yiwei_mixed    # 一维输入法：中英混输词条\n") +
                       r"\2- lua_translator@*yiwei_convert   # 一维输入法：hs5km 单位 / 汇率换算\n", text, count=1)
         # hs + 数字 + 单位：让数字留在输入码里（和雾凇的 R、N 一样靠 recognizer）
         text, n = re.subn(r"(\nrecognizer:\n(?:  [^\n]*\n)*?  patterns:[^\n]*\n)", r'\1    yiwei_convert: "^hs[0-9][0-9.]*[a-z]*$"\n', text, count=1)
@@ -279,7 +292,7 @@ def mount_into_schemas():
             text, n = re.subn(r"(\n  filters:\n(?:    [^\n]*\n)*)", r"\1    - lua_filter@*yiwei_names  # 一维输入法：人名候选（W6）\n", text, count=1)
             if n != 1:
                 raise SystemExit("rime_ice.schema.yaml: names filter mount failed")
-        text = text.rstrip("\n") + "\n" + TECH_BLOCK
+        text = text.rstrip("\n") + "\n" + TECH_BLOCK + ("" if ANDROID else MIXED_BLOCK)
         open(path, "w", encoding="utf-8", newline="\n").write(text)
         count += 1
     if count == 0:

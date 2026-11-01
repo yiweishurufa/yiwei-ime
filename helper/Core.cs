@@ -255,6 +255,8 @@ namespace Yiwei
         public bool Traditional { get; set; } = false;
         /// <summary>32 标准词库（不含腾讯词向量大词库），见 Features/DictLite.cs。</summary>
         public bool LiteDict { get; set; } = false;
+        /// <summary>backlog 7 中英混输词条（PPT、QQ、IC卡、C位…），默认开；关掉时在用户文件夹放一份空的 yiwei_mixed.txt。</summary>
+        public bool MixedWords { get; set; } = true;
 
         // 快捷输入、模糊音、生僻字（Features/RimeFeatures.cs）
         public RimeFeatureSettings Features { get; set; } = new RimeFeatureSettings();

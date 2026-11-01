@@ -531,3 +531,29 @@ def toast_only_manual_toggle(r):
     finally:
         reset()
         r.option("ascii_mode", False)
+
+
+@case
+def mixed_words(r):
+    """backlog 7 中英混输词条：ppt → PPT、cwei → C位 排第 2（不抢首选），只有它一个候选时排第 1（icka → IC卡）；
+    用户文件夹放一份空的 yiwei_mixed.txt（和 helper/Features/MixedWords.cs 同一规则）后不再出现，删掉后恢复。"""
+    def page(code):
+        r.type(code); t = r.texts(6); r.clear(); return t
+    r.reopen("rime_ice")
+    for code, word in (("ppt", "PPT"), ("cwei", "C位"), ("qq", "QQ"), ("ktv", "KTV")):
+        t = page(code)
+        assert len(t) > 1 and t[1] == word, (code, t)
+    assert page("icka")[:1] == ["IC卡"], page("icka")
+    assert page("nihao")[0] == "你好"
+    off = os.path.join(r.user, "yiwei_mixed.txt")
+    open(off, "w", encoding="utf-8").write("# 一维输入法：中英混输词条已关闭（设置 → 词库 可重新打开；删掉本文件也会恢复）\n")
+    try:
+        r.deploy(True)
+        r.reopen("rime_ice")
+        assert "PPT" not in page("ppt"), page("ppt")
+        assert "IC卡" not in page("icka"), page("icka")
+    finally:
+        os.remove(off)
+        r.deploy(True)
+    r.reopen("rime_ice")
+    assert page("ppt")[1] == "PPT"

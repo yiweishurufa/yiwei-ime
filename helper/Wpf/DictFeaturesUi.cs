@@ -21,6 +21,10 @@ namespace Yiwei
                     S.LiteDict, v => { S.LiteDict = v; Save(); if (DictLite.Apply(v)) Rime.ApplySoon(100); }, 160),
                 Ui.SymbolRegular.Library24));
 
+            p.Children.Add(K.Card("中英混输词条",
+                "打 ppt、qq、icka、cwei 直接出 PPT、QQ、IC卡、C位 这类常用词，排在第 2 位、不抢首选（选多了会自动往前排）。切换后自动重新部署",
+                K.Toggle(S.MixedWords, v => { S.MixedWords = v; Save(); if (MixedWords.Apply(v)) Rime.ApplySoon(100); }), Ui.SymbolRegular.TextT24));
+
             var info = K.Text(DictUpdater.Describe(), 12, true);
             var err = DictUpdater.Load();
             if (!string.IsNullOrEmpty(err.LastError) && DateTime.TryParse(err.LastErrorAt, out var et))
