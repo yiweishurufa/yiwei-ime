@@ -37,8 +37,19 @@ namespace Yiwei
         static void Main(string[] args)
         {
             var command = string.Join(" ", args).Trim();
-            if (command.StartsWith("/")) Log.Write("start: " + command);
-            using (var mutex = new Mutex(true, MutexName, out bool first))
+            if (command.StartsWith("/")) Log.Write("start: " + command + " il=" + ProcessTrust.Describe());
+            Mutex mutex;
+            bool first;
+            try { mutex = new Mutex(true, MutexName, out first); }
+            catch (UnauthorizedAccessException e)
+            {
+                // 常驻助手已在运行，但这个进程权限更低（如从低完整性/沙箱程序的语言栏菜单启动），打不开它的互斥体。
+                // 以前这里直接抛异常退出，菜单「检查更新/设置」就「点了没反应」；现在当作已有实例，照常转发。
+                Log.Write("start: mutex denied (" + e.Message + "), forwarding");
+                Send(command.Length == 0 ? "/settings" : command);
+                return;
+            }
+            using (mutex)
             {
                 if (!first) { Send(command.Length == 0 ? "/settings" : command); return; }
 
@@ -307,16 +318,64 @@ namespace Yiwei
         {
             // 菜单点出来的这个进程有前台权限，转交给常驻助手，让它弹的对话框（检查更新等）能出现在最前面
             try { AllowSetForegroundWindow(-1 /* ASFW_ANY */); } catch { }
-            try
+            // 常驻助手的管道只有一个实例，上一条命令还没处理完时会短暂「忙」；重试几次再放弃，并把每次结果写进日志
+            for (int attempt = 1; attempt <= SendAttempts; attempt++)
             {
-                using (var c = new NamedPipeClientStream(".", PipeName, PipeDirection.Out))
+                try
                 {
-                    c.Connect(3000);
-                    var b = Encoding.UTF8.GetBytes(command);
-                    c.Write(b, 0, b.Length);
+                    using (var c = new NamedPipeClientStream(".", PipeName, PipeDirection.Out))
+                    {
+                        c.Connect(SendTimeoutMs);
+                        var b = Encoding.UTF8.GetBytes(command);
+                        c.Write(b, 0, b.Length);
+                        c.Flush();
+                    }
+                    Log.Write("send: ok " + command + (attempt > 1 ? " (第 " + attempt + " 次)" : ""));
+                    return;
+                }
+                catch (Exception e)
+                {
+                    Log.Write("send: 第 " + attempt + " 次失败 " + e.GetType().Name + ": " + e.Message);
+                    if (attempt < SendAttempts) Thread.Sleep(400);
                 }
             }
-            catch (Exception e) { Log.Write("send: " + e.Message); }
+            // 三次都连不上：至少给用户一个看得见的提示，而不是什么都不发生
+            try
+            {
+                MessageBox.Show("一维助手没有响应这次操作（" + command + "）。\n\n请从开始菜单重新打开「一维输入法助手」后再试；如果还不行，" +
+                    "请把 %TEMP%\\yiwei-helper.log 发给维护者。", "一维输入法", MessageBoxButtons.OK, MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+            }
+            catch { }
+        }
+
+        const int SendAttempts = 3;
+        const int SendTimeoutMs = 2000;
+
+        static bool _lowLabelFailed;
+
+        /// <summary>
+        /// 命名管道：允许同一用户、不同权限（管理员助手 vs 普通菜单进程）连入；
+        /// 再加「低完整性」强制标签，否则从低完整性进程（浏览器沙箱等）启动的转发进程写不进来（默认标签禁止向上写）。
+        /// 加标签失败（老系统/策略限制）就退回只有 ACL 的版本，并记一次日志。
+        /// </summary>
+        static NamedPipeServerStream CreatePipeServer()
+        {
+            var me = System.Security.Principal.WindowsIdentity.GetCurrent().User;
+            if (!_lowLabelFailed)
+            {
+                try
+                {
+                    var ps = new PipeSecurity();
+                    ps.SetSecurityDescriptorSddlForm("D:(A;;GRGW;;;AU)(A;;GA;;;" + me.Value + ")S:(ML;;NW;;;LW)", System.Security.AccessControl.AccessControlSections.All);
+                    return new NamedPipeServerStream(PipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.None, 0, 0, ps);
+                }
+                catch (Exception e) { _lowLabelFailed = true; Log.Write("pipe: low-IL label unavailable, " + e.Message); }
+            }
+            var ps2 = new PipeSecurity();
+            ps2.AddAccessRule(new PipeAccessRule(new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.AuthenticatedUserSid, null), PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow));
+            ps2.AddAccessRule(new PipeAccessRule(me, PipeAccessRights.FullControl, System.Security.AccessControl.AccessControlType.Allow));
+            return new NamedPipeServerStream(PipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.None, 0, 0, ps2);
         }
 
         static void StartPipeServer()
@@ -328,10 +387,7 @@ namespace Yiwei
                     try
                     {
                         // 允许同一会话里权限不同的进程（如以管理员运行的助手 vs 普通权限的语言栏菜单）连管道，否则 Connect 会被拒绝而「点了没反应」
-                        var ps = new System.IO.Pipes.PipeSecurity();
-                        ps.AddAccessRule(new System.IO.Pipes.PipeAccessRule(new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.AuthenticatedUserSid, null), System.IO.Pipes.PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow));
-                        ps.AddAccessRule(new System.IO.Pipes.PipeAccessRule(System.Security.Principal.WindowsIdentity.GetCurrent().User, System.IO.Pipes.PipeAccessRights.FullControl, System.Security.AccessControl.AccessControlType.Allow));
-                        using (var s = new NamedPipeServerStream(PipeName, PipeDirection.In, 1, System.IO.Pipes.PipeTransmissionMode.Byte, System.IO.Pipes.PipeOptions.None, 0, 0, ps))
+                        using (var s = CreatePipeServer())
                         {
                             s.WaitForConnection();
                             using (var r = new StreamReader(s, Encoding.UTF8))
