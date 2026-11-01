@@ -169,7 +169,7 @@ namespace Yiwei
         {
             var items = Items;
             if (idx < 0 || idx >= items.Count) return;
-            var text = items[idx].Text;
+            var text = PhraseVars.Expand(items[idx].Text);
             Close2();
             Program.Ui.BeginInvoke(new Action(() => TextOut.Type(text)));
         }

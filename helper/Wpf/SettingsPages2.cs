@@ -90,7 +90,7 @@ namespace Yiwei
             var book = SnippetBook.Current;
             var p = new StackPanel();
             p.Children.Add(K.PageTitle("常用语"));
-            p.Children.Add(K.Text("长按 Alt 再按分组序号打开面板，按 1–9 直接上屏。填了「编码」的条目，打拼音时也会出现在候选里。拖动可以排序，修改自动保存。", 13, true));
+            p.Children.Add(K.Text("长按 Alt 再按分组序号打开面板，按 1–9 直接上屏。填了「编码」的条目，打拼音时也会出现在候选里。拖动可以排序，修改自动保存。\n内容里可以写 {date} {time} {year} {month} {day} {hour} {minute} {second} {weekday}，上屏时换成当时的日期时间（如「今天是{date}」）。", 13, true));
 
             var groups = new ListBox { Width = 200, MinHeight = 320, Margin = new Thickness(0, 0, 12, 0) };
             var items = new ListBox { MinHeight = 320, HorizontalContentAlignment = HorizontalAlignment.Stretch };

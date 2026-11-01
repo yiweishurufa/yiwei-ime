@@ -575,3 +575,26 @@ def mixed_words(r):
         r.deploy(True)
     r.reopen("rime_ice")
     assert page("ppt")[1] == "PPT"
+
+
+@case
+def phrase_time_vars(r):
+    """常用语时间变量：custom_phrase 里的 {date}/{weekday} 上屏时换成当天的值，不认识的 {xxx} 原样保留
+    （和 helper/Features/PhraseVars.cs 同一套写法）。"""
+    import time
+    user_phrase = os.path.join(r.user, "custom_phrase.txt")
+    open(user_phrase, "w", encoding="utf-8").write(
+        "今天是{date}\tywjt\t100\n{weekday}好\tywxq\t100\n保留{abc}\tywbl\t100\n")
+    try:
+        r.deploy(True)
+        r.reopen("rime_ice")
+        r.type("ywjt"); got = r.texts(3); r.clear()
+        assert got and got[0] == "今天是" + time.strftime("%Y-%m-%d"), got
+        r.type("ywxq"); got = r.texts(3); r.clear()
+        week = "日一二三四五六"[int(time.strftime("%w"))]
+        assert got and got[0] == "星期" + week + "好", got
+        r.type("ywbl"); got = r.texts(3); r.clear()
+        assert got and got[0] == "保留{abc}", got
+    finally:
+        os.remove(user_phrase)
+        r.deploy(True)
