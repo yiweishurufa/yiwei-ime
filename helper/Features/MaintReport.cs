@@ -18,15 +18,40 @@ namespace Yiwei
     {
         const int Top = 200;
 
-        public static string Build()
+        /// <summary>报告里的各个部分，生成前的弹窗里可以逐项取消勾选（阶段 2，用户 2026-10-19 要求）。</summary>
+        [Flags]
+        public enum Parts
         {
+            None = 0,
+            Environment = 1,   // 版本与环境
+            Settings = 2,      // 设置摘要（去密钥）
+            Frequent = 4,      // 常用字 / 常用词 Top 200
+            Logs = 8,          // 日志里的错误与警告
+            Perf = 16,         // 性能体检
+            All = Environment | Settings | Frequent | Logs | Perf,
+        }
+
+        public static readonly (Parts part, string title, string desc)[] PartInfo =
+        {
+            (Parts.Environment, "版本与环境", "一维、小狼毫、Windows 版本"),
+            (Parts.Settings, "设置摘要", "你改过哪些设置（已去除密钥、地址、账号）"),
+            (Parts.Frequent, "常用字、常用词 Top " + Top, "只有字词和次数，没有整句；输入统计关闭时为空"),
+            (Parts.Logs, "日志里的错误与警告", "最近 7 天的 RIME 日志与助手日志，只摘出错误行"),
+            (Parts.Perf, "性能体检", "按键到出候选的耗时统计"),
+        };
+
+        public static string Build() => Build(Parts.All);
+
+        public static string Build(Parts parts)
+        {
+            if (parts == Parts.None) throw new InvalidOperationException("没有选择任何内容");
             var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             if (string.IsNullOrEmpty(desktop) || !Directory.Exists(desktop)) desktop = Path.GetTempPath();
             var zipPath = Path.Combine(desktop, "yiwei-report-" + DateTime.Now.ToString("yyyyMMdd-HHmm") + ".zip");
             using (var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create, Encoding.UTF8))
             {
-                Diagnostics.AddText(zip, "版本与环境.txt", Diagnostics.Environment_());
-                try
+                if (parts.HasFlag(Parts.Environment)) Diagnostics.AddText(zip, "版本与环境.txt", Diagnostics.Environment_());
+                if (parts.HasFlag(Parts.Settings)) try
                 {
                     if (File.Exists(Paths.SettingsFile))
                     {
@@ -38,21 +63,22 @@ namespace Yiwei
                 }
                 catch (Exception e) { Diagnostics.AddText(zip, "设置摘要.读取失败.txt", e.Message); }
 
-                try { var (chars, words) = Frequent(); Diagnostics.AddText(zip, "常用字-Top200.tsv", chars); Diagnostics.AddText(zip, "常用词-Top200.tsv", words); }
+                if (parts.HasFlag(Parts.Frequent)) try { var (chars, words) = Frequent(); Diagnostics.AddText(zip, "常用字-Top200.tsv", chars); Diagnostics.AddText(zip, "常用词-Top200.tsv", words); }
                 catch (Exception e) { Diagnostics.AddText(zip, "常用字词.读取失败.txt", e.Message); }
 
-                Diagnostics.AddText(zip, "日志错误.txt", LogErrors());
-                try { Diagnostics.AddText(zip, "性能体检.txt", PerfCheck.Run().ToString()); }
+                if (parts.HasFlag(Parts.Logs)) Diagnostics.AddText(zip, "日志错误.txt", LogErrors());
+                if (parts.HasFlag(Parts.Perf)) try { Diagnostics.AddText(zip, "性能体检.txt", PerfCheck.Run().ToString()); }
                 catch (Exception e) { Diagnostics.AddText(zip, "性能体检.读取失败.txt", e.Message); }
 
                 Diagnostics.AddText(zip, "说明.txt",
                     "一维输入法维护报告\r\n生成时间：" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\r\n\r\n" +
-                    "包含：版本与环境、设置摘要（已去除密钥与地址）、常用字/常用词 Top " + Top + "（只有字词和次数，没有整句）、日志里的错误与警告、性能体检。\r\n" +
+                    "包含：" + string.Join("、", PartInfo.Where(x => parts.HasFlag(x.part)).Select(x => x.title)) + "。\r\n" +
+                    (parts == Parts.All ? "" : "生成时你取消了：" + string.Join("、", PartInfo.Where(x => !parts.HasFlag(x.part)).Select(x => x.title)) + "。\r\n") +
                     "不包含：原文句子、剪贴板、常用语、密码框输入、用户词库文件。\r\n" +
                     "输入统计关闭时没有常用字词数据（设置 → 统计）。\r\n" +
                     "这个文件不会自动上传，请你自己决定是否发给维护者。\r\n");
             }
-            Log.Write("maint-report: " + zipPath);
+            Log.Write("maint-report: " + zipPath + " parts=" + parts);
             return zipPath;
         }
 
@@ -108,14 +134,18 @@ namespace Yiwei
             return sb.Length == 0 ? "没有找到日志。\r\n" : sb.ToString();
         }
 
+        static Parts _lastParts = Parts.All;
+
         public static void ConfirmAndBuild(Action<string> toast)
         {
-            if (!Dialogs.Confirm("将在桌面生成 yiwei-report-日期.zip，内容：\n\n· 版本与设置摘要（已去除密钥）\n· 常用字、常用词 Top 200（只有字词和次数）\n· 日志里的错误与警告\n· 性能体检数据\n\n不含原文句子、剪贴板、常用语和密码框输入；不会自动上传，你可以先打开看看再决定是否发给维护者。\n\n现在生成吗？")) return;
+            var parts = MaintReportDialog.Ask(_lastParts);
+            if (parts == Parts.None) return;
+            _lastParts = parts;
             Task.Run(() =>
             {
                 try
                 {
-                    var p = Build();
+                    var p = Build(parts);
                     try { System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + p + "\""); } catch { }
                     try { Program.Ui.BeginInvoke(new Action(() => toast("已放到桌面：" + Path.GetFileName(p)))); } catch { }
                 }
