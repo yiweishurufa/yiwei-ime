@@ -680,3 +680,47 @@ def typo_stats(r):
     finally:
         yiwei_file(r, "stats.enabled", None)
         clean()
+
+
+@case
+def x8_unlearn_on_retype(r):
+    """待办 8 从退格里学习：上屏的词马上被退格整个删掉、用同样拼音改选别的，刚才那次不算进习惯；中间按方向键则照常算。"""
+    import glob
+    try:
+        yiwei_file(r, "learn.disabled")
+        yiwei_file(r, "learn.clear", "all")
+        r.reopen("rime_ice")
+        r.type("shi"); r.clear()  # 执行清除
+        r.type("shi")
+        page = r.context()["page"]
+        r.clear()
+        x, y = page[3], page[4]
+        for _ in range(2):
+            r.type("shi"); r.pick(x); assert r.commit() == x
+        r.type("shi")
+        assert first(r) == x, r.context()["page"]
+        r.clear()
+        # 两次：空格上屏了 x，退格删掉，改选 y —— x 的这两次不算（仍是 2 次、时间也退回去），y 2 次且更近，排第一
+        # （不撤销的话 x 是 4 次，仍排第一）
+        import time
+        time.sleep(1.1)  # learn.tsv 时间按整秒记
+        for _ in range(2):
+            r.type("shi"); r.key(" "); assert r.commit() == x
+            r.key("BS")
+            r.type("shi"); r.pick(y); assert r.commit() == y
+        r.type("shi")
+        assert first(r) == y, "退格重打后 x 不该还排第一：x=%s y=%s %s %s" % (x, y, r.context()["page"], open(os.path.join(r.user, "yiwei", "learn.tsv"), encoding="utf-8").read()[-300:])
+        r.clear()
+        lines = []
+        for f in glob.glob(os.path.join(r.user, "yiwei", "learn.tsv")):
+            lines = [l.rstrip("\n") for l in open(f, encoding="utf-8")]
+        assert sum(1 for l in lines if l.startswith("shi\t" + x + "\t") and l.endswith("\t-1")) == 2, lines[-8:]
+        # 中间按了方向键：不是重打，照常记
+        r.type("shi"); r.key(" "); assert r.commit() == y
+        r.key("LEFT"); r.key("BS")
+        r.type("shi"); r.pick(x); assert r.commit() == x
+        lines = [l.rstrip("\n") for l in open(os.path.join(r.user, "yiwei", "learn.tsv"), encoding="utf-8")]
+        assert not any(l.startswith("shi\t" + y + "\t") and l.endswith("\t-1") for l in lines), lines[-4:]
+    finally:
+        yiwei_file(r, "learn.clear", "all")
+        r.type("shi"); r.clear()

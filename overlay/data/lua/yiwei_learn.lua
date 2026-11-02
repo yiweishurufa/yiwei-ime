@@ -6,6 +6,8 @@
 --   * 下次打同样的拼音，常选的词提到最前（词组选 1 次、单字选 2 次就算常选；学习强度可调），
 --     第二、三常选的也排到前三；用户词库里没有（比如被清过或别的方案）时也能补出来；
 --   * 置顶（Ctrl+T）优先于这里；无痕窗口（yiwei/private.now）不记。
+--   * 从退格里学习（待办 8）：刚上屏的词 30 秒内被退格整个删掉、又用同样的拼音选了别的词，
+--     就把刚才那次「选错」从习惯里减掉（learn.tsv 追加一行次数 -1），免得误选的词越学越靠前。随 learn.disabled 一起关。
 -- 开关（一维助手 设置 → 输入 → 按习惯调整候选，或手动放文件到用户目录 yiwei/）：
 --   learn.disabled   存在即关闭（不记、不调，只剩 RIME 自带的词频）
 --   learn.level      1 低 / 2 中（默认）/ 3 高：多少次算常选、多久淡忘
@@ -20,6 +22,7 @@ local LEVELS = {
   ["3"] = { phrase = 1, char = 1, half = 365 },
 }
 local MAX_ENTRIES = 5000
+local RETYPE_WINDOW = 30
 
 local S = { map = {}, size = -1, lines = 0, entries = 0, loaded = nil }
 
@@ -31,7 +34,9 @@ local function add(code, text, t, n)
   local e = m[text]
   if not e then e = { n = 0, t = 0 }; m[text] = e; S.entries = S.entries + 1 end
   e.n = e.n + (n or 1)
-  if t > e.t then e.t = t end
+  if e.n <= 0 then m[text] = nil; S.entries = S.entries - 1; return end -- 减到 0（退格撤销）就忘掉
+  if (n or 1) < 0 then e.t = t -- 撤销：时间退回到选错之前（-1 行里记的是那时的时间）
+  elseif t > e.t then e.t = t end
 end
 
 local function file_size(p)
@@ -50,7 +55,7 @@ local function load()
   local f = io.open(p, "r")
   if not f then return end
   for line in f:lines() do
-    local code, text, t, n = line:match("^([^\t]+)\t([^\t]+)\t(%d+)\t?(%d*)$")
+    local code, text, t, n = line:match("^([^\t]+)\t([^\t]+)\t(%d+)\t?(%-?%d*)$")
     if code then
       add(code, text, tonumber(t), tonumber(n) or 1)
       S.lines = S.lines + 1
@@ -91,6 +96,21 @@ local function record(code, text)
   S.lines = S.lines + 1
   S.size = file_size(log_path())
   if S.lines > S.entries * 2 + 200 or S.entries > MAX_ENTRIES * 1.2 then rewrite() end
+end
+
+-- 撤销一次选择（退格重打时）：次数 -1，减到 0 就从习惯里去掉
+local function unrecord(code, text, prev_t)
+  load()
+  local m = S.map[code]
+  if not (m and m[text]) then return end
+  local t = prev_t or m[text].t
+  add(code, text, t, -1)
+  local f = io.open(log_path(), "a")
+  if not f then return end
+  f:write(code, "\t", text, "\t", t, "\t-1\n")
+  f:close()
+  S.lines = S.lines + 1
+  S.size = file_size(log_path())
 end
 
 local function level()
@@ -182,18 +202,41 @@ end
 
 function F.init(env)
   load()
-  env.conn = env.engine.context.commit_notifier:connect(function(ctx)
+  local ctx0 = env.engine.context
+  env.conn = ctx0.commit_notifier:connect(function(ctx)
+    local last, bs = env.last, env.bs or 0
+    env.last, env.bs = nil, 0
     if flags.exists("learn.disabled") or private() then return end
     local text = ctx:get_commit_text() or ""
     local input = (ctx.input or ""):gsub("'", "")
     if text == "" or text == input or not input:match("^[a-z;]+$") or #input > 40 then return end
     if not text:find("[\128-\255]") or text:find("[\t\n]") then return end -- 只记中文（含符号的整句也行）
+    -- 刚才那个词被退格整个删掉，又用同样的拼音选了别的：那次算选错
+    if last and last.code == input and last.text ~= text and bs == ulen(last.text)
+        and os.time() - last.t <= RETYPE_WINDOW then
+      pcall(unrecord, last.code, last.text, last.prev_t)
+    end
+    local m = S.map[input]
+    local prev_t = m and m[text] and m[text].t or 0
     pcall(record, input, text)
+    env.last = { code = input, text = text, t = os.time(), prev_t = prev_t }
+  end)
+  -- 没在输入时 RIME 不处理的键（退格、方向键、回车……）会走这里；字母会开始新的输入，不经过这里
+  env.kconn = ctx0.unhandled_key_notifier:connect(function(ctx, key)
+    if not env.last or key:release() then return end
+    local kc = key.keycode
+    if kc >= 0xffe1 and kc <= 0xffee then return end -- 单独的修饰键
+    if kc == 0xff08 and not key:ctrl() and not key:alt() and not key:shift() then
+      env.bs = (env.bs or 0) + 1
+    else
+      env.last, env.bs = nil, 0
+    end
   end)
 end
 
 function F.fini(env)
   if env.conn then env.conn:disconnect() end
+  if env.kconn then env.kconn:disconnect() end
 end
 
 function F.func(input, env)
