@@ -49,7 +49,15 @@ namespace Yiwei
             public SortedDictionary<DateTime, long> ByDay = new SortedDictionary<DateTime, long>();
             public List<KeyValuePair<string, long>> TopApps = new List<KeyValuePair<string, long>>();
             public List<KeyValuePair<string, long>> TopWords = new List<KeyValuePair<string, long>>();
+            /// <summary>首选命中：用拼音选词上屏的次数和其中每段都选第一个候选的次数（本周、上周）。</summary>
+            public long PicksWeek, FirstWeek, PicksLastWeek, FirstLastWeek;
+            /// <summary>本周选词不顺的词：「删掉的字 → 重打成」和翻页才选到的词（来自 typo-*.tsv，本月和上月文件）。</summary>
+            public List<KeyValuePair<string, long>> TopRetyped = new List<KeyValuePair<string, long>>();
+            public List<KeyValuePair<string, long>> TopPaged = new List<KeyValuePair<string, long>>();
         }
+
+        /// <summary>命中率百分比；样本太少（不到 20 次）时返回 null，免得一两次选词就显示 0% / 100%。</summary>
+        public static int? HitRate(long picks, long first) => picks < 20 ? (int?)null : (int)Math.Round(first * 100.0 / picks);
 
         public static int CountChars(string s)
         {
@@ -102,6 +110,29 @@ namespace Yiwei
                     if (n >= 2 && n <= 8 && text.Any(c => c >= 0x4E00 && c <= 0x9FFF))
                     { words.TryGetValue(text, out var w); words[text] = w + 1; }
                 }
+            var lastWeekStart = weekStart.AddDays(-7);
+            foreach (var f in Directory.GetFiles(dir, "pick-*.tsv"))
+                foreach (var line in SafeLines(f))
+                {
+                    var p = line.Split('\t');
+                    if (p.Length != 2 || !DateTime.TryParseExact(p[0], "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var day)) continue;
+                    bool first = p[1] == "1";
+                    if (day >= weekStart) { r.PicksWeek++; if (first) r.FirstWeek++; }
+                    else if (day >= lastWeekStart) { r.PicksLastWeek++; if (first) r.FirstLastWeek++; }
+                }
+            // typo-*.tsv 不带日期（只记词），按月分文件：取本月和上月
+            var months = new[] { now.ToString("yyyy-MM"), now.AddMonths(-1).ToString("yyyy-MM") };
+            var typoFiles = months.Select(m => Path.Combine(dir, "typo-" + m + ".tsv")).Where(File.Exists).ToList();
+            var retyped = new Dictionary<string, long>(); var paged = new Dictionary<string, long>();
+            foreach (var f in typoFiles)
+                foreach (var line in SafeLines(f))
+                {
+                    var p = line.Split('\t');
+                    if (p.Length == 3 && p[0] == "retype") { var k = p[1] + " → " + p[2]; retyped.TryGetValue(k, out var n); retyped[k] = n + 1; }
+                    else if (p.Length == 2 && p[0] == "paged") { paged.TryGetValue(p[1], out var n); paged[p[1]] = n + 1; }
+                }
+            r.TopRetyped = retyped.OrderByDescending(x => x.Value).Take(8).ToList();
+            r.TopPaged = paged.OrderByDescending(x => x.Value).Take(8).ToList();
             r.TopApps = appCount.OrderByDescending(x => x.Value).Take(8).ToList();
             r.TopWords = words.OrderByDescending(x => x.Value).Take(20).ToList();
             return r;
@@ -139,7 +170,7 @@ namespace Yiwei
 
         public static void Clear()
         {
-            foreach (var f in Directory.GetFiles(Paths.YiweiDir, "stats-*.tsv").Concat(Directory.GetFiles(Paths.YiweiDir, "apps-*.tsv")).Concat(Directory.GetFiles(Paths.YiweiDir, "typo-*.tsv")))
+            foreach (var f in Directory.GetFiles(Paths.YiweiDir, "stats-*.tsv").Concat(Directory.GetFiles(Paths.YiweiDir, "apps-*.tsv")).Concat(Directory.GetFiles(Paths.YiweiDir, "typo-*.tsv")).Concat(Directory.GetFiles(Paths.YiweiDir, "pick-*.tsv")))
                 try { File.Delete(f); } catch { }
         }
     }

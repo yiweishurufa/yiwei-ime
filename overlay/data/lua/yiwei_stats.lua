@@ -5,6 +5,8 @@
 --   paged<TAB>词              翻到第 2 页以后才选到的词
 --   retype<TAB>删掉的字<TAB>重打的字   刚上屏的词马上按退格删掉、又重新打了别的
 -- 只记 1–8 个汉字的词，不记时间、不记前后文、不记整句；同样受统计开关和无痕窗口限制。
+-- 首选命中率（统计页「本周首选命中率」）：每次用拼音选词上屏，在 yiwei/pick-YYYY-MM.tsv 记一行「日期<TAB>1 或 0」
+-- （1 = 每一段都选的第一个候选），不含任何文字。
 local M = {}
 
 local RETYPE_WINDOW = 30 -- 上屏后 30 秒内开始退格才算「重打」
@@ -60,6 +62,21 @@ local function append(env, prefix, line)
   end
 end
 
+-- 本次上屏是否每一段都选的第一个候选（nil = 没有可判断的段）
+local function all_first(ctx)
+  local seen, first = false, true
+  pcall(function()
+    for _, seg in ipairs(ctx.composition:toSegmentation():get_segments()) do
+      if seg.selected_index then
+        seen = true
+        if seg.selected_index > 0 then first = false end
+      end
+    end
+  end)
+  if not seen then return nil end
+  return first
+end
+
 -- 本次上屏里翻页才选到的词（每段的选中序号 >= 每页候选数）
 local function paged_words(ctx, page_size)
   local words = {}
@@ -88,6 +105,11 @@ function M.init(env)
     if not enabled(env) then return end
     append(env, "stats", tostring(os.time()) .. "\t" .. (text:gsub("[\t\r\n]", " ")))
 
+    local input = ctx.input or ""
+    if input:match("^[a-z]") and text ~= input then
+      local f = all_first(ctx)
+      if f ~= nil then append(env, "pick", os.date("%Y-%m-%d") .. "\t" .. (f and "1" or "0")) end
+    end
     for _, w in ipairs(paged_words(ctx, env.page_size)) do
       append(env, "typo", "paged\t" .. w)
     end
@@ -96,7 +118,6 @@ function M.init(env)
       if gone and is_word(text) then append(env, "typo", "retype\t" .. gone .. "\t" .. text) end
     end
     -- 只有用拼音打出来的汉字词才可能被「退格重打」
-    local input = ctx.input or ""
     if is_word(text) and input:match("^[a-z]") then
       env.last_word, env.last_at = text, os.time()
     end

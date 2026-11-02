@@ -294,7 +294,8 @@ namespace Yiwei
         TextBlock _statToday, _statWeek, _statYear, _statSaved;
         LineChart _week;
         Heatmap _heat;
-        BarList _words, _apps;
+        BarList _words, _apps, _retyped, _paged;
+        TextBlock _hitRate, _hitTip;
 
         StackPanel PageStats()
         {
@@ -331,6 +332,22 @@ namespace Yiwei
             Grid.SetColumn(a, 1);
             two.Children.Add(w); two.Children.Add(a);
             p.Children.Add(two);
+            // 待办 14：本周选词顺不顺（首选命中率 + 常退格重打 / 翻页才选到的词 + 建议）
+            _hitRate = K.Text("—", 24, false, FontWeights.SemiBold);
+            _hitTip = K.Text("", 12, true);
+            var hit = new StackPanel();
+            hit.Children.Add(_hitRate); hit.Children.Add(_hitTip);
+            p.Children.Add(K.Block("本周首选命中率", "用拼音选词时，直接选第一个候选的比例", hit, Ui.SymbolRegular.Target24));
+            _retyped = new BarList { Unit = " 次" }; _themed.Add(_retyped);
+            _paged = new BarList { Unit = " 次" }; _themed.Add(_paged);
+            var two2 = new Grid();
+            two2.ColumnDefinitions.Add(new ColumnDefinition()); two2.ColumnDefinitions.Add(new ColumnDefinition());
+            var rb = K.Block("常退格重打", "刚上屏就删掉、改打成别的（近两个月）", _retyped); rb.Margin = new Thickness(0, 0, 4, 4);
+            var pb = K.Block("常翻页才选到", "不在第一页的词（近两个月）", _paged); pb.Margin = new Thickness(4, 0, 0, 4);
+            Grid.SetColumn(pb, 1);
+            two2.Children.Add(rb); two2.Children.Add(pb);
+            p.Children.Add(two2);
+
             p.Children.Add(K.Card("刷新", "重新读取统计数据", K.Btn("刷新", RefreshStats), Ui.SymbolRegular.ArrowClockwise24));
 
             p.Children.Add(K.Section("危险操作"));
@@ -359,7 +376,14 @@ namespace Yiwei
             _heat.Days = r.ByDay;
             _words.Items = r.TopWords.Take(10).ToList();
             _apps.Items = r.TopApps.Take(8).ToList();
-            foreach (var v in new FrameworkElement[] { _week, _heat, _words, _apps }) { v.InvalidateMeasure(); v.InvalidateVisual(); }
+            var rate = Stats.HitRate(r.PicksWeek, r.FirstWeek);
+            var last = Stats.HitRate(r.PicksLastWeek, r.FirstLastWeek);
+            _hitRate.Text = rate.HasValue ? rate + "%" : "—";
+            _hitTip.Text = !rate.HasValue ? "本周选词还不到 20 次，先不算" :
+                (last.HasValue ? "上周 " + last + "%，" : "") + "共选词 " + r.PicksWeek.ToString("N0") + " 次" +
+                (r.TopPaged.Count > 0 && r.TopPaged[0].Value >= 3 ? "。常翻页才选到的词：选中它时按 Ctrl+T 钉到第一位" : "");
+            _retyped.Items = r.TopRetyped; _paged.Items = r.TopPaged;
+            foreach (var v in new FrameworkElement[] { _week, _heat, _words, _apps, _retyped, _paged }) { v.InvalidateMeasure(); v.InvalidateVisual(); }
         }
     }
 }

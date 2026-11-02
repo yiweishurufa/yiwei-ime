@@ -611,13 +611,19 @@ def typo_stats(r):
             out += [l.rstrip("\n") for l in open(f, encoding="utf-8") if l.strip()]
         return out
 
+    def pick_lines():
+        out = []
+        for f in glob.glob(os.path.join(r.user, "yiwei", "pick-*.tsv")):
+            out += [l.rstrip("\n") for l in open(f, encoding="utf-8") if l.strip()]
+        return out
+
     def late_cjk():
         """第 2 页以后的第一个汉字候选（跳过 emoji）。"""
         ps = r.context()["page_size"]
         return next(t for t in r.texts(40)[ps * 2:] if len(t) == 1 and 0x4E00 <= ord(t) <= 0x9FFF)
 
     def clean():
-        for f in glob.glob(os.path.join(r.user, "yiwei", "typo-*.tsv")) + glob.glob(os.path.join(r.user, "yiwei", "stats-*.tsv")):
+        for f in glob.glob(os.path.join(r.user, "yiwei", "typo-*.tsv")) + glob.glob(os.path.join(r.user, "yiwei", "stats-*.tsv")) + glob.glob(os.path.join(r.user, "yiwei", "pick-*.tsv")):
             os.remove(f)
 
     try:
@@ -663,6 +669,14 @@ def typo_stats(r):
         assert typo_lines() == [], typo_lines()
         # 统计文件只有上屏的词本身（与以前一致），typo 文件里没有时间戳
         assert not any(l[0].isdigit() for l in typo_lines())
+        # 首选命中率：pick 文件只有「日期 TAB 1/0」，第一个候选记 1，其它记 0，回车上屏字母不记
+        import datetime
+        today = datetime.date.today().isoformat()
+        clean()
+        r.type("nihao"); r.key(" "); r.commit()
+        r.type("nihao"); r.pick("拟好"); r.commit()
+        r.type("abc"); r.key("RET"); r.commit()
+        assert pick_lines() == [today + "\t1", today + "\t0"], pick_lines()
     finally:
         yiwei_file(r, "stats.enabled", None)
         clean()
