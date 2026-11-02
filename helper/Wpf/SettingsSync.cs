@@ -128,6 +128,38 @@ namespace Yiwei
                     }
                 }), Ui.SymbolRegular.History24));
 
+            p.Children.Add(K.Section("设置导入 / 导出"));
+            p.Children.Add(K.Card("导出设置", "只导出设置、开关、快捷键和方案补丁，换电脑用；不含 AI 密钥、WebDAV 账号、词库、常用语和统计",
+                K.Btn("导出…", () =>
+                {
+                    using (var dlg = new System.Windows.Forms.SaveFileDialog { Filter = "一维输入法设置|*" + SettingsTransfer.Extension, FileName = "一维输入法设置-" + DateTime.Now.ToString("yyyyMMdd") + SettingsTransfer.Extension })
+                    {
+                        if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                        var path = dlg.FileName;
+                        System.Threading.Tasks.Task.Run(() => SettingsTransfer.Export(path)).ContinueWith(t => Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            if (t.IsFaulted) { Log.Write("settings-export: " + t.Exception.GetBaseException()); Toast("导出失败：" + t.Exception.GetBaseException().Message); }
+                            else Toast("已导出设置（" + t.Result + " 个文件）");
+                        })));
+                    }
+                }), Ui.SymbolRegular.ArrowExportUp24));
+            p.Children.Add(K.Card("导入设置", "用另一台电脑导出的设置覆盖本机设置；本机的密钥和账号不变，导入前会自动把当前设置存一份到 yiwei\\backup",
+                K.Btn("导入…", () =>
+                {
+                    using (var dlg = new System.Windows.Forms.OpenFileDialog { Filter = "一维输入法设置|*" + SettingsTransfer.Extension + "|全部文件|*.*" })
+                    {
+                        if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                        if (!Dialogs.Confirm("用这个文件覆盖本机的设置？\n本机的 AI 密钥、WebDAV 账号、词库和常用语不受影响，当前设置会先自动备份。")) return;
+                        var path = dlg.FileName;
+                        Toast("正在导入…");
+                        System.Threading.Tasks.Task.Run(() => SettingsTransfer.Import(path)).ContinueWith(t => Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            if (t.IsFaulted) { Log.Write("settings-import: " + t.Exception.GetBaseException()); Toast("导入失败：" + t.Exception.GetBaseException().Message); }
+                            else Toast("已导入 " + t.Result.count + " 个文件，正在重新部署；重新打开设置后可以看到导入的选项");
+                        })));
+                    }
+                }), Ui.SymbolRegular.ArrowImport24));
+
             p.Children.Add(K.Section("与手机互通"));
             p.Children.Add(K.Card("局域网互传", "手机连同一个 Wi-Fi 扫码，互发文字，不经过任何服务器；也可以把词库直接发到手机",
                 K.Btn("打开互传", () => Program.ShowLanShare(), Ui.ControlAppearance.Primary, Ui.SymbolRegular.Phone24), Ui.SymbolRegular.PhoneLaptop24));

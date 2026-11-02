@@ -77,6 +77,9 @@ namespace Yiwei
         {
             try { Json.Save(FilePath, this); } catch (Exception e) { Log.Write("tools.json save: " + e.Message); }
         }
+
+        /// <summary>下次读取时重新从 tools.json 加载（设置导入后用）。</summary>
+        public static void Reload() { _current = null; }
     }
 
     /// <summary>One tool the user can trigger from 文字工具菜单 / a hotkey / the pipe (/tool &lt;id&gt;).</summary>

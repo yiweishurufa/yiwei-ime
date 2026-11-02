@@ -155,6 +155,9 @@ namespace Yiwei
 
         public static void SaveStore() { lock (Gate) Json.Save(StoreFile, Current); }
 
+        /// <summary>下次读取时重新从 appmodes.json 加载（设置导入后用）。</summary>
+        public static void Reload() { lock (Gate) _store = null; }
+
         // ---------- 有效值 ----------
 
         public static bool IsAscii(Settings s, string exe)
