@@ -222,7 +222,8 @@ function F.init(env)
     env.last = { code = input, text = text, t = os.time(), prev_t = prev_t }
   end)
   -- 没在输入时 RIME 不处理的键（退格、方向键、回车……）会走这里；字母会开始新的输入，不经过这里
-  env.kconn = ctx0.unhandled_key_notifier:connect(function(ctx, key)
+  -- 安卓（同文）也用这个文件：老版本 librime-lua 没有这个通知就只是不做「从退格里学习」
+  local ok, conn = pcall(function() return ctx0.unhandled_key_notifier:connect(function(ctx, key)
     if not env.last or key:release() then return end
     local kc = key.keycode
     if kc >= 0xffe1 and kc <= 0xffee then return end -- 单独的修饰键
@@ -231,7 +232,8 @@ function F.init(env)
     else
       env.last, env.bs = nil, 0
     end
-  end)
+  end) end)
+  if ok then env.kconn = conn end
 end
 
 function F.fini(env)
