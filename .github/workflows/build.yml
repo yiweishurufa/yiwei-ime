@@ -13,7 +13,7 @@ permissions:
 
 env:
   WEASEL_REPO: https://github.com/rime/weasel.git
-  WEASEL_SHA: d73f6295e8252ed2f7b9c12bae32e9001b1afdaa
+  WEASEL_SHA: 82b50c9e9b9ee0bd31357db6f25ddc804546c7f7
   VERSION_MAJOR: '0'
   VERSION_MINOR: '1'
   VERSION_PATCH: '0'
