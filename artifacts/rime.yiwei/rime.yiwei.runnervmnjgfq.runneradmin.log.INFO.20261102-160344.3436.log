@@ -1,0 +1,748 @@
+Log file created at: 2026/11/02 16:03:44
+Running on machine: runnervmnjgfq
+Running duration (h:mm:ss): 0:00:00
+Log line format: [IWEF]yyyymmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I20261102 16:03:44.435357  6724 core_module.cc:20] registering core components.
+I20261102 16:03:44.436695  6724 registry.cc:14] registering component: config_builder
+I20261102 16:03:44.436711  6724 registry.cc:14] registering component: config
+I20261102 16:03:44.436719  6724 registry.cc:14] registering component: schema
+I20261102 16:03:44.436725  6724 registry.cc:14] registering component: user_config
+I20261102 16:03:44.436732  6724 dict_module.cc:25] registering components from module 'dict'.
+I20261102 16:03:44.436750  6724 registry.cc:14] registering component: tabledb
+I20261102 16:03:44.436766  6724 registry.cc:14] registering component: stabledb
+I20261102 16:03:44.436775  6724 registry.cc:14] registering component: plain_userdb
+I20261102 16:03:44.436782  6724 registry.cc:14] registering component: userdb
+I20261102 16:03:44.436800  6724 registry.cc:14] registering component: corrector
+I20261102 16:03:44.436818  6724 registry.cc:14] registering component: dictionary
+I20261102 16:03:44.436836  6724 registry.cc:14] registering component: reverse_lookup_dictionary
+I20261102 16:03:44.436873  6724 registry.cc:14] registering component: user_dictionary
+I20261102 16:03:44.436881  6724 registry.cc:14] registering component: userdb_recovery_task
+I20261102 16:03:44.436898  6724 levers_module.cc:16] registering components from module 'levers'.
+I20261102 16:03:44.436904  6724 registry.cc:14] registering component: detect_modifications
+I20261102 16:03:44.436911  6724 registry.cc:14] registering component: installation_update
+I20261102 16:03:44.436917  6724 registry.cc:14] registering component: workspace_update
+I20261102 16:03:44.436921  6724 registry.cc:14] registering component: schema_update
+I20261102 16:03:44.436924  6724 registry.cc:14] registering component: config_file_update
+I20261102 16:03:44.436927  6724 registry.cc:14] registering component: prebuild_all_schemas
+I20261102 16:03:44.436931  6724 registry.cc:14] registering component: user_dict_upgrade
+I20261102 16:03:44.436934  6724 registry.cc:14] registering component: cleanup_trash
+I20261102 16:03:44.436937  6724 registry.cc:14] registering component: user_dict_sync
+I20261102 16:03:44.436940  6724 registry.cc:14] registering component: backup_config_files
+I20261102 16:03:44.436943  6724 registry.cc:14] registering component: clean_old_log_files
+I20261102 16:03:44.440829  6724 deployment_tasks.cc:83] updating rime installation info.
+I20261102 16:03:44.440950  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\installation.yaml'.
+I20261102 16:03:44.441470  6724 deployment_tasks.cc:101] installation info exists. installation id: 6a456898-a5af-4264-83de-385880e3ad6e
+I20261102 16:03:44.441486  6724 deployment_tasks.cc:112] sync dir: C:\Users\runneradmin\AppData\Roaming\YiweiIME\sync
+I20261102 16:03:44.441496  6724 deployment_tasks.cc:118] previous distribution: Yiwei
+I20261102 16:03:44.441503  6724 deployment_tasks.cc:121] previous distribution version: 0.1.0
+I20261102 16:03:44.441509  6724 deployment_tasks.cc:124] previous Rime version: 1.17.0
+I20261102 16:03:44.441514  6724 deployment_tasks.cc:133] creating installation info.
+I20261102 16:03:44.441535  6724 config_data.cc:202] write: update_time
+I20261102 16:03:44.441570  6724 config_data.cc:202] write: distribution_name
+I20261102 16:03:44.441580  6724 deployment_tasks.cc:150] distribution: 一维输入法
+I20261102 16:03:44.441585  6724 config_data.cc:202] write: distribution_code_name
+I20261102 16:03:44.441594  6724 deployment_tasks.cc:155] distribution code name: Yiwei
+I20261102 16:03:44.441599  6724 config_data.cc:202] write: distribution_version
+I20261102 16:03:44.441608  6724 deployment_tasks.cc:159] distribution version: 0.1.0.109
+I20261102 16:03:44.441614  6724 config_data.cc:202] write: rime_version
+I20261102 16:03:44.441622  6724 deployment_tasks.cc:162] Rime version: 1.17.0
+I20261102 16:03:44.441627  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\installation.yaml'.
+I20261102 16:03:44.442372  6724 deployment_tasks.cc:167] updating workspace.
+I20261102 16:03:44.442534  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\default.yaml'.
+I20261102 16:03:44.445833  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml
+I20261102 16:03:44.446427  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml'.
+I20261102 16:03:44.448367  6724 auto_patch_config_plugin.cc:29] auto-patch default:/__patch: default.custom:/patch?
+I20261102 16:03:44.448428  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\default.custom.yaml'.
+W20261102 16:03:44.448493  6724 config_compiler.cc:391] inaccessible node: default.custom:/patch
+I20261102 16:03:44.448887  6724 config_compiler.cc:537] resolved: Patch(default.custom:patch <optional>)
+I20261102 16:03:44.448999  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\default.yaml'.
+I20261102 16:03:44.450363  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\default.yaml'.
+I20261102 16:03:44.451645  6724 deployment_tasks.cc:190] updating schemas.
+I20261102 16:03:44.451665  6724 deployment_tasks.cc:199] schema: rime_ice
+I20261102 16:03:44.451761  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\rime_ice.schema.yaml'.
+I20261102 16:03:44.456140  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.schema.yaml'.
+I20261102 16:03:44.472223  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml
+I20261102 16:03:44.472839  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\rime_ice.schema.yaml'.
+I20261102 16:03:44.476052  6724 auto_patch_config_plugin.cc:29] auto-patch rime_ice.schema:/__patch: rime_ice.custom:/patch?
+I20261102 16:03:44.476131  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml'.
+I20261102 16:03:44.477828  6724 auto_patch_config_plugin.cc:29] auto-patch default:/__patch: default.custom:/patch?
+I20261102 16:03:44.477883  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\default.custom.yaml'.
+W20261102 16:03:44.477924  6724 config_compiler.cc:391] inaccessible node: default.custom:/patch
+I20261102 16:03:44.477964  6724 config_compiler.cc:537] resolved: Patch(default.custom:patch <optional>)
+I20261102 16:03:44.477991  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/full_shape)
+I20261102 16:03:44.477995  6724 config_compiler.cc:537] resolved: PendingChild(rime_ice.schema:/punctuator/full_shape)
+I20261102 16:03:44.478001  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/half_shape)
+I20261102 16:03:44.478005  6724 config_compiler.cc:537] resolved: PendingChild(rime_ice.schema:/punctuator/half_shape)
+I20261102 16:03:44.478088  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\symbols_v.yaml'.
+I20261102 16:03:44.495162  6724 auto_patch_config_plugin.cc:29] auto-patch symbols_v:/__patch: symbols_v.custom:/patch?
+I20261102 16:03:44.495298  6724 config_compiler.cc:426] optional resource not loaded: symbols_v.custom
+I20261102 16:03:44.495303  6724 config_compiler.cc:537] resolved: Patch(symbols_v.custom:patch <optional>)
+I20261102 16:03:44.495312  6724 config_compiler.cc:537] resolved: Include(symbols_v:/symbols)
+I20261102 16:03:44.495315  6724 config_compiler.cc:537] resolved: PendingChild(rime_ice.schema:/punctuator/symbols)
+I20261102 16:03:44.495513  6724 config_compiler.cc:537] resolved: Include(default:/punctuator)
+I20261102 16:03:44.495517  6724 config_compiler.cc:537] resolved: PendingChild(rime_ice.schema:/punctuator)
+I20261102 16:03:44.495580  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\rime_ice.custom.yaml'.
+I20261102 16:03:44.495688  6724 config_compiler.cc:214] patching switches/@2/reset
+I20261102 16:03:44.495709  6724 config_compiler.cc:537] resolved: Patch(rime_ice.custom:patch <optional>)
+I20261102 16:03:44.495825  6724 legacy_preset_config_plugin.cc:26] interpreting key_binder/import_preset: default
+I20261102 16:03:44.495840  6724 legacy_preset_config_plugin.cc:65] interpreting recognizer/import_preset: default
+I20261102 16:03:44.495970  6724 build_info_plugin.cc:27] resource 'symbols_v.custom' not loaded.
+I20261102 16:03:44.495980  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.schema.yaml'.
+I20261102 16:03:44.501941  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.schema.yaml'.
+I20261102 16:03:44.517253  6724 deployment_tasks.cc:362] preparing dictionary 'rime_ice'.
+I20261102 16:03:44.517884  6724 dict_compiler.cc:81] compiling dictionary for C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.schema.yaml
+I20261102 16:03:44.673363  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:44.673643  6724 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.prism.bin
+I20261102 16:03:44.673696  6724 prism.cc:121] found double array image of size 2304.
+I20261102 16:03:44.673718  6724 dict_compiler.cc:126] C:\Program Files\Yiwei\yiwei-0.1.0\data\rime_ice.dict.yaml[6 file(s)] (1493339960)
+I20261102 16:03:44.673734  6724 dict_compiler.cc:128] C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.schema.yaml (2882367535)
+I20261102 16:03:44.673788  6724 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.reverse.bin
+I20261102 16:03:44.673881  6724 dict_compiler.cc:299] building prism...
+I20261102 16:03:44.673893  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:44.674201  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.schema.yaml'.
+I20261102 16:03:44.712129  6724 mapped_file.cc:59] creating file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.prism.bin'.
+I20261102 16:03:44.712530  6724 mapped_file.cc:70] opening file for read/write access.
+I20261102 16:03:44.712941  6724 prism.cc:132] saving prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.prism.bin
+I20261102 16:03:44.712948  6724 mapped_file.cc:118] shrinking file to fit data size. capacity: 67496
+I20261102 16:03:44.712952  6724 mapped_file.cc:129] resize file to: 40032
+I20261102 16:03:44.713294  6724 deployment_tasks.cc:379] dictionary 'rime_ice' is ready.
+I20261102 16:03:44.714028  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.schema.yaml'.
+I20261102 16:03:44.728585  6724 deployment_tasks.cc:199] schema: yiwei_stroke
+I20261102 16:03:44.728746  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\yiwei_stroke.schema.yaml'.
+I20261102 16:03:44.729005  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.schema.yaml'.
+I20261102 16:03:44.729307  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml
+I20261102 16:03:44.729927  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\yiwei_stroke.schema.yaml'.
+I20261102 16:03:44.730101  6724 auto_patch_config_plugin.cc:29] auto-patch yiwei_stroke.schema:/__patch: yiwei_stroke.custom:/patch?
+I20261102 16:03:44.730167  6724 config_compiler.cc:426] optional resource not loaded: yiwei_stroke.custom
+I20261102 16:03:44.730173  6724 config_compiler.cc:537] resolved: Patch(yiwei_stroke.custom:patch <optional>)
+I20261102 16:03:44.730226  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml'.
+I20261102 16:03:44.731991  6724 auto_patch_config_plugin.cc:29] auto-patch default:/__patch: default.custom:/patch?
+I20261102 16:03:44.732044  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\default.custom.yaml'.
+W20261102 16:03:44.732164  6724 config_compiler.cc:391] inaccessible node: default.custom:/patch
+I20261102 16:03:44.733780  6724 config_compiler.cc:537] resolved: Patch(default.custom:patch <optional>)
+I20261102 16:03:44.733849  6724 build_info_plugin.cc:27] resource 'yiwei_stroke.custom' not loaded.
+I20261102 16:03:44.733873  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.schema.yaml'.
+I20261102 16:03:44.734487  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.schema.yaml'.
+I20261102 16:03:44.734819  6724 deployment_tasks.cc:362] preparing dictionary 'yiwei_stroke'.
+I20261102 16:03:44.735332  6724 dict_compiler.cc:81] compiling dictionary for C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.schema.yaml
+I20261102 16:03:44.740911  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.table.bin
+I20261102 16:03:44.741075  6724 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.prism.bin
+I20261102 16:03:44.741125  6724 prism.cc:121] found double array image of size 385536.
+I20261102 16:03:44.741149  6724 dict_compiler.cc:126] C:\Program Files\Yiwei\yiwei-0.1.0\data\yiwei_stroke.dict.yaml[1 file(s)] (1276365397)
+I20261102 16:03:44.741155  6724 dict_compiler.cc:128] C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.schema.yaml (2278143429)
+I20261102 16:03:44.741222  6724 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.reverse.bin
+I20261102 16:03:44.741342  6724 dict_compiler.cc:299] building prism...
+I20261102 16:03:44.741353  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.table.bin
+I20261102 16:03:44.793988  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.schema.yaml'.
+I20261102 16:03:44.871379  6724 mapped_file.cc:59] creating file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.prism.bin'.
+I20261102 16:03:44.885113  6724 mapped_file.cc:70] opening file for read/write access.
+I20261102 16:03:44.894268  6724 prism.cc:132] saving prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\yiwei_stroke.prism.bin
+I20261102 16:03:44.894287  6724 mapped_file.cc:118] shrinking file to fit data size. capacity: 2341672
+I20261102 16:03:44.894292  6724 mapped_file.cc:129] resize file to: 1542460
+I20261102 16:03:44.900397  6724 deployment_tasks.cc:379] dictionary 'yiwei_stroke' is ready.
+I20261102 16:03:44.900553  6724 deployment_tasks.cc:199] schema: melt_eng
+I20261102 16:03:44.900689  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\melt_eng.schema.yaml'.
+I20261102 16:03:44.902432  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.schema.yaml'.
+I20261102 16:03:44.906364  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml
+I20261102 16:03:44.907107  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\melt_eng.schema.yaml'.
+I20261102 16:03:44.908897  6724 auto_patch_config_plugin.cc:29] auto-patch melt_eng.schema:/__patch: melt_eng.custom:/patch?
+W20261102 16:03:44.908909  6724 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261102 16:03:44.908923  6724 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+W20261102 16:03:44.908931  6724 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261102 16:03:44.908936  6724 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+I20261102 16:03:44.908947  6724 config_compiler.cc:537] resolved: Include(melt_eng.schema:algebra_common)
+I20261102 16:03:44.908952  6724 config_compiler.cc:537] resolved: Include(melt_eng.schema:algebra_rime_ice)
+I20261102 16:03:44.908971  6724 config_compiler.cc:537] resolved: PendingChild(melt_eng.schema:/speller/algebra)
+I20261102 16:03:44.908975  6724 config_compiler.cc:537] resolved: PendingChild(melt_eng.schema:/speller)
+I20261102 16:03:44.908978  6724 config_compiler.cc:537] resolved: PendingChild(melt_eng.schema:/algebra_rime_ice)
+W20261102 16:03:44.908983  6724 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261102 16:03:44.908988  6724 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+I20261102 16:03:44.908996  6724 config_compiler.cc:537] resolved: Include(melt_eng.schema:algebra_common)
+I20261102 16:03:44.909000  6724 config_compiler.cc:537] resolved: PendingChild(melt_eng.schema:/algebra_pinyin)
+W20261102 16:03:44.909003  6724 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261102 16:03:44.909008  6724 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+I20261102 16:03:44.909016  6724 config_compiler.cc:537] resolved: Include(melt_eng.schema:algebra_common)
+I20261102 16:03:44.909019  6724 config_compiler.cc:537] resolved: PendingChild(melt_eng.schema:/algebra_double_pinyin)
+W20261102 16:03:44.909023  6724 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261102 16:03:44.909028  6724 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+I20261102 16:03:44.909036  6724 config_compiler.cc:537] resolved: Include(melt_eng.schema:algebra_common)
+I20261102 16:03:44.909039  6724 config_compiler.cc:537] resolved: PendingChild(melt_eng.schema:/algebra_double_pinyin_flypy)
+W20261102 16:03:44.909043  6724 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261102 16:03:44.909048  6724 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+I20261102 16:03:44.909056  6724 config_compiler.cc:537] resolved: Include(melt_eng.schema:algebra_common)
+I20261102 16:03:44.909059  6724 config_compiler.cc:537] resolved: PendingChild(melt_eng.schema:/algebra_double_pinyin_mspy)
+W20261102 16:03:44.909063  6724 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261102 16:03:44.909068  6724 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+I20261102 16:03:44.909075  6724 config_compiler.cc:537] resolved: Include(melt_eng.schema:algebra_common)
+I20261102 16:03:44.909079  6724 config_compiler.cc:537] resolved: PendingChild(melt_eng.schema:/algebra_double_pinyin_sogou)
+W20261102 16:03:44.909082  6724 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261102 16:03:44.909088  6724 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+I20261102 16:03:44.909095  6724 config_compiler.cc:537] resolved: Include(melt_eng.schema:algebra_common)
+I20261102 16:03:44.909098  6724 config_compiler.cc:537] resolved: PendingChild(melt_eng.schema:/algebra_double_pinyin_abc)
+W20261102 16:03:44.909102  6724 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261102 16:03:44.909107  6724 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+I20261102 16:03:44.909115  6724 config_compiler.cc:537] resolved: Include(melt_eng.schema:algebra_common)
+I20261102 16:03:44.909118  6724 config_compiler.cc:537] resolved: PendingChild(melt_eng.schema:/algebra_double_pinyin_ziguang)
+W20261102 16:03:44.909122  6724 config_compiler.cc:527] circular dependencies detected in melt_eng.schema:
+W20261102 16:03:44.909127  6724 config_compiler.cc:367] accessing blocking node with unresolved dependencies: melt_eng.schema:
+I20261102 16:03:44.909134  6724 config_compiler.cc:537] resolved: Include(melt_eng.schema:algebra_common)
+I20261102 16:03:44.909137  6724 config_compiler.cc:537] resolved: PendingChild(melt_eng.schema:/algebra_double_pinyin_jiajia)
+I20261102 16:03:44.909212  6724 config_compiler.cc:426] optional resource not loaded: melt_eng.custom
+I20261102 16:03:44.909217  6724 config_compiler.cc:537] resolved: Patch(melt_eng.custom:patch <optional>)
+I20261102 16:03:44.909272  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml'.
+I20261102 16:03:44.910961  6724 auto_patch_config_plugin.cc:29] auto-patch default:/__patch: default.custom:/patch?
+I20261102 16:03:44.911015  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\default.custom.yaml'.
+W20261102 16:03:44.911055  6724 config_compiler.cc:391] inaccessible node: default.custom:/patch
+I20261102 16:03:44.911066  6724 config_compiler.cc:537] resolved: Patch(default.custom:patch <optional>)
+I20261102 16:03:44.911083  6724 legacy_preset_config_plugin.cc:26] interpreting key_binder/import_preset: default
+I20261102 16:03:44.911093  6724 legacy_preset_config_plugin.cc:52] interpreting punctuator/import_preset: default
+I20261102 16:03:44.911101  6724 legacy_preset_config_plugin.cc:65] interpreting recognizer/import_preset: default
+I20261102 16:03:44.911148  6724 build_info_plugin.cc:27] resource 'melt_eng.custom' not loaded.
+I20261102 16:03:44.911169  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.schema.yaml'.
+I20261102 16:03:44.913359  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.schema.yaml'.
+I20261102 16:03:44.917172  6724 deployment_tasks.cc:362] preparing dictionary 'melt_eng'.
+I20261102 16:03:44.917715  6724 dict_compiler.cc:81] compiling dictionary for C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.schema.yaml
+I20261102 16:03:44.919616  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.table.bin
+I20261102 16:03:44.919745  6724 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.prism.bin
+I20261102 16:03:44.919795  6724 prism.cc:121] found double array image of size 813312.
+I20261102 16:03:44.919820  6724 dict_compiler.cc:126] C:\Program Files\Yiwei\yiwei-0.1.0\data\melt_eng.dict.yaml[3 file(s)] (3773227324)
+I20261102 16:03:44.919826  6724 dict_compiler.cc:128] C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.schema.yaml (1383554748)
+I20261102 16:03:44.919896  6724 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.reverse.bin
+I20261102 16:03:44.920001  6724 dict_compiler.cc:299] building prism...
+I20261102 16:03:44.920011  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.table.bin
+I20261102 16:03:44.933326  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.schema.yaml'.
+I20261102 16:03:51.967759  6724 mapped_file.cc:59] creating file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.prism.bin'.
+I20261102 16:03:51.968235  6724 mapped_file.cc:70] opening file for read/write access.
+I20261102 16:03:52.060434  6724 prism.cc:132] saving prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\melt_eng.prism.bin
+I20261102 16:03:52.060457  6724 mapped_file.cc:118] shrinking file to fit data size. capacity: 12978020
+I20261102 16:03:52.060462  6724 mapped_file.cc:129] resize file to: 8555864
+I20261102 16:03:52.098507  6724 deployment_tasks.cc:379] dictionary 'melt_eng' is ready.
+I20261102 16:03:52.098863  6724 deployment_tasks.cc:199] schema: radical_pinyin
+I20261102 16:03:52.099031  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\radical_pinyin.schema.yaml'.
+I20261102 16:03:52.100823  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.schema.yaml'.
+I20261102 16:03:52.102564  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml
+I20261102 16:03:52.103195  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\radical_pinyin.schema.yaml'.
+I20261102 16:03:52.105162  6724 auto_patch_config_plugin.cc:29] auto-patch radical_pinyin.schema:/__patch: radical_pinyin.custom:/patch?
+I20261102 16:03:52.105246  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml'.
+I20261102 16:03:52.106967  6724 auto_patch_config_plugin.cc:29] auto-patch default:/__patch: default.custom:/patch?
+I20261102 16:03:52.107019  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\default.custom.yaml'.
+W20261102 16:03:52.107061  6724 config_compiler.cc:391] inaccessible node: default.custom:/patch
+I20261102 16:03:52.107076  6724 config_compiler.cc:537] resolved: Patch(default.custom:patch <optional>)
+I20261102 16:03:52.107083  6724 config_compiler.cc:537] resolved: Include(default:/key_binder <optional>)
+I20261102 16:03:52.107087  6724 config_compiler.cc:537] resolved: PendingChild(radical_pinyin.schema:/key_binder)
+W20261102 16:03:52.107092  6724 config_compiler.cc:527] circular dependencies detected in radical_pinyin.schema:
+W20261102 16:03:52.107098  6724 config_compiler.cc:367] accessing blocking node with unresolved dependencies: radical_pinyin.schema:
+I20261102 16:03:52.107105  6724 config_compiler.cc:537] resolved: Include(radical_pinyin.schema:algebra_rime_ice)
+I20261102 16:03:52.107109  6724 config_compiler.cc:537] resolved: PendingChild(radical_pinyin.schema:/speller/algebra)
+I20261102 16:03:52.107112  6724 config_compiler.cc:537] resolved: PendingChild(radical_pinyin.schema:/speller)
+I20261102 16:03:52.107176  6724 config_compiler.cc:426] optional resource not loaded: radical_pinyin.custom
+I20261102 16:03:52.107180  6724 config_compiler.cc:537] resolved: Patch(radical_pinyin.custom:patch <optional>)
+I20261102 16:03:52.107235  6724 build_info_plugin.cc:27] resource 'radical_pinyin.custom' not loaded.
+I20261102 16:03:52.107257  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.schema.yaml'.
+I20261102 16:03:52.108596  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.schema.yaml'.
+I20261102 16:03:52.110362  6724 deployment_tasks.cc:362] preparing dictionary 'radical_pinyin'.
+I20261102 16:03:52.110932  6724 dict_compiler.cc:81] compiling dictionary for C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.schema.yaml
+I20261102 16:03:52.118548  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.table.bin
+I20261102 16:03:52.118710  6724 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.prism.bin
+I20261102 16:03:52.118759  6724 prism.cc:121] found double array image of size 244480.
+I20261102 16:03:52.118783  6724 dict_compiler.cc:126] C:\Program Files\Yiwei\yiwei-0.1.0\data\radical_pinyin.dict.yaml[1 file(s)] (4105474797)
+I20261102 16:03:52.118790  6724 dict_compiler.cc:128] C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.schema.yaml (1749678046)
+I20261102 16:03:52.118868  6724 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.reverse.bin
+I20261102 16:03:52.118980  6724 dict_compiler.cc:299] building prism...
+I20261102 16:03:52.118990  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.table.bin
+I20261102 16:03:52.158773  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.schema.yaml'.
+I20261102 16:03:52.514004  6724 mapped_file.cc:59] creating file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.prism.bin'.
+I20261102 16:03:52.526620  6724 mapped_file.cc:70] opening file for read/write access.
+I20261102 16:03:52.578660  6724 prism.cc:132] saving prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\radical_pinyin.prism.bin
+I20261102 16:03:52.578715  6724 mapped_file.cc:118] shrinking file to fit data size. capacity: 3748104
+I20261102 16:03:52.578721  6724 mapped_file.cc:129] resize file to: 2488672
+I20261102 16:03:52.594321  6724 deployment_tasks.cc:379] dictionary 'radical_pinyin' is ready.
+I20261102 16:03:52.595202  6724 deployment_tasks.cc:199] schema: t9
+I20261102 16:03:52.595358  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\t9.schema.yaml'.
+I20261102 16:03:52.596418  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\t9.schema.yaml'.
+I20261102 16:03:52.610860  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml
+I20261102 16:03:52.611507  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\t9.schema.yaml'.
+I20261102 16:03:52.612436  6724 auto_patch_config_plugin.cc:29] auto-patch t9.schema:/__patch: t9.custom:/patch?
+I20261102 16:03:52.612508  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\rime_ice.schema.yaml'.
+I20261102 16:03:52.615518  6724 auto_patch_config_plugin.cc:29] auto-patch rime_ice.schema:/__patch: rime_ice.custom:/patch?
+I20261102 16:03:52.615592  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml'.
+I20261102 16:03:52.617254  6724 auto_patch_config_plugin.cc:29] auto-patch default:/__patch: default.custom:/patch?
+I20261102 16:03:52.617308  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\default.custom.yaml'.
+W20261102 16:03:52.617348  6724 config_compiler.cc:391] inaccessible node: default.custom:/patch
+I20261102 16:03:52.617363  6724 config_compiler.cc:537] resolved: Patch(default.custom:patch <optional>)
+I20261102 16:03:52.617371  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/full_shape)
+I20261102 16:03:52.617374  6724 config_compiler.cc:537] resolved: PendingChild(rime_ice.schema:/punctuator/full_shape)
+I20261102 16:03:52.617381  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/half_shape)
+I20261102 16:03:52.617384  6724 config_compiler.cc:537] resolved: PendingChild(rime_ice.schema:/punctuator/half_shape)
+I20261102 16:03:52.617443  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\symbols_v.yaml'.
+I20261102 16:03:52.633046  6724 auto_patch_config_plugin.cc:29] auto-patch symbols_v:/__patch: symbols_v.custom:/patch?
+I20261102 16:03:52.633168  6724 config_compiler.cc:426] optional resource not loaded: symbols_v.custom
+I20261102 16:03:52.633173  6724 config_compiler.cc:537] resolved: Patch(symbols_v.custom:patch <optional>)
+I20261102 16:03:52.633182  6724 config_compiler.cc:537] resolved: Include(symbols_v:/symbols)
+I20261102 16:03:52.633185  6724 config_compiler.cc:537] resolved: PendingChild(rime_ice.schema:/punctuator/symbols)
+I20261102 16:03:52.633383  6724 config_compiler.cc:537] resolved: Include(default:/punctuator)
+I20261102 16:03:52.633387  6724 config_compiler.cc:537] resolved: PendingChild(rime_ice.schema:/punctuator)
+I20261102 16:03:52.633457  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\rime_ice.custom.yaml'.
+I20261102 16:03:52.633551  6724 config_compiler.cc:214] patching switches/@2/reset
+I20261102 16:03:52.633570  6724 config_compiler.cc:537] resolved: Patch(rime_ice.custom:patch <optional>)
+I20261102 16:03:52.633677  6724 config_compiler.cc:537] resolved: Include(rime_ice.schema:/)
+I20261102 16:03:52.633735  6724 config_compiler.cc:426] optional resource not loaded: t9.custom
+I20261102 16:03:52.633739  6724 config_compiler.cc:537] resolved: Patch(t9.custom:patch <optional>)
+I20261102 16:03:52.633755  6724 legacy_preset_config_plugin.cc:26] interpreting key_binder/import_preset: default
+I20261102 16:03:52.633773  6724 legacy_preset_config_plugin.cc:65] interpreting recognizer/import_preset: default
+I20261102 16:03:52.633880  6724 build_info_plugin.cc:27] resource 'symbols_v.custom' not loaded.
+I20261102 16:03:52.633972  6724 build_info_plugin.cc:27] resource 't9.custom' not loaded.
+I20261102 16:03:52.634007  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\t9.schema.yaml'.
+I20261102 16:03:52.639655  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\t9.schema.yaml'.
+I20261102 16:03:52.653681  6724 deployment_tasks.cc:362] preparing dictionary 'rime_ice'.
+I20261102 16:03:52.654284  6724 dict_compiler.cc:81] compiling dictionary for C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\t9.schema.yaml
+I20261102 16:03:52.807917  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:52.808207  6724 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\t9.prism.bin
+I20261102 16:03:52.808259  6724 prism.cc:121] found double array image of size 11008.
+I20261102 16:03:52.808280  6724 dict_compiler.cc:126] C:\Program Files\Yiwei\yiwei-0.1.0\data\rime_ice.dict.yaml[6 file(s)] (1493339960)
+I20261102 16:03:52.808287  6724 dict_compiler.cc:128] C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\t9.schema.yaml (257424573)
+I20261102 16:03:52.808336  6724 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.reverse.bin
+I20261102 16:03:52.808411  6724 dict_compiler.cc:299] building prism...
+I20261102 16:03:52.808421  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:52.808723  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\t9.schema.yaml'.
+I20261102 16:03:52.845653  6724 mapped_file.cc:59] creating file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\t9.prism.bin'.
+I20261102 16:03:52.846111  6724 mapped_file.cc:70] opening file for read/write access.
+I20261102 16:03:52.847417  6724 prism.cc:132] saving prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\t9.prism.bin
+I20261102 16:03:52.847424  6724 mapped_file.cc:118] shrinking file to fit data size. capacity: 348404
+I20261102 16:03:52.847428  6724 mapped_file.cc:129] resize file to: 206232
+I20261102 16:03:52.848335  6724 deployment_tasks.cc:379] dictionary 'rime_ice' is ready.
+I20261102 16:03:52.849017  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\t9.schema.yaml'.
+I20261102 16:03:52.863812  6724 deployment_tasks.cc:199] schema: double_pinyin
+I20261102 16:03:52.863961  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin.schema.yaml'.
+I20261102 16:03:52.866484  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin.schema.yaml'.
+I20261102 16:03:52.879732  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml
+I20261102 16:03:52.880381  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin.schema.yaml'.
+I20261102 16:03:52.883107  6724 auto_patch_config_plugin.cc:29] auto-patch double_pinyin.schema:/__patch: double_pinyin.custom:/patch?
+I20261102 16:03:52.883181  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml'.
+I20261102 16:03:52.884854  6724 auto_patch_config_plugin.cc:29] auto-patch default:/__patch: default.custom:/patch?
+I20261102 16:03:52.884907  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\default.custom.yaml'.
+W20261102 16:03:52.884947  6724 config_compiler.cc:391] inaccessible node: default.custom:/patch
+I20261102 16:03:52.884962  6724 config_compiler.cc:537] resolved: Patch(default.custom:patch <optional>)
+I20261102 16:03:52.884970  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/full_shape)
+I20261102 16:03:52.884973  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin.schema:/punctuator/full_shape)
+I20261102 16:03:52.884980  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/half_shape)
+I20261102 16:03:52.885002  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin.schema:/punctuator/half_shape)
+I20261102 16:03:52.885068  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\symbols_caps_v.yaml'.
+I20261102 16:03:52.900489  6724 auto_patch_config_plugin.cc:29] auto-patch symbols_caps_v:/__patch: symbols_caps_v.custom:/patch?
+I20261102 16:03:52.900613  6724 config_compiler.cc:426] optional resource not loaded: symbols_caps_v.custom
+I20261102 16:03:52.900619  6724 config_compiler.cc:537] resolved: Patch(symbols_caps_v.custom:patch <optional>)
+I20261102 16:03:52.900627  6724 config_compiler.cc:537] resolved: Include(symbols_caps_v:/symbols)
+I20261102 16:03:52.900631  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin.schema:/punctuator/symbols)
+I20261102 16:03:52.900831  6724 config_compiler.cc:537] resolved: Include(default:/punctuator)
+I20261102 16:03:52.900835  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin.schema:/punctuator)
+I20261102 16:03:52.900894  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\double_pinyin.custom.yaml'.
+I20261102 16:03:52.900991  6724 config_compiler.cc:214] patching switches/@2/reset
+I20261102 16:03:52.901008  6724 config_compiler.cc:537] resolved: Patch(double_pinyin.custom:patch <optional>)
+I20261102 16:03:52.901023  6724 legacy_preset_config_plugin.cc:26] interpreting key_binder/import_preset: default
+I20261102 16:03:52.901036  6724 legacy_preset_config_plugin.cc:65] interpreting recognizer/import_preset: default
+I20261102 16:03:52.901145  6724 build_info_plugin.cc:27] resource 'symbols_caps_v.custom' not loaded.
+I20261102 16:03:52.901154  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin.schema.yaml'.
+I20261102 16:03:52.906928  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin.schema.yaml'.
+I20261102 16:03:52.920638  6724 deployment_tasks.cc:362] preparing dictionary 'rime_ice'.
+I20261102 16:03:52.921273  6724 dict_compiler.cc:81] compiling dictionary for C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin.schema.yaml
+I20261102 16:03:53.075174  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:53.075389  6724 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin.prism.bin
+I20261102 16:03:53.075436  6724 prism.cc:121] found double array image of size 1024.
+I20261102 16:03:53.075456  6724 dict_compiler.cc:126] C:\Program Files\Yiwei\yiwei-0.1.0\data\rime_ice.dict.yaml[6 file(s)] (1493339960)
+I20261102 16:03:53.075463  6724 dict_compiler.cc:128] C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin.schema.yaml (528353924)
+I20261102 16:03:53.075509  6724 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.reverse.bin
+I20261102 16:03:53.075582  6724 dict_compiler.cc:299] building prism...
+I20261102 16:03:53.075592  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:53.075895  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin.schema.yaml'.
+I20261102 16:03:53.098682  6724 mapped_file.cc:59] creating file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin.prism.bin'.
+I20261102 16:03:53.099062  6724 mapped_file.cc:70] opening file for read/write access.
+I20261102 16:03:53.099328  6724 prism.cc:132] saving prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin.prism.bin
+I20261102 16:03:53.099335  6724 mapped_file.cc:118] shrinking file to fit data size. capacity: 24908
+I20261102 16:03:53.099339  6724 mapped_file.cc:129] resize file to: 15208
+I20261102 16:03:53.099644  6724 deployment_tasks.cc:379] dictionary 'rime_ice' is ready.
+I20261102 16:03:53.100321  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin.schema.yaml'.
+I20261102 16:03:53.114147  6724 deployment_tasks.cc:199] schema: double_pinyin_abc
+I20261102 16:03:53.114295  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin_abc.schema.yaml'.
+I20261102 16:03:53.116766  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_abc.schema.yaml'.
+I20261102 16:03:53.130365  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml
+I20261102 16:03:53.131025  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin_abc.schema.yaml'.
+I20261102 16:03:53.133683  6724 auto_patch_config_plugin.cc:29] auto-patch double_pinyin_abc.schema:/__patch: double_pinyin_abc.custom:/patch?
+I20261102 16:03:53.133756  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml'.
+I20261102 16:03:53.135435  6724 auto_patch_config_plugin.cc:29] auto-patch default:/__patch: default.custom:/patch?
+I20261102 16:03:53.135490  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\default.custom.yaml'.
+W20261102 16:03:53.135530  6724 config_compiler.cc:391] inaccessible node: default.custom:/patch
+I20261102 16:03:53.135544  6724 config_compiler.cc:537] resolved: Patch(default.custom:patch <optional>)
+I20261102 16:03:53.135552  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/full_shape)
+I20261102 16:03:53.135556  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_abc.schema:/punctuator/full_shape)
+I20261102 16:03:53.135562  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/half_shape)
+I20261102 16:03:53.135566  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_abc.schema:/punctuator/half_shape)
+I20261102 16:03:53.135627  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\symbols_caps_v.yaml'.
+I20261102 16:03:53.150264  6724 auto_patch_config_plugin.cc:29] auto-patch symbols_caps_v:/__patch: symbols_caps_v.custom:/patch?
+I20261102 16:03:53.150364  6724 config_compiler.cc:426] optional resource not loaded: symbols_caps_v.custom
+I20261102 16:03:53.150369  6724 config_compiler.cc:537] resolved: Patch(symbols_caps_v.custom:patch <optional>)
+I20261102 16:03:53.150376  6724 config_compiler.cc:537] resolved: Include(symbols_caps_v:/symbols)
+I20261102 16:03:53.150380  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_abc.schema:/punctuator/symbols)
+I20261102 16:03:53.150570  6724 config_compiler.cc:537] resolved: Include(default:/punctuator)
+I20261102 16:03:53.150574  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_abc.schema:/punctuator)
+I20261102 16:03:53.150621  6724 config_compiler.cc:426] optional resource not loaded: double_pinyin_abc.custom
+I20261102 16:03:53.150625  6724 config_compiler.cc:537] resolved: Patch(double_pinyin_abc.custom:patch <optional>)
+I20261102 16:03:53.150642  6724 legacy_preset_config_plugin.cc:26] interpreting key_binder/import_preset: default
+I20261102 16:03:53.150654  6724 legacy_preset_config_plugin.cc:65] interpreting recognizer/import_preset: default
+I20261102 16:03:53.150724  6724 build_info_plugin.cc:27] resource 'double_pinyin_abc.custom' not loaded.
+I20261102 16:03:53.150759  6724 build_info_plugin.cc:27] resource 'symbols_caps_v.custom' not loaded.
+I20261102 16:03:53.150766  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_abc.schema.yaml'.
+I20261102 16:03:53.156391  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_abc.schema.yaml'.
+I20261102 16:03:53.169428  6724 deployment_tasks.cc:362] preparing dictionary 'rime_ice'.
+I20261102 16:03:53.170017  6724 dict_compiler.cc:81] compiling dictionary for C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_abc.schema.yaml
+I20261102 16:03:53.323444  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:53.323663  6724 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_abc.prism.bin
+I20261102 16:03:53.323712  6724 prism.cc:121] found double array image of size 1024.
+I20261102 16:03:53.323732  6724 dict_compiler.cc:126] C:\Program Files\Yiwei\yiwei-0.1.0\data\rime_ice.dict.yaml[6 file(s)] (1493339960)
+I20261102 16:03:53.323739  6724 dict_compiler.cc:128] C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_abc.schema.yaml (774152644)
+I20261102 16:03:53.323786  6724 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.reverse.bin
+I20261102 16:03:53.324057  6724 dict_compiler.cc:299] building prism...
+I20261102 16:03:53.324071  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:53.324375  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_abc.schema.yaml'.
+I20261102 16:03:53.345416  6724 mapped_file.cc:59] creating file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_abc.prism.bin'.
+I20261102 16:03:53.345785  6724 mapped_file.cc:70] opening file for read/write access.
+I20261102 16:03:53.346044  6724 prism.cc:132] saving prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_abc.prism.bin
+I20261102 16:03:53.346051  6724 mapped_file.cc:118] shrinking file to fit data size. capacity: 24468
+I20261102 16:03:53.346055  6724 mapped_file.cc:129] resize file to: 14968
+I20261102 16:03:53.346330  6724 deployment_tasks.cc:379] dictionary 'rime_ice' is ready.
+I20261102 16:03:53.346966  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_abc.schema.yaml'.
+I20261102 16:03:53.361321  6724 deployment_tasks.cc:199] schema: double_pinyin_mspy
+I20261102 16:03:53.361475  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin_mspy.schema.yaml'.
+I20261102 16:03:53.364123  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_mspy.schema.yaml'.
+I20261102 16:03:53.378277  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml
+I20261102 16:03:53.378923  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin_mspy.schema.yaml'.
+I20261102 16:03:53.381714  6724 auto_patch_config_plugin.cc:29] auto-patch double_pinyin_mspy.schema:/__patch: double_pinyin_mspy.custom:/patch?
+I20261102 16:03:53.381790  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml'.
+I20261102 16:03:53.383470  6724 auto_patch_config_plugin.cc:29] auto-patch default:/__patch: default.custom:/patch?
+I20261102 16:03:53.383531  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\default.custom.yaml'.
+W20261102 16:03:53.383577  6724 config_compiler.cc:391] inaccessible node: default.custom:/patch
+I20261102 16:03:53.383592  6724 config_compiler.cc:537] resolved: Patch(default.custom:patch <optional>)
+I20261102 16:03:53.383600  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/full_shape)
+I20261102 16:03:53.383604  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_mspy.schema:/punctuator/full_shape)
+I20261102 16:03:53.383611  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/half_shape)
+I20261102 16:03:53.383614  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_mspy.schema:/punctuator/half_shape)
+I20261102 16:03:53.383680  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\symbols_caps_v.yaml'.
+I20261102 16:03:53.399185  6724 auto_patch_config_plugin.cc:29] auto-patch symbols_caps_v:/__patch: symbols_caps_v.custom:/patch?
+I20261102 16:03:53.399343  6724 config_compiler.cc:426] optional resource not loaded: symbols_caps_v.custom
+I20261102 16:03:53.399348  6724 config_compiler.cc:537] resolved: Patch(symbols_caps_v.custom:patch <optional>)
+I20261102 16:03:53.399357  6724 config_compiler.cc:537] resolved: Include(symbols_caps_v:/symbols)
+I20261102 16:03:53.399361  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_mspy.schema:/punctuator/symbols)
+I20261102 16:03:53.399561  6724 config_compiler.cc:537] resolved: Include(default:/punctuator)
+I20261102 16:03:53.399565  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_mspy.schema:/punctuator)
+I20261102 16:03:53.399624  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\double_pinyin_mspy.custom.yaml'.
+I20261102 16:03:53.399718  6724 config_compiler.cc:214] patching switches/@2/reset
+I20261102 16:03:53.399736  6724 config_compiler.cc:537] resolved: Patch(double_pinyin_mspy.custom:patch <optional>)
+I20261102 16:03:53.399751  6724 legacy_preset_config_plugin.cc:26] interpreting key_binder/import_preset: default
+I20261102 16:03:53.399763  6724 legacy_preset_config_plugin.cc:65] interpreting recognizer/import_preset: default
+I20261102 16:03:53.399874  6724 build_info_plugin.cc:27] resource 'symbols_caps_v.custom' not loaded.
+I20261102 16:03:53.399883  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_mspy.schema.yaml'.
+I20261102 16:03:53.405878  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_mspy.schema.yaml'.
+I20261102 16:03:53.419900  6724 deployment_tasks.cc:362] preparing dictionary 'rime_ice'.
+I20261102 16:03:53.420531  6724 dict_compiler.cc:81] compiling dictionary for C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_mspy.schema.yaml
+I20261102 16:03:53.574901  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:53.575131  6724 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_mspy.prism.bin
+I20261102 16:03:53.575184  6724 prism.cc:121] found double array image of size 1024.
+I20261102 16:03:53.575205  6724 dict_compiler.cc:126] C:\Program Files\Yiwei\yiwei-0.1.0\data\rime_ice.dict.yaml[6 file(s)] (1493339960)
+I20261102 16:03:53.575213  6724 dict_compiler.cc:128] C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_mspy.schema.yaml (2780927157)
+I20261102 16:03:53.575261  6724 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.reverse.bin
+I20261102 16:03:53.575336  6724 dict_compiler.cc:299] building prism...
+I20261102 16:03:53.575346  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:53.575664  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_mspy.schema.yaml'.
+I20261102 16:03:53.601055  6724 mapped_file.cc:59] creating file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_mspy.prism.bin'.
+I20261102 16:03:53.601445  6724 mapped_file.cc:70] opening file for read/write access.
+I20261102 16:03:53.601730  6724 prism.cc:132] saving prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_mspy.prism.bin
+I20261102 16:03:53.601736  6724 mapped_file.cc:118] shrinking file to fit data size. capacity: 25436
+I20261102 16:03:53.601740  6724 mapped_file.cc:129] resize file to: 15496
+I20261102 16:03:53.602029  6724 deployment_tasks.cc:379] dictionary 'rime_ice' is ready.
+I20261102 16:03:53.602714  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_mspy.schema.yaml'.
+I20261102 16:03:53.617005  6724 deployment_tasks.cc:199] schema: double_pinyin_sogou
+I20261102 16:03:53.617176  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin_sogou.schema.yaml'.
+I20261102 16:03:53.619740  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_sogou.schema.yaml'.
+I20261102 16:03:53.633946  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml
+I20261102 16:03:53.634578  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin_sogou.schema.yaml'.
+I20261102 16:03:53.637395  6724 auto_patch_config_plugin.cc:29] auto-patch double_pinyin_sogou.schema:/__patch: double_pinyin_sogou.custom:/patch?
+I20261102 16:03:53.637474  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml'.
+I20261102 16:03:53.639141  6724 auto_patch_config_plugin.cc:29] auto-patch default:/__patch: default.custom:/patch?
+I20261102 16:03:53.639194  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\default.custom.yaml'.
+W20261102 16:03:53.639234  6724 config_compiler.cc:391] inaccessible node: default.custom:/patch
+I20261102 16:03:53.639249  6724 config_compiler.cc:537] resolved: Patch(default.custom:patch <optional>)
+I20261102 16:03:53.639257  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/full_shape)
+I20261102 16:03:53.639261  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_sogou.schema:/punctuator/full_shape)
+I20261102 16:03:53.639267  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/half_shape)
+I20261102 16:03:53.639270  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_sogou.schema:/punctuator/half_shape)
+I20261102 16:03:53.639334  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\symbols_caps_v.yaml'.
+I20261102 16:03:53.655057  6724 auto_patch_config_plugin.cc:29] auto-patch symbols_caps_v:/__patch: symbols_caps_v.custom:/patch?
+I20261102 16:03:53.655185  6724 config_compiler.cc:426] optional resource not loaded: symbols_caps_v.custom
+I20261102 16:03:53.655190  6724 config_compiler.cc:537] resolved: Patch(symbols_caps_v.custom:patch <optional>)
+I20261102 16:03:53.655199  6724 config_compiler.cc:537] resolved: Include(symbols_caps_v:/symbols)
+I20261102 16:03:53.655203  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_sogou.schema:/punctuator/symbols)
+I20261102 16:03:53.655416  6724 config_compiler.cc:537] resolved: Include(default:/punctuator)
+I20261102 16:03:53.655419  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_sogou.schema:/punctuator)
+I20261102 16:03:53.655469  6724 config_compiler.cc:426] optional resource not loaded: double_pinyin_sogou.custom
+I20261102 16:03:53.655473  6724 config_compiler.cc:537] resolved: Patch(double_pinyin_sogou.custom:patch <optional>)
+I20261102 16:03:53.655492  6724 legacy_preset_config_plugin.cc:26] interpreting key_binder/import_preset: default
+I20261102 16:03:53.655504  6724 legacy_preset_config_plugin.cc:65] interpreting recognizer/import_preset: default
+I20261102 16:03:53.655586  6724 build_info_plugin.cc:27] resource 'double_pinyin_sogou.custom' not loaded.
+I20261102 16:03:53.655626  6724 build_info_plugin.cc:27] resource 'symbols_caps_v.custom' not loaded.
+I20261102 16:03:53.655634  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_sogou.schema.yaml'.
+I20261102 16:03:53.660977  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_sogou.schema.yaml'.
+I20261102 16:03:53.674970  6724 deployment_tasks.cc:362] preparing dictionary 'rime_ice'.
+I20261102 16:03:53.675547  6724 dict_compiler.cc:81] compiling dictionary for C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_sogou.schema.yaml
+I20261102 16:03:53.829237  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:53.829460  6724 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_sogou.prism.bin
+I20261102 16:03:53.829533  6724 prism.cc:121] found double array image of size 1024.
+I20261102 16:03:53.829553  6724 dict_compiler.cc:126] C:\Program Files\Yiwei\yiwei-0.1.0\data\rime_ice.dict.yaml[6 file(s)] (1493339960)
+I20261102 16:03:53.829560  6724 dict_compiler.cc:128] C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_sogou.schema.yaml (2771365049)
+I20261102 16:03:53.829603  6724 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.reverse.bin
+I20261102 16:03:53.829680  6724 dict_compiler.cc:299] building prism...
+I20261102 16:03:53.829690  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:53.829976  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_sogou.schema.yaml'.
+I20261102 16:03:53.853123  6724 mapped_file.cc:59] creating file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_sogou.prism.bin'.
+I20261102 16:03:53.853508  6724 mapped_file.cc:70] opening file for read/write access.
+I20261102 16:03:53.853769  6724 prism.cc:132] saving prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_sogou.prism.bin
+I20261102 16:03:53.853776  6724 mapped_file.cc:118] shrinking file to fit data size. capacity: 25172
+I20261102 16:03:53.853780  6724 mapped_file.cc:129] resize file to: 15352
+I20261102 16:03:53.854048  6724 deployment_tasks.cc:379] dictionary 'rime_ice' is ready.
+I20261102 16:03:53.854683  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_sogou.schema.yaml'.
+I20261102 16:03:53.868826  6724 deployment_tasks.cc:199] schema: double_pinyin_flypy
+I20261102 16:03:53.868993  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin_flypy.schema.yaml'.
+I20261102 16:03:53.871679  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_flypy.schema.yaml'.
+I20261102 16:03:53.885047  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml
+I20261102 16:03:53.885707  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin_flypy.schema.yaml'.
+I20261102 16:03:53.888709  6724 auto_patch_config_plugin.cc:29] auto-patch double_pinyin_flypy.schema:/__patch: double_pinyin_flypy.custom:/patch?
+I20261102 16:03:53.888791  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml'.
+I20261102 16:03:53.890468  6724 auto_patch_config_plugin.cc:29] auto-patch default:/__patch: default.custom:/patch?
+I20261102 16:03:53.890522  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\default.custom.yaml'.
+W20261102 16:03:53.890565  6724 config_compiler.cc:391] inaccessible node: default.custom:/patch
+I20261102 16:03:53.890581  6724 config_compiler.cc:537] resolved: Patch(default.custom:patch <optional>)
+I20261102 16:03:53.890588  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/full_shape)
+I20261102 16:03:53.890592  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_flypy.schema:/punctuator/full_shape)
+I20261102 16:03:53.890598  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/half_shape)
+I20261102 16:03:53.890601  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_flypy.schema:/punctuator/half_shape)
+I20261102 16:03:53.890668  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\symbols_caps_v.yaml'.
+I20261102 16:03:53.905723  6724 auto_patch_config_plugin.cc:29] auto-patch symbols_caps_v:/__patch: symbols_caps_v.custom:/patch?
+I20261102 16:03:53.905856  6724 config_compiler.cc:426] optional resource not loaded: symbols_caps_v.custom
+I20261102 16:03:53.905862  6724 config_compiler.cc:537] resolved: Patch(symbols_caps_v.custom:patch <optional>)
+I20261102 16:03:53.905895  6724 config_compiler.cc:537] resolved: Include(symbols_caps_v:/symbols)
+I20261102 16:03:53.905900  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_flypy.schema:/punctuator/symbols)
+I20261102 16:03:53.906095  6724 config_compiler.cc:537] resolved: Include(default:/punctuator)
+I20261102 16:03:53.906099  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_flypy.schema:/punctuator)
+I20261102 16:03:53.906161  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\double_pinyin_flypy.custom.yaml'.
+I20261102 16:03:53.906260  6724 config_compiler.cc:214] patching switches/@2/reset
+I20261102 16:03:53.906278  6724 config_compiler.cc:537] resolved: Patch(double_pinyin_flypy.custom:patch <optional>)
+I20261102 16:03:53.906294  6724 legacy_preset_config_plugin.cc:26] interpreting key_binder/import_preset: default
+I20261102 16:03:53.906306  6724 legacy_preset_config_plugin.cc:65] interpreting recognizer/import_preset: default
+I20261102 16:03:53.906416  6724 build_info_plugin.cc:27] resource 'symbols_caps_v.custom' not loaded.
+I20261102 16:03:53.906424  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_flypy.schema.yaml'.
+I20261102 16:03:53.911809  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_flypy.schema.yaml'.
+I20261102 16:03:53.925732  6724 deployment_tasks.cc:362] preparing dictionary 'rime_ice'.
+I20261102 16:03:53.926313  6724 dict_compiler.cc:81] compiling dictionary for C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_flypy.schema.yaml
+I20261102 16:03:54.081042  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:54.081254  6724 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_flypy.prism.bin
+I20261102 16:03:54.081306  6724 prism.cc:121] found double array image of size 1024.
+I20261102 16:03:54.081326  6724 dict_compiler.cc:126] C:\Program Files\Yiwei\yiwei-0.1.0\data\rime_ice.dict.yaml[6 file(s)] (1493339960)
+I20261102 16:03:54.081334  6724 dict_compiler.cc:128] C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_flypy.schema.yaml (93129743)
+I20261102 16:03:54.081378  6724 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.reverse.bin
+I20261102 16:03:54.081453  6724 dict_compiler.cc:299] building prism...
+I20261102 16:03:54.081464  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:54.081777  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_flypy.schema.yaml'.
+I20261102 16:03:54.105594  6724 mapped_file.cc:59] creating file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_flypy.prism.bin'.
+I20261102 16:03:54.106057  6724 mapped_file.cc:70] opening file for read/write access.
+I20261102 16:03:54.106347  6724 prism.cc:132] saving prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_flypy.prism.bin
+I20261102 16:03:54.106354  6724 mapped_file.cc:118] shrinking file to fit data size. capacity: 24908
+I20261102 16:03:54.106358  6724 mapped_file.cc:129] resize file to: 15208
+I20261102 16:03:54.106673  6724 deployment_tasks.cc:379] dictionary 'rime_ice' is ready.
+I20261102 16:03:54.107307  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_flypy.schema.yaml'.
+I20261102 16:03:54.122354  6724 deployment_tasks.cc:199] schema: double_pinyin_ziguang
+I20261102 16:03:54.122514  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin_ziguang.schema.yaml'.
+I20261102 16:03:54.125083  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_ziguang.schema.yaml'.
+I20261102 16:03:54.138358  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml
+I20261102 16:03:54.138986  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin_ziguang.schema.yaml'.
+I20261102 16:03:54.141643  6724 auto_patch_config_plugin.cc:29] auto-patch double_pinyin_ziguang.schema:/__patch: double_pinyin_ziguang.custom:/patch?
+I20261102 16:03:54.141714  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml'.
+I20261102 16:03:54.143391  6724 auto_patch_config_plugin.cc:29] auto-patch default:/__patch: default.custom:/patch?
+I20261102 16:03:54.143445  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\default.custom.yaml'.
+W20261102 16:03:54.143487  6724 config_compiler.cc:391] inaccessible node: default.custom:/patch
+I20261102 16:03:54.143502  6724 config_compiler.cc:537] resolved: Patch(default.custom:patch <optional>)
+I20261102 16:03:54.143509  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/full_shape)
+I20261102 16:03:54.143513  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_ziguang.schema:/punctuator/full_shape)
+I20261102 16:03:54.143519  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/half_shape)
+I20261102 16:03:54.143522  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_ziguang.schema:/punctuator/half_shape)
+I20261102 16:03:54.143587  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\symbols_caps_v.yaml'.
+I20261102 16:03:54.159736  6724 auto_patch_config_plugin.cc:29] auto-patch symbols_caps_v:/__patch: symbols_caps_v.custom:/patch?
+I20261102 16:03:54.159865  6724 config_compiler.cc:426] optional resource not loaded: symbols_caps_v.custom
+I20261102 16:03:54.159871  6724 config_compiler.cc:537] resolved: Patch(symbols_caps_v.custom:patch <optional>)
+I20261102 16:03:54.159880  6724 config_compiler.cc:537] resolved: Include(symbols_caps_v:/symbols)
+I20261102 16:03:54.159884  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_ziguang.schema:/punctuator/symbols)
+I20261102 16:03:54.160080  6724 config_compiler.cc:537] resolved: Include(default:/punctuator)
+I20261102 16:03:54.160083  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_ziguang.schema:/punctuator)
+I20261102 16:03:54.160134  6724 config_compiler.cc:426] optional resource not loaded: double_pinyin_ziguang.custom
+I20261102 16:03:54.160138  6724 config_compiler.cc:537] resolved: Patch(double_pinyin_ziguang.custom:patch <optional>)
+I20261102 16:03:54.160158  6724 legacy_preset_config_plugin.cc:26] interpreting key_binder/import_preset: default
+I20261102 16:03:54.160170  6724 legacy_preset_config_plugin.cc:65] interpreting recognizer/import_preset: default
+I20261102 16:03:54.160251  6724 build_info_plugin.cc:27] resource 'double_pinyin_ziguang.custom' not loaded.
+I20261102 16:03:54.160289  6724 build_info_plugin.cc:27] resource 'symbols_caps_v.custom' not loaded.
+I20261102 16:03:54.160297  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_ziguang.schema.yaml'.
+I20261102 16:03:54.165768  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_ziguang.schema.yaml'.
+I20261102 16:03:54.180074  6724 deployment_tasks.cc:362] preparing dictionary 'rime_ice'.
+I20261102 16:03:54.180667  6724 dict_compiler.cc:81] compiling dictionary for C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_ziguang.schema.yaml
+I20261102 16:03:54.336636  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:54.336852  6724 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_ziguang.prism.bin
+I20261102 16:03:54.336905  6724 prism.cc:121] found double array image of size 1024.
+I20261102 16:03:54.336927  6724 dict_compiler.cc:126] C:\Program Files\Yiwei\yiwei-0.1.0\data\rime_ice.dict.yaml[6 file(s)] (1493339960)
+I20261102 16:03:54.336956  6724 dict_compiler.cc:128] C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_ziguang.schema.yaml (690782411)
+I20261102 16:03:54.337003  6724 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.reverse.bin
+I20261102 16:03:54.337085  6724 dict_compiler.cc:299] building prism...
+I20261102 16:03:54.337096  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:54.337419  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_ziguang.schema.yaml'.
+I20261102 16:03:54.361102  6724 mapped_file.cc:59] creating file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_ziguang.prism.bin'.
+I20261102 16:03:54.361505  6724 mapped_file.cc:70] opening file for read/write access.
+I20261102 16:03:54.361796  6724 prism.cc:132] saving prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_ziguang.prism.bin
+I20261102 16:03:54.361804  6724 mapped_file.cc:118] shrinking file to fit data size. capacity: 24644
+I20261102 16:03:54.361808  6724 mapped_file.cc:129] resize file to: 15064
+I20261102 16:03:54.362134  6724 deployment_tasks.cc:379] dictionary 'rime_ice' is ready.
+I20261102 16:03:54.362848  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_ziguang.schema.yaml'.
+I20261102 16:03:54.378371  6724 deployment_tasks.cc:199] schema: double_pinyin_jiajia
+I20261102 16:03:54.378539  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin_jiajia.schema.yaml'.
+I20261102 16:03:54.381378  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_jiajia.schema.yaml'.
+I20261102 16:03:54.395542  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml
+I20261102 16:03:54.396207  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\double_pinyin_jiajia.schema.yaml'.
+I20261102 16:03:54.399045  6724 auto_patch_config_plugin.cc:29] auto-patch double_pinyin_jiajia.schema:/__patch: double_pinyin_jiajia.custom:/patch?
+I20261102 16:03:54.399117  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\default.yaml'.
+I20261102 16:03:54.400853  6724 auto_patch_config_plugin.cc:29] auto-patch default:/__patch: default.custom:/patch?
+I20261102 16:03:54.400905  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\default.custom.yaml'.
+W20261102 16:03:54.400946  6724 config_compiler.cc:391] inaccessible node: default.custom:/patch
+I20261102 16:03:54.400963  6724 config_compiler.cc:537] resolved: Patch(default.custom:patch <optional>)
+I20261102 16:03:54.400972  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/full_shape)
+I20261102 16:03:54.400975  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_jiajia.schema:/punctuator/full_shape)
+I20261102 16:03:54.400982  6724 config_compiler.cc:537] resolved: Include(default:/punctuator/half_shape)
+I20261102 16:03:54.400986  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_jiajia.schema:/punctuator/half_shape)
+I20261102 16:03:54.401048  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\symbols_caps_v.yaml'.
+I20261102 16:03:54.417220  6724 auto_patch_config_plugin.cc:29] auto-patch symbols_caps_v:/__patch: symbols_caps_v.custom:/patch?
+I20261102 16:03:54.417354  6724 config_compiler.cc:426] optional resource not loaded: symbols_caps_v.custom
+I20261102 16:03:54.417359  6724 config_compiler.cc:537] resolved: Patch(symbols_caps_v.custom:patch <optional>)
+I20261102 16:03:54.417368  6724 config_compiler.cc:537] resolved: Include(symbols_caps_v:/symbols)
+I20261102 16:03:54.417372  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_jiajia.schema:/punctuator/symbols)
+I20261102 16:03:54.417599  6724 config_compiler.cc:537] resolved: Include(default:/punctuator)
+I20261102 16:03:54.417603  6724 config_compiler.cc:537] resolved: PendingChild(double_pinyin_jiajia.schema:/punctuator)
+I20261102 16:03:54.417664  6724 config_compiler.cc:426] optional resource not loaded: double_pinyin_jiajia.custom
+I20261102 16:03:54.417668  6724 config_compiler.cc:537] resolved: Patch(double_pinyin_jiajia.custom:patch <optional>)
+I20261102 16:03:54.417689  6724 legacy_preset_config_plugin.cc:26] interpreting key_binder/import_preset: default
+I20261102 16:03:54.417702  6724 legacy_preset_config_plugin.cc:65] interpreting recognizer/import_preset: default
+I20261102 16:03:54.417786  6724 build_info_plugin.cc:27] resource 'double_pinyin_jiajia.custom' not loaded.
+I20261102 16:03:54.417825  6724 build_info_plugin.cc:27] resource 'symbols_caps_v.custom' not loaded.
+I20261102 16:03:54.417832  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_jiajia.schema.yaml'.
+I20261102 16:03:54.423685  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_jiajia.schema.yaml'.
+I20261102 16:03:54.438534  6724 deployment_tasks.cc:362] preparing dictionary 'rime_ice'.
+I20261102 16:03:54.439150  6724 dict_compiler.cc:81] compiling dictionary for C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_jiajia.schema.yaml
+I20261102 16:03:54.594400  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:54.594626  6724 prism.cc:83] loading prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_jiajia.prism.bin
+I20261102 16:03:54.594682  6724 prism.cc:121] found double array image of size 1024.
+I20261102 16:03:54.594704  6724 dict_compiler.cc:126] C:\Program Files\Yiwei\yiwei-0.1.0\data\rime_ice.dict.yaml[6 file(s)] (1493339960)
+I20261102 16:03:54.594711  6724 dict_compiler.cc:128] C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_jiajia.schema.yaml (3922165872)
+I20261102 16:03:54.594756  6724 reverse_lookup_dictionary.cc:33] loading reversedb: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.reverse.bin
+I20261102 16:03:54.594831  6724 dict_compiler.cc:299] building prism...
+I20261102 16:03:54.594841  6724 table.cc:270] loading table file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\rime_ice.table.bin
+I20261102 16:03:54.595163  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_jiajia.schema.yaml'.
+I20261102 16:03:54.619372  6724 mapped_file.cc:59] creating file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_jiajia.prism.bin'.
+I20261102 16:03:54.619806  6724 mapped_file.cc:70] opening file for read/write access.
+I20261102 16:03:54.620103  6724 prism.cc:132] saving prism file: C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_jiajia.prism.bin
+I20261102 16:03:54.620109  6724 mapped_file.cc:118] shrinking file to fit data size. capacity: 25172
+I20261102 16:03:54.620113  6724 mapped_file.cc:129] resize file to: 15352
+I20261102 16:03:54.620394  6724 deployment_tasks.cc:379] dictionary 'rime_ice' is ready.
+I20261102 16:03:54.621218  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\double_pinyin_jiajia.schema.yaml'.
+I20261102 16:03:54.636222  6724 deployment_tasks.cc:247] finished updating schemas: 12 success, 0 failure.
+I20261102 16:03:54.636310  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\user.yaml'.
+I20261102 16:03:54.636408  6724 config_data.cc:202] write: var/last_build_time
+I20261102 16:03:54.636419  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\user.yaml'.
+I20261102 16:03:54.636839  6724 deployment_tasks.cc:589] clean up trash.
+I20261102 16:03:54.637348  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\weasel.yaml'.
+I20261102 16:03:54.643622  6724 deployment_tasks.cc:423] source file changed: C:\Program Files\Yiwei\yiwei-0.1.0\data\weasel.yaml
+I20261102 16:03:54.644208  6724 config_data.cc:73] loading config file 'C:\Program Files\Yiwei\yiwei-0.1.0\data\weasel.yaml'.
+I20261102 16:03:54.650311  6724 auto_patch_config_plugin.cc:29] auto-patch weasel:/__patch: weasel.custom:/patch?
+I20261102 16:03:54.650370  6724 config_data.cc:73] loading config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\weasel.custom.yaml'.
+I20261102 16:03:54.652747  6724 config_compiler.cc:214] patching app_options/alacritty.exe
+I20261102 16:03:54.652763  6724 config_compiler.cc:214] patching app_options/bash.exe
+I20261102 16:03:54.652771  6724 config_compiler.cc:214] patching app_options/clion64.exe
+I20261102 16:03:54.652779  6724 config_compiler.cc:214] patching app_options/cmd.exe
+I20261102 16:03:54.652786  6724 config_compiler.cc:214] patching app_options/code - insiders.exe
+I20261102 16:03:54.652793  6724 config_compiler.cc:214] patching app_options/code.exe
+I20261102 16:03:54.652800  6724 config_compiler.cc:214] patching app_options/conhost.exe
+I20261102 16:03:54.652807  6724 config_compiler.cc:214] patching app_options/cursor.exe
+I20261102 16:03:54.652814  6724 config_compiler.cc:214] patching app_options/datagrip64.exe
+I20261102 16:03:54.652821  6724 config_compiler.cc:214] patching app_options/devenv.exe
+I20261102 16:03:54.652828  6724 config_compiler.cc:214] patching app_options/emacs.exe
+I20261102 16:03:54.652834  6724 config_compiler.cc:214] patching app_options/everything.exe
+I20261102 16:03:54.652841  6724 config_compiler.cc:214] patching app_options/fleet.exe
+I20261102 16:03:54.652848  6724 config_compiler.cc:214] patching app_options/goland64.exe
+I20261102 16:03:54.652855  6724 config_compiler.cc:214] patching app_options/gvim.exe
+I20261102 16:03:54.652862  6724 config_compiler.cc:214] patching app_options/hyper.exe
+I20261102 16:03:54.652869  6724 config_compiler.cc:214] patching app_options/idea64.exe
+I20261102 16:03:54.652876  6724 config_compiler.cc:214] patching app_options/listary.exe
+I20261102 16:03:54.652883  6724 config_compiler.cc:214] patching app_options/mintty.exe
+I20261102 16:03:54.652890  6724 config_compiler.cc:214] patching app_options/mobaxterm.exe
+I20261102 16:03:54.652897  6724 config_compiler.cc:214] patching app_options/neovide.exe
+I20261102 16:03:54.652904  6724 config_compiler.cc:214] patching app_options/nvim-qt.exe
+I20261102 16:03:54.652912  6724 config_compiler.cc:214] patching app_options/openconsole.exe
+I20261102 16:03:54.652919  6724 config_compiler.cc:214] patching app_options/phpstorm64.exe
+I20261102 16:03:54.652927  6724 config_compiler.cc:214] patching app_options/powershell.exe
+I20261102 16:03:54.652934  6724 config_compiler.cc:214] patching app_options/powershell_ise.exe
+I20261102 16:03:54.652942  6724 config_compiler.cc:214] patching app_options/powertoys.powerlauncher.exe
+I20261102 16:03:54.652950  6724 config_compiler.cc:214] patching app_options/putty.exe
+I20261102 16:03:54.652958  6724 config_compiler.cc:214] patching app_options/pwsh.exe
+I20261102 16:03:54.652966  6724 config_compiler.cc:214] patching app_options/pycharm64.exe
+I20261102 16:03:54.652973  6724 config_compiler.cc:214] patching app_options/rider64.exe
+I20261102 16:03:54.652981  6724 config_compiler.cc:214] patching app_options/rubymine64.exe
+I20261102 16:03:54.652989  6724 config_compiler.cc:214] patching app_options/runemacs.exe
+I20261102 16:03:54.652996  6724 config_compiler.cc:214] patching app_options/rustrover64.exe
+I20261102 16:03:54.653004  6724 config_compiler.cc:214] patching app_options/studio64.exe
+I20261102 16:03:54.653012  6724 config_compiler.cc:214] patching app_options/sublime_text.exe
+I20261102 16:03:54.653046  6724 config_compiler.cc:214] patching app_options/tabby.exe
+I20261102 16:03:54.653063  6724 config_compiler.cc:214] patching app_options/termius.exe
+I20261102 16:03:54.653245  6724 config_compiler.cc:214] patching app_options/trae.exe
+I20261102 16:03:54.653348  6724 config_compiler.cc:214] patching app_options/vscodium.exe
+I20261102 16:03:54.653375  6724 config_compiler.cc:214] patching app_options/webstorm64.exe
+I20261102 16:03:54.653399  6724 config_compiler.cc:214] patching app_options/wezterm-gui.exe
+I20261102 16:03:54.653419  6724 config_compiler.cc:214] patching app_options/windowsterminal.exe
+I20261102 16:03:54.653443  6724 config_compiler.cc:214] patching app_options/windsurf.exe
+I20261102 16:03:54.653463  6724 config_compiler.cc:214] patching app_options/windterm.exe
+I20261102 16:03:54.653474  6724 config_compiler.cc:214] patching app_options/wsl.exe
+I20261102 16:03:54.653487  6724 config_compiler.cc:214] patching app_options/wslhost.exe
+I20261102 16:03:54.653499  6724 config_compiler.cc:214] patching app_options/xshell.exe
+I20261102 16:03:54.653510  6724 config_compiler.cc:214] patching app_options/zed.exe
+I20261102 16:03:54.653523  6724 config_compiler.cc:214] patching global_ascii
+I20261102 16:03:54.653530  6724 config_compiler.cc:214] patching preset_color_schemes/yiwei_dianzi
+I20261102 16:03:54.653563  6724 config_compiler.cc:214] patching preset_color_schemes/yiwei_dianzi_dark
+I20261102 16:03:54.653581  6724 config_compiler.cc:214] patching preset_color_schemes/yiwei_moblue
+I20261102 16:03:54.653600  6724 config_compiler.cc:214] patching preset_color_schemes/yiwei_moblue_dark
+I20261102 16:03:54.653618  6724 config_compiler.cc:214] patching preset_color_schemes/yiwei_pill
+I20261102 16:03:54.653637  6724 config_compiler.cc:214] patching preset_color_schemes/yiwei_pill_dark
+I20261102 16:03:54.653651  6724 config_compiler.cc:214] patching preset_color_schemes/yiwei_qingbi
+I20261102 16:03:54.653668  6724 config_compiler.cc:214] patching preset_color_schemes/yiwei_qingbi_dark
+I20261102 16:03:54.653685  6724 config_compiler.cc:214] patching preset_color_schemes/yiwei_shimo
+I20261102 16:03:54.653699  6724 config_compiler.cc:214] patching preset_color_schemes/yiwei_shimo_dark
+I20261102 16:03:54.653715  6724 config_compiler.cc:214] patching preset_color_schemes/yiwei_zhusha
+I20261102 16:03:54.653729  6724 config_compiler.cc:214] patching preset_color_schemes/yiwei_zhusha_dark
+I20261102 16:03:54.653742  6724 config_compiler.cc:214] patching show_notifications
+I20261102 16:03:54.653751  6724 config_compiler.cc:214] patching style/candidate_list_layout
+I20261102 16:03:54.653765  6724 config_compiler.cc:214] patching style/color_scheme
+I20261102 16:03:54.653775  6724 config_compiler.cc:214] patching style/color_scheme_dark
+I20261102 16:03:54.653785  6724 config_compiler.cc:214] patching style/comment_font_face
+I20261102 16:03:54.653794  6724 config_compiler.cc:214] patching style/comment_font_point
+I20261102 16:03:54.653804  6724 config_compiler.cc:214] patching style/display_tray_icon
+I20261102 16:03:54.653814  6724 config_compiler.cc:214] patching style/font_face
+I20261102 16:03:54.653823  6724 config_compiler.cc:214] patching style/font_point
+I20261102 16:03:54.653832  6724 config_compiler.cc:214] patching style/horizontal
+I20261102 16:03:54.653841  6724 config_compiler.cc:214] patching style/inline_preedit
+I20261102 16:03:54.653851  6724 config_compiler.cc:214] patching style/label_font_point
+I20261102 16:03:54.653860  6724 config_compiler.cc:214] patching style/layout/corner_radius
+I20261102 16:03:54.653874  6724 config_compiler.cc:214] patching style/layout/hilite_padding_x
+I20261102 16:03:54.653887  6724 config_compiler.cc:214] patching style/layout/round_corner
+I20261102 16:03:54.653899  6724 config_compiler.cc:214] patching style/text_orientation
+I20261102 16:03:54.653909  6724 config_compiler.cc:214] patching style/vertical_text
+I20261102 16:03:54.653918  6724 config_compiler.cc:537] resolved: Patch(weasel.custom:patch <optional>)
+I20261102 16:03:54.654035  6724 config_data.cc:92] saving config file 'C:\Users\runneradmin\AppData\Roaming\YiweiIME\build\weasel.yaml'.

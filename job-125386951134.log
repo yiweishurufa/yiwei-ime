@@ -1,0 +1,303 @@
+﻿2026-11-02T16:02:35.2256192Z Current runner version: '2.338.2'
+2026-11-02T16:02:35.2282136Z ##[group]Runner Image Provisioner
+2026-11-02T16:02:35.2282942Z Hosted Compute Agent
+2026-11-02T16:02:35.2283514Z Version: 20261021.618
+2026-11-02T16:02:35.2284090Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-11-02T16:02:35.2284745Z Build Date: 2026-10-21T00:45:21Z
+2026-11-02T16:02:35.2285374Z Worker ID: {5d46b82d-3974-42fa-9e64-0ba3da84dbd5}
+2026-11-02T16:02:35.2286025Z Region: westus
+2026-11-02T16:02:35.2286492Z Cloud: Azure
+2026-11-02T16:02:35.2286964Z ##[endgroup]
+2026-11-02T16:02:35.2288302Z ##[group]Operating System
+2026-11-02T16:02:35.2288904Z Microsoft Windows Server 2022
+2026-11-02T16:02:35.2289464Z 10.0.20348
+2026-11-02T16:02:35.2289937Z Datacenter
+2026-11-02T16:02:35.2290411Z ##[endgroup]
+2026-11-02T16:02:35.2290887Z ##[group]Runner Image
+2026-11-02T16:02:35.2291408Z Image: windows-2022
+2026-11-02T16:02:35.2291915Z Version: 20261025.346.1
+2026-11-02T16:02:35.2293300Z Included Software: https://github.com/actions/runner-images/blob/win22/20261025.346/images/windows/Windows2022-Readme.md
+2026-11-02T16:02:35.2294767Z Image Release: https://github.com/actions/runner-images/releases/tag/win22%2F20261025.346
+2026-11-02T16:02:35.2295645Z ##[endgroup]
+2026-11-02T16:02:35.2296777Z ##[group]GITHUB_TOKEN Permissions
+2026-11-02T16:02:35.2298656Z Actions: read
+2026-11-02T16:02:35.2299228Z Contents: write
+2026-11-02T16:02:35.2299727Z Metadata: read
+2026-11-02T16:02:35.2300219Z ##[endgroup]
+2026-11-02T16:02:35.2302344Z Secret source: Actions
+2026-11-02T16:02:35.2303318Z Cache mode: write
+2026-11-02T16:02:35.2303996Z Prepare workflow directory
+2026-11-02T16:02:35.2806710Z Prepare all required actions
+2026-11-02T16:02:35.2871208Z Getting action download info
+2026-11-02T16:02:35.7126588Z Download action repository 'actions/download-artifact@v7' (SHA:37930b1c2abaa49bbe596cd826c3c89aef350131)
+2026-11-02T16:02:36.1760913Z Download action repository 'actions/upload-artifact@v6' (SHA:b7c566a772e6b6bfb58ed0dc250532a479d7789f)
+2026-11-02T16:02:36.4918121Z Complete job name: smoke
+2026-11-02T16:02:36.6488658Z ##[group]Run actions/download-artifact@v7
+2026-11-02T16:02:36.6489915Z with:
+2026-11-02T16:02:36.6490377Z   name: yiwei-ime-installer
+2026-11-02T16:02:36.6490889Z   path: dist
+2026-11-02T16:02:36.6491334Z   merge-multiple: false
+2026-11-02T16:02:36.6491852Z   repository: yiweishurufa/yiwei-ime
+2026-11-02T16:02:36.6492458Z   run-id: 41476408670
+2026-11-02T16:02:36.6493122Z env:
+2026-11-02T16:02:36.6493628Z   WEASEL_REPO: https://github.com/rime/weasel.git
+2026-11-02T16:02:36.6494377Z   WEASEL_SHA: 82b50c9e9b9ee0bd31357db6f25ddc804546c7f7
+2026-11-02T16:02:36.6495032Z   VERSION_MAJOR: 0
+2026-11-02T16:02:36.6495477Z   VERSION_MINOR: 1
+2026-11-02T16:02:36.6495931Z   VERSION_PATCH: 0
+2026-11-02T16:02:36.6496405Z ##[endgroup]
+2026-11-02T16:02:36.8679261Z Downloading single artifact
+2026-11-02T16:02:37.1790051Z Preparing to download the following artifacts:
+2026-11-02T16:02:37.1792249Z - yiwei-ime-installer (ID: 13158431160, Size: 27490588, Expected Digest: sha256:d19916774bb83184337b0fe213a5f589b843cda0a809925b11121a7aa9f45485)
+2026-11-02T16:02:37.7330118Z Redirecting to blob download url: https://productionresultssa13.blob.core.windows.net/actions-results/f9f1083d-96a8-8907-b3ca-af9bb839cb86/workflow-job-run-1a50b80c-5fef-55f7-b588-9867656aa823/artifacts/b116b6abe3eddcb6c62806ac607ffa99ff3177354832fa9c610c2d3fecd84a90.zip
+2026-11-02T16:02:37.7332149Z Starting download of artifact to: D:\a\yiwei-ime\yiwei-ime\dist
+2026-11-02T16:02:38.0897273Z (node:1272) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-11-02T16:02:38.0899290Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-02T16:02:39.5606515Z SHA256 digest of downloaded artifact is d19916774bb83184337b0fe213a5f589b843cda0a809925b11121a7aa9f45485
+2026-11-02T16:02:39.5607816Z Artifact download completed successfully.
+2026-11-02T16:02:39.5611979Z Total of 1 artifact(s) downloaded
+2026-11-02T16:02:39.5619190Z Download artifact has finished successfully
+2026-11-02T16:02:39.5967736Z ##[group]Run $ErrorActionPreference = 'Stop'
+2026-11-02T16:02:39.5968398Z [36;1m$ErrorActionPreference = 'Stop'[0m
+2026-11-02T16:02:39.5968915Z [36;1m$exe = Get-ChildItem dist -Filter 'yiwei-ime*.exe' | Select-Object -First 1[0m
+2026-11-02T16:02:39.5969414Z [36;1mWrite-Host "installer: $($exe.Name)"[0m
+2026-11-02T16:02:39.5969745Z [36;1m# 安装界面截图：交互模式打开欢迎页，截屏后关掉，再静默安装[0m
+2026-11-02T16:02:39.5970051Z [36;1mtry {[0m
+2026-11-02T16:02:39.5970412Z [36;1m  Add-Type -AssemblyName System.Windows.Forms, System.Drawing[0m
+2026-11-02T16:02:39.5970904Z [36;1m  New-Item -ItemType Directory -Force screens | Out-Null[0m
+2026-11-02T16:02:39.5971366Z [36;1m  $ui = Start-Process $exe.FullName -PassThru; Start-Sleep 10[0m
+2026-11-02T16:02:39.5971849Z [36;1m  $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds[0m
+2026-11-02T16:02:39.5972376Z [36;1m  $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height[0m
+2026-11-02T16:02:39.5973134Z [36;1m  $g = [System.Drawing.Graphics]::FromImage($bmp); $g.CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)[0m
+2026-11-02T16:02:39.5974021Z [36;1m  $bmp.Save("screens\installer-welcome.png", [System.Drawing.Imaging.ImageFormat]::Png); $g.Dispose(); $bmp.Dispose()[0m
+2026-11-02T16:02:39.5974762Z [36;1m  Stop-Process -Id $ui.Id -Force -ErrorAction SilentlyContinue; Start-Sleep 2[0m
+2026-11-02T16:02:39.5975244Z [36;1m} catch { Write-Host "安装界面截图失败：$_" }[0m
+2026-11-02T16:02:39.5975639Z [36;1m# 先装上一版 nightly（有的话），下面的安装就是一次真实的「旧版 → 新版」升级[0m
+2026-11-02T16:02:39.5975978Z [36;1mtry {[0m
+2026-11-02T16:02:39.5976490Z [36;1m  gh release download nightly -R $env:GITHUB_REPOSITORY -p 'yiwei-ime-*-installer.exe' -D old-nightly --clobber[0m
+2026-11-02T16:02:39.5977351Z [36;1m  $old = Get-ChildItem old-nightly -Filter 'yiwei-ime*.exe' -ErrorAction SilentlyContinue | Select-Object -First 1[0m
+2026-11-02T16:02:39.5977989Z [36;1m  if ($old) {[0m
+2026-11-02T16:02:39.5978304Z [36;1m    Write-Host "先安装旧版 $($old.Name)"[0m
+2026-11-02T16:02:39.5978738Z [36;1m    $po = Start-Process $old.FullName -ArgumentList '/S' -PassThru[0m
+2026-11-02T16:02:39.5979492Z [36;1m    if (-not $po.WaitForExit(600000)) { $po.Kill(); Write-Host "旧版安装超时，跳过升级测试" } else { Write-Host "旧版 exit code $($po.ExitCode)"; Start-Sleep 5 }[0m
+2026-11-02T16:02:39.5980116Z [36;1m  }[0m
+2026-11-02T16:02:39.5980423Z [36;1m} catch { Write-Host "没有拿到旧版 nightly，跳过旧版 → 新版升级测试：$_" }[0m
+2026-11-02T16:02:39.5980916Z [36;1m$p = Start-Process $exe.FullName -ArgumentList '/S' -PassThru[0m
+2026-11-02T16:02:39.5981423Z [36;1mif (-not $p.WaitForExit(600000)) { $p.Kill(); throw "安装超时（可能弹出了对话框）" }[0m
+2026-11-02T16:02:39.5981901Z [36;1mWrite-Host "installer exit code $($p.ExitCode)"[0m
+2026-11-02T16:02:39.5982322Z [36;1mif ($p.ExitCode -eq 3010) { throw "安装/升级要求重启电脑（退出码 3010）" }[0m
+2026-11-02T16:02:39.5982718Z [36;1m$root = $null[0m
+2026-11-02T16:02:39.5983183Z [36;1mforeach ($k in 'HKLM:\SOFTWARE\Yiwei\YiweiIME','HKLM:\SOFTWARE\WOW6432Node\Yiwei\YiweiIME') {[0m
+2026-11-02T16:02:39.5983823Z [36;1m  if (Test-Path $k) { $v = (Get-ItemProperty $k).YiweiRoot; if ($v) { $root = $v } }[0m
+2026-11-02T16:02:39.5984270Z [36;1m}[0m
+2026-11-02T16:02:39.5984595Z [36;1mif (-not $root) { throw "注册表里没有 YiweiRoot" }[0m
+2026-11-02T16:02:39.5984936Z [36;1mWrite-Host "YiweiRoot = $root"[0m
+2026-11-02T16:02:39.5985839Z [36;1mforeach ($f in 'YiweiServer.exe','YiweiDeployer.exe','YiweiSetup.exe','YiweiHelper.exe','rime.dll','data\rime_ice.schema.yaml','data\lua\yiwei_stats.lua','data\yiwei_shuangpin.txt','data\yiwei_stroke.dict.yaml') {[0m
+2026-11-02T16:02:39.5986819Z [36;1m  if (-not (Test-Path (Join-Path $root $f))) { throw "缺少文件 $f" }[0m
+2026-11-02T16:02:39.5987191Z [36;1m}[0m
+2026-11-02T16:02:39.5987586Z [36;1m# 语法模型依赖 librime-octagram（librime 官方发行包静态链接了 lua / octagram / predict）[0m
+2026-11-02T16:02:39.5989161Z [36;1m$rimeText = [Text.Encoding]::ASCII.GetString([IO.File]::ReadAllBytes((Join-Path $root 'rime.dll')))[0m
+2026-11-02T16:02:39.5991493Z [36;1mif (-not $rimeText.Contains('octagram')) { throw "rime.dll 不含 librime-octagram 插件，语法模型将不可用" }[0m
+2026-11-02T16:02:39.5992306Z [36;1mif (-not $rimeText.Contains('lua_processor')) { Write-Host "警告：rime.dll 里没找到 librime-lua" }[0m
+2026-11-02T16:02:39.5992832Z [36;1m$sys = "$env:WINDIR\System32"[0m
+2026-11-02T16:02:39.5993498Z [36;1mif (-not ((Test-Path "$sys\yiwei.dll") -or (Test-Path "$sys\yiweix64.dll"))) { Get-ChildItem $sys -Filter 'yiwei*' ; throw "系统目录里没有 yiwei 输入法模块" }[0m
+2026-11-02T16:02:39.5994290Z [36;1m$tip = 'HKLM:\SOFTWARE\Microsoft\CTF\TIP\{54C92C2A-5FE9-43A0-A9EC-D05B42C996D4}'[0m
+2026-11-02T16:02:39.5994834Z [36;1mif (-not (Test-Path $tip)) { throw "TSF 输入法没有注册：$tip" }[0m
+2026-11-02T16:02:39.5995514Z [36;1mif (Test-Path 'HKLM:\SOFTWARE\Microsoft\CTF\TIP\{A3F4CDED-B1E9-41EE-9CA6-7B4D0DE6CB0A}') { throw "注册了小狼毫的 CLSID，改名不彻底" }[0m
+2026-11-02T16:02:39.5996232Z [36;1m# 任务栏只留一个图标：语言栏 中/英 按钮的右键菜单换成一维菜单（交给 YiweiHelper.exe）；切中英只弹一维的提示[0m
+2026-11-02T16:02:39.5996826Z [36;1m$dll = if (Test-Path "$sys\yiweix64.dll") { "$sys\yiweix64.dll" } else { "$sys\yiwei.dll" }[0m
+2026-11-02T16:02:39.5997461Z [36;1m$dllText = [Text.Encoding]::Unicode.GetString([IO.File]::ReadAllBytes($dll))[0m
+2026-11-02T16:02:39.5998194Z [36;1mif (-not $dllText.Contains('显示/隐藏通知区域的一维图标') -or -not $dllText.Contains('YiweiHelper.exe')) { throw "语言栏菜单没有换成一维菜单：$dll" }[0m
+2026-11-02T16:02:39.5998792Z [36;1m# 界面风格对话框换成一维版本：确定按钮、一维配色排序、不带参数进助手外观页[0m
+2026-11-02T16:02:39.5999413Z [36;1m$dep = [IO.File]::ReadAllBytes((Join-Path $root 'YiweiDeployer.exe'))[0m
+2026-11-02T16:02:39.6000604Z [36;1m$depW = [Text.Encoding]::Unicode.GetString($dep); $depA = [Text.Encoding]::ASCII.GetString($dep)[0m
+2026-11-02T16:02:39.6001509Z [36;1mif (-not $depW.Contains('/settings 外观') -or -not $depW.Contains('确定') -or -not $depA.Contains('yiwei_moblue')) { throw "YiweiDeployer 的界面风格对话框没有换成一维版本" }[0m
+2026-11-02T16:02:39.6002571Z [36;1m$notif = (Select-String -Path (Join-Path $root 'data\weasel.yaml') -Pattern '^show_notifications:' | Select-Object -First 1).Line[0m
+2026-11-02T16:02:39.6003203Z [36;1mWrite-Host "weasel.yaml $notif"[0m
+2026-11-02T16:02:39.6003676Z [36;1mif (-not $notif -or $notif -match 'true|ascii_mode') { throw "小狼毫的中/英状态提示没有关掉（会和一维提示一起弹）" }[0m
+2026-11-02T16:02:39.6004137Z [36;1m# 部署词库[0m
+2026-11-02T16:02:39.6004585Z [36;1m$d = Start-Process (Join-Path $root 'YiweiDeployer.exe') -ArgumentList '/deploy' -PassThru[0m
+2026-11-02T16:02:39.6005584Z [36;1mif (-not $d.WaitForExit(600000)) { $d.Kill(); throw "部署超时" }[0m
+2026-11-02T16:02:39.6006009Z [36;1m$user = Join-Path $env:APPDATA 'YiweiIME'[0m
+2026-11-02T16:02:39.6006366Z [36;1mWrite-Host "user dir: $user"[0m
+2026-11-02T16:02:39.6007038Z [36;1mGet-ChildItem (Join-Path $user 'build') -ErrorAction SilentlyContinue | Select-Object Name, Length | Format-Table | Out-String | Write-Host[0m
+2026-11-02T16:02:39.6007905Z [36;1mif (-not (Test-Path (Join-Path $user 'build\rime_ice.prism.bin'))) { throw "雾凇拼音没有部署成功" }[0m
+2026-11-02T16:02:39.6008636Z [36;1mif (-not (Test-Path (Join-Path $user 'build\yiwei_stroke.table.bin'))) { throw "笔画输入词典（yiwei_stroke）没有编译" }[0m
+2026-11-02T16:02:39.6009172Z [36;1m# 输入法服务与助手能否启动[0m
+2026-11-02T16:02:39.6009498Z [36;1mStart-Process (Join-Path $root 'YiweiServer.exe')[0m
+2026-11-02T16:02:39.6010006Z [36;1mStart-Process (Join-Path $root 'YiweiHelper.exe') -ArgumentList '/background'[0m
+2026-11-02T16:02:39.6010472Z [36;1mStart-Sleep 8[0m
+2026-11-02T16:02:39.6010747Z [36;1m# 服务偶尔在首次部署后的几秒内自行重启：最多等 20 秒，不在就再拉起一次[0m
+2026-11-02T16:02:39.6011050Z [36;1m$ok = $false[0m
+2026-11-02T16:02:39.6011634Z [36;1mfor ($i = 0; $i -lt 20 -and -not $ok; $i++) { if (Get-Process YiweiServer -ErrorAction SilentlyContinue) { $ok = $true } else { Start-Sleep 1 } }[0m
+2026-11-02T16:02:39.6012544Z [36;1mif (-not $ok) { Write-Host "YiweiServer 不在，重新启动一次"; Start-Process (Join-Path $root 'YiweiServer.exe'); Start-Sleep 6 }[0m
+2026-11-02T16:02:39.6014113Z [36;1mif (-not (Get-Process YiweiServer -ErrorAction SilentlyContinue)) { throw "YiweiServer 没有启动" }[0m
+2026-11-02T16:02:39.6014912Z [36;1mif (-not (Get-Process YiweiHelper -ErrorAction SilentlyContinue)) { throw "YiweiHelper 启动后退出了" }[0m
+2026-11-02T16:02:39.6015469Z [36;1m# 34 性能体检：命令行触发，写 yiwei\perfcheck.txt[0m
+2026-11-02T16:02:39.6015944Z [36;1mStart-Process (Join-Path $root 'YiweiHelper.exe') -ArgumentList '/perfcheck'[0m
+2026-11-02T16:02:39.6016452Z [36;1m$pc = Join-Path $user 'yiwei\perfcheck.txt'[0m
+2026-11-02T16:02:39.6016890Z [36;1mfor ($i = 0; $i -lt 20 -and -not (Test-Path $pc); $i++) { Start-Sleep 1 }[0m
+2026-11-02T16:02:39.6017390Z [36;1mif (-not (Test-Path $pc)) { throw "性能体检（/perfcheck）没有生成报告" }[0m
+2026-11-02T16:02:39.6017818Z [36;1mGet-Content $pc -Encoding utf8 | Write-Host[0m
+2026-11-02T16:02:39.6018316Z [36;1mif (-not ((Get-Content $pc -Raw -Encoding utf8) -match '输入法服务内存')) { throw "性能体检报告内容不对" }[0m
+2026-11-02T16:02:39.6018868Z [36;1m# 升级不需要重启：模拟正在打字的程序 —— 本进程把系统目录里的输入法 DLL 按映像映射（锁住不能覆盖），[0m
+2026-11-02T16:02:39.6019268Z [36;1m# 再静默覆盖安装同一个安装包：退出码不能是 3010，服务和助手要自己起来，输入法注册不能丢[0m
+2026-11-02T16:02:39.6019750Z [36;1m$sysDll = if (Test-Path "$sys\yiwei.dll") { "$sys\yiwei.dll" } else { "$sys\yiweix64.dll" }[0m
+2026-11-02T16:02:39.6021123Z [36;1mAdd-Type -Namespace YwTest -Name K -MemberDefinition '[System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)] public static extern System.IntPtr LoadLibraryExW(string p, System.IntPtr h, uint f);'[0m
+2026-11-02T16:02:39.6022577Z [36;1m$hmod = [YwTest.K]::LoadLibraryExW($sysDll, [IntPtr]::Zero, 1)  # DONT_RESOLVE_DLL_REFERENCES：映射但不运行 DllMain[0m
+2026-11-02T16:02:39.6023124Z [36;1mWrite-Host "锁住 $sysDll -> $hmod"[0m
+2026-11-02T16:02:39.6023541Z [36;1m$p2 = Start-Process $exe.FullName -ArgumentList '/S' -PassThru[0m
+2026-11-02T16:02:39.6024103Z [36;1mif (-not $p2.WaitForExit(600000)) { $p2.Kill(); throw "覆盖安装超时（可能弹出了对话框）" }[0m
+2026-11-02T16:02:39.6024594Z [36;1mWrite-Host "upgrade exit code $($p2.ExitCode)"[0m
+2026-11-02T16:02:39.6025241Z [36;1mGet-ChildItem $sys -Filter 'yiwei*' | Select-Object Name, Length, LastWriteTime | Format-Table | Out-String | Write-Host[0m
+2026-11-02T16:02:39.6025908Z [36;1mif ($p2.ExitCode -eq 3010) { throw "覆盖安装要求重启电脑（退出码 3010）" }[0m
+2026-11-02T16:02:39.6026359Z [36;1mif ($p2.ExitCode -ne 0) { throw "覆盖安装失败，退出码 $($p2.ExitCode)" }[0m
+2026-11-02T16:02:39.6026814Z [36;1mif (-not (Test-Path $sysDll)) { throw "覆盖安装后系统目录里没有输入法模块" }[0m
+2026-11-02T16:02:39.6027541Z [36;1mif ($hmod -ne [IntPtr]::Zero -and -not (Get-ChildItem $sys -Filter ((Split-Path $sysDll -Leaf) + '.old.*'))) { Write-Host "提示：被占用的 DLL 没有改名（可能复制时未被锁）" }[0m
+2026-11-02T16:02:39.6028280Z [36;1mif (-not (Test-Path $tip)) { throw "覆盖安装后 TSF 输入法注册丢了" }[0m
+2026-11-02T16:02:39.6028709Z [36;1mforeach ($proc in 'YiweiServer','YiweiHelper') {[0m
+2026-11-02T16:02:39.6029208Z [36;1m  $ok = $false[0m
+2026-11-02T16:02:39.6029867Z [36;1m  for ($i = 0; $i -lt 40 -and -not $ok; $i++) { if (Get-Process $proc -ErrorAction SilentlyContinue) { $ok = $true } else { Start-Sleep 1 } }[0m
+2026-11-02T16:02:39.6030510Z [36;1m  if (-not $ok) { throw "覆盖安装后 $proc 没有自动启动" }[0m
+2026-11-02T16:02:39.6030833Z [36;1m}[0m
+2026-11-02T16:02:39.6031059Z [36;1mWrite-Host "升级免重启检查通过"[0m
+2026-11-02T16:02:39.6031329Z [36;1mWrite-Host "自检通过"[0m
+2026-11-02T16:02:39.6140246Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-11-02T16:02:39.6140883Z env:
+2026-11-02T16:02:39.6141293Z   WEASEL_REPO: https://github.com/rime/weasel.git
+2026-11-02T16:02:39.6141873Z   WEASEL_SHA: 82b50c9e9b9ee0bd31357db6f25ddc804546c7f7
+2026-11-02T16:02:39.6142362Z   VERSION_MAJOR: 0
+2026-11-02T16:02:39.6142652Z   VERSION_MINOR: 1
+2026-11-02T16:02:39.6142941Z   VERSION_PATCH: 0
+2026-11-02T16:02:39.6146925Z   GH_TOKEN: ***
+2026-11-02T16:02:39.6147232Z ##[endgroup]
+2026-11-02T16:02:40.2923142Z installer: yiwei-ime-0.1.0.109-installer.exe
+2026-11-02T16:02:58.2651136Z 先安装旧版 yiwei-ime-0.1.0.108-installer.exe
+2026-11-02T16:03:30.1334527Z 旧版 exit code 0
+2026-11-02T16:03:54.7906492Z installer exit code 0
+2026-11-02T16:03:54.8065388Z YiweiRoot = C:\Program Files\Yiwei\yiwei-0.1.0
+2026-11-02T16:03:55.0837192Z [31;1mException: [0mD:\a\_temp\b3bfe899-c66c-4883-bc60-1fb1a53584b0.ps1:55[0m
+2026-11-02T16:03:55.0838597Z [31;1m[0m[36;1mLine |[0m
+2026-11-02T16:03:55.0841044Z [31;1m[0m[36;1m[36;1m  55 | [0m … .Contains('yiwei_moblue')) { [36;1mthrow "YiweiDeployer 的界面风格对话框没有换成一维版本"[0m }[0m
+2026-11-02T16:03:55.0844771Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+2026-11-02T16:03:55.0846781Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mYiweiDeployer 的界面风格对话框没有换成一维版本[0m
+2026-11-02T16:03:55.1174629Z ##[error]Process completed with exit code 1.
+2026-11-02T16:03:55.1346688Z ##[group]Run Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+2026-11-02T16:03:55.1347404Z [36;1mAdd-Type -AssemblyName System.Windows.Forms, System.Drawing[0m
+2026-11-02T16:03:55.1347907Z [36;1mNew-Item -ItemType Directory -Force screens | Out-Null[0m
+2026-11-02T16:03:55.1348277Z [36;1mfunction Shot($name) {[0m
+2026-11-02T16:03:55.1348652Z [36;1m  $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds[0m
+2026-11-02T16:03:55.1349106Z [36;1m  $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height[0m
+2026-11-02T16:03:55.1349773Z [36;1m  $g = [System.Drawing.Graphics]::FromImage($bmp); $g.CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)[0m
+2026-11-02T16:03:55.1350606Z [36;1m  $bmp.Save("screens\$name.png", [System.Drawing.Imaging.ImageFormat]::Png); $g.Dispose(); $bmp.Dispose()[0m
+2026-11-02T16:03:55.1351122Z [36;1m}[0m
+2026-11-02T16:03:55.1351638Z [36;1m$root = (Get-ItemProperty 'HKLM:\SOFTWARE\WOW6432Node\Yiwei\YiweiIME' -ErrorAction SilentlyContinue).YiweiRoot[0m
+2026-11-02T16:03:55.1352357Z [36;1mif (-not $root) { $root = (Get-ItemProperty 'HKLM:\SOFTWARE\Yiwei\YiweiIME').YiweiRoot }[0m
+2026-11-02T16:03:55.1352842Z [36;1m$h = Join-Path $root 'YiweiHelper.exe'[0m
+2026-11-02T16:03:55.1353248Z [36;1mforeach ($pg in '常规','外观','快捷键','常用语','AI','统计','关于') {[0m
+2026-11-02T16:03:55.1353760Z [36;1m  Start-Process $h -ArgumentList '/settings', $pg; Start-Sleep 5; Shot "settings-$pg"[0m
+2026-11-02T16:03:55.1354192Z [36;1m}[0m
+2026-11-02T16:03:55.1354615Z [36;1mStart-Process $h -ArgumentList '/tool', 'shuangpin-map'; Start-Sleep 4; Shot 'tool-shuangpin-map'[0m
+2026-11-02T16:03:55.1355269Z [36;1mGet-Process YiweiHelper -ErrorAction SilentlyContinue | Stop-Process -Force[0m
+2026-11-02T16:03:55.1355835Z [36;1mStart-Process $h -ArgumentList '/wizard'; Start-Sleep 6; Shot 'wizard-1'[0m
+2026-11-02T16:03:55.1356315Z [36;1mAdd-Type -AssemblyName Microsoft.VisualBasic[0m
+2026-11-02T16:03:55.1357824Z [36;1mfor ($i = 2; $i -le 7; $i++) { [System.Windows.Forms.SendKeys]::SendWait('{ENTER}'); Start-Sleep 2; Shot "wizard-$i" }[0m
+2026-11-02T16:03:55.1358942Z [36;1mGet-ChildItem "$env:APPDATA\YiweiIME" -Filter '*.log' -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch '\.userdb\\' } | Copy-Item -Destination screens -ErrorAction SilentlyContinue[0m
+2026-11-02T16:03:55.1360721Z [36;1mGet-ChildItem "$env:LOCALAPPDATA" -Filter 'Yiwei*' -Directory -ErrorAction SilentlyContinue | ForEach-Object { Get-ChildItem $_.FullName -Filter *.log -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch '\.userdb\\' } | Copy-Item -Destination screens -ErrorAction SilentlyContinue }[0m
+2026-11-02T16:03:55.1361937Z [36;1mexit 0[0m
+2026-11-02T16:03:55.1413135Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-11-02T16:03:55.1413531Z env:
+2026-11-02T16:03:55.1413794Z   WEASEL_REPO: https://github.com/rime/weasel.git
+2026-11-02T16:03:55.1414191Z   WEASEL_SHA: 82b50c9e9b9ee0bd31357db6f25ddc804546c7f7
+2026-11-02T16:03:55.1414489Z   VERSION_MAJOR: 0
+2026-11-02T16:03:55.1414696Z   VERSION_MINOR: 1
+2026-11-02T16:03:55.1414887Z   VERSION_PATCH: 0
+2026-11-02T16:03:55.1415084Z ##[endgroup]
+2026-11-02T16:04:54.0858778Z ##[group]Run actions/upload-artifact@v6
+2026-11-02T16:04:54.0859215Z with:
+2026-11-02T16:04:54.0859398Z   name: screens
+2026-11-02T16:04:54.0859595Z   path: screens
+2026-11-02T16:04:54.0859788Z   if-no-files-found: ignore
+2026-11-02T16:04:54.0860016Z   compression-level: 6
+2026-11-02T16:04:54.0860218Z   overwrite: false
+2026-11-02T16:04:54.0860424Z   include-hidden-files: false
+2026-11-02T16:04:54.0860655Z env:
+2026-11-02T16:04:54.0860893Z   WEASEL_REPO: https://github.com/rime/weasel.git
+2026-11-02T16:04:54.0861238Z   WEASEL_SHA: 82b50c9e9b9ee0bd31357db6f25ddc804546c7f7
+2026-11-02T16:04:54.0861525Z   VERSION_MAJOR: 0
+2026-11-02T16:04:54.0861721Z   VERSION_MINOR: 1
+2026-11-02T16:04:54.0861900Z   VERSION_PATCH: 0
+2026-11-02T16:04:54.0862105Z ##[endgroup]
+2026-11-02T16:04:54.2938163Z With the provided path, there will be 16 files uploaded
+2026-11-02T16:04:54.2943707Z Artifact name is valid!
+2026-11-02T16:04:54.2945651Z Root directory input is valid!
+2026-11-02T16:04:54.7046575Z Beginning upload of artifact content to blob storage
+2026-11-02T16:04:55.6626398Z Uploaded bytes 1443490
+2026-11-02T16:04:55.7408885Z Finished uploading artifact content to blob storage!
+2026-11-02T16:04:55.7410046Z SHA256 digest of uploaded artifact zip is 99f6a527df8d818176df5197cc85939a4b4794d8d21244d65b54e7ad62f39f22
+2026-11-02T16:04:55.7412321Z Finalizing artifact upload
+2026-11-02T16:04:56.3687146Z Artifact screens.zip successfully finalized. Artifact ID 13158546182
+2026-11-02T16:04:56.3688538Z Artifact screens has been successfully uploaded! Final size is 1443490 bytes. Artifact ID is 13158546182
+2026-11-02T16:04:56.3699774Z Artifact download URL: https://github.com/yiweishurufa/yiwei-ime/actions/runs/41476408670/artifacts/13158546182
+2026-11-02T16:04:56.3957747Z ##[group]Run New-Item -ItemType Directory -Force smoke-logs | Out-Null
+2026-11-02T16:04:56.3958388Z [36;1mNew-Item -ItemType Directory -Force smoke-logs | Out-Null[0m
+2026-11-02T16:04:56.3959186Z [36;1mGet-ChildItem $env:TEMP -Directory -Filter 'rime*' -ErrorAction SilentlyContinue | ForEach-Object { Copy-Item $_.FullName smoke-logs -Recurse -Force }[0m
+2026-11-02T16:04:56.3960051Z [36;1mCopy-Item "$env:APPDATA\YiweiIME\*.yaml" smoke-logs -ErrorAction SilentlyContinue[0m
+2026-11-02T16:04:56.3960747Z [36;1mGet-ChildItem smoke-logs -Recurse | Select-Object FullName, Length | Format-Table | Out-String | Write-Host[0m
+2026-11-02T16:04:56.3999460Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-11-02T16:04:56.3999820Z env:
+2026-11-02T16:04:56.4000074Z   WEASEL_REPO: https://github.com/rime/weasel.git
+2026-11-02T16:04:56.4000444Z   WEASEL_SHA: 82b50c9e9b9ee0bd31357db6f25ddc804546c7f7
+2026-11-02T16:04:56.4000742Z   VERSION_MAJOR: 0
+2026-11-02T16:04:56.4001160Z   VERSION_MINOR: 1
+2026-11-02T16:04:56.4001348Z   VERSION_PATCH: 0
+2026-11-02T16:04:56.4001534Z ##[endgroup]
+2026-11-02T16:04:56.8135077Z 
+2026-11-02T16:04:56.8135705Z FullName
+2026-11-02T16:04:56.8136339Z --------                                                                                                                
+2026-11-02T16:04:56.8137410Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\rime.yiwei                                                                          
+2026-11-02T16:04:56.8138968Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\default.custom.yaml                                                                 
+2026-11-02T16:04:56.8140766Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\double_pinyin_flypy.custom.yaml                                                     
+2026-11-02T16:04:56.8142195Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\double_pinyin_mspy.custom.yaml                                                      
+2026-11-02T16:04:56.8143940Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\double_pinyin.custom.yaml                                                           
+2026-11-02T16:04:56.8145787Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\installation.yaml                                                                   
+2026-11-02T16:04:56.8147592Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\rime_ice.custom.yaml                                                                
+2026-11-02T16:04:56.8149107Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\user.yaml                                                                           
+2026-11-02T16:04:56.8150647Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\weasel.custom.yaml                                                                  
+2026-11-02T16:04:56.8152017Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\rime.yiwei\rime.yiwei.runnervmnjgfq.runneradmin.log.INFO.20261102-160305.1292.log   
+2026-11-02T16:04:56.8153408Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\rime.yiwei\rime.yiwei.runnervmnjgfq.runneradmin.log.INFO.20261102-160329.4560.log   
+2026-11-02T16:04:56.8154842Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\rime.yiwei\rime.yiwei.runnervmnjgfq.runneradmin.log.INFO.20261102-160344.3436.log   
+2026-11-02T16:04:56.8156419Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\rime.yiwei\rime.yiwei.runnervmnjgfq.runneradmin.log.INFO.20261102-160354.7064.log   
+2026-11-02T16:04:56.8158043Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\rime.yiwei\rime.yiwei.runnervmnjgfq.runneradmin.log.WARNING.20261102-160305.1292.log
+2026-11-02T16:04:56.8159471Z D:\a\yiwei-ime\yiwei-ime\smoke-logs\rime.yiwei\rime.yiwei.runnervmnjgfq.runneradmin.log.WARNING.20261102-160344.3436.log
+2026-11-02T16:04:56.8160289Z 
+2026-11-02T16:04:56.8160295Z 
+2026-11-02T16:04:56.8788439Z ##[group]Run actions/upload-artifact@v6
+2026-11-02T16:04:56.8788821Z with:
+2026-11-02T16:04:56.8789018Z   name: smoke-logs
+2026-11-02T16:04:56.8789226Z   path: smoke-logs
+2026-11-02T16:04:56.8789444Z   if-no-files-found: ignore
+2026-11-02T16:04:56.8789685Z   compression-level: 6
+2026-11-02T16:04:56.8789902Z   overwrite: false
+2026-11-02T16:04:56.8790124Z   include-hidden-files: false
+2026-11-02T16:04:56.8790378Z env:
+2026-11-02T16:04:56.8790623Z   WEASEL_REPO: https://github.com/rime/weasel.git
+2026-11-02T16:04:56.8790996Z   WEASEL_SHA: 82b50c9e9b9ee0bd31357db6f25ddc804546c7f7
+2026-11-02T16:04:56.8791299Z   VERSION_MAJOR: 0
+2026-11-02T16:04:56.8791503Z   VERSION_MINOR: 1
+2026-11-02T16:04:56.8791740Z   VERSION_PATCH: 0
+2026-11-02T16:04:56.8791926Z ##[endgroup]
+2026-11-02T16:04:57.0711359Z With the provided path, there will be 14 files uploaded
+2026-11-02T16:04:57.0717141Z Artifact name is valid!
+2026-11-02T16:04:57.0719022Z Root directory input is valid!
+2026-11-02T16:04:57.4762491Z Beginning upload of artifact content to blob storage
+2026-11-02T16:04:57.9020864Z Uploaded bytes 31418
+2026-11-02T16:04:57.9851164Z Finished uploading artifact content to blob storage!
+2026-11-02T16:04:57.9852190Z SHA256 digest of uploaded artifact zip is 75aac008b04813b66ccb44618c36feb5b5d1db588c7e70fa9ed36aea1cac927d
+2026-11-02T16:04:57.9854998Z Finalizing artifact upload
+2026-11-02T16:04:58.5977608Z Artifact smoke-logs.zip successfully finalized. Artifact ID 13158830080
+2026-11-02T16:04:58.5978770Z Artifact smoke-logs has been successfully uploaded! Final size is 31418 bytes. Artifact ID is 13158830080
+2026-11-02T16:04:58.5986085Z Artifact download URL: https://github.com/yiweishurufa/yiwei-ime/actions/runs/41476408670/artifacts/13158830080
+2026-11-02T16:04:58.6193505Z Cleaning up orphan processes
+2026-11-02T16:04:58.6452756Z Terminate orphan process: pid (7064) (YiweiServer)
+2026-11-02T16:04:58.6508956Z Terminate orphan process: pid (6168) (YiweiHelper)
