@@ -598,3 +598,71 @@ def phrase_time_vars(r):
     finally:
         os.remove(user_phrase)
         r.deploy(True)
+
+
+@case
+def typo_stats(r):
+    """维护报告「选词不顺」统计：翻页才选到的词、上屏后马上退格重打的词，只在统计开启时记，只记词不记句子。"""
+    import glob
+
+    def typo_lines():
+        out = []
+        for f in glob.glob(os.path.join(r.user, "yiwei", "typo-*.tsv")):
+            out += [l.rstrip("\n") for l in open(f, encoding="utf-8") if l.strip()]
+        return out
+
+    def late_cjk():
+        """第 2 页以后的第一个汉字候选（跳过 emoji）。"""
+        ps = r.context()["page_size"]
+        return next(t for t in r.texts(40)[ps * 2:] if len(t) == 1 and 0x4E00 <= ord(t) <= 0x9FFF)
+
+    def clean():
+        for f in glob.glob(os.path.join(r.user, "yiwei", "typo-*.tsv")) + glob.glob(os.path.join(r.user, "yiwei", "stats-*.tsv")):
+            os.remove(f)
+
+    try:
+        yiwei_file(r, "stats.enabled", None)
+        clean()
+        r.reopen("rime_ice")
+        # 关闭统计时什么都不记
+        r.type("shi")
+        late = late_cjk()
+        r.pick(late)
+        assert r.commit() == late
+        assert typo_lines() == [], typo_lines()
+        yiwei_file(r, "stats.enabled", "1")
+        # 第一页选的不记，翻页选的记 paged
+        r.type("shi"); r.key(" "); r.commit()
+        assert typo_lines() == [], typo_lines()
+        r.type("shi")
+        late = late_cjk()
+        r.pick(late)
+        assert r.commit() == late
+        assert typo_lines() == ["paged\t" + late], typo_lines()
+        clean()
+        # 上屏「你好」后退格两下重打「拟好」→ retype 你好 → 新词
+        r.type("nihao"); r.key(" ")
+        assert r.commit() == "你好"
+        r.key("BS"); r.key("BS")
+        r.type("nihao"); r.pick("拟好")
+        assert r.commit() == "拟好"
+        assert typo_lines() == ["retype\t你好\t拟好"], typo_lines()
+        clean()
+        # 只退一个字：记最后一个字
+        r.type("nihao"); r.key(" "); r.commit()
+        r.key("BS")
+        r.type("hao"); r.key(" ")
+        assert r.commit() == "好"
+        assert typo_lines() == ["retype\t好\t好"], typo_lines()
+        clean()
+        # 中间按了方向键 / 没删就接着打：都不算重打
+        r.type("nihao"); r.key(" "); r.commit()
+        r.key("LEFT"); r.key("BS")
+        r.type("nihao"); r.key(" "); r.commit()
+        r.type("shijie"); r.key(" "); r.commit()
+        assert typo_lines() == [], typo_lines()
+        # 统计文件只有上屏的词本身（与以前一致），typo 文件里没有时间戳
+        assert not any(l[0].isdigit() for l in typo_lines())
+    finally:
+        yiwei_file(r, "stats.enabled", None)
+        clean()

@@ -300,7 +300,7 @@ namespace Yiwei
         {
             var p = new StackPanel();
             p.Children.Add(K.PageTitle("统计"));
-            p.Children.Add(K.Card("记录输入统计", "字数、时段、常用词和应用。只存在这台电脑上，可随时清空",
+            p.Children.Add(K.Card("记录输入统计", "字数、时段、常用词和应用，以及翻页才选到、退格重打的词（用于维护报告）。只存在这台电脑上，可随时清空",
                 K.Toggle(S.StatsEnabled, v => { S.StatsEnabled = v; RefreshStats(); }), Ui.SymbolRegular.DataTrending24));
 
             TextBlock Num(out TextBlock t) { t = K.Text("0", 24, false, FontWeights.SemiBold); return t; }

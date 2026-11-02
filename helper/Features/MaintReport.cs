@@ -28,7 +28,8 @@ namespace Yiwei
             Frequent = 4,      // 常用字 / 常用词 Top 200
             Logs = 8,          // 日志里的错误与警告
             Perf = 16,         // 性能体检
-            All = Environment | Settings | Frequent | Logs | Perf,
+            Typos = 32,        // 选词不顺的词（翻页才选到 / 退格重打）
+            All = Environment | Settings | Frequent | Logs | Perf | Typos,
         }
 
         public static readonly (Parts part, string title, string desc)[] PartInfo =
@@ -38,7 +39,10 @@ namespace Yiwei
             (Parts.Frequent, "常用字、常用词 Top " + Top, "只有字词和次数，没有整句；输入统计关闭时为空"),
             (Parts.Logs, "日志里的错误与警告", "最近 7 天的 RIME 日志与助手日志，只摘出错误行"),
             (Parts.Perf, "性能体检", "按键到出候选的耗时统计"),
+            (Parts.Typos, "选词不顺的词 Top " + TypoTop, "翻页才选到的词、上屏后马上退格重打的词，只有词和次数；输入统计关闭时为空"),
         };
+
+        const int TypoTop = 100;
 
         public static string Build() => Build(Parts.All);
 
@@ -65,6 +69,9 @@ namespace Yiwei
 
                 if (parts.HasFlag(Parts.Frequent)) try { var (chars, words) = Frequent(); Diagnostics.AddText(zip, "常用字-Top200.tsv", chars); Diagnostics.AddText(zip, "常用词-Top200.tsv", words); }
                 catch (Exception e) { Diagnostics.AddText(zip, "常用字词.读取失败.txt", e.Message); }
+
+                if (parts.HasFlag(Parts.Typos)) try { var (paged, retyped) = Typos(); Diagnostics.AddText(zip, "翻页才选到的词-Top" + TypoTop + ".tsv", paged); Diagnostics.AddText(zip, "退格重打的词-Top" + TypoTop + ".tsv", retyped); }
+                catch (Exception e) { Diagnostics.AddText(zip, "选词不顺.读取失败.txt", e.Message); }
 
                 if (parts.HasFlag(Parts.Logs)) Diagnostics.AddText(zip, "日志错误.txt", LogErrors());
                 if (parts.HasFlag(Parts.Perf)) try { Diagnostics.AddText(zip, "性能体检.txt", PerfCheck.Run().ToString()); }
@@ -101,6 +108,34 @@ namespace Yiwei
             string Fmt(Dictionary<string, long> d) => string.Join("\r\n", d.OrderByDescending(x => x.Value).Take(Top).Select(x => x.Key + "\t" + x.Value)) + "\r\n";
             return (Fmt(c), Fmt(w));
         }
+
+        /// <summary>
+        /// 汇总 yiwei/typo-*.tsv（yiwei_stats.lua 写的，只有词，没有时间和前后文）：
+        /// 翻页才选到的词 →「词 次数」；退格重打 →「删掉的字 → 重打的字 次数」。
+        /// </summary>
+        internal static (string paged, string retyped) Typos() => Typos(Directory.GetFiles(Paths.YiweiDir, "typo-*.tsv"));
+
+        internal static (string paged, string retyped) Typos(IEnumerable<string> files)
+        {
+            var paged = new Dictionary<string, long>(); var retyped = new Dictionary<string, long>();
+            foreach (var f in files)
+            {
+                string[] lines; try { lines = File.ReadAllLines(f, Encoding.UTF8); } catch { continue; }
+                foreach (var line in lines)
+                {
+                    var p = line.Split('\t');
+                    if (p.Length == 2 && p[0] == "paged" && IsWord(p[1])) Bump(paged, p[1]);
+                    else if (p.Length == 3 && p[0] == "retype" && IsWord(p[1]) && IsWord(p[2])) Bump(retyped, p[1] + "\t" + p[2]);
+                }
+            }
+            string Fmt(Dictionary<string, long> d, string head) => head + "\r\n" + string.Join("\r\n", d.OrderByDescending(x => x.Value).ThenBy(x => x.Key, StringComparer.Ordinal).Take(TypoTop).Select(x => x.Key + "\t" + x.Value)) + "\r\n";
+            return (Fmt(paged, "词\t次数"), Fmt(retyped, "删掉的字\t重打成\t次数"));
+        }
+
+        static void Bump(Dictionary<string, long> d, string k) { d.TryGetValue(k, out var n); d[k] = n + 1; }
+
+        // 与 Lua 端一致：1–8 个汉字；文件被手改过也不会把别的内容带进报告
+        static bool IsWord(string s) => s.Length >= 1 && s.Length <= 8 && s.All(ch => ch >= 0x3400 && ch <= 0x9FFF);
 
         static string LogErrors()
         {

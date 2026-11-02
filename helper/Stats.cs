@@ -139,7 +139,7 @@ namespace Yiwei
 
         public static void Clear()
         {
-            foreach (var f in Directory.GetFiles(Paths.YiweiDir, "stats-*.tsv").Concat(Directory.GetFiles(Paths.YiweiDir, "apps-*.tsv")))
+            foreach (var f in Directory.GetFiles(Paths.YiweiDir, "stats-*.tsv").Concat(Directory.GetFiles(Paths.YiweiDir, "apps-*.tsv")).Concat(Directory.GetFiles(Paths.YiweiDir, "typo-*.tsv")))
                 try { File.Delete(f); } catch { }
         }
     }
