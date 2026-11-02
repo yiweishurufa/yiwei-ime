@@ -771,8 +771,12 @@ def patch_installer():
     nl = "\r\n" if "\r\n" in text else "\n"
     t = text.replace("\r\n", "\n")
 
-    anchor = '  File "data\\preview\\*.png"\n'
-    assert anchor in t, "nsi: preview anchor missing"
+    # 上游 2026-10（82b50c9 之前）去掉了 data\preview 图片，旧版有这一行；两种都认，追加在 opencc 数据之后也一样
+    for anchor in ('  File "data\\preview\\*.png"\n', '  File "data\\opencc\\*.ocd*"\n'):
+        if anchor in t:
+            break
+    else:
+        raise AssertionError("nsi: data anchor missing (preview / opencc)")
     t = t.replace(anchor, anchor + NSI_DATA, 1)
 
     anchor = '  Exec "$INSTDIR\\YiweiServer.exe"\n'
