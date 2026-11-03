@@ -173,3 +173,10 @@
 - 搜狗输入法更新日志：https://pinyin.sogou.com/changelog.php
 - 微信输入法 4.0：https://www.ithome.com/1/018/492.htm
 - 讯飞输入法 16.0：https://news.qq.com/rain/a/20261023A0DY8F00
+
+---
+
+## 2026-11-04 补充调研
+
+- 微信输入法：Windows 4.0.0（2026-10-20，更新日志 https://type.weixin.qq.com/web/change-log/windows ）新增「AI 录音笔」（语音实时转写为结构化网页，PC 端快捷键 V 唤起）；此前有隔空传送（跨设备传图/文件）、语音转文字自动去口水词。结论：均为云端 AI/跨设备账号方向，与一维「无遥测、数据只存本机」原则不符，不跟；有人反馈其内存占用大、全屏游戏里抢焦点，说明「轻、稳」仍是差异点。
+- 小狼毫 rime/weasel issue #1913（https://github.com/rime/weasel/issues/1913 ）：新进程首次输入延迟的根因是候选窗 D2D 渲染目标用 DEFAULT，会在每个宿主进程加载显卡驱动（210ms/+100MB）；上游 2026-10-12 已重写 UI，我们底座 82b50c9 的 WeaselUI/d2d.cpp 已优先用 WARP，因此一维已自动获得此改进，无需移植。
