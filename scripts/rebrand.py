@@ -458,6 +458,12 @@ def transform(path, text):
     if base in EXE_TARGETS and "<TargetName>%s</TargetName>" % EXE_TARGETS[base] not in text:
         imp = '<Import Project="$(VCTargetsPath)\\Microsoft.Cpp.targets" />'
         text = text.replace(imp, "<PropertyGroup>\r\n    <TargetName>%s</TargetName>\r\n  </PropertyGroup>\r\n  %s" % (EXE_TARGETS[base], imp), 1)
+    if base == "Deserializer.h" and 'MessageBoxA(NULL, msg.c_str(), "IPC exception"' in text:
+        # 一维（用户 2026-11-04 反馈）：升级后没重启的程序里还挂着旧版输入法模块，
+        # 新旧两边的候选样式数据对不上，上游会对每次按键弹「IPC exception」框。
+        # 改为只写调试输出、保留旧样式，不再弹框打断打字；重启该程序或电脑后即恢复正常。
+        text = text.replace('MessageBoxA(NULL, msg.c_str(), "IPC exception", MB_OK | MB_ICONERROR);',
+                            'OutputDebugStringA(("[yiwei] IPC " + msg + "\\n").c_str());')
     if base == "WeaselTSF.rc":
         text = patch_tsf_rc(text)
     if base == "LanguageBar.cpp":
