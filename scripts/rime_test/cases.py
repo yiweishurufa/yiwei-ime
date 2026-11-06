@@ -724,3 +724,55 @@ def x8_unlearn_on_retype(r):
     finally:
         yiwei_file(r, "learn.clear", "all")
         r.type("shi"); r.clear()
+
+
+@case
+def correct_pinyin(r):
+    """拼音纠错（yiwei_correct.lua，用户 2026-11-06 要求）：打错一个字母时补「纠」候选，排第 2 位起；
+    拼音本来就对（有完整的词）时一个都不加、首选不变（避免微信 diushi 打不出「丢失」）；可关、可排第一。"""
+    def page(code, n=6):
+        r.type(code)
+        c = r.context()
+        r.clear()
+        return list(zip(c["page"], c["comments"]))[:n]
+
+    def has(p, word, top):
+        return any(t == word and "纠" in (cm or "") for t, cm in p[:top])
+
+    yiwei_file(r, "correct.disabled")
+    yiwei_file(r, "correct_first.enabled")
+    wait_flags()
+    r.reopen("rime_ice")
+    p = page("yinggua")
+    assert has(p, "英国", 3) and p[0][0] != "英国", p  # 用户原话的例子：前 3 位、带「纠」、不抢首选
+    for code, word in (("zhognguo", "中国"), ("beijign", "北京")):
+        p = page(code)
+        assert word in [t for t, _ in p[:3]], (code, p)
+    for code, word in (("nihso", "你好"), ("xainzai", "现在"), ("jintain", "今天"), ("shoujo", "手机")):
+        p = page(code)
+        assert has(p, word, 3), (code, p)
+    # 正常输入：首选不变，也没有任何纠错候选
+    for code, word in (("diushi", "丢失"), ("nihao", "你好"), ("yingguo", "英国"), ("women", "我们"),
+                       ("shenme", "什么"), ("xianzai", "现在"), ("zhongguo", "中国"), ("beijing", "北京"), ("dianhua", "电话")):
+        p = page(code, 9)
+        assert p[0][0] == word, (code, p)
+        assert not any("纠" in (cm or "") for _, cm in p), (code, p)
+    # 简拼不纠
+    p = page("zgrm", 9)
+    assert not any("纠" in (cm or "") for _, cm in p), p
+    try:
+        yiwei_file(r, "correct_first.enabled", "1")
+        wait_flags()
+        p = page("yinggua")
+        assert p[0][0] == "英国" and "纠" in p[0][1], p
+        assert page("diushi")[0][0] == "丢失"
+        yiwei_file(r, "correct_first.enabled")
+        yiwei_file(r, "correct.disabled", "1")
+        wait_flags()
+        p = page("yinggua", 9)
+        assert not any("纠" in (cm or "") for _, cm in p), p
+    finally:
+        yiwei_file(r, "correct.disabled")
+        yiwei_file(r, "correct_first.enabled")
+        wait_flags()
+    assert has(page("yinggua"), "英国", 3)

@@ -49,6 +49,10 @@ namespace Yiwei
         public static bool Emoji { get => !Has("emoji.disabled"); set => Set("emoji.disabled", !value); }
         /// <summary>W6 人名候选（yiwei_names.lua）。</summary>
         public static bool Names { get => !Has("names.disabled"); set => Set("names.disabled", !value); }
+        /// <summary>拼音纠错（yiwei_correct.lua，全拼）：打错一个字母时补「纠」候选，如 yinggua → 英国。默认开。</summary>
+        public static bool Correct { get => !Has("correct.disabled"); set => Set("correct.disabled", !value); }
+        /// <summary>纠错结果可排第一（首选只是拼出来的句子时）。默认关：纠错只作备选，从第 2 位起。</summary>
+        public static bool CorrectFirst { get => Has("correct_first.enabled"); set => Set("correct_first.enabled", value); }
 
         // ---------- W12 自定义标点映射：yiwei/punct.txt，每行「按键<Tab或空格>输出」，# 开头为注释 ----------
         public static string PunctFile => F("punct.txt");

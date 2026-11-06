@@ -221,6 +221,33 @@ def mount_search(text):
     return text + SEARCH_BLOCK
 
 
+CORRECT_BLOCK = """
+# 一维输入法：拼音纠错（lua_filter@*yiwei_correct 用它查「改一个字母后的拼音」对应的整词）。
+# 不带用户词库（不会重复学习）、不造句、不补全，只查整词
+yiwei_correct:
+  dictionary: rime_ice
+  prism: rime_ice
+  enable_user_dict: false
+  enable_sentence: false
+  enable_completion: false
+  enable_word_completion: false
+  enable_correction: false
+  initial_quality: 1.2
+"""
+
+
+def mount_correct(text):
+    """拼音纠错（全拼）：yiwei_correct.lua 一次编辑纠错（yinggua → 英国、nihso → 你好），排在按习惯调整候选之前，
+    常选的纠错词会被学习前移。设置里关掉「拼音纠错」= 助手放 yiwei/correct.disabled。
+    不开 librime 自带的 translator/enable_correction：实测（librime 1.13）它把纠错词和正常候选混排、没有标记，
+    nihao 首选变成「你是」、women 出「启蒙」，违背「正确输入首选不变」；近键替换已由 yiwei_correct.lua 覆盖（代价更低）。"""
+    text, n = re.subn(r"(\n(\s+)- lua_filter@\*yiwei_learn[^\n]*\n)",
+                      r"\n\2- lua_filter@*yiwei_correct  # 一维输入法：拼音纠错（打错一个字母，补「纠」候选，不抢首选）\1", text, count=1)
+    if n != 1:
+        raise SystemExit("rime_ice.schema.yaml: correct filter mount failed")
+    return text + CORRECT_BLOCK
+
+
 def write_names_data():
     """W6 人名候选：lua/yiwei_names_data.lua（姓氏读音表、名字用字按读音分组、全部拼音音节）。"""
     import name_data as nd
@@ -292,6 +319,7 @@ def mount_into_schemas():
             text, n = re.subn(r"(\n  filters:\n(?:    [^\n]*\n)*)", r"\1    - lua_filter@*yiwei_names  # 一维输入法：人名候选（W6）\n", text, count=1)
             if n != 1:
                 raise SystemExit("rime_ice.schema.yaml: names filter mount failed")
+            text = mount_correct(text)
         text = text.rstrip("\n") + "\n" + TECH_BLOCK + ("" if ANDROID else MIXED_BLOCK)
         open(path, "w", encoding="utf-8", newline="\n").write(text)
         count += 1
