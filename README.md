@@ -122,6 +122,7 @@ GitHub Actions 全自动构建（[`build.yml`](.github/workflows/build.yml)）�
 | [小狼毫 Weasel](https://github.com/rime/weasel) | GPL-3.0 |
 | [librime](https://github.com/rime/librime) | BSD-3-Clause |
 | [雾凇拼音 rime-ice](https://github.com/iDvel/rime-ice) | GPL-3.0 |
+| [万象语法模型 rime-wanxiang-data](https://github.com/amzxyz/rime-wanxiang-data)（© amzxyz，可选下载，原样使用未修改） | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [OpenCC](https://github.com/BYVoid/OpenCC) | Apache-2.0 |
 | AIME 艾么输入法 | MIT，© 2026 ZOOL LLC |
 

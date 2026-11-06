@@ -530,6 +530,7 @@ namespace Yiwei
                 ("小狼毫 Weasel", "GPL-3.0", "Windows 输入法前端，一维输入法在其基础上修改"),
                 ("librime", "BSD-3-Clause", "RIME 输入法引擎"),
                 ("雾凇拼音 rime-ice", "GPL-3.0", "默认方案与词库"),
+                ("万象语法模型 rime-wanxiang-data（© amzxyz）", "CC BY 4.0", "可选下载的语法模型 wanxiang-lts-zh-hans.gram，原样使用、未修改；许可 creativecommons.org/licenses/by/4.0"),
                 ("OpenCC", "Apache-2.0", "简繁转换"),
                 ("AIME 艾么输入法", "MIT · © 2026 ZOOL LLC", "产品设计、配色与科技词库的来源"),
                 ("WPF-UI (lepoco/wpfui)", "MIT", "设置界面控件"),
