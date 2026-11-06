@@ -61,7 +61,7 @@ There is also an experimental IMM poller (设置 → 常规 → 从输入法状�
 - `sync/yiwei-import/rime_ice.userdb.txt`: words imported from 搜狗/微软拼音 text exports, merged with `WeaselDeployer /sync`.
 
 ## Downloads / mirrors
-- Every GitHub request (appcast + installer, rime-ice release API + full.zip, RIME-LMDG grammar model) goes through `Mirrors`
+- Every GitHub request (appcast + installer, rime-ice release API + full.zip, rime-wanxiang-data grammar model, formerly RIME-LMDG) goes through `Mirrors`
   (Features/Mirrors.cs): last good source first, then `ghfast.top` → `gh-proxy.com` (also proxies api.github.com) → jsDelivr
   (repo files only) → GitHub. The last good source is kept in `<user>/yiwei/mirror.json`. Integrity: expected size +
   SHA-256 (release asset digest; the appcast `<enclosure sha256="…">` written by CI).

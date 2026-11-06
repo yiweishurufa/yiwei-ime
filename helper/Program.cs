@@ -100,6 +100,7 @@ namespace Yiwei
                 GameMode.Start();
                 PrivacyGuard.Start();
                 DictUpdater.StartDaily();
+                Grammar.ApplyPending(); // 语法模型更新时旧文件被占用、留到这次启动再换
                 AppUpdate.StartDaily();
                 Sync.StartScheduler();
                 AppModes.UpgradeIfNeeded();

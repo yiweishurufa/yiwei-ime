@@ -70,12 +70,15 @@ namespace Yiwei
             void Refresh()
             {
                 bool on = Grammar.Installed;
+                bool upd = on && Grammar.UpdateAvailable;
                 var part = Grammar.PartialBytes;
                 info.Text = on
-                    ? "已启用：" + Grammar.FileName + "（" + Grammar.SizeText(new System.IO.FileInfo(Grammar.ModelPath).Length) + "）"
-                    : part > 0 ? "上次下载未完成（已下载 " + Grammar.SizeText(part) + "），可以继续" : "未安装。模型来自 amzxyz/RIME-LMDG（只访问 GitHub）";
-                get.Content = on ? "重新下载" : part > 0 ? "继续下载" : "下载语法模型（约 " + Grammar.SizeText(Grammar.KnownSize) + "）";
-                get.Visibility = on ? Visibility.Collapsed : Visibility.Visible;
+                    ? "已启用：" + Grammar.FileName + "（" + Grammar.SizeText(new System.IO.FileInfo(Grammar.ModelPath).Length) + "）" +
+                      (upd ? "。作者发布了新版（" + Grammar.SizeText(Grammar.ExpectedSize) + "），可以更新" : "")
+                    : part > 0 ? "上次下载未完成（已下载 " + Grammar.SizeText(part) + "），可以继续"
+                    : "未安装（推荐下载：长句准确率明显更高，下载后完全离线使用）。模型来自万象 amzxyz/rime-wanxiang-data，CC BY 4.0，只访问 GitHub";
+                get.Content = upd ? "更新模型（约 " + Grammar.SizeText(Grammar.ExpectedSize) + "）" : on ? "重新下载" : part > 0 ? "继续下载" : "下载语法模型（约 " + Grammar.SizeText(Grammar.ExpectedSize) + "）";
+                get.Visibility = on && !upd ? Visibility.Collapsed : Visibility.Visible;
                 del.Visibility = on || part > 0 ? Visibility.Visible : Visibility.Collapsed;
                 del.Content = on ? "删除并恢复" : "删除已下载部分";
             }
@@ -107,8 +110,15 @@ namespace Yiwei
                 Refresh();
             });
             Refresh();
+            // 打开本页时问一次 GitHub 模型有没有更新（上游原地覆盖 LTS 文件，本地大小对不上才知道）；失败不提示
+            if (Grammar.Installed && !Grammar.Busy)
+                System.Threading.Tasks.Task.Run(async () =>
+                {
+                    try { await Grammar.CheckUpdate(); } catch (Exception ex) { Log.Write("grammar check: " + ex.GetBaseException().Message); return; }
+                    await Dispatcher.InvokeAsync(() => { if (_grammarCts == null) Refresh(); });
+                });
 
-            var card = K.Card("语法模型（万象 LMDG）", "长句更准：librime-octagram 用它给整句打分。模型较大，按需下载", K.Row(get, del), Ui.SymbolRegular.TextGrammarWand24);
+            var card = K.Card("语法模型（万象，推荐）", "长句更准：librime-octagram 用它给整句打分。约 400 MB，按需下载，不强制；下载后完全在本机运行", K.Row(get, del), Ui.SymbolRegular.TextGrammarWand24);
             var texts = (StackPanel)((Grid)card.Child).Children[1];
             texts.Children.Add(info);
             texts.Children.Add(bar);

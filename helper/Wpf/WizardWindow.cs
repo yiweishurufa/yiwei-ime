@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -9,7 +10,7 @@ using Ui = Wpf.Ui.Controls;
 
 namespace Yiwei
 {
-    /// <summary>首次引导: 欢迎 → 选方案 → 选外观 → 导入旧习惯 → AI 与隐私 → 试一试 → 完成. Every step can be skipped.</summary>
+    /// <summary>首次引导: 欢迎 → 选方案 → 选外观 → 语法模型（推荐，可跳过） → AI 与隐私 → 试一试 → 完成. Every step can be skipped.</summary>
     sealed class WizardWindow : Ui.FluentWindow
     {
         readonly Settings S = Settings.Current;
@@ -33,7 +34,7 @@ namespace Yiwei
             WindowBackdropType = UiTheme.Backdrop;
             WindowCornerPreference = Ui.WindowCornerPreference.Round;
 
-            _steps = new Func<UIElement>[] { Welcome, Schema, Look, AiStep, Practice, Done }; // 「把旧习惯带过来」导入页已去掉（用户 2026-10-19：没意义）
+            _steps = new Func<UIElement>[] { Welcome, Schema, Look, GrammarStep, AiStep, Practice, Done }; // 「把旧习惯带过来」导入页已去掉（用户 2026-10-19：没意义）
 
             var root = new Grid();
             root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -197,6 +198,40 @@ namespace Yiwei
             sp.Children.Add(K.Card("候选个数", "每页显示几个候选",
                 K.Segmented(System.Linq.Enumerable.Range(5, 6).Select(n => new KeyValuePair<int, string>(n, n.ToString())), S.CandidateCount, v => { S.CandidateCount = v; Changed(); })));
             Refresh();
+            return sp;
+        }
+
+        /// <summary>推荐（不强制）下载万象语法模型：约 400 MB，下载后离线使用。离开本页下载照常在后台进行。</summary>
+        UIElement GrammarStep()
+        {
+            var sp = new StackPanel();
+            sp.Children.Add(Head("长句更准（推荐，可跳过）", "下载一个语法模型，整句输入时更少选错字。约 " + Grammar.SizeText(Grammar.ExpectedSize) + "，只从 GitHub 下载一次，之后完全在本机运行。"));
+            var info = K.Text("", 13, true);
+            var bar = new ProgressBar { Height = 4, Minimum = 0, Maximum = 1, Margin = new Thickness(0, 8, 0, 0), Visibility = Visibility.Collapsed };
+            Ui.Button get = null;
+            void Show()
+            {
+                if (Grammar.Installed) { info.Text = "已安装语法模型。"; get.Visibility = Visibility.Collapsed; return; }
+                if (Grammar.Busy) { info.Text = "正在后台下载，可以继续下一步。"; get.IsEnabled = false; return; }
+                info.Text = LowSpec.LooksLowEnd
+                    ? "这台电脑内存较小，可以先不装；以后在 设置 → 词库 里随时下载。"
+                    : "以后也可以在 设置 → 词库 →「语法模型」里下载或删除。模型由万象拼音作者 amzxyz 发布（CC BY 4.0）。";
+            }
+            get = K.Btn("下载语法模型（推荐）", async () =>
+            {
+                get.IsEnabled = false; bar.Value = 0; bar.Visibility = Visibility.Visible;
+                var pr = new Progress<double>(v => { bar.Value = v; info.Text = "正在下载… " + (int)(v * 100) + "%（可以继续下一步，下载在后台进行）"; });
+                var st = new Progress<string>(x => info.Text = x);
+                try { await Grammar.Install(pr, st, CancellationToken.None); info.Text = "语法模型已启用。"; Tray.Balloon("语法模型已启用", "长句输入更准了。可在 设置 → 词库 删除"); }
+                catch (Exception ex) { Log.Write("grammar (wizard): " + ex.GetBaseException().Message); info.Text = "下载失败：" + ex.GetBaseException().Message + "。可以稍后在 设置 → 词库 重试"; get.IsEnabled = true; }
+                bar.Visibility = Visibility.Collapsed;
+            }, Ui.ControlAppearance.Primary, Ui.SymbolRegular.ArrowDownload24);
+            Show();
+            var card = K.Card("语法模型（万象）", "librime-octagram 用它给整句打分；不下载也能正常打字", get, Ui.SymbolRegular.TextGrammarWand24);
+            var texts = (StackPanel)((Grid)card.Child).Children[1];
+            texts.Children.Add(info);
+            texts.Children.Add(bar);
+            sp.Children.Add(card);
             return sp;
         }
 
