@@ -150,6 +150,27 @@ namespace Yiwei
 
         // ================= 输入方案 =================
 
+        FrameworkElement BlockedEditor()
+        {
+            var box = new TextBox { AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, MinHeight = 90, MaxHeight = 220, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+            try { if (File.Exists(Paths.BlockedFile)) box.Text = File.ReadAllText(Paths.BlockedFile); } catch { }
+            var save = K.Btn("保存", () =>
+            {
+                try
+                {
+                    var lines = box.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(x => x.Length > 0).Distinct();
+                    File.WriteAllText(Paths.BlockedFile, string.Join("\n", lines) + "\n", new System.Text.UTF8Encoding(false));
+                    Toast("屏蔽词已保存");
+                }
+                catch (Exception ex) { Toast("保存失败：" + ex.Message); }
+            });
+            var sp = new StackPanel();
+            sp.Children.Add(box);
+            save.Margin = new Thickness(0, 8, 0, 0); save.HorizontalAlignment = HorizontalAlignment.Left;
+            sp.Children.Add(save);
+            return sp;
+        }
+
         StackPanel PageSchema()
         {
             var p = new StackPanel();
@@ -171,6 +192,7 @@ namespace Yiwei
             }
             var wrap = K.Block("默认方案", "全拼或双拼；双拼卡片上是键位图", grid, Ui.SymbolRegular.Keyboard24);
             p.Children.Add(wrap);
+            p.Children.Add(K.Block("屏蔽词", "一行一个词，这些词在任何拼音下都不再出现在候选里；改完点保存，几秒内生效", BlockedEditor(), Ui.SymbolRegular.Delete24));
             p.Children.Add(K.Card("方案选单", "打开小狼毫方案选单，启用更多方案（如五笔、仓颉，需要另行安装）",
                 K.Btn("打开", () => Dialogs.Open(Paths.Deployer)), Ui.SymbolRegular.AppsList24));
             return p;
