@@ -1,5 +1,5 @@
 """用例：每个函数拿到一个已部署的 Rime，失败就 raise。"""
-import os
+import os, time
 
 ALL = []
 
@@ -776,3 +776,26 @@ def correct_pinyin(r):
         yiwei_file(r, "correct_first.enabled")
         wait_flags()
     assert has(page("yinggua"), "英国", 3)
+
+
+@case
+def blocked_words(r):
+    """全局屏蔽词（yiwei/blocked.txt）：写入的词在任何拼音下都不出现，删掉文件后恢复。"""
+    def texts(code):
+        r.type(code)
+        c = r.context()
+        r.clear()
+        return list(c["page"])
+
+    yiwei_file(r, "blocked.txt")
+    r.reopen("rime_ice")
+    assert "你好" in texts("nihao")
+    try:
+        yiwei_file(r, "blocked.txt", "# 注释\n你好\n")
+        time.sleep(3.2)
+        assert "你好" not in texts("nihao"), texts("nihao")
+        assert texts("women")[0] == "我们"
+    finally:
+        yiwei_file(r, "blocked.txt")
+        time.sleep(3.2)
+    assert "你好" in texts("nihao")
