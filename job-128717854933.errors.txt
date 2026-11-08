@@ -1,0 +1,19 @@
+105:2026-11-08T11:32:01.2531244Z ##[group]Run $ErrorActionPreference = 'Stop'
+106:2026-11-08T11:32:01.2531754Z [36;1m$ErrorActionPreference = 'Stop'[0m
+172:2026-11-08T11:32:17.7743779Z ##[group]Run $ErrorActionPreference = 'Stop'
+173:2026-11-08T11:32:17.7744196Z [36;1m$ErrorActionPreference = 'Stop'[0m
+197:2026-11-08T11:32:19.5575532Z   fail-on-cache-miss: false
+218:2026-11-08T11:32:45.2653740Z ##[group]Run $ErrorActionPreference = 'Stop'
+219:2026-11-08T11:32:45.2654156Z [36;1m$ErrorActionPreference = 'Stop'[0m
+249:2026-11-08T11:32:52.4385184Z   fail-on-cache-miss: false
+317:2026-11-08T11:32:53.7588438Z ##[group]Run $ErrorActionPreference = 'Stop'
+318:2026-11-08T11:32:53.7588857Z [36;1m$ErrorActionPreference = 'Stop'[0m
+383:2026-11-08T11:32:54.1310480Z ##[group]Run $ErrorActionPreference = 'Stop'
+384:2026-11-08T11:32:54.1310893Z [36;1m$ErrorActionPreference = 'Stop'[0m
+392:2026-11-08T11:32:54.1313401Z [36;1mif (-not (Test-Path .\include\rime_api.h)) { throw "获取 RIME 引擎失败" }[0m
+459:2026-11-08T11:34:55.5475049Z ❌ Error downloading rime-deps-33e7814-Windows-msvc-x64.7z: Response status code does not indicate success: 504 (Gateway Timeout).
+460:2026-11-08T11:34:55.5478900Z ❌ Error downloading rime-deps-33e7814-Windows-msvc-x86.7z: Response status code does not indicate success: 504 (Gateway Timeout).
+461:2026-11-08T11:34:55.5480003Z ❌ Error downloading rime-33e7814-Windows-msvc-x86.7z: Response status code does not indicate success: 504 (Gateway Timeout).
+468:2026-11-08T11:34:56.2872299Z ##[error]Process completed with exit code 1.
+471:2026-11-08T11:34:56.3033110Z [36;1mGet-ChildItem weasel -Filter *.log -ErrorAction SilentlyContinue | Copy-Item -Destination build-logs[0m
+472:2026-11-08T11:34:56.3034089Z [36;1mGet-ChildItem weasel\output -Recurse -Include *.exe,*.dll -ErrorAction SilentlyContinue | Select-Object FullName | Out-File build-logs\output-files.txt[0m
