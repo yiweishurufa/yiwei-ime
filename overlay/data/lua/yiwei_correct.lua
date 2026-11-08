@@ -159,6 +159,41 @@ local function edits(code, deadline)
   return out
 end
 
+-- 个人纠错规则：yiwei/corrections.txt，一行「错码 正码」（空格或 Tab 分隔，# 开头为注释），3 秒缓存。
+-- 输入恰好等于错码时，把正码的整词补到第 2 位起（不看长度、不看有没有完整词），受 correct.disabled 开关管。
+local rules, rules_at = {}, -10
+local function load_rules()
+  local now = os.time()
+  if now - rules_at < 3 then return end
+  rules_at = now
+  rules = {}
+  local sp = package.config:sub(1, 1)
+  local f = io.open(rime_api.get_user_data_dir() .. sp .. "yiwei" .. sp .. "corrections.txt", "r")
+  if not f then return end
+  for line in f:lines() do
+    local a, b = line:match("^%s*([a-z]+)[%s\t]+([a-z]+)%s*$")
+    if a and b and a ~= b then rules[a] = b end
+  end
+  f:close()
+end
+
+local function personal_list(env, code, start)
+  local target = rules[code]
+  if not target then return nil end
+  local seg = Segment(start, start + #target)
+  seg.tags = Set({ "abc" })
+  local ok, t = pcall(function() return env.tr:query(target, seg) end)
+  local list = {}
+  if ok and t then
+    for c in t:iter() do
+      if c._end ~= start + #target then break end
+      if utf8.len(c.text) >= 1 then list[#list + 1] = { text = c.text, code = target } end
+      if #list >= 2 then break end
+    end
+  end
+  return list
+end
+
 function F.init(env)
   env.ok = build_syllables()
   if not env.ok then log.warning("yiwei_correct: 没有音节表，纠错不可用"); return end
@@ -227,7 +262,8 @@ function F.func(input, env)
   local ctx = env.engine.context
   local seg = ctx.composition:back()
   local code = seg and ctx.input:sub(seg.start + 1, seg._end) or ""
-  if not env.ok or #code < MIN_LEN or #code > MAX_LEN or not code:match("^[a-z]+$")
+  load_rules()
+  if not env.ok or not code:match("^[a-z]+$") or (not rules[code] and (#code < MIN_LEN or #code > MAX_LEN))
       or not seg:has_tag("abc") or flags.exists("correct.disabled") then
     for cand in input:iter() do yield(cand) end
     return
@@ -245,7 +281,11 @@ function F.func(input, env)
     if #held >= LOOKAHEAD then break end
   end
   local list = {}
-  if not whole and #held > 0 then
+  load_rules()
+  local pl = rules[code] and #held > 0 and personal_list(env, code, seg.start) or nil
+  if pl and #pl > 0 then
+    list = pl
+  elseif not whole and #held > 0 then
     local ok, r = pcall(corrections, env, code, seg.start)
     if ok then list = r else log.error("yiwei_correct: " .. tostring(r)) end
   end

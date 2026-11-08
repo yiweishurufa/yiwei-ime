@@ -799,3 +799,26 @@ def blocked_words(r):
         yiwei_file(r, "blocked.txt")
         time.sleep(3.2)
     assert "你好" in texts("nihao")
+
+
+@case
+def personal_correction_rules(r):
+    """个人纠错规则（yiwei/corrections.txt「错码 正码」）：输入恰为错码时，把正码的词补到第 2 位起；删文件后恢复。"""
+    def page(code):
+        r.type(code)
+        c = r.context()
+        r.clear()
+        return list(c["page"])
+
+    yiwei_file(r, "corrections.txt")
+    r.reopen("rime_ice")
+    assert "你好" not in page("nxhao")[:1]
+    try:
+        yiwei_file(r, "corrections.txt", "# 注释\nnxhao nihao\n")
+        time.sleep(3.2)
+        p = page("nxhao")
+        assert "你好" in p[1:4], p
+    finally:
+        yiwei_file(r, "corrections.txt")
+        time.sleep(3.2)
+    assert "你好" not in page("nxhao")[1:4]
