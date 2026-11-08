@@ -63,6 +63,7 @@ namespace Yiwei
         public static string StatsFlag => Path.Combine(YiweiDir, "stats.enabled");
         public static string AutoPairOff => Path.Combine(YiweiDir, "autopair.disabled");
         public static string AutoPairSkip => Path.Combine(YiweiDir, "autopair.skip");
+        public static string CorrectionsFile => Path.Combine(YiweiDir, "corrections.txt");
         public static string BlockedFile => Path.Combine(YiweiDir, "blocked.txt");
         public static string RegretKey => Path.Combine(YiweiDir, "regret.key");
         public static string RegretOff => Path.Combine(YiweiDir, "regret.disabled");

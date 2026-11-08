@@ -150,17 +150,19 @@ namespace Yiwei
 
         // ================= 输入方案 =================
 
-        FrameworkElement BlockedEditor()
+        FrameworkElement BlockedEditor() => ListEditor(Paths.BlockedFile, "屏蔽词已保存", true);
+
+        FrameworkElement ListEditor(string file, string okMsg, bool distinct)
         {
             var box = new TextBox { AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, MinHeight = 90, MaxHeight = 220, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-            try { if (File.Exists(Paths.BlockedFile)) box.Text = File.ReadAllText(Paths.BlockedFile); } catch { }
+            try { if (File.Exists(file)) box.Text = File.ReadAllText(file); } catch { }
             var save = K.Btn("保存", () =>
             {
                 try
                 {
-                    var lines = box.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(x => x.Length > 0).Distinct();
-                    File.WriteAllText(Paths.BlockedFile, string.Join("\n", lines) + "\n", new System.Text.UTF8Encoding(false));
-                    Toast("屏蔽词已保存");
+                    var lines = box.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(x => x.Length > 0).Distinct().ToList();
+                    File.WriteAllText(file, string.Join("\n", lines) + "\n", new System.Text.UTF8Encoding(false));
+                    Toast(okMsg);
                 }
                 catch (Exception ex) { Toast("保存失败：" + ex.Message); }
             });
@@ -193,6 +195,7 @@ namespace Yiwei
             var wrap = K.Block("默认方案", "全拼或双拼；双拼卡片上是键位图", grid, Ui.SymbolRegular.Keyboard24);
             p.Children.Add(wrap);
             p.Children.Add(K.Block("屏蔽词", "一行一个词，这些词在任何拼音下都不再出现在候选里；改完点保存，几秒内生效", BlockedEditor(), Ui.SymbolRegular.Delete24));
+            p.Children.Add(K.Block("个人纠错规则", "一行一条「错码 正码」，如 yinggua yingguo；打错的拼音会补出正确的词；改完点保存，几秒内生效", ListEditor(Paths.CorrectionsFile, "纠错规则已保存", true), Ui.SymbolRegular.TextEditStyle24));
             p.Children.Add(K.Card("方案选单", "打开小狼毫方案选单，启用更多方案（如五笔、仓颉，需要另行安装）",
                 K.Btn("打开", () => Dialogs.Open(Paths.Deployer)), Ui.SymbolRegular.AppsList24));
             return p;
