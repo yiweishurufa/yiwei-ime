@@ -235,6 +235,9 @@ namespace Yiwei
     {
         const string Api = "https://api.github.com/repos/iDvel/rime-ice/releases/latest";
         const string AssetName = "full.zip";
+        // 一维自己的每周词库包（镜像雾凇，带 sha256）；取不到再回退雾凇官方发布
+        const string PackApi = "https://api.github.com/repos/yiweishurufa/yiwei-ime/releases/tags/dict-pack";
+        const string PackAsset = "rime-ice-full.zip";
 
         /// <summary>What an update replaces, relative to the user folder.</summary>
         static readonly string[] Items = { "cn_dicts", "en_dicts", "rime_ice.dict.yaml", "melt_eng.dict.yaml" };
@@ -336,8 +339,22 @@ namespace Yiwei
             try
             {
                 status?.Report("正在检查词库更新…");
-                var rel = await GitHubNet.GetJson(Api).ConfigureAwait(false);
-                var asset = GitHubNet.Assets(rel).FirstOrDefault(a => a.Name == AssetName) ?? throw new Exception("发布里找不到 " + AssetName);
+                var assetName = AssetName;
+                Dictionary<string, object> rel = null;
+                var asset = default(GitHubNet.Asset);
+                try
+                {
+                    rel = await GitHubNet.GetJson(PackApi).ConfigureAwait(false);
+                    asset = GitHubNet.Assets(rel).FirstOrDefault(a => a.Name == PackAsset);
+                    if (asset != null && string.IsNullOrEmpty(asset.Sha256)) asset = null;
+                    if (asset != null) assetName = PackAsset;
+                }
+                catch (Exception pe) { Log.Write("dict pack: " + pe.Message + "，改用雾凇官方发布"); asset = null; }
+                if (asset == null)
+                {
+                    rel = await GitHubNet.GetJson(Api).ConfigureAwait(false);
+                    asset = GitHubNet.Assets(rel).FirstOrDefault(a => a.Name == AssetName) ?? throw new Exception("发布里找不到 " + AssetName);
+                }
                 var tag = (rel.TryGetValue("tag_name", out var tn) ? tn as string : "?") + "@" + asset.UpdatedAt;
                 var now = DateTime.Now.ToString("o");
                 rec.CheckedAt = now;
@@ -354,7 +371,7 @@ namespace Yiwei
                 Directory.CreateDirectory(work);
                 try
                 {
-                    var zipPath = Path.Combine(work, AssetName);
+                    var zipPath = Path.Combine(work, assetName);
                     var pct = status == null ? null : new Progress<double>(p => status.Report("正在下载词库… " + (int)(p * 100) + "%"));
                     await GitHubNet.Download(asset.Url, zipPath, asset.Size, pct, false).ConfigureAwait(false);
                     status?.Report("正在校验…");

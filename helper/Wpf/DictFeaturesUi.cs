@@ -12,7 +12,7 @@ namespace Yiwei
         void AddDictUpdateCards(StackPanel p)
         {
             p.Children.Add(K.Card("每天自动更新雾凇拼音词库",
-                "每天检查一次 iDvel/rime-ice 的 GitHub 发布（只访问 GitHub）。SHA-256 校验通过才安装，先备份旧词库，失败自动回滚",
+                "每天检查一次一维每周词库包（镜像雾凇，取不到时回退 iDvel/rime-ice 官方发布）（只访问 GitHub）。SHA-256 校验通过才安装，先备份旧词库，失败自动回滚",
                 K.Toggle(S.DictAutoUpdate, v => { S.DictAutoUpdate = v; Save(); }), Ui.SymbolRegular.ArrowDownload24));
 
             p.Children.Add(K.Card("词库大小",
