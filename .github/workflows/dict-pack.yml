@@ -1,0 +1,22 @@
+name: 每周词库包
+# 阶段 1：每周把雾凇最新 full.zip 镜像到本仓库 dict-pack 发布，带 sha256；客户端后续可改从这里取（失败不影响构建）。
+on:
+  schedule:
+    - cron: '17 20 * * 0'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 下载雾凇 full.zip
+        run: |
+          curl -fsSL -o rime-ice-full.zip https://github.com/iDvel/rime-ice/releases/latest/download/full.zip
+          sha256sum rime-ice-full.zip | tee rime-ice-full.zip.sha256
+      - name: 发布 dict-pack
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view dict-pack -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create dict-pack -R "$GITHUB_REPOSITORY" -t "词库包（每周）" -n "每周镜像的词库包，含 sha256。"
+          gh release upload dict-pack rime-ice-full.zip rime-ice-full.zip.sha256 --clobber -R "$GITHUB_REPOSITORY"
