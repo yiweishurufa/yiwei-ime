@@ -1,7 +1,8 @@
 -- 一维输入法 · 拼音纠错（全拼）：手误打错一个字母时，在候选里补上「改一个字母就对」的词，注释「纠 正确拼音」。
 -- 例：yinggua → 英国（a 打成了 o 旁边的元音）、shoujo → 手机。
 --
--- 什么时候纠：输入 4–12 个小写字母，且前 8 个候选里没有「完整覆盖整段输入的词」（只有拼出来的句子或单字）。
+-- 什么时候纠：输入 4–12 个小写字母，且前 8 个候选里没有「完整覆盖整段输入的词」（只有拼出来的句子或单字），
+--   并且输入不是「能完整切成 3 个以上正常音节」的句子（见 F.func）。
 --   有完整的词（如 diushi → 丢失）就一个字都不动，避免微信输入法 diushi 打不出「丢失」的老问题。
 -- 怎么纠：对输入做 1 次编辑（替换 / 多打 / 漏打 / 相邻两字母颠倒；不改第 1 个字母），只留能完整切成拼音音节的串，
 --   按编辑代价从小到大最多查 MAX_QUERIES 个；每个用不带用户词库、不造句的 script_translator@yiwei_correct 查整词，
@@ -282,10 +283,16 @@ function F.func(input, env)
   end
   local list = {}
   load_rules()
+  -- 输入本身能完整切成正常音节（没有凑出来的单独 a/e/o）时，多半是用户就想这么打：
+  --   3 个音节以上（tazhule、douguoqile、dianfanle）是句子，交给造句，不纠；
+  --   1–2 个音节（yinggua → ying gua）照纠（默认排第 2 位起）。
+  -- 2026-11-10 体检：2000 句里 20 句正确输入被补了纠错候选，开「可排第一」时 13 句首选被改坏（他住了 → 他输了）。
+  local lone, cnt = split_cost(code)
+  local valid = lone == 0
   local pl = rules[code] and #held > 0 and personal_list(env, code, seg.start) or nil
   if pl and #pl > 0 then
     list = pl
-  elseif not whole and #held > 0 then
+  elseif not whole and #held > 0 and not (valid and cnt >= 3) then
     local ok, r = pcall(corrections, env, code, seg.start)
     if ok then list = r else log.error("yiwei_correct: " .. tostring(r)) end
   end

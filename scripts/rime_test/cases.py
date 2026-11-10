@@ -779,6 +779,33 @@ def correct_pinyin(r):
 
 
 @case
+def correct_no_sentence_miscorrect(r):
+    """纠错体检（用户 2026-11-10「纠错也有问题」）：能完整切成 3 个以上正常音节的输入是句子，不补纠错候选；
+    开「纠错结果可排第一」也不改首选（2000 句评测里 他住了 → 他输了、都过期了 → 都过去了 这类）。"""
+    def page(code, n=9):
+        r.type(code)
+        c = r.context()
+        r.clear()
+        return list(zip(c["page"], c["comments"]))[:n]
+    try:
+        yiwei_file(r, "correct.disabled")
+        yiwei_file(r, "correct_first.enabled", "1")
+        wait_flags()
+        r.reopen("rime_ice")
+        for code, word in (("tazhule", "他住了"), ("douguoqile", "都过期了"), ("tahuixiang", "他会想"),
+                           ("ertongdui", "儿童对"), ("huanmaojin", "换毛巾"), ("detuandui", "的团队")):
+            p = page(code)
+            assert p[0][0] == word, (code, p)
+            assert not any("纠" in (cm or "") for _, cm in p), (code, p)
+        # 真打错的照样纠（输入切不成正常音节）
+        p = page("shoujo")
+        assert p[0][0] == "手机" and "纠" in p[0][1], p
+    finally:
+        yiwei_file(r, "correct_first.enabled")
+        wait_flags()
+
+
+@case
 def blocked_words(r):
     """全局屏蔽词（yiwei/blocked.txt）：写入的词在任何拼音下都不出现，删掉文件后恢复。"""
     def texts(code):
