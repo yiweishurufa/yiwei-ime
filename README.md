@@ -43,6 +43,8 @@
 |---|---|---|
 | ⌨️ | **雾凇拼音** | 全拼与各家双拼；`rq` 日期、`sj` 时间、`V` 计算器、农历、大写金额、Unicode、拆字、以词定字 |
 | 📚 | **词库每天更新** | 自动拉取雾凇新词库，SHA-256 校验、自动备份，出问题一键回滚 |
+| 🗂️ | **分类词库** | 14 个领域：口语短句、中国地名（省市县，多音地名读音校正）、国家与首都、诗词名句、成语、历史人文、科学、医学、法律、财经、计算机、饮食、动植物、品牌机构；权重按真实词频校准、不抢常用词首选；设置 → 词库 可按领域关闭 |
+| 📜 | **诗句联想** | 打出上句（`chuangqianmingyueguang`）第 2 个候选是整联并注明作者诗题；上句上屏后打下句首字母（`ysdss`）直接出下句 |
 | 🧠 | **语法模型** | 可选下载万象语法模型，长句更准，支持断点续传 |
 | 📋 | **常用语一键上屏** | 长按 **Alt** + **1–9** 打开面板，手机号、邮箱、地址按一个键输入 |
 | 🌐 | **翻译和润色** | 选中文字，长按 **Alt** + **空格**：翻译、润色、粤语，可自定义；支持 OpenAI、DeepSeek、通义千问、Kimi、智谱、本机 Ollama |
@@ -123,6 +125,10 @@ GitHub Actions 全自动构建（[`build.yml`](.github/workflows/build.yml)）�
 | [librime](https://github.com/rime/librime) | BSD-3-Clause |
 | [雾凇拼音 rime-ice](https://github.com/iDvel/rime-ice) | GPL-3.0 |
 | [万象语法模型 rime-wanxiang-data](https://github.com/amzxyz/rime-wanxiang-data)（© amzxyz，可选下载，原样使用未修改） | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [THUOCL 清华大学开放中文词库](https://github.com/thunlp/THUOCL)（© 2018 THUNLP，分类词库的词表与词频） | MIT |
+| [chinese-poetry](https://github.com/chinese-poetry/chinese-poetry)（诗词名句与诗句联想） | MIT |
+| [chinese-xinhua](https://github.com/pwxcoo/chinese-xinhua)（© 2018 PWXCOO，成语） | MIT |
+| [Administrative-divisions-of-China](https://github.com/modood/Administrative-divisions-of-China)（modood，省市县行政区划） | WTFPL |
 | [OpenCC](https://github.com/BYVoid/OpenCC) | Apache-2.0 |
 | AIME 艾么输入法 | MIT，© 2026 ZOOL LLC |
 
