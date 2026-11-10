@@ -216,6 +216,13 @@ namespace Yiwei
                 try { report.Text = PerfCheck.Run().ToString(); } catch (Exception e) { report.Text = "体检失败：" + e.Message; }
             }), Ui.SymbolRegular.HeartPulse24);
             yield return K.CardBorder(report);
+            // #10 用户词库体检
+            var dh = K.Text("检查屏蔽词和个人纠错规则里的重复、格式错误（只读，不改文件）", 12, true);
+            yield return K.Card("词库体检", "", K.Btn("检查", () =>
+            {
+                try { dh.Text = DictHealth.Run(); } catch (Exception e) { dh.Text = "检查失败：" + e.Message; }
+            }), Ui.SymbolRegular.HeartPulse24);
+            yield return K.CardBorder(dh);
         }
 
         /// <summary>W47：输入法开关（简繁、全半角、中英标点、Emoji、切换方案）的快捷键，写进 default.custom.yaml 由 RIME 处理。</summary>
