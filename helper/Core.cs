@@ -259,6 +259,9 @@ namespace Yiwei
         public bool LiteDict { get; set; } = false;
         /// <summary>backlog 7 中英混输词条（PPT、QQ、IC卡、C位…），默认开；关掉时在用户文件夹放一份空的 yiwei_mixed.txt。</summary>
         public bool MixedWords { get; set; } = true;
+        /// <summary>一维分类词库（Features/DomainDicts.cs）总开关，默认开；DomainDictsOff 是关掉的领域（逗号分隔，如 "medical,law"）。</summary>
+        public bool DomainDictsOn { get; set; } = true;
+        public string DomainDictsOff { get; set; } = "";
 
         // 快捷输入、模糊音、生僻字（Features/RimeFeatures.cs）
         public RimeFeatureSettings Features { get; set; } = new RimeFeatureSettings();

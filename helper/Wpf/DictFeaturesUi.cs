@@ -25,6 +25,14 @@ namespace Yiwei
                 "打 ppt、qq、icka、cwei 直接出 PPT、QQ、IC卡、C位 这类常用词，排在第 2 位、不抢首选（选多了会自动往前排）。切换后自动重新部署",
                 K.Toggle(S.MixedWords, v => { S.MixedWords = v; Save(); if (MixedWords.Apply(v)) Rime.ApplySoon(100); }), Ui.SymbolRegular.TextT24));
 
+            p.Children.Add(K.Card("分类词库",
+                "一维按领域整理的词库：地名、国家首都、诗词、成语、历史、术语、口语短句等，权重按真实词频校准、不抢常用词首选。切换后自动重新部署",
+                K.Toggle(S.DomainDictsOn, v => { S.DomainDictsOn = v; Save(); if (DomainDicts.Apply()) Rime.ApplySoon(100); }), Ui.SymbolRegular.Library24));
+            p.Children.Add(K.Block("分类词库：按领域", "取消勾选的领域不再挂载（总开关打开时才生效）", DomainChoices(), Ui.SymbolRegular.Library24));
+            p.Children.Add(K.Card("诗句联想",
+                "打出诗句上句时，第 2 个候选是整联（注明作者和诗题）；上句上屏后接着打下句首字母（如 ysdss）直接出下句",
+                K.Toggle(CoreInput.Poetry, v => { CoreInput.Poetry = v; Toast(v ? "已开启诗句联想" : "已关闭诗句联想"); }), Ui.SymbolRegular.BookOpen24));
+
             var info = K.Text(DictUpdater.Describe(), 12, true);
             var err = DictUpdater.Load();
             if (!string.IsNullOrEmpty(err.LastError) && DateTime.TryParse(err.LastErrorAt, out var et))
@@ -57,6 +65,25 @@ namespace Yiwei
             var card = K.Card("词库版本", "", K.Row(now, back), Ui.SymbolRegular.BookOpen24);
             ((StackPanel)((Grid)card.Child).Children[1]).Children.Add(info);
             p.Children.Add(card);
+        }
+
+        WrapPanel DomainChoices()
+        {
+            var wrap = new WrapPanel();
+            foreach (var d in DomainDicts.All)
+            {
+                var id = d.Id;
+                var cb = new CheckBox { Content = d.Name, ToolTip = d.Desc, IsChecked = !DomainDicts.OffSet(S.DomainDictsOff).Contains(id), MinWidth = 96, Margin = new Thickness(0, 0, 12, 6) };
+                RoutedEventHandler h = (s, e) =>
+                {
+                    DomainDicts.SetDomain(id, cb.IsChecked == true);
+                    Save();
+                    if (DomainDicts.Apply()) Rime.ApplySoon(1500); // 连续勾选时合并成一次部署
+                };
+                cb.Checked += h; cb.Unchecked += h;
+                wrap.Children.Add(cb);
+            }
+            return wrap;
         }
 
         CancellationTokenSource _grammarCts;

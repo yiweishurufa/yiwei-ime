@@ -39,7 +39,7 @@ namespace Yiwei
                 var src = hasUser ? UserFile : SharedFile;
                 if (!File.Exists(src)) return false;
                 var text = File.ReadAllText(src, Encoding.UTF8);
-                var next = Transform(text, lite);
+                var next = DomainDicts.Mount(Transform(text, lite)); // 一维分类词库的 import 一并保留
                 if (next == text && hasUser) return false;
                 Directory.CreateDirectory(Paths.UserDir);
                 File.WriteAllText(UserFile, next, new UTF8Encoding(false));
