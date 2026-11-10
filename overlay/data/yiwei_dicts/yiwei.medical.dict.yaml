@@ -1,0 +1,449 @@
+# 一维输入法 · 分类词库「医学」：疾病、药品、检查与医学术语
+# 由 scripts/data_gen/lexicon/build.py 生成，不要手改；来源与许可证见同目录 README.md
+# 设置 → 词库 →「分类词库」可整体或按领域关闭
+---
+name: yiwei.medical
+version: "2026.11.10"
+sort: by_weight
+...
+白血病	bai xue bing	12070
+高血压	gao xue ya	12070
+心血管	xin xue guan	9387
+无偿献血	wu chang xian xie	7382
+颈椎	jing chui	5858
+薄膜	bao mo	4625
+脑出血	nao chu xie	4205
+心脑血管	xin nao xue guan	4093
+血小板	xue xiao ban	3868
+综合症	zong he zheng	3458
+颈椎病	jing chui bing	3451
+成熟期	cheng shu qi	3067
+张璐	zhang lu	2922
+脑血管	nao xue guan	2777
+毛细血管	mao xi xue guan	2763
+颅内出血	lu nei chu xue	2542
+心脑血管疾病	xin nao xue guan ji bing	2460
+鼻塞	bi se	2418
+低血糖	di xue tang	2274
+高血压患者	gao xue ya huan zhe	2260
+失血性休克	shi xue xing xiu ke	2260
+造血干细胞	zao xue gan xi bao	2260
+血常规	xue chang gui	2186
+粘膜	zhan mo	2013
+脑卒中	nao zu zhong	1925
+血液透析	xue ye tou xi	1891
+高血糖	gao xue tang	1790
+血友病	xue you bing	1679
+败血症	bai xue zheng	1665
+心血管内科	xin xue guan nei ke	1628
+血压计	xue ya ji	1461
+嘉德	jia de	1404
+心血管系统	xin xue guan xi tong	1404
+埃博拉出血热	ai bo la chu xie re	1362
+急性白血病	ji xing bai xue bing	1293
+血红蛋白	xue hong dan bai	1225
+血管收缩	xue guan shou suo	1172
+椎间盘	chui jian pan	1157
+血液制品	xue ye zhi pin	1155
+张琦	zhang qi	1103
+大血管	da xue guan	1070
+血吸虫病	xue xi chong bing	1026
+椎体	chui ti	1015
+椎骨	chui gu	989
+活血化瘀	huo xue hua yu	967
+内出血	nei chu xue	951
+肠出血性大肠杆菌	chang chu xie xing da chang gan jun	930
+急性淋巴细胞白血病	ji xing lin ba xi bao bai xue bing	930
+再生障碍性贫血	zai sheng zhang ai xing pin xue	930
+低血压	di xue ya	883
+血管瘤	xue guan liu	810
+笑靥	xiao ye	787
+脐带血	qi dai xue	786
+高脂血症	gao zhi xue zheng	752
+血小板减少	xue xiao ban jian shao	743
+血细胞	xue xi bao	728
+静脉血	jing mai xue	710
+克伦特罗	ke lun te luo	710
+消化道出血	xiao hua dao chu xie	679
+血流量	xue liu liang	679
+牙龈出血	ya yin chu xie	666
+白术	bai zhu	665
+黄柏	huang bai	661
+三阳	san yang	659
+藏医	cang yi	634
+心肌缺血	xin ji que xue	624
+卒中	zu zhong	610
+血液传播	xue ye chuan bo	608
+血气胸	xue qi xiong	606
+出血点	chu xie dian	602
+出血热	chu xie re	577
+多普勒	duo pu lei	557
+川芎	chuan qiong	528
+缺铁性贫血	que tie xing pin xue	528
+刘沅	liu yuan	521
+成熟阶段	cheng shu jie duan	520
+血色素	xue se su	497
+吴谦	wu qian	492
+脑干出血	nao gan chu xie	480
+颈椎骨折	jing chui gu zhe	470
+曲美	qu mei	469
+大长今	da zhang jin	458
+造血系统	zao xue xi tong	450
+血清学	xue qing xue	447
+性成熟	xing cheng shu	436
+血容量	xue rong liang	417
+薏苡仁	yi yi ren	415
+皮下出血	pi xia chu xie	413
+气血运行	qi xue yun xing	406
+脑血管意外	nao xue guan yi wai	400
+血液内科	xue ye nei ke	397
+指腹	zhi fu	382
+血液学	xue ye xue	378
+血吸虫	xue xi chong	376
+重排	zhong pai	373
+头皮血肿	tou pi xue zhong	365
+凝血因子	ning xue yin zi	364
+血管痉挛	xue guan jing luan	361
+血瘀	xue yu	348
+巴伯	ba bo	327
+椎管狭窄	chui guan xia zhai	319
+人血白蛋白	ren xue bai dan bai	305
+沙参	sha shen	305
+高尿酸血症	gao niao suan xue zheng	301
+止血带	zhi xue dai	293
+肺出血	fei chu xie	280
+血管造影	xue guan zao ying	279
+血液循环系统	xue ye xun huan xi tong	275
+病机	bing ji	273
+丽达	li da	273
+尚佳	shang jia	273
+急性出血性结膜炎	ji xing chu xie xing jie mo yan	272
+毛细血管扩张	mao xi xue guan kuo zhang	271
+溶血性贫血	rong xue xing pin xue	271
+急性早幼粒细胞白血病	ji xing zao you li xi bao bai xue bing	266
+流行性出血热	liu xing xing chu xie re	261
+阴道出血	yin dao chu xie	259
+样地	yang di	257
+抗蛇毒血清	kang she du xue qing	254
+玄参	xuan can	250
+克尔	ke er	248
+顺峰	shun feng	248
+长头	zhang tou	248
+气滞血瘀	qi zhi xue yu	247
+近中	jin zhong	240
+血清型	xue qing xing	240
+印模	yin mo	238
+糖化血红蛋白	tang hua xue hong dan bai	237
+化生	hua sheng	235
+医和	yi he	235
+巴德	ba de	233
+剥脱	bao tuo	232
+结膜充血	jie mo chong xue	232
+范明	fan ming	231
+眼底出血	yan di chu xie	231
+椎动脉	chui dong mai	228
+合谷	he gu	228
+脑血管破裂	nao xue guan po lie	228
+淋巴细胞白血病	lin ba xi bao bai xue bing	227
+虫媒	chong mei	222
+尾椎	wei chui	216
+回肠	hui chang	212
+芬必得	fen bi dei	210
+支沟	zhi gou	210
+丰隆	feng long	207
+子宫出血	zi gong chu xie	206
+拜尔	bai er	204
+胎盘早剥	tai pan zao bo	202
+远中	yuan zhong	202
+颈椎间盘	jing chui jian pan	201
+亚科	ya ke	200
+椎管	chui guan	194
+血凝素	xue ning su	192
+原发性高血压	yuan fa xing gao xue ya	187
+脑血管畸形	nao xue guan ji xing	183
+养血安神	yang xue an shen	179
+血管支架	xue guan zhi jia	173
+血液凝固	xue ye ning gu	173
+高血压防治	gao xue ya fang zhi	172
+清热凉血	qing re liang xue	172
+心血管病学	xin xue guan bing xue	170
+血流速度	xue liu su du	170
+熟地黄	shu di huang	168
+出血倾向	chu xie qing xiang	165
+急性淋巴细胞性白血病	ji xing lin ba xi bao xing bai xue bing	165
+血栓通	xue shuan tong	165
+副溶血性弧菌	fu rong xue xing hu jun	161
+上消化道出血	shang xiao hua dao chu xie	161
+行气活血	xing qi huo xue	160
+血脑屏障	xue nao ping zhang	159
+气郁	qi yu	156
+双一	shuang yi	156
+注射用血栓通	zhu she yong xue shuan tong	150
+大椎穴	da chui xue	149
+脑血栓后遗症	nao xue shuan hou yi zheng	148
+血管损伤	xue guan sun shang	146
+出血性休克	chu xie xing xiu ke	145
+后溪	hou xi	144
+重楼	zhong lou	142
+长骨	zhang gu	138
+心包填塞	xin bao tian se	136
+低钾血症	di jia xue zheng	133
+金匮要略	jin kui yao lve	132
+假性性早熟	jia xing xing zao shu	127
+口角炎	kou jue yan	127
+凉血止血	liang xue zhi xue	127
+慢性白血病	man xing bai xue bing	125
+人工血管	ren gong xue guan	125
+血药浓度	xue yao nong du	124
+血管炎	xue guan yan	123
+血小板减少性紫癜	xue xiao ban jian shao xing zi dian	122
+彩色多普勒超声	cai se duo pu lei chao sheng	121
+达喜	da xi	121
+菌血症	jun xue zheng	120
+人造血管	ren zao xue guan	119
+皮下血肿	pi xia xue zhong	115
+李辰	li chen	114
+乐力	le li	112
+登革出血热	deng ge chu xie re	111
+多发性硬化	duo fa xing ying hua	111
+二次结构	er ci jie gou	111
+肾萎缩	shen wei suo	111
+肾脏损伤	shen zang sun shang	111
+糖尿病酮症酸中毒	tang niao bing tong zheng suan zhong du	111
+血液灌流	xue ye guan liu	111
+血清抗体	xue qing kang ti	110
+关元	guan yuan	108
+皮肤粘膜	pi fu zhan mo	107
+椎间孔	chui jian kong	106
+血管性头痛	xue guan xing tou tong	106
+指掌	zhi zhang	105
+血管紧张素	xue guan jin zhang su	103
+血管吻合	xue guan wen he	103
+大椎	da chui	101
+肾俞	shen yu	91
+葫芦巴	hu lu ba	86
+感康	gan kang	83
+格列苯脲	ge lie ben niao	77
+重睑	zhong jian	73
+白芨	bai ji	72
+肾俞穴	shen yu xue	71
+重接	zhong jie	71
+椎板	chui ban	68
+参麦注射液	can mai zhu she ye	67
+元参	yuan can	65
+赖和	lai he	62
+卫气	wei qi	62
+波茨	bo ci	61
+重睑术	zhong jian shu	61
+李杲	li gao	60
+生晒参	sheng shai can	60
+甘油三脂	gan you san zhi	59
+肋间肌	le jian ji	59
+慢性疲劳综合症	man xing pi lao zong he zheng	59
+粘多糖	zhan duo tang	58
+诗乐	shi le	57
+白薇	bai wei	56
+曾其毅	ceng qi yi	54
+金津	jin jin	53
+脾俞	pi yu	51
+气户	qi hu	50
+通里	tong li	50
+白参	bai can	49
+多粘菌素	duo zhan jun su	49
+经颅多普勒	jing lu duo pu lei	49
+肺俞	fei yu	48
+重吸收	zhong xi shou	47
+莪术	e shu	46
+管轶	guan yi	45
+颠茄片	dian jia pian	44
+颠茄	dian jia	43
+金匮肾气丸	jin kui shen qi wan	42
+间使	jian shi	41
+中府	zhong fu	41
+颈椎脱位	jing chui tuo wei	40
+湿阻	shi zu	40
+姜英	jiang ying	39
+肋间神经痛	le jian shen jing tong	39
+夏科	xia ke	39
+痹证	bi zheng	38
+神经根型颈椎病	shen jing gen xing jing chui bing	37
+长强穴	zhang qiang xue	37
+木犀草苷	mu xi cao gan	35
+参苓白术散	can ling bai zhu san	34
+带型	dai xing	34
+双盲实验	shuang mang shi yan	34
+徐长卿	xu zhang qing	34
+八华	ba hua	32
+羟脯氨酸	qiang pu an suan	31
+竹茹	zhu ru	31
+左炔诺孕酮片	zuo gui nuo yun tong pian	31
+川芎嗪	chuan qiong qin	30
+地仓	di cang	30
+肋间隙	le jian xi	30
+胡连	hu lian	29
+俞穴	yu xue	29
+参松养心胶囊	can song yang xin jiao nang	28
+椎动脉型颈椎病	chui dong mai xing jing chui bing	28
+佛焰苞	fu yan bao	28
+重结晶	zhong jie jing	28
+调质	diao zhi	27
+颈椎半脱位	jing chui ban tuo wei	27
+大陵	da ling	26
+莲芯	lian xin	26
+泰宝	tai bao	26
+参附注射液	can fu zhu she ye	25
+丹宁酸	dan ning suan	25
+灯心草	deng xin cao	25
+肺俞穴	fei yu xue	25
+板兰根	ban lan gen	24
+伤湿	shang shi	24
+粘菌素	zhan jun su	24
+左炔诺孕酮	zuo gui nuo yun tong	24
+黄枝	huang zhi	23
+睛明	jing ming	23
+粘多糖病	zhan duo tang bing	23
+交信	jiao xin	22
+林亿	lin yi	21
+硫磺软膏	liu huang ruan gao	21
+内消	nei xiao	21
+胃俞	wei yu	21
+心俞	xin yu	21
+降真	jiang zhen	20
+舌系带	she ji dai	20
+食母生	si mu sheng	20
+跖屈	zhi qu	20
+伽玛刀治疗	ga ma dao zhi liao	19
+长强	zhang qiang	19
+志室	zhi shi	19
+大腿长	da tui zhang	18
+肋软骨炎	le ruan gu yan	18
+小腿长	xiao tui zhang	18
+参苓白术丸	can ling bai zhu wan	17
+炔诺酮	gui nuo tong	17
+何启	he qi	17
+氯氮卓	lv dan zhuo	17
+桑椹子	sang shen zi	17
+天溪	tian xi	17
+章门	zhang men	17
+椎弓	chui gong	16
+大肠俞	da chang yu	16
+肝俞	gan yu	16
+膈俞	ge yu	16
+脾俞穴	pi yu xue	16
+长时记忆	zhang shi ji yi	16
+王焘	wang dao	15
+蜂蛰伤	feng zhe shang	14
+龈交穴	ken jiao xue	14
+钱乙	qian yi	14
+碳酸氢钠注射液	tan suan qing na zhu she ye	14
+婴儿猝死综合症	ying er cu si zong he zheng	14
+椎间盘脱出	chui jian pan tuo chu	13
+多普勒检查	duo pu lei jian cha	13
+葫芦巴碱	hu lu ba jian	13
+粘液腺癌	nian ye xian ai	13
+前谷	qian gu	13
+士的宁	shi de ning	13
+承泣	cheng qi	12
+承山	cheng shan	12
+股骨长	gu gu zhang	12
+建里	jian li	12
+聚泉	ju quan	12
+利什曼病	li shen man bing	12
+鹿茸参鞭酒	lu rong can bian jiu	12
+棉子油	mian zi you	12
+神经原性休克	shen jing yuan xing xiu ke	12
+粘膜层	zhan mo ceng	12
+竹原	zhu yuan	12
+参鹿扶正胶囊	can lu fu zheng jiao nang	11
+交感神经型颈椎病	jiao gan shen jing xing jing chui bing	11
+桑螵蛸	sang piao shao	11
+山慈菇	shan ci gu	11
+舌系带过短	she ji dai guo duan	11
+食亦	shi yi	11
+胃俞穴	wei yu xue	11
+原气	yuan qi	11
+板兰根冲剂	ban lan gen chong ji	10
+荜茇	bi ba	10
+参地益肾口服液	can di yi shen kou fu ye	10
+参附汤	can fu tang	10
+参桂鹿茸丸	can gui lu rong wan	10
+参蛤平喘胶囊	can ha ping chuan jiao nang	10
+参芪胶囊	can qi jiao nang	10
+参七心疏胶囊	can qi xin shu jiao nang	10
+曾秋坤	ceng qiu kun	10
+超氧化物岐化酶	chao yang hua wu qi hua mei	10
+抽动秽语综合症	chou dong hui yu zong he zheng	10
+川芎茶调散	chuan qiong cha diao san	10
+椎管内麻醉	chui guan nei ma zui	10
+椎管内肿瘤切除术	chui guan nei zhong liu qie chu shu	10
+椎基底动脉	chui ji di dong mai	10
+椎间盘变性	chui jian pan bian xing	10
+大肠俞穴	da chang yu xue	10
+大赫	da he	10
+等长收缩	deng zhang shou suo	10
+地不容	di bu rong	10
+颠茄合剂	dian jia he ji	10
+复方炔诺酮片	fu fang gui nuo tong pian	10
+复方磺胺甲恶唑	fu fang huang an jia e zuo	10
+复方磺胺甲恶唑注射液	fu fang huang an jia e zuo zhu she ye	10
+肝俞穴	gan yu xue	10
+铬酸盐制造业工人肺癌	ge suan yan zhi zao ye gong ren fei ai	10
+根头	gen tou	10
+钩椎关节	gou chui guan jie	10
+骨筋膜室综合症	gu jin mo shi zong he zheng	10
+海螵蛸	hai piao shao	10
+寰椎骨折	huan chui gu zhe	10
+磺胺甲恶唑	huang an jia e zuo	10
+黄宽	huang kuan	10
+急性胃粘膜病变	ji xing wei zhan mo bing bian	10
+甲状	jia zhuang	10
+肩髃	jian yu	10
+焦炉工人肺癌	jiao lu gong ren fei ai	10
+解溪	jie xi	10
+金佛止痛丸	jin fu zhi tong wan	10
+筋缩	jin suo	10
+颈椎结核	jing chui jie he	10
+经颅多普勒超声	jing lu duo pu lei chao sheng	10
+龈沟液	ken gou ye	10
+龈炎	ken yan	10
+口腔粘膜病	kou qiang zhan mo bing	10
+蓝顿	lan dun	10
+了哥王	le ge wang	10
+臁疮	lian chuang	10
+刘翰	liu han	10
+鹿茸洋参片	lu rong yang can pian	10
+率谷	lv gu	10
+没食子酸	mei shi zi suan	10
+膀胱俞	pang guang yu	10
+皮肤磨削术	pi fu mo xue shu	10
+前臂长	qian bi zhang	10
+桑椹颗粒	sang shen ke li	10
+商阳	shang yang	10
+上肢长	shang zhi zhang	10
+深覆合	shen fu he	10
+身柱	shen zhu	10
+盛寅	sheng yin	10
+食母生片	si mu sheng pian	10
+太阳神口服液	tai yang shen kou fu ye	10
+童参	tong can	10
+头孢唑啉钠	tou bao zuo lin na	10
+温疫	wen yi	10
+吴萸	wu yu	10
+小儿豉翘清热颗粒	xiao er shi qiao qing re ke li	10
+心宝	xin bao	10
+新斯的明	xin si de ming	10
+心脏粘液瘤	xin zang nian ye liu	10
+许浚	xu jun	10
+严迪	yan di	10
+医明	yi ming	10
+依苏	yi su	10
+芸香甙	yun xiang dai	10
+藻酸双脂钠片	zao suan shuang zhi na pian	10
+粘膜下层	zhan mo xia ceng	10
+长肌	zhang ji	10
+掌长肌	zhang zhang ji	10
+正水	zheng shui	10
+直肠粘膜脱垂	zhi chang zhan mo tuo chui	10
+重睑成形术	zhong jian cheng xing shu	10
+紫癫	zi dian	10
+子宫粘膜下肌瘤	zi gong zhan mo xia ji liu	10

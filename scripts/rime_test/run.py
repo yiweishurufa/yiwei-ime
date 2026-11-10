@@ -28,6 +28,7 @@ def prepare(ice_zip, shared):
     cd.DATA = shared
     cd.ICE_ZIP = ice_zip
     cd.install_rime_ice()
+    cd.install_domain_dicts()
     cd.customize_default_yaml()
     cd.mount_into_schemas()
     print("prepared", shared)

@@ -1,0 +1,81 @@
+# 一维输入法 · 分类词库「品牌机构」：常见品牌、企业、高校与机构、汽车
+# 由 scripts/data_gen/lexicon/build.py 生成，不要手改；来源与许可证见同目录 README.md
+# 设置 → 词库 →「分类词库」可整体或按领域关闭
+---
+name: yiwei.brand
+version: "2026.11.10"
+sort: by_weight
+...
+乐骋	le cheng	48990
+乐风	le feng	48990
+新凯	xin kai	43832
+乙炔	yi gui	12181
+戴姆勒	dai mu lei	12070
+创维	chuang wei	12040
+凌志	ling zhi	12040
+蔚来	wei lai	12040
+志翔	zhi xiang	10130
+嘉华	jia hua	9157
+下护	xia hu	8420
+奇骏	qi jun	4999
+派喜	pai xi	4914
+长丰猎豹	zhang feng lie bao	3792
+保险杆	bao xian gan	3732
+饿了么	e le me	3370
+拼多多	pin duo duo	3370
+优衣库	you yi ku	3370
+哔哩哔哩	bi li bi li	3235
+东方卫视	dong fang wei shi	3235
+京东物流	jing dong wu liu	3235
+理想汽车	li xiang qi che	3235
+宁德时代	ning de shi dai	3235
+平安银行	ping an yin hang	3235
+瑞幸咖啡	rui xing ka fei	3235
+小鹏汽车	xiao peng qi che	3235
+邮储银行	you chu yin hang	3235
+中国中铁	zhong guo zhong tie	3235
+字节跳动	zi jie tiao dong	3235
+防眩目	fang xuan mu	2831
+合叶	he ye	2475
+中国二手车城	zhong guo er shou che cheng	2460
+路帝	lu di	2384
+逍客	xiao ke	1430
+舍弗勒集团	she fu lei ji tuan	1335
+摩雷	mo lei	932
+戴姆勒克莱斯勒	dai mu lei ke lai si lei	930
+克莱斯勒大捷龙	ke lai si lei da jie long	930
+优卡二手车网	you ka er shou che wang	905
+甲壳虫汽车	jia qiao chong qi che	854
+防眩目后视镜	fang xuan mu hou shi jing	839
+前保险杆	qian bao xian gan	797
+后保险杆	hou bao xian gan	643
+激转	ji zhuan	618
+大灯高度可调	da deng gao du ke diao	571
+陆霸	lu ba	570
+风骏	feng jun	560
+弹簧垫圈	tan huang dian juan	474
+福建戴姆勒	fu jian dai mu lei	372
+勒芒耐力赛	lei mang nai li sai	312
+脚瞪	jiao deng	309
+补炉	bu lu	238
+勒芒赛道	lei mang sai dao	222
+风景爱尔法	feng jing ai er fa	195
+二十国集团	er shi guo ji tuan	185
+奥迪勒芒	ao di lei mang	172
+美的客车	mei de ke che	168
+冷车起动	leng che qi dong	139
+触媒转换器	chu mei zhuan huan qi	111
+隔音产品	ge yin chan pin	111
+冷补胶	leng bu jiao	111
+仪表指示灯	yi biao zhi shi deng	111
+防护薄膜	fang hu bao mo	105
+机爪	ji zhao	97
+克莱斯勒交叉火力	ke lai si lei jiao cha huo li	93
+一二档	yi er dang	91
+档位杆	dang wei gan	82
+立式珩磨机	li shi hang mo ji	73
+三四档	san si dang	60
+道奇拓远者	dao qi tuo yuan zhe	51
+挂不上档	gua bu shang dang	45
+利欧	li ou	39
+一档齿轮	yi dang chi lun	36

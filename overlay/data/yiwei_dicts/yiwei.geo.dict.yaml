@@ -1,0 +1,1910 @@
+# 一维输入法 · 分类词库「中国地名」：省、地级市、县区、山川河流湖泊、名胜古迹
+# 由 scripts/data_gen/lexicon/build.py 生成，不要手改；来源与许可证见同目录 README.md
+# 设置 → 词库 →「分类词库」可整体或按领域关闭
+---
+name: yiwei.geo
+version: "2026.11.10"
+sort: by_weight
+...
+株洲	zhu zhou	25882
+湘潭	xiang tan	23562
+芦山	lu shan	12469
+海南省	hai nan sheng	12070
+安庆	an qing	12040
+安顺	an shun	12040
+百色	bai se	12040
+常德	chang de	12040
+巢湖	chao hu	12040
+楚雄	chu xiong	12040
+大理	da li	12040
+大庆	da qing	12040
+德宏	de hong	12040
+德阳	de yang	12040
+鄂州	e zhou	12040
+阜阳	fu yang	12040
+抚州	fu zhou	12040
+固原	gu yuan	12040
+广元	guang yuan	12040
+哈密	ha mi	12040
+汉中	han zhong	12040
+鹤壁	he bi	12040
+焦作	jiao zuo	12040
+金昌	jin chang	12040
+晋城	jin cheng	12040
+金华	jin hua	12040
+丽水	li shui	12040
+南平	nan ping	12040
+南阳	nan yang	12040
+盘锦	pan jin	12040
+萍乡	ping xiang	12040
+清远	qing yuan	12040
+曲阜	qu fu	12040
+三明	san ming	12040
+汕头	shan tou	12040
+十堰	shi yan	12040
+朔州	shuo zhou	12040
+太原	tai yuan	12040
+铜川	tong chuan	12040
+铜仁	tong ren	12040
+文山	wen shan	12040
+乌江	wu jiang	12040
+武威	wu wei	12040
+吴忠	wu zhong	12040
+梧州	wu zhou	12040
+信阳	xin yang	12040
+新余	xin yu	12040
+邢台	xing tai	12040
+延边	yan bian	12040
+盐城	yan cheng	12040
+阳泉	yang quan	12040
+宜昌	yi chang	12040
+益阳	yi yang	12040
+鹰潭	ying tan	12040
+榆林	yu lin	12040
+玉林	yu lin	12040
+枣庄	zao zhuang	12040
+漳州	zhang zhou	12040
+资阳	zi yang	12040
+长治	chang zhi	11334
+恩施	en shi	11317
+芜湖	wu hu	11028
+株洲市	zhu zhou shi	10230
+衡山	heng shan	9430
+怀化	huai hua	8977
+崇左	chong zuo	8637
+乌镇	wu zhen	8580
+塔城	ta cheng	8120
+舟山	zhou shan	7581
+永州市	yong zhou shi	6921
+萧山	xiao shan	6822
+达州	da zhou	6545
+娄底市	lou di shi	6270
+榆林市	yu lin shi	6106
+迪庆	di qing	5752
+庆阳	qing yang	5707
+浏阳市	liu yang shi	5553
+费县	bi xian	5550
+成县	cheng xian	5550
+磁县	ci xian	5550
+丰县	feng xian	5550
+凤县	feng xian	5550
+富县	fu xian	5550
+高县	gao xian	5550
+珙县	gong xian	5550
+和县	he xian	5550
+环县	huan xian	5550
+吉县	ji xian	5550
+景县	jing xian	5550
+泾县	jing xian	5550
+莒县	ju xian	5550
+朗县	lang xian	5550
+澧县	li xian	5550
+理县	li xian	5550
+礼县	li xian	5550
+蠡县	li xian	5550
+泸县	lu xian	5550
+宁县	ning xian	5550
+杞县	qi xian	5550
+淇县	qi xian	5550
+祁县	qi xian	5550
+沁县	qin xian	5550
+青县	qing xian	5550
+单县	shan xian	5550
+歙县	she xian	5550
+涉县	she xian	5550
+莘县	shen xian	5550
+寿县	shou xian	5550
+泗县	si xian	5550
+索县	suo xian	5550
+威县	wei xian	5550
+魏县	wei xian	5550
+文县	wen xian	5550
+温县	wen xian	5550
+息县	xi xian	5550
+隰县	xi xian	5550
+夏县	xia xian	5550
+献县	xian xian	5550
+兴县	xing xian	5550
+义县	yi xian	5550
+易县	yi xian	5550
+黟县	yi xian	5550
+攸县	you xian	5550
+盂县	yu xian	5550
+蔚县	yu xian	5550
+漳县	zhang xian	5550
+江门	jiang men	5470
+辽源	liao yuan	5340
+韶关市	shao guan shi	5149
+新都	xin dou	5040
+保山	bao shan	4999
+池州	chi zhou	4999
+代县	dai xian	4999
+范县	fan xian	4999
+菏泽	he ze	4999
+徽县	hui xian	4999
+锦州	jin zhou	4999
+眉山	mei shan	4999
+眉县	mei xian	4999
+浚县	xun xian	4999
+东营	dong ying	4907
+洪山	hong shan	4895
+奉贤	feng xian	4846
+望城	wang cheng	4794
+北碚	bei bei	4780
+滑县	hua xian	4717
+高淳	gao chun	4535
+张掖	zhang ye	4437
+甘孜	gan zi	4363
+嘉兴	jia xing	4290
+阿坝	a ba	4276
+益阳市	yi yang shi	3971
+长治市	chang zhi shi	3874
+通化	tong hua	3872
+安康市	an kang shi	3797
+本溪	ben xi	3777
+汉江	han jiang	3747
+茂名市	mao ming shi	3651
+鸡西	ji xi	3645
+广元市	guang yuan shi	3606
+辽阳	liao yang	3592
+库尔勒市	ku er lei shi	3551
+容县	rong xian	3500
+荣县	rong xian	3500
+辰溪	chen xi	3474
+勉县	mian xian	3390
+晋城市	jin cheng shi	3384
+昌吉	chang ji	3382
+临夏	lin xia	3379
+南川	nan chuan	3376
+岚县	lan xian	3375
+阿勒泰	a lei tai	3370
+澳门塔	ao men ta	3370
+昌都市	chang du shi	3370
+林芝市	lin zhi shi	3370
+那曲市	na qu shi	3370
+山南市	shan nan shi	3370
+留园	liu yuan	3333
+鲁甸	lu dian	3333
+武隆	wu long	3320
+吉安	ji an	3287
+安州	an zhou	3270
+巴宜	ba yi	3270
+白河	bai he	3270
+白朗	bai lang	3270
+班戈	ban ge	3270
+班玛	ban ma	3270
+包河	bao he	3270
+保康	bao kang	3270
+宝兴	bao xing	3270
+宝应	bao ying	3270
+北安	bei an	3270
+北票	bei piao	3270
+北塔	bei ta	3270
+博乐	bo le	3270
+曾都	ceng dou	3270
+昌江	chang jiang	3270
+长乐	chang le	3270
+长兴	chang xing	3270
+昌邑	chang yi	3270
+呈贡	cheng gong	3270
+城厢	cheng xiang	3270
+川汇	chuan hui	3270
+淳化	chun hua	3270
+慈溪	ci xi	3270
+大丰	da feng	3270
+大荔	da li	3270
+大洼	da wa	3270
+大余	da yu	3270
+大竹	da zhu	3270
+岱岳	dai yue	3270
+宕昌	dang chang	3270
+德惠	de hui	3270
+定远	ding yuan	3270
+东川	dong chuan	3270
+东丰	dong feng	3270
+东丽	dong li	3270
+东兴	dong xing	3270
+都匀	dou yun	3270
+恩阳	en yang	3270
+洱源	er yuan	3270
+奉化	feng hua	3270
+凤山	feng shan	3270
+凤台	feng tai	3270
+丰镇	feng zhen	3270
+福安	fu an	3270
+富锦	fu jin	3270
+福绵	fu mian	3270
+富平	fu ping	3270
+浮山	fu shan	3270
+富阳	fu yang	3270
+扶余	fu yu	3270
+富蕴	fu yun	3270
+甘德	gan de	3270
+藁城	gao cheng	3270
+高陵	gao ling	3270
+高平	gao ping	3270
+高青	gao qing	3270
+高唐	gao tang	3270
+高阳	gao yang	3270
+高要	gao yao	3270
+巩义	gong yi	3270
+古交	gu jiao	3270
+沽源	gu yuan	3270
+广南	guang nan	3270
+桂平	gui ping	3270
+贵溪	gui xi	3270
+海阳	hai yang	3270
+汉滨	han bin	3270
+汉阳	han yang	3270
+河津	he jin	3270
+和静	he jing	3270
+和龙	he long	3270
+合山	he shan	3270
+鹤山	he shan	3270
+合水	he shui	3270
+和硕	he shuo	3270
+鄠邑	hu yi	3270
+呼中	hu zhong	3270
+桦甸	hua dian	3270
+花溪	hua xi	3270
+华阴	hua yin	3270
+黄岛	huang dao	3270
+黄骅	huang hua	3270
+黄陵	huang ling	3270
+黄平	huang ping	3270
+会昌	hui chang	3270
+会东	hui dong	3270
+惠济	hui ji	3270
+吉首	ji shou	3270
+吉阳	ji yang	3270
+吉州	ji zhou	3270
+贾汪	jia wang	3270
+嘉祥	jia xiang	3270
+建昌	jian chang	3270
+建始	jian shi	3270
+尖扎	jian zha	3270
+江川	jiang chuan	3270
+江永	jiang yong	3270
+蕉城	jiao cheng	3270
+金阳	jin yang	3270
+晋州	jin zhou	3270
+金州	jin zhou	3270
+景洪	jing hong	3270
+靖江	jing jiang	3270
+静乐	jing le	3270
+靖宇	jing yu	3270
+泾源	jing yuan	3270
+卡若	ka ruo	3270
+开原	kai yuan	3270
+开远	kai yuan	3270
+开州	kai zhou	3270
+崆峒	kong dong	3270
+拉孜	la zi	3270
+蓝田	lan tian	3270
+乐安	le an	3270
+乐陵	le ling	3270
+荔城	li cheng	3270
+黎平	li ping	3270
+利州	li zhou	3270
+连城	lian cheng	3270
+莲都	lian dou	3270
+廉江	lian jiang	3270
+连江	lian jiang	3270
+濂溪	lian xi	3270
+涟源	lian yuan	3270
+连云	lian yun	3270
+凉城	liang cheng	3270
+两当	liang dang	3270
+梁平	liang ping	3270
+梁溪	liang xi	3270
+陵城	ling cheng	3270
+灵武	ling wu	3270
+凌源	ling yuan	3270
+柳城	liu cheng	3270
+柳河	liu he	3270
+龙圩	long wei	3270
+龙文	long wen	3270
+渌口	lu kou	3270
+鹿泉	lu quan	3270
+鲁山	lu shan	3270
+卢氏	lu shi	3270
+罗定	luo ding	3270
+马村	ma cun	3270
+马尾	ma yi	3270
+美姑	mei gu	3270
+蒙自	meng zi	3270
+穆棱	mu leng	3270
+南江	nan jiang	3270
+南靖	nan jing	3270
+聂荣	nie rong	3270
+盘州	pan zhou	3270
+平桂	ping gui	3270
+平乐	ping le	3270
+凭祥	ping xiang	3270
+平阴	ping yin	3270
+启东	qi dong	3270
+且末	qie mo	3270
+秦州	qin zhou	3270
+青河	qing he	3270
+青阳	qing yang	3270
+庆元	qing yuan	3270
+青原	qing yuan	3270
+庆云	qing yun	3270
+清镇	qing zhen	3270
+任泽	ren ze	3270
+色尼	se ni	3270
+鄯善	shan shan	3270
+陕州	shan zhou	3270
+商都	shang dou	3270
+尚志	shang zhi	3270
+深州	shen zhou	3270
+石城	shi cheng	3270
+石峰	shi feng	3270
+浉河	shi he	3270
+石屏	shi ping	3270
+石首	shi shou	3270
+始兴	shi xing	3270
+师宗	shi zong	3270
+塔河	ta he	3270
+台江	tai jiang	3270
+汤旺	tang wang	3270
+天心	tian xin	3270
+亭湖	ting hu	3270
+通川	tong chuan	3270
+铜官	tong guan	3270
+湾沚	wan zhi	3270
+王益	wang yi	3270
+尉氏	wei shi	3270
+文安	wen an	3270
+闻喜	wen xi	3270
+乌翠	wu cui	3270
+武冈	wu gang	3270
+舞钢	wu gang	3270
+五华	wu hua	3270
+吴起	wu qi	3270
+乌什	wu shen	3270
+乌审	wu shen	3270
+武胜	wu sheng	3270
+吴兴	wu xing	3270
+武穴	wu xue	3270
+吴中	wu zhong	3270
+峡江	xia jiang	3270
+霞浦	xia pu	3270
+咸安	xian an	3270
+芗城	xiang cheng	3270
+项城	xiang cheng	3270
+襄都	xiang dou	3270
+祥符	xiang fu	3270
+湘乡	xiang xiang	3270
+襄州	xiang zhou	3270
+孝昌	xiao chang	3270
+新安	xin an	3270
+信都	xin dou	3270
+新丰	xin feng	3270
+忻府	xin fu	3270
+新和	xin he	3270
+辛集	xin ji	3270
+新乐	xin le	3270
+新泰	xin tai	3270
+新吴	xin wu	3270
+信宜	xin yi	3270
+新沂	xin yi	3270
+新源	xin yuan	3270
+兴和	xing he	3270
+兴仁	xing ren	3270
+兴山	xing shan	3270
+叙州	xu zhou	3270
+崖州	ya zhou	3270
+雁江	yan jiang	3270
+砚山	yan shan	3270
+雁山	yan shan	3270
+尧都	yao dou	3270
+叶集	ye ji	3270
+义安	yi an	3270
+宜城	yi cheng	3270
+驿城	yi cheng	3270
+宜都	yi dou	3270
+依兰	yi lan	3270
+义马	yi ma	3270
+伊美	yi mei	3270
+宜兴	yi xing	3270
+伊州	yi zhou	3270
+颍上	ying shang	3270
+永城	yong cheng	3270
+永吉	yong ji	3270
+永济	yong ji	3270
+永新	yong xin	3270
+裕华	yu hua	3270
+禹会	yu hui	3270
+榆阳	yu yang	3270
+原平	yuan ping	3270
+长海	zhang hai	3270
+政和	zheng he	3270
+蒸湘	zheng xiang	3270
+枝江	zhi jiang	3270
+钟山	zhong shan	3270
+资中	zi zhong	3270
+晋中	jin zhong	3255
+信州	xin zhou	3245
+忻州	xin zhou	3245
+新洲	xin zhou	3245
+冈仁波齐	gang ren bo qi	3235
+塔城地区	ta cheng di qu	3235
+锡林郭勒	xi lin guo lei	3235
+侯马	hou ma	3232
+赵县	zhao xian	3227
+海河	hai he	3223
+新化	xin hua	3205
+淮上	huai shang	3192
+龙岩	long yan	3181
+双辽	shuang liao	3087
+铜川市	tong chuan shi	3070
+苍南	cang nan	3045
+船山	chuan shan	2995
+白城	bai cheng	2960
+昆玉	kun yu	2947
+芒市	mang shi	2942
+华蓥	hua ying	2892
+渝中	yu zhong	2843
+奉节	feng jie	2827
+长清	zhang qing	2827
+西乡	xi xiang	2791
+儋州	dan zhou	2777
+扶沟	fu gou	2777
+泰兴	tai xing	2777
+枣庄市	zao zhuang shi	2770
+阳泉市	yang quan shi	2761
+新津	xin jin	2751
+象山	xiang shan	2748
+丰城	feng cheng	2739
+昭化	zhao hua	2692
+监利	jian li	2688
+德阳市	de yang shi	2683
+南通市	nan tong shi	2669
+阜新	fu xin	2592
+朔州市	shuo zhou shi	2571
+常州	chang zhou	2515
+韩城	han cheng	2501
+平度市	ping du shi	2482
+彝良	yi liang	2471
+沅陵	yuan ling	2470
+晋安	jin an	2457
+金安	jin an	2457
+安吉	an ji	2423
+华容	hua rong	2377
+茂名	mao ming	2370
+惠东	hui dong	2295
+保靖	bao jing	2277
+古浪	gu lang	2267
+安源	an yuan	2257
+贺州	he zhou	2255
+舒兰	shu lan	2247
+醴陵市	li ling shi	2201
+西固	xi gu	2192
+长丰	zhang feng	2187
+瑞安市	rui an shi	2178
+娄底	lou di	2167
+泰安	tai an	2147
+巫溪	wu xi	2126
+璧山	bi shan	2117
+营口	ying kou	2117
+英德市	ying de shi	2110
+永丰	yong feng	2082
+青田	qing tian	2081
+梅县	mei xian	2076
+下陆	xia lu	2075
+宁远	ning yuan	2073
+邱县	qiu xian	2027
+汉寿	han shou	2002
+应城	ying cheng	2000
+三明市	san ming shi	1984
+吴川	wu chuan	1970
+青羊	qing yang	1959
+湖州	hu zhou	1942
+大邑	da yi	1935
+玉林市	yu lin shi	1915
+商河	shang he	1902
+横州	heng zhou	1890
+东方市	dong fang shi	1864
+历下	li xia	1862
+汨罗市	mi luo shi	1844
+红安	hong an	1843
+安溪	an xi	1805
+六安	lu an	1805
+榆中	yu zhong	1778
+梧州市	wu zhou shi	1737
+安仁	an ren	1727
+泸溪	lu xi	1718
+迎泽	ying ze	1709
+临湘市	lin xiang shi	1699
+北仑	bei lun	1691
+潞州	lu zhou	1671
+天长	tian zhang	1670
+措美	cuo mei	1666
+措勤	cuo qin	1666
+南溪	nan xi	1666
+三沙	san sha	1666
+昌都	chang dou	1652
+建华	jian hua	1650
+黄陂	huang pi	1620
+开福	kai fu	1612
+麦积	mai ji	1607
+库伦	ku lun	1602
+彬州	bin zhou	1588
+漳浦	zhang pu	1583
+桂阳	gui yang	1582
+历城	li cheng	1574
+常熟市	chang shu shi	1570
+博罗	bo luo	1547
+湘阴	xiang yin	1544
+汕尾	shan wei	1520
+屯昌	tun chang	1515
+江都	jiang du	1506
+新市	xin shi	1489
+凤阳	feng yang	1479
+阎良	yan liang	1465
+隆阳	long yang	1457
+鹿寨	lu zhai	1452
+金堂	jin tang	1442
+阳山	yang shan	1415
+双牌	shuang pai	1413
+佛冈	fu gang	1399
+武进	wu jin	1352
+硚口	qiao kou	1335
+白山	bai shan	1332
+凤翔	feng xiang	1323
+开平	kai ping	1302
+康保	kang bao	1297
+佳县	jia xian	1295
+郏县	jia xian	1295
+天等	tian deng	1285
+鹤壁市	he bi shi	1282
+嘉陵	jia ling	1267
+那曲	na qu	1247
+上虞	shang yu	1235
+通化市	tong hua shi	1212
+湘东	xiang dong	1212
+沭阳	shu yang	1210
+南丰	nan feng	1206
+榆次	yu ci	1206
+新河	xin he	1194
+雨湖	yu hu	1187
+中牟	zhong mou	1182
+嘉善	jia shan	1181
+建宁	jian ning	1172
+汶上	wen shang	1165
+阳新	yang xin	1164
+郴州	chen zhou	1162
+永康市	yong kang shi	1161
+安乡	an xiang	1153
+安定区	an ding qu	1150
+安龙县	an long xian	1150
+安塞区	an sai qu	1150
+安源区	an yuan qu	1150
+安远县	an yuan xian	1150
+安州区	an zhou qu	1150
+巴宜区	ba yi qu	1150
+拜城县	bai cheng xian	1150
+白杨市	bai yang shi	1150
+蚌山区	bang shan qu	1150
+北林区	bei lin qu	1150
+碧江区	bi jiang qu	1150
+璧山区	bi shan qu	1150
+滨海县	bin hai xian	1150
+彬州市	bin zhou shi	1150
+博望区	bo wang qu	1150
+播州区	bo zhou qu	1150
+策勒县	ce lei xian	1150
+曾都区	ceng dou qu	1150
+柴桑区	chai sang qu	1150
+禅城区	chan cheng qu	1150
+长乐区	chang le qu	1150
+长垣市	chang yuan shi	1150
+潮安区	chao an qu	1150
+呈贡区	cheng gong qu	1150
+澄江市	cheng jiang shi	1150
+茌平区	chi ping qu	1150
+崇礼区	chong li qu	1150
+崇明区	chong ming qu	1150
+慈利县	ci li xian	1150
+措美县	cuo mei xian	1150
+错那市	cuo na shi	1150
+措勤县	cuo qin xian	1150
+大埔县	da bu xian	1150
+达川区	da chuan qu	1150
+大丰区	da feng qu	1150
+大洼区	da wa qu	1150
+达孜区	da zi qu	1150
+大足区	da zu qu	1150
+岱山县	dai shan xian	1150
+郸城县	dan cheng xian	1150
+丹棱县	dan leng xian	1150
+丹徒区	dan tu qu	1150
+宕昌县	dang chang xian	1150
+道里区	dao li qu	1150
+德城区	de cheng qu	1150
+电白区	dian bai qu	1150
+点军区	dian jun qu	1150
+定南县	ding nan xian	1150
+定陶区	ding tao qu	1150
+定兴县	ding xing xian	1150
+洞口县	dong kou xian	1150
+东宁市	dong ning shi	1150
+洞头区	dong tou qu	1150
+东乡区	dong xiang qu	1150
+东兴区	dong xing qu	1150
+东营区	dong ying qu	1150
+都昌县	dou chang xian	1150
+都兰县	dou lan xian	1150
+洱源县	er yuan xian	1150
+繁昌区	fan chang qu	1150
+肥乡区	fei xiang qu	1150
+奉化区	feng hua qu	1150
+丰林县	feng lin xian	1150
+丰南区	feng nan qu	1150
+凤泉区	feng quan qu	1150
+丰润区	feng run qu	1150
+凤翔区	feng xiang qu	1150
+抚宁区	fu ning qu	1150
+抚松县	fu song xian	1150
+富阳区	fu yang qu	1150
+抚远市	fu yuan shi	1150
+富蕴县	fu yun xian	1150
+伽师县	ga shi xian	1150
+改则县	gai ze xian	1150
+甘谷县	gan gu xian	1150
+赣县区	gan xian qu	1150
+赣榆区	gan yu qu	1150
+高昌区	gao chang qu	1150
+藁城区	gao cheng qu	1150
+高陵区	gao ling qu	1150
+高要区	gao yao qu	1150
+革吉县	ge ji xian	1150
+姑苏区	gu su qu	1150
+古冶区	gu ye qu	1150
+固镇县	gu zhen xian	1150
+瓜州县	gua zhou xian	1150
+广德市	guang de shi	1150
+广丰区	guang feng qu	1150
+光明区	guang ming qu	1150
+广信区	guang xin qu	1150
+光泽县	guang ze xian	1150
+桂东县	gui dong xian	1150
+海安市	hai an shi	1150
+海城区	hai cheng qu	1150
+海门区	hai men qu	1150
+海棠区	hai tang qu	1150
+汉滨区	han bin qu	1150
+汉南区	han nan qu	1150
+含山县	han shan xian	1150
+汉寿县	han shou xian	1150
+寒亭区	han ting qu	1150
+鹤庆县	he qing xian	1150
+河曲县	he qu xian	1150
+衡东县	heng dong xian	1150
+横峰县	heng feng xian	1150
+横州市	heng zhou shi	1150
+红河县	hong he xian	1150
+洪泽区	hong ze qu	1150
+湖口县	hu kou xian	1150
+鄠邑区	hu yi qu	1150
+呼中区	hu zhong qu	1150
+花都区	hua dou qu	1150
+华龙区	hua long qu	1150
+桦南县	hua nan xian	1150
+华亭市	hua ting shi	1150
+华州区	hua zhou qu	1150
+淮安区	huai an qu	1150
+怀仁市	huai ren shi	1150
+淮上区	huai shang qu	1150
+淮阳区	huai yang qu	1150
+桓台县	huan tai xian	1150
+湟中区	huang zhong qu	1150
+会昌县	hui chang xian	1150
+惠济区	hui ji qu	1150
+会理市	hui li shi	1150
+辉南县	hui nan xian	1150
+会宁县	hui ning xian	1150
+惠阳区	hui yang qu	1150
+会泽县	hui ze xian	1150
+浑江区	hun jiang qu	1150
+浑南区	hun nan qu	1150
+即墨区	ji mo qu	1150
+吉水县	ji shui xian	1150
+吉阳区	ji yang qu	1150
+济阳区	ji yang qu	1150
+建安区	jian an qu	1150
+建昌县	jian chang xian	1150
+建湖县	jian hu xian	1150
+监利市	jian li shi	1150
+建水县	jian shui xian	1150
+涧西区	jian xi qu	1150
+建阳区	jian yang qu	1150
+江北区	jiang bei qu	1150
+江川区	jiang chuan qu	1150
+江都区	jiang du qu	1150
+将乐县	jiang le xian	1150
+姜堰区	jiang yan qu	1150
+江源区	jiang yuan qu	1150
+揭东区	jie dong qu	1150
+金林区	jin lin qu	1150
+晋宁区	jin ning qu	1150
+金坛区	jin tan qu	1150
+靖边县	jing bian xian	1150
+静海区	jing hai qu	1150
+京山市	jing shan shi	1150
+靖西市	jing xi shi	1150
+竞秀区	jing xiu qu	1150
+荆州区	jing zhou qu	1150
+九台区	jiu tai qu	1150
+筠连县	jun lian xian	1150
+卡若区	ka ruo qu	1150
+开鲁县	kai lu xian	1150
+开阳县	kai yang xian	1150
+开州区	kai zhou qu	1150
+康定市	kang ding shi	1150
+垦利区	ken li qu	1150
+崆峒区	kong dong qu	1150
+库车市	ku che shi	1150
+昆玉市	kun yu shi	1150
+莱芜区	lai wu qu	1150
+兰陵县	lan ling xian	1150
+蓝山县	lan shan xian	1150
+乐业县	le ye xian	1150
+荔浦市	li pu shi	1150
+离石区	li shi qu	1150
+莲池区	lian chi qu	1150
+莲都区	lian dou qu	1150
+濂溪区	lian xi qu	1150
+梁河县	liang he xian	1150
+梁平区	liang ping qu	1150
+梁溪区	liang xi qu	1150
+辽中区	liao zhong qu	1150
+临安区	lin an qu	1150
+临平区	lin ping qu	1150
+临洮县	lin tao xian	1150
+临翔区	lin xiang qu	1150
+陵城区	ling cheng qu	1150
+柳江区	liu jiang qu	1150
+龙安区	long an qu	1150
+隆安县	long an xian	1150
+隆昌市	long chang shi	1150
+龙港市	long gang shi	1150
+龙海区	long hai qu	1150
+龙江县	long jiang xian	1150
+龙圩区	long wei qu	1150
+隆子县	long zi xian	1150
+潞城区	lu cheng qu	1150
+禄丰市	lu feng shi	1150
+渌口区	lu kou qu	1150
+鹿泉区	lu quan qu	1150
+庐山市	lu shan shi	1150
+泸水市	lu shui shi	1150
+鹿寨县	lu zhai xian	1150
+潞州区	lu zhou qu	1150
+栾城区	luan cheng qu	1150
+滦平县	luan ping xian	1150
+滦州市	luan zhou shi	1150
+萝北县	luo bei xian	1150
+罗江区	luo jiang qu	1150
+洛龙区	luo long qu	1150
+洛隆县	luo long xian	1150
+洛扎县	luo zha xian	1150
+略阳县	lve yang xian	1150
+马龙区	ma long qu	1150
+马尾区	ma yi qu	1150
+麦积区	mai ji qu	1150
+满城区	man cheng qu	1150
+茫崖市	mang ya shi	1150
+湄潭县	mei tan xian	1150
+孟津区	meng jin qu	1150
+勐腊县	meng la xian	1150
+蒙自市	meng zi shi	1150
+米东区	mi dong qu	1150
+米林市	mi lin shi	1150
+密云区	mi yun qu	1150
+渑池县	mian chi xian	1150
+闵行区	min xing qu	1150
+民乐县	min yue xian	1150
+漠河市	mo he shi	1150
+牧野区	mu ye qu	1150
+乃东区	nai dong qu	1150
+南部县	nan bu xian	1150
+南岔县	nan cha xian	1150
+南城县	nan cheng xian	1150
+南川区	nan chuan qu	1150
+南和区	nan he qu	1150
+南湖区	nan hu qu	1150
+南康区	nan kang qu	1150
+南溪区	nan xi qu	1150
+南乐县	nan yue xian	1150
+南郑区	nan zheng qu	1150
+嫩江市	nen jiang shi	1150
+聂荣县	nie rong xian	1150
+宁都县	ning dou xian	1150
+宁乡市	ning xiang shi	1150
+盘州市	pan zhou shi	1150
+蓬安县	peng an xian	1150
+蓬莱区	peng lai qu	1150
+彭山区	peng shan qu	1150
+郫都区	pi du qu	1150
+平安区	ping an qu	1150
+平坝区	ping ba qu	1150
+平城区	ping cheng qu	1150
+平桂区	ping gui qu	1150
+平果市	ping guo shi	1150
+平鲁区	ping lu qu	1150
+平泉市	ping quan shi	1150
+平乡县	ping xiang xian	1150
+鄱阳县	po yang xian	1150
+淇滨区	qi bin qu	1150
+綦江区	qi jiang qu	1150
+祁阳市	qi yang shi	1150
+潜山市	qian shan shi	1150
+钱塘区	qian tang qu	1150
+犍为县	qian wei xian	1150
+黔西市	qian xi shi	1150
+硚口区	qiao kou qu	1150
+秦都区	qin dou qu	1150
+钦南区	qin nan qu	1150
+秦州区	qin zhou qu	1150
+清丰县	qing feng xian	1150
+清新区	qing xin qu	1150
+曲江区	qu jiang qu	1150
+衢江区	qu jiang qu	1150
+曲阳县	qu yang xian	1150
+全南县	quan nan xian	1150
+仁化县	ren hua xian	1150
+任泽区	ren ze qu	1150
+融安县	rong an xian	1150
+荣昌区	rong chang qu	1150
+榕城区	rong cheng qu	1150
+榕江县	rong jiang xian	1150
+如东县	ru dong xian	1150
+润州区	run zhou qu	1150
+三水区	san shui qu	1150
+桑植县	sang zhi xian	1150
+色尼区	se ni qu	1150
+沙湾市	sha wan shi	1150
+沙县区	sha xian qu	1150
+山阴县	shan yin xian	1150
+陕州区	shan zhou qu	1150
+上蔡县	shang cai xian	1150
+上城区	shang cheng qu	1150
+商城县	shang cheng xian	1150
+上党区	shang dang qu	1150
+商都县	shang dou xian	1150
+邵东市	shao dong shi	1150
+射洪市	she hong shi	1150
+神木市	shen mu shi	1150
+申扎县	shen zha xian	1150
+石城县	shi cheng xian	1150
+石拐区	shi guai qu	1150
+浉河区	shi he qu	1150
+市南区	shi nan qu	1150
+寿宁县	shou ning xian	1150
+双城区	shuang cheng qu	1150
+双河市	shuang he shi	1150
+双湖县	shuang hu xian	1150
+双流区	shuang liu qu	1150
+水城区	shui cheng qu	1150
+水富市	shui fu shi	1150
+顺德区	shun de qu	1150
+思茅区	si mao qu	1150
+思南县	si nan xian	1150
+松岭区	song ling qu	1150
+宿豫区	su yu qu	1150
+绥棱县	sui leng xian	1150
+绥中县	sui zhong xian	1150
+太谷区	tai gu qu	1150
+泰顺县	tai shun xian	1150
+覃塘区	tan tang qu	1150
+汤旺县	tang wang xian	1150
+桃江县	tao jiang xian	1150
+腾冲市	teng chong shi	1150
+田东县	tian dong xian	1150
+天心区	tian xin qu	1150
+天涯区	tian ya qu	1150
+田阳区	tian yang qu	1150
+天镇县	tian zhen xian	1150
+亭湖区	ting hu qu	1150
+通川区	tong chuan qu	1150
+铜官区	tong guan qu	1150
+通化县	tong hua xian	1150
+铜梁区	tong liang qu	1150
+潼南区	tong nan qu	1150
+同仁市	tong ren shi	1150
+桐梓县	tong zi xian	1150
+突泉县	tu quan xian	1150
+屯留区	tun liu qu	1150
+万全区	wan quan qu	1150
+万山区	wan shan qu	1150
+湾沚区	wan zhi qu	1150
+望城区	wang cheng qu	1150
+望都县	wang dou xian	1150
+魏都区	wei dou qu	1150
+文登区	wen deng qu	1150
+文山市	wen shan shi	1150
+吴堡县	wu bu xian	1150
+乌翠区	wu cui qu	1150
+武都区	wu dou qu	1150
+无极县	wu ji xian	1150
+武隆区	wu long qu	1150
+武鸣区	wu ming qu	1150
+武平县	wu ping xian	1150
+乌审旗	wu shen qi	1150
+乌什县	wu shen xian	1150
+武胜县	wu sheng xian	1150
+无为市	wu wei shi	1150
+西安区	xi an qu	1150
+西岗区	xi gang qu	1150
+西吉县	xi ji xian	1150
+夏河县	xia he xian	1150
+咸安区	xian an qu	1150
+襄都区	xiang dou qu	1150
+祥符区	xiang fu qu	1150
+襄州区	xiang zhou qu	1150
+香洲区	xiang zhou qu	1150
+新安县	xin an xian	1150
+信都区	xin dou qu	1150
+新都区	xin dou qu	1150
+新建区	xin jian qu	1150
+新绛县	xin jiang xian	1150
+新津区	xin jin qu	1150
+新邵县	xin shao xian	1150
+新星市	xin xing shi	1150
+兴安区	xing an qu	1150
+兴和县	xing he xian	1150
+荥经县	xing jing xian	1150
+兴仁市	xing ren shi	1150
+兴山区	xing shan qu	1150
+兴山县	xing shan xian	1150
+秀屿区	xiu yu qu	1150
+徐水区	xu shui qu	1150
+叙州区	xu zhou qu	1150
+宣化区	xuan hua qu	1150
+逊克县	xun ke xian	1150
+旬阳市	xun yang shi	1150
+崖州区	ya zhou qu	1150
+延川县	yan chuan xian	1150
+盐都区	yan dou qu	1150
+延庆区	yan qing qu	1150
+偃师区	yan shi qu	1150
+阳高县	yang gao xian	1150
+尧都区	yao dou qu	1150
+耀州区	yao zhou qu	1150
+叶集区	ye ji qu	1150
+义安区	yi an qu	1150
+伊美区	yi mei qu	1150
+宜秀区	yi xiu qu	1150
+伊州区	yi zhou qu	1150
+宜州区	yi zhou qu	1150
+殷都区	yin dou qu	1150
+永年区	yong nian qu	1150
+永兴县	yong xing xian	1150
+永修县	yong xiu xian	1150
+渝北区	yu bei qu	1150
+于都县	yu dou xian	1150
+余杭区	yu hang qu	1150
+玉环市	yu huan shi	1150
+禹会区	yu hui qu	1150
+余江区	yu jiang qu	1150
+雨山区	yu shan qu	1150
+玉山县	yu shan xian	1150
+榆社县	yu she xian	1150
+鱼台县	yu tai xian	1150
+榆阳区	yu yang qu	1150
+玉州区	yu zhou qu	1150
+月湖区	yue hu qu	1150
+云安区	yun an qu	1150
+云冈区	yun gang qu	1150
+郧阳区	yun yang qu	1150
+云州区	yun zhou qu	1150
+枣强县	zao qiang xian	1150
+增城区	zeng cheng qu	1150
+柞水县	zha shui xian	1150
+沾化区	zhan hua qu	1150
+沾益区	zhan yi qu	1150
+长丰县	zhang feng xian	1150
+长海县	zhang hai xian	1150
+长岭县	zhang ling xian	1150
+长宁区	zhang ning qu	1150
+长宁县	zhang ning xian	1150
+长清区	zhang qing qu	1150
+章丘区	zhang qiu qu	1150
+长顺县	zhang shun xian	1150
+长泰区	zhang tai qu	1150
+长洲区	zhang zhou qu	1150
+召陵区	zhao ling qu	1150
+柘城县	zhe cheng xian	1150
+柘荣县	zhe rong xian	1150
+振安区	zhen an qu	1150
+镇安县	zhen an xian	1150
+镇赉县	zhen lai xian	1150
+镇雄县	zhen xiong xian	1150
+正安县	zheng an xian	1150
+仲巴县	zhong ba xian	1150
+中牟县	zhong mou xian	1150
+周宁县	zhou ning xian	1150
+秭归县	zi gui xian	1150
+子长市	zi zhang shi	1150
+资中县	zi zhong xian	1150
+邹平市	zou ping shi	1150
+武平	wu ping	1135
+阿勒泰市	a lei tai shi	1128
+泊头	po tou	1125
+松原	song yuan	1125
+颍泉	ying quan	1125
+来凤	lai feng	1111
+仁布	ren bu	1111
+增城	zeng cheng	1111
+中江	zhong jiang	1110
+泗洪	si hong	1083
+惠安	hui an	1069
+东兴市	dong xing shi	1066
+韶关	shao guan	1065
+富源	fu yuan	1059
+云岩	yun yan	1056
+仙居	xian ju	1035
+雨山	yu shan	1030
+乐昌市	le chang shi	1028
+花垣	hua yuan	1022
+新昌	xin chang	1017
+龙南市	long nan shi	1014
+威远	wei yuan	1010
+安岳	an yue	1000
+长汀	chang ting	986
+绥德	sui de	980
+鲅鱼圈区	ba yu quan qu	970
+曹妃甸区	cao fei dian qu	970
+大箐山县	da qing shan xian	970
+共青城市	gong qing cheng shi	970
+弓长岭区	gong zhang ling qu	970
+观山湖区	guan shan hu qu	970
+红谷滩区	hong gu tan qu	970
+红寺堡区	hong si bao qu	970
+胡杨河市	hu yang he shi	970
+康巴什区	kang ba shen qu	970
+昆都仑区	kun dou lun qu	970
+兰州新区	lan zhou xin qu	970
+浪卡子县	lang qia zi xian	970
+类乌齐县	lei wu qi xian	970
+龙子湖区	long zi hu qu	970
+马尔康市	ma er kang shi	970
+尼勒克县	ni lei ke xian	970
+普兰店区	pu lan dian qu	970
+七星关区	qi xing guan qu	970
+清江浦区	qing jiang pu qu	970
+青山湖区	qing shan hu qu	970
+桑珠孜区	sang zhu zi qu	970
+沙坡头区	sha po tou qu	970
+四方台区	si fang tai qu	970
+铁门关市	tie men guan shi	970
+万柏林区	wan bo lin qu	970
+西塞山区	xi sai shan qu	970
+西乡塘区	xi xiang tang qu	970
+禹王台区	yu wang tai qu	970
+扎赉特旗	zha lai te qi	970
+镇江新区	zhen jiang xin qu	970
+阜康市	fu kang shi	960
+汝州市	ru zhou shi	954
+海丰	hai feng	952
+遂昌	sui chang	942
+仓山	cang shan	938
+商州	shang zhou	937
+丰林	feng lin	936
+佛坪县	fu ping xian	935
+紫阳	zi yang	933
+府谷	fu gu	928
+齐河	qi he	928
+平邑	ping yi	924
+文峰	wen feng	919
+舒城	shu cheng	914
+阜平	fu ping	912
+定西	ding xi	900
+邻水	lin shui	898
+阿图什市	a tu shen shi	894
+靖边	jing bian	877
+井陉	jing xing	871
+阳谷	yang gu	867
+吉隆	ji long	865
+如东	ru dong	865
+海西	hai xi	857
+荥经	xing jing	853
+金寨	jin zhai	852
+京山	jing shan	847
+宝丰	bao feng	844
+化州	hua zhou	842
+华州	hua zhou	842
+祁东	qi dong	842
+万柏林	wan bo lin	838
+叙永	xu yong	837
+武义	wu yi	833
+泗阳	si yang	832
+临澧	lin li	829
+礼泉	li quan	822
+霍山	huo shan	817
+清苑区	qing yuan qu	812
+封开	feng kai	811
+德化	de hua	810
+平武	ping wu	809
+翔安	xiang an	802
+锦屏	jin ping	800
+广河	guang he	799
+张北	zhang bei	794
+东胜	dong sheng	793
+靖远	jing yuan	793
+洞头	dong tou	791
+曲阳	qu yang	788
+盐都	yan dou	787
+潜山	qian shan	783
+长武县	zhang wu xian	780
+原平市	yuan ping shi	761
+安达	an da	760
+宜良	yi liang	760
+谷城	gu cheng	758
+合阳	he yang	757
+金川	jin chuan	757
+崇阳	chong yang	756
+镇雄	zhen xiong	756
+武都	wu dou	746
+五河	wu he	743
+依兰县	yi lan xian	740
+广水市	guang shui shi	739
+长泰	zhang tai	738
+宜黄	yi huang	733
+涞源	lai yuan	725
+东源	dong yuan	724
+洛南	luo nan	721
+汉源	han yuan	716
+泰顺	tai shun	715
+西塘	xi tang	712
+太谷	tai gu	700
+夹江	jia jiang	696
+固始	gu shi	694
+襄汾	xiang fen	694
+寿阳	shou yang	693
+诏安	zhao an	688
+苍溪	cang xi	684
+广信	guang xin	682
+旬阳	xun yang	681
+霍邱	huo qiu	675
+泾阳	jing yang	672
+建湖	jian hu	658
+麻章	ma zhang	652
+武乡	wu xiang	650
+汾西	fen xi	649
+阜城	fu cheng	647
+揭西	jie xi	643
+中阳	zhong yang	641
+利辛	li xin	636
+竹溪	zhu xi	635
+静宁	jing ning	633
+镇远	zhen yuan	633
+罗山	luo shan	631
+金台	jin tai	629
+磐安	pan an	625
+方城	fang cheng	618
+建水	jian shui	617
+天长市	tian zhang shi	615
+西峡	xi xia	611
+平远	ping yuan	609
+会理	hui li	603
+迁安	qian an	602
+秦都	qin dou	598
+右玉	you yu	597
+石狮市	shi shi shi	591
+殷都	yin dou	585
+高坪	gao ping	582
+卫滨区	wei bin qu	580
+正宁	zheng ning	569
+苏仙	su xian	562
+金乡	jin xiang	561
+沂源	yi yuan	560
+博湖	bo hu	555
+滁州	chu zhou	555
+高邮	gao you	555
+花都	hua dou	555
+绛县	jiang xian	555
+康定	kang ding	555
+兰溪	lan xi	555
+双柏县	shuang bai xian	555
+唐县	tang xian	555
+西秀	xi xiu	555
+云州	yun zhou	555
+张店	zhang dian	555
+竹山	zhu shan	555
+红原	hong yuan	553
+道孚	dao fu	550
+赣榆	gan yu	550
+荔波	li bo	549
+芦溪	lu xi	544
+安福	an fu	542
+江安	jiang an	541
+绩溪	ji xi	538
+旬邑	xun yi	536
+西吉	xi ji	532
+称多	cheng duo	530
+南浔	nan xun	528
+都匀市	dou yun shi	527
+潮南	chao nan	525
+都昌	dou chang	525
+镇巴	zhen ba	523
+翼城	yi cheng	521
+宜阳	yi yang	521
+稷山	ji shan	518
+交城	jiao cheng	517
+灵寿	ling shou	517
+博山	bo shan	510
+鹤峰	he feng	504
+佛坪	fu ping	500
+固始县	gu shi xian	500
+长武	zhang wu	499
+灌南	guan nan	496
+道里	dao li	495
+晋源	jin yuan	493
+宁都	ning dou	493
+名山区	ming shan qu	492
+长垣	chang yuan	491
+金平	jin ping	489
+思明	si ming	488
+阿图什	a tu shen	486
+巴林右	ba lin you	486
+巴林左	ba lin zuo	486
+滨海新	bin hai xin	486
+大箐山	da qing shan	486
+峰峰矿	feng feng kuang	486
+观山湖	guan shan hu	486
+光山	guang shan	486
+杭锦后	hang jin hou	486
+胡杨河	hu yang he	486
+康巴什	kang ba shen	486
+库尔勒	ku er lei	486
+昆都仑	kun dou lun	486
+兰州新	lan zhou xin	486
+六枝特	liu zhi te	486
+龙子湖	long zi hu	486
+普兰店	pu lan dian	486
+清江浦	qing jiang pu	486
+青山湖	qing shan hu	486
+桑珠孜	sang zhu zi	486
+沈北新	shen bei xin	486
+四子王	si zi wang	486
+铁门关	tie men guan	486
+西塞山	xi sai shan	486
+镇江新	zhen jiang xin	486
+正镶白	zheng xiang bai	486
+临泉	lin quan	483
+沈河	shen he	481
+临渭	lin wei	479
+信丰	xin feng	472
+思茅	si mao	464
+盐津	yan jin	464
+阜南	fu nan	463
+兰山	lan shan	463
+霍城	huo cheng	462
+驿城区	yi cheng qu	460
+侯马市	hou ma shi	450
+离石	li shi	450
+尤溪	you xi	446
+巴塘	ba tang	444
+郯城	tan cheng	444
+郁南	yu nan	444
+东台市	dong tai shi	443
+丹徒	dan tu	439
+贵定	gui ding	439
+洪雅	hong ya	436
+含山	han shan	431
+于都	yu dou	430
+高邑	gao yi	426
+甘谷	gan gu	425
+余干	yu gan	425
+金溪	jin xi	423
+裕民	yu min	423
+昔阳	xi yang	422
+尼勒克	ni lei ke	421
+米东	mi dong	417
+波密	bo mi	416
+临沭	lin shu	414
+永靖	yong jing	413
+樊城	fan cheng	410
+平塘	ping tang	409
+湄潭	mei tan	403
+息烽	xi feng	402
+赫山	he shan	400
+西充	xi chong	400
+淇滨	qi bin	397
+海陵	hai ling	396
+渭源	wei yuan	396
+邗江	han jiang	394
+延川	yan chuan	394
+泸西	lu xi	393
+安远	an yuan	391
+浑源	hun yuan	389
+清涧	qing jian	389
+昭平	zhao ping	386
+南郑	nan zheng	383
+原阳	yuan yang	382
+精河	jing he	381
+弋阳	yi yang	380
+广昌	guang chang	379
+鲤城	li cheng	379
+拜城	bai cheng	372
+保德	bao de	372
+武山	wu shan	369
+新绛	xin jiang	368
+志丹	zhi dan	368
+上蔡	shang cai	367
+沈丘	shen qiu	366
+吴堡	wu bu	365
+澄城	cheng cheng	361
+雁峰	yan feng	360
+坪山区	ping shan qu	357
+子长	zi zhang	357
+理塘	li tang	352
+卫东	wei dong	351
+新吴区	xin wu qu	350
+伽师	ga shi	348
+龙里	long li	348
+金林	jin lin	346
+将乐	jiang le	344
+阿拉善右	a la shan you	343
+阿拉善左	a la shan zuo	343
+北戴河新	bei dai he xin	343
+鄂托克前	e tuo ke qian	343
+和政	he zheng	343
+霍林郭勒	huo lin guo lei	343
+可克达拉	ke ke da la	343
+克什克腾	ke shen ke teng	343
+神农架林	shen nong jia lin	343
+苏尼特右	su ni te you	343
+苏尼特左	su ni te zuo	343
+土默特右	tu mo te you	343
+土默特左	tu mo te zuo	343
+乌拉特前	wu la te qian	343
+扎赉诺尔	zha lai nuo er	343
+乐陵市	le ling shi	341
+博兴	bo xing	335
+无棣	wu di	335
+金东	jin dong	334
+防城	fang cheng	332
+黎城	li cheng	332
+利津	li jin	332
+南乐	nan yue	331
+高港	gao gang	330
+赫章	he zhang	330
+兰西	lan xi	325
+馆陶	guan tao	320
+鄢陵	yan ling	318
+罗甸县	luo dian xian	317
+西工	xi gong	317
+盐源	yan yuan	316
+阳信	yang xin	314
+临夏市	lin xia shi	311
+固镇	gu zhen	310
+武陟	wu zhi	307
+舞阳	wu yang	306
+安图	an tu	304
+徐水	xu shui	302
+临泽	lin ze	301
+新干	xin gan	300
+垣曲	yuan qu	297
+罗庄	luo zhuang	295
+蓬溪	peng xi	294
+龙州	long zhou	293
+安新	an xin	289
+辉南	hui nan	288
+梁园	liang yuan	287
+柘荣	zhe rong	286
+涪城	fu cheng	285
+海原	hai yuan	285
+武邑	wu yi	285
+冀州区	ji zhou qu	284
+蓟州区	ji zhou qu	284
+福鼎	fu ding	283
+思南	si nan	282
+望谟	wang mo	282
+集贤	ji xian	281
+米易	mi yi	281
+乌当	wu dang	281
+封丘	feng qiu	280
+天镇	tian zhen	279
+西丰	xi feng	279
+宜君	yi jun	278
+留坝	liu ba	276
+平利	ping li	276
+资溪	zi xi	276
+隆德	long de	275
+延津	yan jin	273
+湟源	huang yuan	272
+安义	an yi	270
+多伦	duo lun	270
+高安	gao an	270
+镇原	zhen yuan	270
+德城	de cheng	269
+福贡	fu gong	265
+彰武	zhang wu	265
+清苑	qing yuan	264
+宿豫	su yu	264
+阳高	yang gao	264
+张湾	zhang wan	264
+霍林郭勒市	huo lin guo lei shi	262
+海兴	hai xing	261
+江阳	jiang yang	260
+靖西	jing xi	260
+灌阳	guan yang	259
+大安市	da an shi	258
+阳东	yang dong	256
+石阡	shi qian	255
+博望	bo wang	254
+崇信	chong xin	254
+抚松	fu song	252
+千阳	qian yang	251
+泉山	quan shan	251
+炉霍	lu huo	250
+洛龙	luo long	250
+五莲	wu lian	244
+迁西	qian xi	243
+武川	wu chuan	240
+成武	cheng wu	238
+涵江	han jiang	238
+繁昌	fan chang	231
+旌德	jing de	231
+平舆	ping yu	231
+盐山	yan shan	231
+横山区	heng shan qu	230
+望都	wang dou	228
+鹤庆	he qing	226
+察隅	cha yu	225
+港北	gang bei	225
+阳原	yang yuan	225
+巩留	gong liu	219
+孝南	xiao nan	219
+揭东	jie dong	217
+穆棱市	mu leng shi	217
+罗甸	luo dian	216
+台安	tai an	216
+沙雅	sha ya	214
+丹棱	dan leng	208
+都兰	dou lan	206
+江孜	jiang zi	202
+霞山	xia shan	202
+涧西	jian xi	199
+柏乡	bai xiang	195
+策勒	ce lei	194
+利通	li tong	194
+东洲	dong zhou	193
+麟游	lin you	191
+泊头市	po tou shi	187
+镇赉	zhen lai	187
+阿勒泰地区	a lei tai di qu	185
+大三巴牌坊	da san ba pai fang	185
+毛乌素沙漠	mao wu su sha mo	185
+锡林郭勒盟	xi lin guo lei meng	185
+潍城	wei cheng	183
+伊吾	yi wu	180
+柯城	ke cheng	175
+柳北	liu bei	175
+岭东	ling dong	173
+寒亭	han ting	171
+望花	wang hua	171
+商州区	shang zhou qu	170
+乾安	qian an	169
+盐边	yan bian	165
+平乡	ping xiang	164
+海晏	hai yan	162
+承德避暑山庄	cheng de bi shu shan zhuang	161
+米林	mi lin	160
+召陵	zhao ling	160
+仲巴	zhong ba	159
+立山	li shan	157
+任城	ren cheng	157
+秀屿	xiu yu	156
+猇亭	xiao ting	151
+定兴	ding xing	148
+田东	tian dong	147
+布拖	bu tuo	146
+华坪	hua ping	145
+朔城	shuo cheng	145
+源城	yuan cheng	145
+旌阳	jing yang	144
+肥乡	fei xiang	143
+点军	dian jun	138
+井研	jing yan	138
+临西	lin xi	138
+林西	lin xi	138
+贡井	gong jing	137
+高昌	gao chang	136
+丁青	ding qing	135
+凤庆	feng qing	134
+桦南	hua nan	133
+柯坪	ke ping	133
+德保	de bao	131
+错那	cuo na	128
+会泽	hui ze	128
+上思	shang si	127
+南谯	nan qiao	125
+清丰	qing feng	124
+新林	xin lin	119
+巴彦	ba yan	117
+蚌山	bang shan	117
+红岗	hong gang	114
+隆安	long an	112
+龙安	long an	112
+德庆	de qing	111
+德清	de qing	111
+郧西	yun xi	111
+苍梧	cang wu	110
+江达	jiang da	109
+广汉	guang han	107
+峄城	yi cheng	107
+平湖	ping hu	105
+卓资	zhuo zi	104
+开鲁	kai lu	103
+弓长岭	gong zhang ling	101
+达川	da chuan	100
+宝清	bao qing	99
+嘉荫	jia yin	95
+广宗	guang zong	94
+衢江	qu jiang	94
+新邵	xin shao	93
+宜秀	yi xiu	92
+萝北	luo bei	89
+杜集	du ji	88
+东明	dong ming	87
+双柏	shuang bai	86
+鱼峰	yu feng	86
+章贡	zhang gong	84
+柳南	liu nan	82
+汤原	tang yuan	82
+文圣	wen sheng	82
+鸡东	ji dong	80
+拜泉	bai quan	76
+玉州	yu zhou	75
+八宿	ba su	74
+港南	gang nan	74
+郫都	pi du	72
+佛冈县	fu gang xian	69
+隆尧	long yao	68
+依安	yi an	67
+果洛	guo luo	66
+邯山	han shan	66
+容城	rong cheng	63
+荣成	rong cheng	63
+绿春	lv chun	61
+勃利	bo li	58
+良庆	liang qing	58
+闵行	min xing	57
+乃东	nai dong	56
+安龙	an long	55
+安泽	an ze	55
+独山	du shan	55
+惠阳	hui yang	55
+岢岚	ke lan	55
+莱阳	lai yang	55
+乐都	le du	55
+雷波	lei bo	55
+林甸	lin dian	55
+双阳	shuang yang	55
+西畴	xi chou	55
+淅川	xi chuan	55
+古冶	gu ye	51
+隆子	long zi	50
+新抚	xin fu	50
+达孜	da zi	45
+南芬	nan fen	45
+衡东	heng dong	44
+嘉黎	jia li	43
+贡觉	gong jue	39
+大新	da xin	38
+皋兰	gao lan	38
+克什克腾旗	ke shen ke teng qi	35
+魏都	wei dou	35
+爱辉	ai hui	34
+化德	hua de	34
+凤泉	feng quan	32
+芦淞	lu song	32
+浪卡子	lang qia zi	31
+绥棱	sui leng	31
+湛河	zhan he	31
+达孜工业园区	da zi gong ye yuan qu	26
+德州天衢新区	de zhou tian qu xin qu	26
+邯郸冀南新区	han dan ji nan xin qu	26
+衡水滨湖新区	heng shui bin hu xin qu	26
+龙感湖管理区	long gan hu guan li qu	26
+克孜勒苏柯尔克孜自治州	ke zi lei su ke er ke zi zi zhi zhou	22
+黔西南布依族苗族自治州	qian xi nan bu yi zu miao zu zi zhi zhou	22
+康马	kang ma	21
+边坝	bian ba	19
+洛扎	luo zha	18
+滴道	di dao	17
+革吉	ge ji	16
+新邱	xin qiu	15
+覃塘	tan tang	14
+临武	lin wu	12
+安徽安庆经济开发	an hui an qing jing ji kai fa	10
+安徽安庆经济开发区	an hui an qing jing ji kai fa qu	10
+安徽芜湖三山经济开发	an hui wu hu san shan jing ji kai fa	10
+安徽芜湖三山经济开发区	an hui wu hu san shan jing ji kai fa qu	10
+安阳高新技术产业开发	an yang gao xin ji shu chan ye kai fa	10
+安阳高新技术产业开发区	an yang gao xin ji shu chan ye kai fa qu	10
+白云鄂博矿	bai yun e bo kuang	10
+保定高新技术产业开发	bao ding gao xin ji shu chan ye kai fa	10
+保定高新技术产业开发区	bao ding gao xin ji shu chan ye kai fa qu	10
+包头稀土高新技术产业开发	bao tou xi tu gao xin ji shu chan ye kai fa	10
+包头稀土高新技术产业开发区	bao tou xi tu gao xin ji shu chan ye kai fa qu	10
+蚌埠市高新技术开发	beng bu shi gao xin ji shu kai fa	10
+蚌埠市高新技术开发区	beng bu shi gao xin ji shu kai fa qu	10
+蚌埠市经济开发	beng bu shi jing ji kai fa	10
+蚌埠市经济开发区	beng bu shi jing ji kai fa qu	10
+沧州渤海新	cang zhou bo hai xin	10
+沧州高新技术产业开发	cang zhou gao xin ji shu chan ye kai fa	10
+沧州高新技术产业开发区	cang zhou gao xin ji shu chan ye kai fa qu	10
+长春高新技术产业开发	chang chun gao xin ji shu chan ye kai fa	10
+长春高新技术产业开发区	chang chun gao xin ji shu chan ye kai fa qu	10
+长春经济技术开发	chang chun jing ji ji shu kai fa	10
+长春经济技术开发区	chang chun jing ji ji shu kai fa qu	10
+长春净月高新技术产业开发	chang chun jing yue gao xin ji shu chan ye kai fa	10
+长春净月高新技术产业开发区	chang chun jing yue gao xin ji shu chan ye kai fa qu	10
+长春汽车经济技术开发	chang chun qi che jing ji ji shu kai fa	10
+长春汽车经济技术开发区	chang chun qi che jing ji ji shu kai fa qu	10
+常德市西洞庭管理	chang de shi xi dong ting guan li	10
+常德市西洞庭管理区	chang de shi xi dong ting guan li qu	10
+承德高新技术产业开发	cheng de gao xin ji shu chan ye kai fa	10
+承德高新技术产业开发区	cheng de gao xin ji shu chan ye kai fa qu	10
+滁州经济技术开发	chu zhou jing ji ji shu kai fa	10
+滁州经济技术开发区	chu zhou jing ji ji shu kai fa qu	10
+大城县	da cheng xian	10
+达尔罕茂明安联合	da er han mao ming an lian he	10
+大庆高新技术产业开发	da qing gao xin ji shu chan ye kai fa	10
+达孜工业园	da zi gong ye yuan	10
+德钦	de qin	10
+得荣	de rong	10
+德州天衢新	de zhou tian qu xin	10
+东营港经济开发	dong ying gang jing ji kai fa	10
+东营经济技术开发	dong ying jing ji ji shu kai fa	10
+东营经济技术开发区	dong ying jing ji ji shu kai fa qu	10
+阜阳合肥现代产业园	fu yang he fei xian dai chan ye yuan	10
+阜阳合肥现代产业园区	fu yang he fei xian dai chan ye yuan qu	10
+阜阳经济技术开发	fu yang jing ji ji shu kai fa	10
+阜阳经济技术开发区	fu yang jing ji ji shu kai fa qu	10
+甘洛	gan luo	10
+格尔木藏青工业园	ge er mu zang qing gong ye yuan	10
+格尔木藏青工业园区	ge er mu zang qing gong ye yuan qu	10
+古蔺	gu lin	10
+贵南	gui nan	10
+邯郸冀南新	han dan ji nan xin	10
+邯郸经济技术开发	han dan jing ji ji shu kai fa	10
+邯郸经济技术开发区	han dan jing ji ji shu kai fa qu	10
+河北沧州经济开发	he bei cang zhou jing ji kai fa	10
+河北沧州经济开发区	he bei cang zhou jing ji kai fa qu	10
+河北衡水高新技术产业开发	he bei heng shui gao xin ji shu chan ye kai fa	10
+河北衡水高新技术产业开发区	he bei heng shui gao xin ji shu chan ye kai fa qu	10
+河北唐山海港经济开发	he bei tang shan hai gang jing ji kai fa	10
+河北唐山海港经济开发区	he bei tang shan hai gang jing ji kai fa qu	10
+河北唐山芦台经济开发	he bei tang shan lu tai jing ji kai fa	10
+河北唐山芦台经济开发区	he bei tang shan lu tai jing ji kai fa qu	10
+河北邢台经济开发	he bei xing tai jing ji kai fa	10
+河北邢台经济开发区	he bei xing tai jing ji kai fa qu	10
+鹤壁经济技术开发	he bi jing ji ji shu kai fa	10
+鹤壁经济技术开发区	he bi jing ji ji shu kai fa qu	10
+合肥高新技术产业开发	he fei gao xin ji shu chan ye kai fa	10
+合肥高新技术产业开发区	he fei gao xin ji shu chan ye kai fa qu	10
+合肥经济技术开发	he fei jing ji ji shu kai fa	10
+合肥经济技术开发区	he fei jing ji ji shu kai fa qu	10
+合肥新站高新技术产业开发	he fei xin zhan gao xin ji shu chan ye kai fa	10
+合肥新站高新技术产业开发区	he fei xin zhan gao xin ji shu chan ye kai fa qu	10
+河南濮阳工业园	he nan pu yang gong ye yuan	10
+河南濮阳工业园区	he nan pu yang gong ye yuan qu	10
+河南三门峡经济开发	he nan san men xia jing ji kai fa	10
+河南三门峡经济开发区	he nan san men xia jing ji kai fa qu	10
+河南商丘经济开发	he nan shang qiu jing ji kai fa	10
+河南商丘经济开发区	he nan shang qiu jing ji kai fa qu	10
+河南驻马店经济开发	he nan zhu ma dian jing ji kai fa	10
+河南驻马店经济开发区	he nan zhu ma dian jing ji kai fa qu	10
+菏泽高新技术开发	he ze gao xin ji shu kai fa	10
+菏泽高新技术开发区	he ze gao xin ji shu kai fa qu	10
+菏泽经济技术开发	he ze jing ji ji shu kai fa	10
+菏泽经济技术开发区	he ze jing ji ji shu kai fa qu	10
+衡水滨湖新	heng shui bin hu xin	10
+呼和浩特经济技术开发	hu he hao te jing ji ji shu kai fa	10
+呼和浩特经济技术开发区	hu he hao te jing ji ji shu kai fa qu	10
+湖南衡阳高新技术产业园	hu nan heng yang gao xin ji shu chan ye yuan	10
+湖南衡阳高新技术产业园区	hu nan heng yang gao xin ji shu chan ye yuan qu	10
+湖南衡阳松木经济开发	hu nan heng yang song mu jing ji kai fa	10
+湖南衡阳松木经济开发区	hu nan heng yang song mu jing ji kai fa qu	10
+湖南湘潭高新技术产业园	hu nan xiang tan gao xin ji shu chan ye yuan	10
+湖南湘潭高新技术产业园区	hu nan xiang tan gao xin ji shu chan ye yuan qu	10
+湖南益阳高新技术产业园	hu nan yi yang gao xin ji shu chan ye yuan	10
+湖南益阳高新技术产业园区	hu nan yi yang gao xin ji shu chan ye yuan qu	10
+淮安经济技术开发	huai an jing ji ji shu kai fa	10
+淮安经济技术开发区	huai an jing ji ji shu kai fa qu	10
+怀化市洪江管理	huai hua shi hong jiang guan li	10
+怀化市洪江管理区	huai hua shi hong jiang guan li qu	10
+槐荫	huai yin	10
+淮阴	huai yin	10
+吉林白城经济开发	ji lin bai cheng jing ji kai fa	10
+吉林白城经济开发区	ji lin bai cheng jing ji kai fa qu	10
+吉林高新技术产业开发	ji lin gao xin ji shu chan ye kai fa	10
+吉林高新技术产业开发区	ji lin gao xin ji shu chan ye kai fa qu	10
+吉林经济开发	ji lin jing ji kai fa	10
+吉林经济开发区	ji lin jing ji kai fa qu	10
+吉林松原经济开发	ji lin song yuan jing ji kai fa	10
+吉林松原经济开发区	ji lin song yuan jing ji kai fa qu	10
+吉林中国新加坡食品	ji lin zhong guo xin jia po shi pin	10
+吉林中国新加坡食品区	ji lin zhong guo xin jia po shi pin qu	10
+济南高新技术产业开发	ji nan gao xin ji shu chan ye kai fa	10
+济南高新技术产业开发区	ji nan gao xin ji shu chan ye kai fa qu	10
+济宁高新技术产业开发	ji ning gao xin ji shu chan ye kai fa	10
+济宁高新技术产业开发区	ji ning gao xin ji shu chan ye kai fa qu	10
+积石山保安族东乡族撒拉族自治县	ji shi shan bao an zu dong xiang zu sa la zu zi zhi xian	10
+焦作城乡一体化示范	jiao zuo cheng xiang yi ti hua shi fan	10
+焦作城乡一体化示范区	jiao zuo cheng xiang yi ti hua shi fan qu	10
+金平苗族瑶族傣族自治县	jin ping miao zu yao zu dai zu zi zhi xian	10
+荆州经济技术开发	jing zhou jing ji ji shu kai fa	10
+荆州经济技术开发区	jing zhou jing ji ji shu kai fa qu	10
+喀喇沁左翼蒙古族自治县	ka la qin zuo yi meng gu zu zi zhi xian	10
+奎文	kui wen	10
+拉萨经济技术开发	la sa jing ji ji shu kai fa	10
+拉萨经济技术开发区	la sa jing ji ji shu kai fa qu	10
+廊坊经济技术开发	lang fang jing ji ji shu kai fa	10
+廊坊经济技术开发区	lang fang jing ji ji shu kai fa qu	10
+连云港经济技术开发	lian yun gang jing ji ji shu kai fa	10
+连云港经济技术开发区	lian yun gang jing ji ji shu kai fa qu	10
+临桂	lin gui	10
+临翔	lin xiang	10
+临沂高新技术产业开发	lin yi gao xin ji shu chan ye kai fa	10
+临沂高新技术产业开发区	lin yi gao xin ji shu chan ye kai fa qu	10
+龙感湖管理	long gan hu guan li	10
+漯河经济技术开发	luo he jing ji ji shu kai fa	10
+漯河经济技术开发区	luo he jing ji ji shu kai fa qu	10
+洛阳高新技术产业开发	luo yang gao xin ji shu chan ye kai fa	10
+洛阳高新技术产业开发区	luo yang gao xin ji shu chan ye kai fa qu	10
+孟连傣族拉祜族佤族自治县	meng lian dai zu la hu zu wa zu zi zhi xian	10
+莫力达瓦达斡尔族自治旗	mo li da wa da wo er zu zi zhi qi	10
+南通经济技术开发	nan tong jing ji ji shu kai fa	10
+南通经济技术开发区	nan tong jing ji ji shu kai fa qu	10
+南阳高新技术产业开发	nan yang gao xin ji shu chan ye kai fa	10
+南阳高新技术产业开发区	nan yang gao xin ji shu chan ye kai fa qu	10
+南阳市城乡一体化示范	nan yang shi cheng xiang yi ti hua shi fan	10
+南阳市城乡一体化示范区	nan yang shi cheng xiang yi ti hua shi fan qu	10
+内蒙古阿拉善高新技术产业开发	nei meng gu a la shan gao xin ji shu chan ye kai fa	10
+内蒙古阿拉善高新技术产业开发区	nei meng gu a la shan gao xin ji shu chan ye kai fa qu	10
+平顶山高新技术产业开发	ping ding shan gao xin ji shu chan ye kai fa	10
+平顶山高新技术产业开发区	ping ding shan gao xin ji shu chan ye kai fa qu	10
+平顶山市城乡一体化示范	ping ding shan shi cheng xiang yi ti hua shi fan	10
+平顶山市城乡一体化示范区	ping ding shan shi cheng xiang yi ti hua shi fan qu	10
+濮阳经济技术开发	pu yang jing ji ji shu kai fa	10
+濮阳经济技术开发区	pu yang jing ji ji shu kai fa qu	10
+秦皇岛市经济技术开发	qin huang dao shi jing ji ji shu kai fa	10
+秦皇岛市经济技术开发区	qin huang dao shi jing ji ji shu kai fa qu	10
+日照经济技术开发	ri zhao jing ji ji shu kai fa	10
+日照经济技术开发区	ri zhao jing ji ji shu kai fa qu	10
+三都水族自治县	san dou shui zu zi zhi xian	10
+山西大同经济开发	shan xi da tong jing ji kai fa	10
+山西大同经济开发区	shan xi da tong jing ji kai fa qu	10
+山西朔州经济开发	shan xi shuo zhou jing ji kai fa	10
+山西朔州经济开发区	shan xi shuo zhou jing ji kai fa qu	10
+山西转型综合改革示范	shan xi zhuan xing zong he gai ge shi fan	10
+山西转型综合改革示范区	shan xi zhuan xing zong he gai ge shi fan qu	10
+石家庄高新技术产业开发	shi jia zhuang gao xin ji shu chan ye kai fa	10
+石家庄高新技术产业开发区	shi jia zhuang gao xin ji shu chan ye kai fa qu	10
+石家庄循环化工园	shi jia zhuang xun huan hua gong yuan	10
+石家庄循环化工园区	shi jia zhuang xun huan hua gong yuan qu	10
+双江拉祜族佤族布朗族傣族自治县	shuang jiang la hu zu wa zu bu lang zu dai zu zi zhi xian	10
+宿迁经济技术开发	su qian jing ji ji shu kai fa	10
+宿迁经济技术开发区	su qian jing ji ji shu kai fa qu	10
+宿州经济技术开发	su zhou jing ji ji shu kai fa	10
+宿州经济技术开发区	su zhou jing ji ji shu kai fa qu	10
+宿州马鞍山现代产业园	su zhou ma an shan xian dai chan ye yuan	10
+宿州马鞍山现代产业园区	su zhou ma an shan xian dai chan ye yuan qu	10
+塔什库尔干塔吉克自治县	ta shen ku er gan ta ji ke zi zhi xian	10
+唐山高新技术产业开发	tang shan gao xin ji shu chan ye kai fa	10
+唐山高新技术产业开发区	tang shan gao xin ji shu chan ye kai fa qu	10
+唐山市汉沽管理	tang shan shi han gu guan li	10
+唐山市汉沽管理区	tang shan shi han gu guan li qu	10
+田阳	tian yang	10
+通辽经济技术开发	tong liao jing ji ji shu kai fa	10
+通辽经济技术开发区	tong liao jing ji ji shu kai fa qu	10
+潍坊滨海经济技术开发	wei fang bin hai jing ji ji shu kai fa	10
+潍坊滨海经济技术开发区	wei fang bin hai jing ji ji shu kai fa qu	10
+威海火炬高技术产业开发	wei hai huo ju gao ji shu chan ye kai fa	10
+威海火炬高技术产业开发区	wei hai huo ju gao ji shu chan ye kai fa qu	10
+威海经济技术开发	wei hai jing ji ji shu kai fa	10
+威海经济技术开发区	wei hai jing ji ji shu kai fa qu	10
+威海临港经济技术开发	wei hai lin gang jing ji ji shu kai fa	10
+威海临港经济技术开发区	wei hai lin gang jing ji ji shu kai fa qu	10
+芜湖经济技术开发	wu hu jing ji ji shu kai fa	10
+芜湖经济技术开发区	wu hu jing ji ji shu kai fa qu	10
+乌拉盖管理区管委会	wu la gai guan li qu guan wei hui	10
+五台山风景名胜	wu tai shan feng jing ming sheng	10
+西岗	xi gang	10
+西藏文化旅游创意园	xi zang wen hua lv you chuang yi yuan	10
+西藏文化旅游创意园区	xi zang wen hua lv you chuang yi yuan qu	10
+湘潭九华示范	xiang tan jiu hua shi fan	10
+湘潭九华示范区	xiang tan jiu hua shi fan qu	10
+湘潭昭山示范	xiang tan zhao shan shi fan	10
+湘潭昭山示范区	xiang tan zhao shan shi fan qu	10
+新乡高新技术产业开发	xin xiang gao xin ji shu chan ye kai fa	10
+新乡高新技术产业开发区	xin xiang gao xin ji shu chan ye kai fa qu	10
+新乡经济技术开发	xin xiang jing ji ji shu kai fa	10
+新乡经济技术开发区	xin xiang jing ji ji shu kai fa qu	10
+新乡市平原城乡一体化示范	xin xiang shi ping yuan cheng xiang yi ti hua shi fan	10
+新乡市平原城乡一体化示范区	xin xiang shi ping yuan cheng xiang yi ti hua shi fan qu	10
+信阳高新技术产业开发	xin yang gao xin ji shu chan ye kai fa	10
+信阳高新技术产业开发区	xin yang gao xin ji shu chan ye kai fa qu	10
+许昌经济技术开发	xu chang jing ji ji shu kai fa	10
+许昌经济技术开发区	xu chang jing ji ji shu kai fa qu	10
+溆浦	xu pu	10
+徐州经济技术开发	xu zhou jing ji ji shu kai fa	10
+徐州经济技术开发区	xu zhou jing ji ji shu kai fa qu	10
+宣城市经济开发	xuan cheng shi jing ji kai fa	10
+宣城市经济开发区	xuan cheng shi jing ji kai fa qu	10
+盐城经济技术开发	yan cheng jing ji ji shu kai fa	10
+盐城经济技术开发区	yan cheng jing ji ji shu kai fa qu	10
+烟台高新技术产业开发	yan tai gao xin ji shu chan ye kai fa	10
+烟台高新技术产业开发区	yan tai gao xin ji shu chan ye kai fa qu	10
+烟台经济技术开发	yan tai jing ji ji shu kai fa	10
+烟台经济技术开发区	yan tai jing ji ji shu kai fa qu	10
+扬州经济技术开发	yang zhou jing ji ji shu kai fa	10
+扬州经济技术开发区	yang zhou jing ji ji shu kai fa qu	10
+益阳市大通湖管理	yi yang shi da tong hu guan li	10
+益阳市大通湖管理区	yi yang shi da tong hu guan li qu	10
+鄞州	yin zhou	10
+银州	yin zhou	10
+颍东	ying dong	10
+永州经济技术开发	yong zhou jing ji ji shu kai fa	10
+永州经济技术开发区	yong zhou jing ji ji shu kai fa qu	10
+永州市回龙圩管理	yong zhou shi hui long wei guan li	10
+永州市回龙圩管理区	yong zhou shi hui long wei guan li qu	10
+豫东综合物流产业聚集	yu dong zong he wu liu chan ye ju ji	10
+豫东综合物流产业聚集区	yu dong zong he wu liu chan ye ju ji qu	10
+元江哈尼族彝族傣族自治县	yuan jiang ha ni zu yi zu dai zu zi zhi xian	10
+岳阳市屈原管理	yue yang shi qu yuan guan li	10
+岳阳市屈原管理区	yue yang shi qu yuan guan li qu	10
+张家口经济开发	zhang jia kou jing ji kai fa	10
+张家口经济开发区	zhang jia kou jing ji kai fa qu	10
+张家口市察北管理	zhang jia kou shi cha bei guan li	10
+张家口市察北管理区	zhang jia kou shi cha bei guan li qu	10
+张家口市塞北管理	zhang jia kou shi sai bei guan li	10
+张家口市塞北管理区	zhang jia kou shi sai bei guan li qu	10
+长岭	zhang ling	10
+长宁	zhang ning	10
+漳平	zhang ping	10
+长顺	zhang shun	10
+长阳土家族自治县	zhang yang tu jia zu zi zhi xian	10
+长洲	zhang zhou	10
+招远	zhao yuan	10
+肇源	zhao yuan	10
+镇沅彝族哈尼族拉祜族自治县	zhen yuan yi zu ha ni zu la hu zu zi zhi xian	10
+郑州高新技术产业开发	zheng zhou gao xin ji shu chan ye kai fa	10
+郑州高新技术产业开发区	zheng zhou gao xin ji shu chan ye kai fa qu	10
+郑州航空港经济综合实验	zheng zhou hang kong gang jing ji zong he shi yan	10
+郑州航空港经济综合实验区	zheng zhou hang kong gang jing ji zong he shi yan qu	10
+郑州经济技术开发	zheng zhou jing ji ji shu kai fa	10
+郑州经济技术开发区	zheng zhou jing ji ji shu kai fa qu	10
+中新苏滁高新技术产业开发	zhong xin su chu gao xin ji shu chan ye kai fa	10
+中新苏滁高新技术产业开发区	zhong xin su chu gao xin ji shu chan ye kai fa qu	10
+周口临港开发	zhou kou lin gang kai fa	10
+周口临港开发区	zhou kou lin gang kai fa qu	10
+子洲	zi zhou	10

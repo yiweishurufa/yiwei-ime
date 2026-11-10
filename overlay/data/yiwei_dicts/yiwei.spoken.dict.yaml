@@ -1,0 +1,69 @@
+# 一维输入法 · 分类词库「口语短句」：吃点饭、喝点水、到哪了这类聊天口语块
+# 由 scripts/data_gen/lexicon/build.py 生成，不要手改；来源与许可证见同目录 README.md
+# 设置 → 词库 →「分类词库」可整体或按领域关闭
+---
+name: yiwei.spoken
+version: "2026.11.10"
+sort: by_weight
+...
+午安	wu an	4252
+爱你哦	ai ni o	3370
+别着凉	bie zhao liang	3370
+吃点菜	chi dian cai	3370
+吃点饭	chi dian fan	3370
+吃点肉	chi dian rou	3370
+吃点啥	chi dian sha	3370
+吃点药	chi dian yao	3370
+吃过了	chi guo le	3370
+到哪了	dao na le	3370
+点外卖	dian wai mai	3370
+多穿点	duo chuan dian	3370
+喝点茶	he dian cha	3370
+喝点酒	he dian jiu	3370
+喝点啥	he dian sha	3370
+喝点水	he dian shui	3370
+喝点汤	he dian tang	3370
+喝点粥	he dian zhou	3370
+几点到	ji dian dao	3370
+快点来	kuai dian lai	3370
+马上到	ma shang dao	3370
+买点菜	mai dian cai	3370
+慢点开	man dian kai	3370
+慢点走	man dian zou	3370
+少吃点	shao chi dian	3370
+睡了吗	shui le ma	3370
+在哪呢	zai na ne	3370
+早点睡	zao dian shui	3370
+怎么啦	zen me la	3370
+吃点东西	chi dian dong xi	3235
+吃点饭吧	chi dian fan ba	3235
+吃点零食	chi dian ling shi	3235
+吃点水果	chi dian shui guo	3235
+带点吃的	dai dian chi de	3235
+到家了吗	dao jia le ma	3235
+等我一下	deng wo yi xia	3235
+点个外卖	dian ge wai mai	3235
+多喝点水	duo he dian shui	3235
+改天吃饭	gai tian chi fan	3235
+好的收到	hao de shou dao	3235
+喝点牛奶	he dian niu nai	3235
+喝点热水	he dian re shui	3235
+几点回来	ji dian hui lai	3235
+快点回来	kuai dian hui lai	3235
+马上就到	ma shang jiu dao	3235
+买点吃的	mai dian chi de	3235
+买点东西	mai dian dong xi	3235
+买点水果	mai dian shui guo	3235
+忙完了吗	mang wan le ma	3235
+拿点东西	na dian dong xi	3235
+你到哪了	ni dao na le	3235
+起床了吗	qi chuang le ma	3235
+去吃饭吧	qu chi fan ba	3235
+我先睡了	wo xian shui le	3235
+下班了吗	xia ban le ma	3235
+一会儿见	yi hui er jian	3235
+在干什么	zai gan shen me	3235
+早点回家	zao dian hui jia	3235
+早点回来	zao dian hui lai	3235
+早点休息	zao dian xiu xi	3235
+一起吃个饭	yi qi chi ge fan	185

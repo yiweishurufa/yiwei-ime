@@ -1,0 +1,386 @@
+# 一维输入法 · 分类词库「法律」：法律法规与法律术语
+# 由 scripts/data_gen/lexicon/build.py 生成，不要手改；来源与许可证见同目录 README.md
+# 设置 → 词库 →「分类词库」可整体或按领域关闭
+---
+name: yiwei.law
+version: "2026.11.10"
+sort: by_weight
+...
+行纪	xing ji	20532
+赢利能力	ying li neng li	10720
+议付	yi fu	9909
+产品标识	chan pin biao shi	7207
+刑复	xing fu	6864
+重置成本	zhong zhi cheng ben	6586
+履行地	lv xing di	5334
+行纪人	xing ji ren	2934
+议付行	yi fu xing	2535
+武凯	wu kai	1950
+菲迪克	fei di ke	1846
+止赎	zhi shu	1531
+统一会计制度	tong yi hui ji zhi du	1245
+法院地	fa yuan di	1093
+缘坐	yuan zuo	1022
+河南陆达律师事务所	he nan lu da lv shi shi wu suo	930
+江西惟民律师事务所	jiang xi wei min lv shi shi wu suo	930
+清华大学法学院	qing hua da xue fa xue yuan	930
+全面推进依法行政实施纲要	quan mian tui jin yi fa xing zheng shi shi gang yao	930
+武汉大学法学院	wu han da xue fa xue yuan	930
+厦门大学法学院	xia men da xue fa xue yuan	930
+新台州律师事务所	xin tai zhou lv shi shi wu suo	930
+发遣	fa qian	817
+行纪合同	xing ji he tong	686
+国家卫生城市标准	guo jia wei sheng cheng shi biao zhun	684
+福建泉中律师事务所	fu jian quan zhong lv shi shi wu suo	594
+台院	tai yuan	582
+文剑南	wen jian nan	566
+北京德恒律师事务所	bei jing de heng lv shi shi wu suo	529
+何怀宏	he huai hong	515
+非赢利性机构	fei ying li xing ji gou	477
+化妆品标识	hua zhuang pin biao shi	460
+大事纪	da shi ji	437
+柯英	ke ying	401
+苏泊尔并购案	su po er bing gou an	387
+得伟君尚律师事务所	de wei jun shang lv shi shi wu suo	363
+血缘婚	xue yuan hun	361
+最高人民法院研究室	zui gao ren min fa yuan yan jiu shi	343
+血站管理办法	xue zhan guan li ban fa	325
+法律政策研究室	fa lv zheng ce yan jiu shi	306
+媒氏	mei shi	294
+莫虎	mo hu	287
+能源效率标识管理办法	neng yuan xiao lv biao shi guan li ban fa	278
+日尔曼法	ri er man fa	267
+外国保险公司分公司	wai guo bao xian gong si fen gong si	265
+广东省人口与计划生育条例	guang dong sheng ren kou yu ji hua sheng yu tiao li	264
+东营市中级人民法院	dong ying shi zhong ji ren min fa yuan	250
+上海市协力律师事务所	shang hai shi xie li lv shi shi wu suo	244
+远东律师事务所	yuan dong lv shi shi wu suo	231
+汽车产品外部标识管理办法	qi che chan pin wai bu biao shi guan li ban fa	227
+血吸虫病防治条例	xue xi chong bing fang zhi tiao li	227
+血液制品管理条例	xue ye zhi pin guan li tiao li	227
+德衡律师事务所	de heng lv shi shi wu suo	192
+效律	xiao lv	186
+国家旅游局	guo jia lv you ju	185
+注册会计师	zhu ce kuai ji shi	185
+直系血缘关系	zhi xi xue yuan guan xi	183
+合同台帐	he tong tai zhang	178
+最长诉讼时效	zui zhang su song shi xiao	173
+广东省商品房预售管理条例	guang dong sheng shang pin fang yu shou guan li tiao li	172
+许小平律师事务所	xu xiao ping lv shi shi wu suo	164
+珠海市人民检察院	zhu hai shi ren min jian cha yuan	164
+强制性能效标识制度	qiang zhi xing neng xiao biao shi zhi du	149
+广东管理科学研究院	guang dong guan li ke xue yan jiu yuan	146
+血族复仇	xue zu fu chou	144
+重庆市人民检察院第一分院	chong qing shi ren min jian cha yuan di yi fen yuan	143
+秦希燕联合律师事务所	qin xi yan lian he lv shi shi wu suo	134
+外国保险机构驻华代表机构	wai guo bao xian ji gou zhu hua dai biao ji gou	125
+食品标识管理规定	shi pin biao shi guan li gui ding	124
+禁止权利滥用原则	jin zhi quan li lan yong yuan ze	123
+中共中央书记处研究室	zhong gong zhong yang shu ji chu yan jiu shi	123
+中豪律师事务所	zhong hao lv shi shi wu suo	120
+中凯律师事务所	zhong kai lv shi shi wu suo	116
+国际知识产权制度	guo ji zhi shi chan quan zhi du	111
+水库大坝安全管理条例	shui ku da ba an quan guan li tiao li	111
+限制民事行为能力案件	xian zhi min shi xing wei neng li an jian	111
+邮电工作人员	you dian gong zuo ren yuan	111
+中华民国约法	zhong hua min guo yue fa	111
+广东省预防未成年人犯罪条例	guang dong sheng yu fang wei cheng nian ren fan zui tiao li	110
+湖南一星律师事务所	hu nan yi xing lv shi shi wu suo	107
+非法组织卖血罪	fei fa zu zhi mai xue zui	104
+内蒙古大学法学院	nei meng gu da xue fa xue yuan	103
+化妆品标识管理规定	hua zhuang pin biao shi guan li gui ding	100
+湖北为维律师事务所	hu bei wei wei lv shi shi wu suo	99
+聊城市中级人民法院	liao cheng shi zhong ji ren min fa yuan	99
+江苏君远律师事务所	jiang su jun yuan lv shi shi wu suo	98
+江苏常州常武律师事务所	jiang su chang zhou chang wu lv shi shi wu suo	96
+台湾台北地方法院	tai wan tai bei di fang fa yuan	96
+广东环球经纬律师事务所	guang dong huan qiu jing wei lv shi shi wu suo	94
+酒泉市中级人民法院	jiu quan shi zhong ji ren min fa yuan	92
+陕甘宁边区施政纲领	shan gan ning bian qu shi zheng gang ling	92
+新编经济法	xin bian jing ji fa	87
+北京市浩东律师事务所	bei jing shi hao dong lv shi shi wu suo	86
+北京市赵晓鲁律师事务所	bei jing shi zhao xiao lu lv shi shi wu suo	86
+洪范广住律师事务所	hong fan guang zhu lv shi shi wu suo	86
+内蒙古建中律师事务所	nei meng gu jian zhong lv shi shi wu suo	86
+重庆志同律师事务所	chong qing zhi tong lv shi shi wu suo	84
+武汉大学国际法研究所	wu han da xue guo ji fa yan jiu suo	84
+桑植县人民法院	sang zhi xian ren min fa yuan	81
+广东省举报假币犯罪奖励办法	guang dong sheng ju bao jia bi fan zui jiang li ban fa	80
+湖南莽源律师事务所	hu nan mang yuan lv shi shi wu suo	78
+广东省未成年人保护条例	guang dong sheng wei cheng nian ren bao hu tiao li	74
+四川省人口与计划生育条例	si chuan sheng ren kou yu ji hua sheng yu tiao li	74
+广东省国家安全厅	guang dong sheng guo jia an quan ting	73
+郴州福康医院	chen zhou fu kang yi yuan	72
+工商银行办公室	gong shang yin hang ban gong shi	72
+广东鑫一华律师事务所	guang dong xin yi hua lv shi shi wu suo	69
+陆良县人民法院	lu liang xian ren min fa yuan	69
+圆审	yuan shen	69
+法定财产重估增值	fa ding cai chan zhong gu zeng zhi	68
+施塔姆勒	shi ta mu lei	68
+河津市检察院	he jin shi jian cha yuan	66
+河南千业律师事务所	he nan qian ye lv shi shi wu suo	65
+汉摩拉比法典	han mo la bi fa dian	64
+力拓案	li tuo an	64
+广东省城镇房地产权登记条例	guang dong sheng cheng zhen fang di chan quan deng ji tiao li	60
+上海段和段律师事务所	shang hai duan he duan lv shi shi wu suo	58
+安徽金亚太律师事务所	an hui jin ya tai lv shi shi wu suo	56
+时代九和律师事务所	shi dai jiu he lv shi shi wu suo	56
+广东省各级人民代表大会选举实施细则	guang dong sheng ge ji ren min dai biao da hui xuan ju shi shi xi ze	55
+行纪行为	xing ji xing wei	55
+北京市盈科律师事务所	bei jing shi ying ke lv shi shi wu suo	54
+计算机软件著作权保护	ji suan ji ruan jian zhu zuo quan bao hu	54
+济南市法律援助中心	ji nan shi fa lv yuan zhu zhong xin	52
+统一代码标识制度	tong yi dai ma biao shi zhi du	52
+广东省流动人员管理条例	guang dong sheng liu dong ren yuan guan li tiao li	51
+安徽徽达律师事务所	an hui hui da lv shi shi wu suo	50
+广东省道路运输管理条例	guang dong sheng dao lu yun shu guan li tiao li	47
+北京市洪范广住律师事务所	bei jing shi hong fan guang zhu lv shi shi wu suo	46
+杜克大学法学院	du ke da xue fa xue yuan	46
+江苏博事达律师事务所	jiang su bo shi da lv shi shi wu suo	45
+广东省盐业管理条例	guang dong sheng yan ye guan li tiao li	43
+新疆师范大学法经学院	xin jiang shi fan da xue fa jing xue yuan	43
+中国社会科学院佛教研究中心	zhong guo she hui ke xue yuan fo jiao yan jiu zhong xin	43
+澳大利亚联邦宪法	ao da li ya lian bang xian fa	42
+北京莫少平律师事务所	bei jing mo shao ping lv shi shi wu suo	42
+广东省企业信用信息公开条例	guang dong sheng qi ye xin yong xin xi gong kai tiao li	42
+国家知识产权局专利检索咨询中心	guo jia zhi shi chan quan ju zhuan li jian suo zi xun zhong xin	42
+汉漠拉比法典	han mo la bi fa dian	42
+保健食品标识规定	bao jian shi pin biao shi gui ding	40
+杭州新紫罗兰大酒店	hang zhou xin zi luo lan da jiu dian	40
+文康律师事务所	wen kang lv shi shi wu suo	40
+野踩	ye cai	40
+典当行管理暂行办法	dian dang xing guan li zan xing ban fa	38
+广东法学	guang dong fa xue	38
+黄陂区公安分局	huang pi qu gong an fen ju	38
+辽宁久鼎律师事务所	liao ning jiu ding lv shi shi wu suo	38
+五朝会典	wu zhao hui dian	38
+职务犯罪举报工作	zhi wu fan zui ju bao gong zuo	38
+修律大臣沈家本	xiu lv da chen shen jia ben	37
+奥东律师事务所	ao dong lv shi shi wu suo	36
+德恒高中谋杀档案	de heng gao zhong mou sha dang an	36
+广东省职业介绍管理条例	guang dong sheng zhi ye jie shao guan li tiao li	36
+新编中国刑法学	xin bian zhong guo xing fa xue	35
+普衡律师事务所	pu heng lv shi shi wu suo	34
+长三角法学论坛	zhang san jiao fa xue lun tan	34
+高伟绅律师事务所	gao wei shen lv shi shi wu suo	33
+广东省建设工程造价管理规定	guang dong sheng jian she gong cheng zao jia guan li gui ding	33
+厦门大学海洋与环境学院	xia men da xue hai yang yu huan jing xue yuan	33
+北京重光律师事务所	bei jing chong guang lv shi shi wu suo	32
+广东省档案管理规定	guang dong sheng dang an guan li gui ding	32
+广东省突发公共卫生事件应急办法	guang dong sheng tu fa gong gong wei sheng shi jian ying ji ban fa	32
+全民所有制工业企业厂长工作条例	quan min suo you zhi gong ye qi ye chang zhang gong zuo tiao li	32
+纽约市立大学皇后学院	niu yue shi li da xue huang hou xue yuan	31
+三明市烟草专卖局	san ming shi yan cao zhuan mai ju	31
+优楼频螺迦叶	you lou pin luo jia ye	31
+赵虎林	zhao hu lin	31
+广东省城市市容和环境卫生管理规定	guang dong sheng cheng shi shi rong he huan jing wei sheng guan li gui ding	30
+湖南崇民律师事务所	hu nan chong min lv shi shi wu suo	30
+北京市国源律师事务所	bei jing shi guo yuan lv shi shi wu suo	29
+广东环宇京茂律师事务所	guang dong huan yu jing mao lv shi shi wu suo	29
+广东信德盛律师事务所	guang dong xin de sheng lv shi shi wu suo	29
+壹刑	yi xing	29
+广东省国家公务员录用实施办法	guang dong sheng guo jia gong wu yuan lu yong shi shi ban fa	27
+广东省物价局旅游价格管理办法	guang dong sheng wu jia ju lv you jia ge guan li ban fa	27
+海口市秀英区人民法院	hai kou shi xiu ying qu ren min fa yuan	27
+广发律师事务所	guang fa lv shi shi wu suo	26
+新编军队法律服务手册	xin bian jun dui fa lv fu wu shou ce	26
+广东省海域使用管理条例	guang dong sheng hai yu shi yong guan li tiao li	25
+河北子辰律师事务所	he bei zi chen lv shi shi wu suo	25
+一支黑玫瑰	yi zhi hei mei gui	25
+北京市门头沟区人民检察院	bei jing shi men tou gou qu ren min jian cha yuan	24
+俄克拉荷马爆炸案	e ke la he ma bao zha an	24
+吉林市昌邑区人民法院	ji lin shi chang yi qu ren min fa yuan	24
+如东县国土资源局	ru dong xian guo tu zi yuan ju	24
+雇佣童工从事危重劳动罪	gu yong tong gong cong shi wei zhong lao dong zui	23
+广东省地方立法条例	guang dong sheng di fang li fa tiao li	23
+律师事务所收费程序规则	lv shi shi wu suo shou fei cheng xu gui ze	23
+广东省企业和企业经营者权益保护条例	guang dong sheng qi ye he qi ye jing ying zhe quan yi bao hu tiao li	22
+广东省医疗废物管理条例	guang dong sheng yi liao fei wu guan li tiao li	22
+国家环境保护总局	guo jia huan jing bao hu zong ju	22
+湖南湘剑律师事务所	hu nan xiang jian lv shi shi wu suo	22
+辽宁鑫诺律师事务所	liao ning xin nuo lv shi shi wu suo	22
+宿迁市宿城区人民法院	su qian shi su cheng qu ren min fa yuan	22
+医疗废物管理条例	yi liao fei wu guan li tiao li	22
+中国注册会计师	zhong guo zhu ce kuai ji shi	22
+甘肃省石羊河流域水资源管理条例	gan su sheng shi yang he liu yu shui zi yuan guan li tiao li	21
+广东省湿地保护条例	guang dong sheng shi di bao hu tiao li	21
+广东省行政效能监察工作暂行办法	guang dong sheng xing zheng xiao neng jian cha gong zuo zan xing ban fa	21
+广东星凯律师事务所	guang dong xing kai lv shi shi wu suo	21
+南京德本律师事务所	nan jing de ben lv shi shi wu suo	21
+山东文康律师事务所	shan dong wen kang lv shi shi wu suo	21
+富危机	fu wei ji	20
+广东省民营科技企业管理条例	guang dong sheng min ying ke ji qi ye guan li tiao li	20
+广东省农村集体经济组织管理规定	guang dong sheng nong cun ji ti jing ji zu zhi guan li gui ding	20
+隆林各族自治县公安局	long lin ge zu zi zhi xian gong an ju	20
+弱势群体法律援助	ruo shi qun ti fa lv yuan zhu	20
+浙江腾飞金鹰律师事务所	zhe jiang teng fei jin ying lv shi shi wu suo	20
+北京市宝鼎律师事务所	bei jing shi bao ding lv shi shi wu suo	19
+广东省农业机械管理条例	guang dong sheng nong ye ji xie guan li tiao li	19
+湖南唯楚律师事务所	hu nan wei chu lv shi shi wu suo	19
+华贸硅谷律师事务所	hua mao gui gu lv shi shi wu suo	19
+美国宪法第一章	mei guo xian fa di yi zhang	19
+栖霞市国土资源局	qi xia shi guo tu zi yuan ju	19
+西安市沙坡地区人民检察院	xi an shi sha po di qu ren min jian cha yuan	19
+浙江省流动人口计划生育管理办法	zhe jiang sheng liu dong ren kou ji hua sheng yu guan li ban fa	19
+装帧流通人民币管理办法	zhuang zhen liu tong ren min bi guan li ban fa	19
+空头转帐支票	kong tou zhuan zhang zhi piao	18
+四平市公安局铁西分局	si ping shi gong an ju tie xi fen ju	18
+天津市大港区人民法院	tian jin shi da gang qu ren min fa yuan	18
+西宁市城西区人民检察院	xi ning shi cheng xi qu ren min jian cha yuan	18
+延边朝鲜族自治州安全生产条例	yan bian chao xian zu zi zhi zhou an quan sheng chan tiao li	18
+长臂管辖权	zhang bi guan xia quan	18
+安徽省地方志工作条例	an hui sheng di fang zhi gong zuo tiao li	17
+法官职业化建设指导与研究	fa guan zhi ye hua jian she zhi dao yu yan jiu	17
+广州市公安局法制处	guang zhou shi gong an ju fa zhi chu	17
+民事诉讼法学新编	min shi su song fa xue xin bian	17
+射倖合同	she xing he tong	17
+渔业资源增殖保护费征收使用办法	yu ye zi yuan zeng zhi bao hu fei zheng shou shi yong ban fa	17
+甘肃政法成人教育学院学报	gan su zheng fa cheng ren jiao yu xue yuan xue bao	16
+广东东方星联律师事务所	guang dong dong fang xing lian lv shi shi wu suo	16
+广东省公安厅警务飞行队	guang dong sheng gong an ting jing wu fei xing dui	16
+广东省河道堤防管理条例	guang dong sheng he dao di fang guan li tiao li	16
+广东省流动人员劳动就业管理条例	guang dong sheng liu dong ren yuan lao dong jiu ye guan li tiao li	16
+河北马倍战律师事务所	he bei ma bei zhan lv shi shi wu suo	16
+江西省南昌市东湖区人民法院	jiang xi sheng nan chang shi dong hu qu ren min fa yuan	16
+民事行政检察指导与研究	min shi xing zheng jian cha zhi dao yu yan jiu	16
+诺成行为	nuo cheng hang wei	16
+新安县法院	xin an xian fa yuan	16
+重置价值条款	zhong zhi jia zhi tiao kuan	16
+广东省森林保护管理条例	guang dong sheng sen lin bao hu guan li tiao li	15
+广东珠江律师事务所	guang dong zhu jiang lv shi shi wu suo	15
+新安县检察院	xin an xian jian cha yuan	15
+银行抵消权	yin hang di xiao quan	15
+张家港市人民检察院	zhang jia gang shi ren min jian cha yuan	15
+富源县人民法院	fu yuan xian ren min fa yuan	14
+广东省开平碉楼保护管理规定	guang dong sheng kai ping diao lou bao hu guan li gui ding	14
+广东省资源综合利用管理办法	guang dong sheng zi yuan zong he li yong guan li ban fa	14
+靖江市地方税务局	jing jiang shi di fang shui wu ju	14
+广东省基本农田保护区管理条例	guang dong sheng ji ben nong tian bao hu qu guan li tiao li	13
+广东省社会保险费征缴办法	guang dong sheng she hui bao xian fei zheng jiao ban fa	13
+广东省专利保护条例	guang dong sheng zhuan li bao hu tiao li	13
+芦映	lu ying	13
+全国车辆超限超载长效治理实施意见	quan guo che liang chao xian chao zai zhang xiao zhi li shi shi yi jian	13
+延边朝鲜族自治州自治条例	yan bian chao xian zu zi zhi zhou zi zhi tiao li	13
+北京市君永律师事务所	bei jing shi jun yong lv shi shi wu suo	12
+广东省经济特区土地管理条例	guang dong sheng jing ji te qu tu di guan li tiao li	12
+广东省商品交易市场管理条例	guang dong sheng shang pin jiao yi shi chang guan li tiao li	12
+广东省珠江三角洲水质保护条例	guang dong sheng zhu jiang san jiao zhou shui zhi bao hu tiao li	12
+湖南挚友律师事务所	hu nan zhi you lv shi shi wu suo	12
+济南市摄影家协会	ji nan shi she ying jia xie hui	12
+江苏汇天元律师事务所	jiang su hui tian yuan lv shi shi wu suo	12
+江苏茂通律师事务所	jiang su mao tong lv shi shi wu suo	12
+兰州市卫生局卫生监督所	lan zhou shi wei sheng ju wei sheng jian du suo	12
+麻侃	ma kan	12
+卫生部关于医师资格考试报名资格暂行规定	wei sheng bu guan yu yi shi zi ge kao shi bao ming zi ge zan xing gui ding	12
+北京庞标律师事务所	bei jing pang biao lv shi shi wu suo	11
+北京市密云县人民检察院	bei jing shi mi yun xian ren min jian cha yuan	11
+地指国	di zhi guo	11
+广东省高危险性体育项目经营活动管理规定	guang dong sheng gao wei xian xing ti yu xiang mu jing ying huo dong guan li gui ding	11
+广东省森林防火管理规定	guang dong sheng sen lin fang huo guan li gui ding	11
+广东省行政执法队伍管理条例	guang dong sheng xing zheng zhi fa dui wu guan li tiao li	11
+婚姻纠纷维权必备	hun yin jiu fen wei quan bi bei	11
+施米特与政治法学	shi mi te yu zheng zhi fa xue	11
+西安市城市管理综合行政执法条例	xi an shi cheng shi guan li zong he xing zheng zhi fa tiao li	11
+新华区人民检察院	xin hua qu ren min jian cha yuan	11
+安陆市人民检察院	an lu shi ren min jian cha yuan	10
+安远县人民法院	an yuan xian ren min fa yuan	10
+北川羌族自治县自治条例	bei chuan qiang zu zi zhi xian zi zhi tiao li	10
+北京市西城区地方税务局	bei jing shi xi cheng qu di fang shui wu ju	10
+成都高新技术产业开发区人民检察院	cheng du gao xin ji shu chan ye kai fa qu ren min jian cha yuan	10
+重庆浩邦律师事务所	chong qing hao bang lv shi shi wu suo	10
+定值保险与不定值保险	ding zhi bao xian yu bu ding zhi bao xian	10
+动物防疫监督员检疫员培训教程	dong wu fang yi jian du yuan jian yi yuan pei xun jiao cheng	10
+杜集区人民法院	du ji qu ren min fa yuan	10
+法官告诉您怎样打交通肇事官司	fa guan gao su nin zen yang da jiao tong zhao shi guan si	10
+反垄断法理解与适用	fan long duan fa li jie yu shi yong	10
+房地产经纪业区经理培训教程	fang di chan jing ji ye qu jing li pei xun jiao cheng	10
+佛瑞斯塔号航空母舰	fu rui si ta hao hang kong mu jian	10
+广东风采新纪元律师事务所	guang dong feng cai xin ji yuan lv shi shi wu suo	10
+广东省城市房屋拆迁管理规定	guang dong sheng cheng shi fang wu chai qian guan li gui ding	10
+广东省城镇房地产转让条例	guang dong sheng cheng zhen fang di chan zhuan rang tiao li	10
+广东省档案条例	guang dong sheng dang an tiao li	10
+广东省地方税务局网上申报纳税管理办法	guang dong sheng di fang shui wu ju wang shang shen bao na shui guan li ban fa	10
+广东省发展中医条例	guang dong sheng fa zhan zhong yi tiao li	10
+广东省房地产开发经营条例	guang dong sheng fang di chan kai fa jing ying tiao li	10
+广东省风景名胜区条例	guang dong sheng feng jing ming sheng qu tiao li	10
+广东省高速公路管理条例	guang dong sheng gao su gong lu guan li tiao li	10
+广东省禁止赌博条例	guang dong sheng jin zhi du bo tiao li	10
+广东省粮食收购资格审核及监督管理暂行办法	guang dong sheng liang shi shou gou zi ge shen he ji jian du guan li zan xing ban fa	10
+广东省林地保护管理条例	guang dong sheng lin di bao hu guan li tiao li	10
+广东省民用机场电磁环境保护规定	guang dong sheng min yong ji chang dian ci huan jing bao hu gui ding	10
+广东省森林公园管理条例	guang dong sheng sen lin gong yuan guan li tiao li	10
+广东省饲料产品质量监督检验站	guang dong sheng si liao chan pin zhi liang jian du jian yan zhan	10
+广东省外商投资企业劳动管理规定	guang dong sheng wai shang tou zi qi ye lao dong guan li gui ding	10
+广东省行政机构设置和编制管理条例	guang dong sheng xing zheng ji gou she zhi he bian zhi guan li tiao li	10
+广东省营业性射击场管理规定	guang dong sheng ying ye xing she ji chang guan li gui ding	10
+广东省重大安全事故行政责任追究规定	guang dong sheng zhong da an quan shi gu xing zheng ze ren zhui jiu gui ding	10
+广东省重大食品安全事故应急预案	guang dong sheng zhong da shi pin an quan shi gu ying ji yu an	10
+广东省注册安全主任管理规定	guang dong sheng zhu ce an quan zhu ren guan li gui ding	10
+广东省专利条例	guang dong sheng zhuan li tiao li	10
+广东天诺律师事务所	guang dong tian nuo lv shi shi wu suo	10
+广东纬国律师事务所	guang dong wei guo lv shi shi wu suo	10
+广西海警第一支队	guang xi hai jing di yi zhi dui	10
+贵州民族学院法学院	gui zhou min zu xue yuan fa xue yuan	10
+海宁市慈善总会	hai ning shi ci shan zong hui	10
+河北省地方志工作规定	he bei sheng di fang zhi gong zuo gui ding	10
+河北世纪鸿业律师事务所	he bei shi ji hong ye lv shi shi wu suo	10
+河南昌浩律师事务所	he nan chang hao lv shi shi wu suo	10
+河南工业大学法学院	he nan gong ye da xue fa xue yuan	10
+呼和浩特第二监狱	hu he hao te di er jian yu	10
+湖南公安高等专科学校学报	hu nan gong an gao deng zhuan ke xue xiao xue bao	10
+华南理工大学人力资源研究中心	hua nan li gong da xue ren li zi yuan yan jiu zhong xin	10
+桓台县烟草专卖局	huan tai xian yan cao zhuan mai ju	10
+黄长勇	huang zhang yong	10
+婚姻家庭纠纷案件律师业务	hun yin jia ting jiu fen an jian lv shi ye wu	10
+婚姻家庭纠纷处理依据小全书	hun yin jia ting jiu fen chu li yi ju xiao quan shu	10
+家具定作合同	jia ju ding zuo he tong	10
+江苏盐城瑞信律师事务所	jiang su yan cheng rui xin lv shi shi wu suo	10
+江西省长江河道采砂管理实施办法	jiang xi sheng zhang jiang he dao cai sha guan li shi shi ban fa	10
+江西宋城律师事务所	jiang xi song cheng lv shi shi wu suo	10
+交通行业内部审计工作规定	jiao tong xing ye nei bu shen ji gong zuo gui ding	10
+交通行业知识产权管理办法	jiao tong xing ye zhi shi chan quan guan li ban fa	10
+结婚生育法律问题指南	jie hun sheng yu fa lv wen ti zhi nan	10
+靖州苗族侗族自治县公安局	jing zhou miao zu dong zu zi zhi xian gong an ju	10
+丽水市公安局交通警察支队	li shui shi gong an ju jiao tong jing cha zhi dui	10
+辽宁省朝阳市公安局	liao ning sheng zhao yang shi gong an ju	10
+临夏回族自治州公安局	lin xia hui zu zi zhi zhou gong an ju	10
+隆安县人民法院	long an xian ren min fa yuan	10
+鹿邑县人民检察院	lu yi xian ren min jian cha yuan	10
+蒙古国刑法典	meng gu guo xing fa dian	10
+明清土地契约文书研究	ming qing tu di qi yue wen shu yan jiu	10
+平阳县国家税务局	ping yang xian guo jia shui wu ju	10
+乾理律师事务所	qian li lv shi shi wu suo	10
+全部露出说	quan bu lu chu shuo	10
+权利滥用禁止原则	quan li lan yong jin zhi yuan ze	10
+全南县人民检察院	quan nan xian ren min jian cha yuan	10
+让予担保	rang yu dan bao	10
+山东鲁泉律师事务所	shan dong lu quan lv shi shi wu suo	10
+山西杏梅律师事务所	shan xi xing mei lv shi shi wu suo	10
+上海市恒谊律师事务所	shang hai shi heng yi lv shi shi wu suo	10
+审判监督指导与研究	shen pan jian du zhi dao yu yan jiu	10
+史密斯和基南英国法	shi mi si he ji nan ying guo fa	10
+四川省地方志工作条例	si chuan sheng di fang zhi gong zuo tiao li	10
+四川省泸州市中级人民法院	si chuan sheng lu zhou shi zhong ji ren min fa yuan	10
+桃江县国土资源局	tao jiang xian guo tu zi yuan ju	10
+天津市就业促进条例	tian jin shi jiu ye cu jin tiao li	10
+天津耀达律师事务所	tian jin yao da lv shi shi wu suo	10
+吐鲁番地区行政公署	tu lu fan di qu xing zheng gong shu	10
+卫生部健康相关产品审批工作程序	wei sheng bu jian kang xiang guan chan pin shen pi gong zuo cheng xu	10
+西双版纳傣族自治州中级人民法院	xi shuang ban na dai zu zi zhi zhou zhong ji ren min fa yuan	10
+新编常用司法解释小全书	xin bian chang yong si fa jie shi xiao quan shu	10
+新编法律文书写作	xin bian fa lv wen shu xie zuo	10
+新编国际经济法	xin bian guo ji jing ji fa	10
+新编司法文书范本	xin bian si fa wen shu fan ben	10
+新编诉讼文书学习与应用	xin bian su song wen shu xue xi yu ying yong	10
+新编养老保险政策问答	xin bian yang lao bao xian zheng ce wen da	10
+语言文字词典	yu yan wen zi ci dian	10
+渝中区文化市场行政执法大队	yu zhong qu wen hua shi chang xing zheng zhi fa da dui	10
+粘性增值	zhan xing zeng zhi	10
+浙江人地律师事务所	zhe jiang ren di lv shi shi wu suo	10
+浙江政法联律师事务所	zhe jiang zheng fa lian lv shi shi wu suo	10
+职业生涯管理制度	zhi ye sheng ya guan li zhi du	10
+中国第一圣	zhong guo di yi sheng	10
+中华人民共和国刑法一本通	zhong hua ren min gong he guo xing fa yi ben tong	10
+中华人民共和国主席令第六十五号	zhong hua ren min gong he guo zhu xi ling di liu shi wu hao	10
+周忠海国际法论文集	zhou zhong hai guo ji fa lun wen ji	10
+珠海市斗门区人民法院	zhu hai shi dou men qu ren min fa yuan	10

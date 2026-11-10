@@ -1,0 +1,219 @@
+# 一维输入法 · 分类词库「动植物」：动物、植物、花卉
+# 由 scripts/data_gen/lexicon/build.py 生成，不要手改；来源与许可证见同目录 README.md
+# 设置 → 词库 →「分类词库」可整体或按领域关闭
+---
+name: yiwei.nature
+version: "2026.11.10"
+sort: by_weight
+...
+目鱼	mu yu	9329
+鹡鸰	ji ling	7500
+刺参	ci can	5577
+文竹	wen zhu	5550
+小鲤	xiao li	4440
+鹩哥	liao ge	4205
+台鸽	tai ge	3222
+花寨	hua zhai	2819
+鮰鱼	hui yu	1976
+林雕	lin diao	1413
+斑点叉尾鮰	ban dian cha wei hui	1226
+嘉好	jia hao	1172
+虎皮兰	hu pi lan	1150
+白缘	bai yuan	1142
+乳宝	ru bao	1127
+韭菜子	jiu cai zi	1046
+黄占	huang zhan	850
+中猴	zhong hou	818
+迎燕	ying yan	812
+植龙	zhi long	797
+四值	si zhi	791
+角甲	jiao jia	733
+乾泰	qian tai	680
+台湾石	tai wan shi	567
+猫爪草	mao zhao cao	555
+榛鸡	zhen ji	550
+鮟鱇	an kang	541
+石苇	shi wei	528
+海刺参	hai ci can	503
+闲角	xian jiao	468
+岗梅	gang mei	408
+苏格兰梗	su ge lan geng	398
+拳参	quan can	364
+蠪侄	long zhi	357
+指狗	zhi gou	350
+澳大利亚更	ao da li ya geng	347
+新灰	xin hui	293
+复方磺胺甲噁唑	fu fang huang an jia e zuo	277
+西部高地白梗	xi bu gao di bai geng	272
+鸊鷉	pi ti	250
+梅鱼	mei yu	248
+毒獴	du meng	234
+约克夏梗	yue ke xia geng	218
+仙蝶	xian die	200
+小鸊鷉	xiao pi ti	172
+蝜蝂	fu ban	168
+习鱼	xi yu	164
+海膽	hai dan	163
+鬐甲	qi jia	163
+四角蛤	si jiao ha	159
+为腧	wei shu	144
+蜇虫	zhe chong	144
+炔螨特	gui man te	141
+藏狐	cang hu	140
+地邦	di bang	126
+粘孢子虫	zhan bao zi chong	120
+牛角蜂	niu jiao feng	111
+蟅虫	zhe chong	108
+大鵟	da kuang	107
+缘吊	yuan diao	105
+爪哇犀	zhao wa xi	102
+北京动物园熊猫馆	bei jing dong wu yuan xiong mao guan	97
+炒黄柏	chao huang bai	96
+颈缺	jing que	90
+偏牛	pian niu	89
+盐黄柏	yan huang bai	86
+非必须氨基酸	fei bi xu an ji suan	82
+赢鱼	ying yu	76
+圆蛛	yuan zhu	75
+刺参科	ci can ke	72
+瑇瑁	dai mao	72
+霍加狓	huo jia pi	72
+中国农业大学动物医院	zhong guo nong ye da xue dong wu yi yuan	71
+伽果	ga guo	68
+贝林登梗	bei lin deng geng	59
+贝灵顿梗	bei ling dun geng	59
+缺须	que xu	58
+古代长须牧羊犬	gu dai zhang xu mu yang quan	56
+普通鵟	pu tong kuang	56
+彭布罗克威尔士柯基	peng bu luo ke wei er shi ke ji	55
+苯扎氯胺	ben zha lv an	52
+失恋俱乐部	shi lian ju le bu	50
+战蚁	zhan yi	50
+被子植物中毒说	bei zi zhi wu zhong du shuo	48
+西里汉梗	xi li han geng	48
+灰插	hui cha	45
+金钱鮸	jin qian mian	45
+频伽鸟	pin ga niao	42
+鮠鱼	wei yu	41
+似哺乳爬行动物	shi bu ru pa xing dong wu	40
+艾登堡鱼母	ai deng bao yu mu	38
+波士顿梗犬	bo shi dun geng quan	38
+大斑啄木	da ban zhuo mu	37
+猪婆参	zhu po can	37
+棕尾鵟	zong wei kuang	35
+肝胆综合症	gan dan zong he zheng	34
+甴曱	zha yue	34
+云斑鮰	yun ban hui	33
+蠄蟧	qin lao	31
+硬壳蛤	ying ke ha	31
+贝加尔雅罗	bei jia er ya luo	28
+台湾樱花钩吻鲑	tai wan ying hua gou wen gui	28
+荧光裳凤蝶	ying guang shang feng die	28
+粘孢子虫病	zhan bao zi chong bing	28
+中华小长臂虾	zhong hua xiao zhang bi xia	28
+灰刺参	hui ci can	27
+竹筴鱼	zhu ce yu	27
+毛脚鵟	mao jiao kuang	26
+蓝灰扁尾蛇	lan hui bian wei she	25
+鱼害粘球菌	yu hai zhan qiu jun	25
+篓蒿	lou hao	24
+羌虫	qiang chong	23
+中华田原犬	zhong hua tian yuan quan	23
+澳大利亚梗	ao da li ya geng	22
+长尾地佛法僧	zhang wei di fo fa seng	22
+伯德梗	bo de geng	20
+多齿盐都龙	duo chi yan dou long	20
+凤头鸊鷉	feng tou pi ti	20
+海鸥蛤	hai ou ha	20
+卡迪更威尔士科基犬	ka di geng wei er shi ke ji quan	20
+斯塔福斗牛梗	si ta fu dou niu geng	20
+炙紫苑	zhi zi yuan	20
+贝加尔湖水蛭	bei jia er hu shui zhi	19
+赤鱬	chi ru	19
+磺胺异噁唑	huang an yi e zuo	19
+美国鮰	mei guo hui	19
+鱣鱼	zhan yu	19
+中国白臀叶猴	zhong guo bai tun ye hou	18
+大鳞大麻哈鱼	da lin da ma ha yu	17
+喜泽鹊	xi ze que	17
+鮡科	zhao ke	17
+子方虫	zi fang chong	17
+广东省水产学校	guang dong sheng shui chan xue xiao	16
+哈奇公	ha qi gong	16
+海菊蛤	hai ju ha	16
+海南大学海洋学院	hai nan da xue hai yang xue yuan	16
+猎狐梗犬	lie hu geng quan	16
+长尾雀	zhang wei que	16
+鮸状黄姑鱼	mian zhuang huang gu yu	15
+螌蝥	ban mao	14
+虹鲍	hong bao	14
+勒车犬	lei che quan	14
+连尾鮰	lian wei hui	14
+苯扎溴胺	ben zha xiu an	13
+柑桔全爪螨	gan ju quan zhao man	13
+卡迪根威尔士柯基	ka di gen wei er shi ke ji	13
+美国史特富郡梗	mei guo shi te fu jun geng	13
+黔鳄	qian e	13
+鮟鱇目	an kang mu	12
+长白山野生蚂蚁	chang bai shan ye sheng ma yi	12
+鱂鱼	jiang yu	12
+牛手参	niu shou can	12
+粘膜病病毒	zhan mo bing bing du	12
+藏獚	cang huang	11
+黄岛长吻虫	huang dao zhang wen chong	11
+鮧鱼	ti yu	11
+无眼希特勒	wu yan xi te lei	11
+矮脚狄文梗	ai jiao di wen geng	10
+八重山蝎	ba zhong shan xie	10
+贝德灵顿梗	bei de ling dun geng	10
+贝林顿梗	bei lin dun geng	10
+被遥远地	bei yao yuan di	10
+不莱梅乐队	bu lai mei yue dui	10
+茶长白蚧	cha zhang bai jie	10
+成都蚂蚁搬家公司	cheng du ma yi ban jia gong si	10
+粗唇鮠	cu chun wei	10
+岛螣	dao te	10
+德氏长尾猴	de shi zhang wei hou	10
+短毛猎狐梗	duan mao lie hu geng	10
+短尾鴗科	duan wei li ke	10
+仿刺参	fang ci can	10
+鰟鮍	fang pi	10
+谷仓猫头鹰	gu cang mao tou ying	10
+黑鮶鱼	hei jun yu	10
+红角鴞	hong jiao xiao	10
+花叶勒杜鹃	hua ye lei du juan	10
+磺胺喹噁啉钠	huang an kui e lin na	10
+黄鶺鴒	huang ji ling	10
+鮈亚科	ju ya ke	10
+卡地甘威尔士柯基犬	ka di gan wei er shi ke ji quan	10
+蓝圆鯵	lan yuan shen	10
+裸腹重唇鱼	luo fu zhong chun yu	10
+蒙古红鮊	meng gu hong ba	10
+缅甸莽	mian dian mang	10
+牛猫加菲	niu mao jia fei	10
+诺弗勒恶龙	nuo fu lei e long	10
+女神蛤	nv shen ha	10
+帕森拉希尔梗	pa sen la xi er geng	10
+鷿鷈	pi ti	10
+青鱂	qing jiang	10
+青鱂鱼	qing jiang yu	10
+青梢红鲌	qing shao hong ba	10
+鯵鱼	shen yu	10
+似鱤	shi gan	10
+双翅目蝇科	shuang chi mu ying ke	10
+双线嗜粘液蛞蝓	shuang xian shi nian ye kuo yu	10
+双须重唇鱼	shuang xu zhong chun yu	10
+塔什库尔干大尾羊	ta shen ku er gan da wei yang	10
+鶗鴃	ti jue	10
+天使之翼海鸥蛤	tian shi zhi yi hai ou ha	10
+伟铗	wei jia	10
+微量营养成份	wei liang ying yang cheng fen	10
+小麦粘虫	xiao mai zhan chong	10
+新疆裸重唇鱼	xin jiang luo zhong chun yu	10
+烟台糁糠鸡	yan tai san kang ji	10
+异鱲	yi lie	10
+约克夏梗犬	yue ke xia geng quan	10
+詹姆斯火烈鸟	zhan mu si huo lie niao	10
+纸鹦鹉螺章鱼	zhi ying wu luo zhang yu	10
+中甸重唇鱼	zhong dian zhong chun yu	10
+中华绒螯蟹生态养殖	zhong hua rong ao xie sheng tai yang zhi	10

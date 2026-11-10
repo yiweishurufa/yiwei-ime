@@ -130,11 +130,44 @@ def install_rime_ice():
     # our overlay (lua, tech vocabulary)
     src_root = os.path.join(REPO, "overlay", "data")
     for dirpath, _, files in os.walk(src_root):
+        if ANDROID and os.path.basename(dirpath) == "yiwei_dicts":
+            continue  # 分类词库只挂 Windows（安卓暂停维护）
         for fn in files:
+            if ANDROID and fn.startswith("yiwei_poetry"):
+                continue
             src = os.path.join(dirpath, fn)
             dest = os.path.join(DATA, os.path.relpath(src, src_root))
             os.makedirs(os.path.dirname(dest), exist_ok=True)
             shutil.copyfile(src, dest)
+
+
+# 一维分类词库（overlay/data/yiwei_dicts，scripts/data_gen/lexicon/build.py 生成），挂在 8105 字表之后、base 前面：
+# 同字同音时上面的权重生效。词库里只有雾凇没有的词，和一维有意校准的词（base 里 盐城 1、长治 2 这类明显偏低的；
+# ext/腾讯里统一的 100），所以放在 base 前面只会改这些校准过的词，其余 base 词照旧。
+# 助手（Features/DomainDicts.cs）在词库更新/标准词库改写用户文件夹的 rime_ice.dict.yaml 后用同一规则补回。
+DOMAIN_DICTS = ["spoken", "geo", "world", "poetry", "idiom", "history", "science", "medical", "law", "finance", "it", "food", "nature", "brand"]
+DOMAIN_BEGIN = "  # >>> 一维分类词库（设置 → 词库 →「分类词库」可关）"
+DOMAIN_END = "  # <<< 一维分类词库"
+
+
+def domain_import_block():
+    return "\n".join([DOMAIN_BEGIN] + ["  - yiwei_dicts/yiwei.%s" % d for d in DOMAIN_DICTS] + [DOMAIN_END]) + "\n"
+
+
+def mount_domain_dicts(text):
+    """rime_ice.dict.yaml：在 import_tables 的 cn_dicts/base 行前插入一维分类词库（已有就换成最新列表）。"""
+    text = re.sub(r"(?ms)^  # >>> 一维分类词库.*?^  # <<< 一维分类词库[^\n]*\n", "", text)
+    text, n = re.subn(r"(?m)^(  - cn_dicts/base\b[^\n]*\n)", lambda m: domain_import_block() + m.group(1), text, count=1)
+    if n != 1:
+        raise SystemExit("rime_ice.dict.yaml: cn_dicts/base import not found")
+    return text
+
+
+def install_domain_dicts():
+    path = os.path.join(DATA, "rime_ice.dict.yaml")
+    text = open(path, encoding="utf-8").read()
+    open(path, "w", encoding="utf-8", newline="\n").write(mount_domain_dicts(text))
+    print("domain dicts mounted: %d" % len(DOMAIN_DICTS))
 
 
 TECH_BLOCK = """
@@ -426,6 +459,8 @@ NSI_DATA = r'''
   File /r "data\cn_dicts\*.*"
   SetOutPath $INSTDIR\data\en_dicts
   File /r "data\en_dicts\*.*"
+  SetOutPath $INSTDIR\data\yiwei_dicts
+  File /r "data\yiwei_dicts\*.*"
   SetOutPath $INSTDIR\data\opencc
   File /nonfatal "data\opencc\*.txt"
   ; 一维输入法助手（常用语、AI、设置、统计、词库更新）
@@ -472,6 +507,7 @@ NSI_UNINSTALL = r'''
   RMDir /r "$INSTDIR\data\lua"
   RMDir /r "$INSTDIR\data\cn_dicts"
   RMDir /r "$INSTDIR\data\en_dicts"
+  RMDir /r "$INSTDIR\data\yiwei_dicts"
   Delete "$INSTDIR\YiweiHelper.exe"
   Delete "$INSTDIR\YiweiHelper.exe.config"
   ; W42 卸载时可选清除个人数据（用户词库、常用语、设置、剪贴板历史）。默认保留；静默卸载（/S）保留。
@@ -908,6 +944,8 @@ def patch_upgrade(t):
 if __name__ == "__main__":
     customize_weasel_yaml()
     install_rime_ice()
+    if not ANDROID:
+        install_domain_dicts()
     customize_default_yaml()
     mount_into_schemas()
     patch_installer()

@@ -1,0 +1,251 @@
+# 一维输入法 · 分类词库「计算机」：计算机与互联网术语
+# 由 scripts/data_gen/lexicon/build.py 生成，不要手改；来源与许可证见同目录 README.md
+# 设置 → 词库 →「分类词库」可整体或按领域关闭
+---
+name: yiwei.it
+version: "2026.11.10"
+sort: by_weight
+...
+重置	zhong zhi	33682
+模版	mo ban	15571
+重试	zhong shi	14481
+重做	zhong zuo	12180
+标识符	biao shi fu	12070
+命令行	ming ling xing	12070
+重定向	zhong ding xiang	12070
+重命名	zhong ming ming	12070
+重绘	zhong hui	11631
+内存泄露	nei cun xie lou	10720
+数组长度	shu zu zhang du	10720
+调优	diao you	10687
+长连接	zhang lian jie	8170
+多重继承	duo zhong ji cheng	7474
+重定义	zhong ding yi	6950
+重发	zhong fa	6677
+重传	zhong chuan	6607
+弹出窗口	dan chu chuang kou	6193
+弹出菜单	dan chu cai dan	6131
+检查和	jian cha he	6130
+重载函数	zhong zai han shu	5717
+行高	xing gao	5632
+弹出框	dan chu kuang	5021
+重定位	zhong ding wei	4930
+置位	zhi wei	4846
+用户登陆	yong hu deng lu	4710
+多行注释	duo xing zhu shi	4585
+方法重载	fang fa zhong zai	4467
+性能调优	xing neng diao you	4146
+删除行	shan chu xing	4030
+年在	nian zai	3829
+字长	zi zhang	3531
+代码重用	dai ma zhong yong	3392
+方法重写	fang fa zhong xie	3256
+登陆界面	deng lu jie mian	3187
+原代码	yuan dai ma	2870
+重装系统	zhong zhuang xi tong	2856
+重排序	zhong pai xu	2574
+长整数	zhang zheng shu	2478
+程序设计语言	cheng xu she ji yu yan	2460
+链接错误	lian jie cuo wu	2400
+弹出对话框	dan chu dui hua kuang	2260
+科学计数法	ke xue ji shu fa	2260
+命令行参数	ming ling xing can shu	2260
+命令行工具	ming ling xing gong ju	2260
+命令行界面	ming ling xing jie mian	2260
+输出重定向	shu chu zhong ding xiang	2260
+数据库链接	shu ju ku lian jie	2260
+运算符重载	yun suan fu zhong zai	2260
+重载运算符	zhong zai yun suan fu	2260
+操作符重载	cao zuo fu zhong zai	2175
+命令行操作	ming ling xing cao zuo	2162
+池化	chi hua	2101
+搜素	sou su	1998
+重做日志	zhong zuo ri zhi	1989
+多重背包	duo zhong bei bao	1956
+代码重构	dai ma zhong gou	1901
+范型	fan xing	1889
+成熟度	cheng shu du	1800
+最长公共子串	zui zhang gong gong zi chuan	1672
+长按事件	zhang an shi jian	1634
+段长度	duan zhang du	1604
+顶点着色器	ding dian zhao se qi	1559
+傅立叶变换	fu li ye bian huan	1422
+最长路	zui zhang lu	1349
+读入一行	du ru yi xing	1329
+重用机制	zhong yong ji zhi	1159
+最长公共前缀	zui zhang gong gong qian zhui	1152
+最长回文子串	zui zhang hui wen zi chuan	1148
+最长子序列	zui zhang zi xu lie	1143
+弹出层	dan chu ceng	1058
+命令行接口	ming ling xing jie kou	1056
+命令行编译	ming ling xing bian yi	1051
+无法登陆	wu fa deng lu	1050
+逐行扫描	zhu xing sao miao	1020
+显示转换	xian shi zhuan huan	995
+数字标识	shu zi biao shi	993
+登陆验证	deng lu yan zheng	971
+长轮询	zhang lun xun	950
+酷壳	ku ke	914
+变长参数	bian zhang can shu	901
+最长子串	zui zhang zi chuan	881
+自动重连	zi dong zhong lian	818
+行地址	xing di zhi	805
+用友	yong you	783
+机房重构	ji fang zhong gou	767
+弹出式菜单	dan chu shi cai dan	763
+重置密码	zhong zhi mi ma	747
+首行缩进	shou xing suo jin	706
+位标识	wei biao shi	700
+自动登陆	zi dong deng lu	681
+重写规则	zhong xie gui ze	674
+长链接	zhang lian jie	668
+手机震动	shou ji zhen dong	660
+模拟登陆	mo ni deng lu	659
+长按手势	zhang an shou shi	654
+模版引擎	mo ban yin qing	650
+行编辑	xing bian ji	643
+最长回文串	zui zhang hui wen chuan	642
+管理员帐号	guan li yuan zhang hao	623
+重定向符号	zhong ding xiang fu hao	619
+模版类	mo ban lei	561
+紫书	zi shu	553
+似然函数	shi ran han shu	547
+模版方法	mo ban fang fa	525
+免登陆	mian deng lu	517
+文件重定向	wen jian zhong ding xiang	512
+欧几里德算法	ou ji li de suan fa	500
+最长链	zui zhang lian	498
+管理员登陆	guan li yuan deng lu	462
+最长回文	zui zhang hui wen	460
+模版方法模式	mo ban fang fa mo shi	446
+图象处理	tu xiang chu li	442
+可变长参数	ke bian zhang can shu	428
+元文件	yuan wen jian	424
+扩展欧几里德	kuo zhan ou ji li de	418
+包封	bao feng	409
+码率控制	ma lv kong zhi	407
+暴力解法	bao li xie fa	401
+栅格	zha ge	400
+贝赛尔曲线	bei sai er qu xian	389
+单点登陆	dan dian deng lu	378
+最大似然估计	zui da shi ran gu ji	377
+单行函数	dan xing han shu	376
+强联通分量	qiang lian tong fen liang	376
+标识变量	biao shi bian liang	363
+最大似然	zui da shi ran	361
+极大似然估计	ji da shi ran gu ji	360
+登陆注册	deng lu zhu ce	350
+霍夫曼编码	huo fu man bian ma	342
+巴什博弈	ba shen bo yi	333
+猜数字游戏	cai shu zi you xi	327
+笛卡儿积	di ka er ji	307
+净荷	jing he	307
+数据库调优	shu ju ku diao you	304
+粘着位	zhan zhe wei	300
+第三方登陆	di san fang deng lu	299
+最长重复子串	zui zhang chong fu zi chuan	299
+密码重置	mi ma zhong zhi	297
+函数模版	han shu mo ban	258
+多重纹理	duo zhong wen li	255
+实用教程	shi yong jiao cheng	249
+哈佛结构	ha fu jie gou	247
+哈弗曼编码	ha fu man bian ma	229
+动态重定位	dong tai zhong ding wei	226
+多重集	duo zhong ji	216
+双联通分量	shuang lian tong fen liang	212
+能力成熟	neng li cheng shu	206
+强联通	qiang lian tong	201
+系统重装	xi tong zhong zhuang	188
+对象标识符	dui xiang biao shi fu	185
+上行链路	shang hang lian lu	178
+当前帐户	dang qian zhang hu	177
+双联通	shuang lian tong	176
+重定向操作符	zhong ding xiang cao zuo fu	162
+极大似然	ji da shi ran	155
+伺服电机	ci fu dian ji	144
+所有帐户	suo you zhang hu	144
+微信登陆	wei xin deng lu	141
+最长回文字串	zui zhang hui wen zi chuan	141
+嵌入式培训	qian ru shi pei xun	120
+外联结	wai lian jie	116
+调相	diao xiang	113
+多重处理	duo zhong chu li	112
+安卓界面	an zhuo jie mian	111
+操作系统技术	cao zuo xi tong ji shu	111
+多分辨率分析	duo fen bian lv fen xi	111
+服务器运维	fu wu qi yun wei	111
+服务原语	fu wu yuan yu	111
+复杂度计算	fu za du ji suan	111
+构件库	gou jian ku	111
+互联网新闻	hu lian wang xin wen	111
+控制顶点	kong zhi ding dian	111
+网状数据库	wang zhuang shu ju ku	111
+写后写	xie hou xie	111
+信息主体	xin xi zhu ti	111
+状态队列	zhuang tai dui lie	111
+栅格数据	zha ge shu ju	108
+栅格系统	zha ge xi tong	98
+百练	bai lian	95
+静态重定位	jing tai zhong ding wei	95
+广语言	guang yu yan	94
+重置文件	zhong zhi wen jian	94
+重码	zhong ma	93
+标识鉴别	biao shi jian bie	89
+配置标识	pei zhi biao shi	84
+菲波那切数列	fei bo na qie shu lie	83
+成都传智播客	cheng du chuan zhi bo ke	77
+长商银	zhang shang yin	75
+可变字长	ke bian zi zhang	73
+三维重构	san wei zhong gou	71
+重构二叉树	zhong gou er cha shu	67
+数据挖据	shu ju wa ju	65
+最长反链	zui zhang fan lian	65
+网狐	wang hu	64
+测试板	ce shi ban	61
+强联通缩点	qiang lian tong suo dian	56
+自联结	zi lian jie	56
+数字图象处理	shu zi tu xiang chu li	52
+拓补排序	tuo bu pai xu	51
+项目重命名	xiang mu zhong ming ming	50
+泛微	fan wei	45
+几何画板教程	ji he hua ban jiao cheng	45
+个人机房重构	ge ren ji fang zhong gou	43
+迹线	ji xian	43
+寄存器重命名	ji cun qi zhong ming ming	42
+似然比	shi ran bi	42
+数据库重构	shu ju ku zhong gou	42
+树上最长链	shu shang zui zhang lian	41
+自然联结	zi ran lian jie	39
+复合标识	fu he biao shi	37
+跨行合并	kua xing he bing	37
+重言式	zhong yan shi	36
+吸费电话加盟	xi fei dian hua jia meng	35
+强联通图	qiang lian tong tu	34
+行地址选通	xing di zhi xuan tong	34
+中国菜刀下载	zhong guo cai dao xia zai	33
+初始标识	chu shi biao shi	32
+动态重构	dong tai zhong gou	31
+树链刨分	shu lian pao fen	30
+文本相似度	wen ben xiang shi du	30
+网狐棋牌	wang hu qi pai	28
+粤嵌	yue qian	28
+固定字长	gu ding zi zhang	25
+程序重定位	cheng xu zhong ding wei	23
+多重关系	duo zhong guan xi	23
+算法模版	suan fa mo ban	22
+多重异常	duo zhong yi chang	21
+似然方程	shi ran fang cheng	21
+正易	zheng yi	21
+取命令行	qu ming ling xing	19
+信号重构	xin hao zhong gou	19
+多行标签	duo xing biao qian	17
+重定义数组	zhong ding yi shu zu	17
+用户标识码	yong hu biao shi ma	14
+大数据培训	da shu ju pei xun	13
+几何画板下载	ji he hua ban xia zai	12
+码实	ma shi	12
+位提交	wei ti jiao	12
+并査集	bing zha ji	11
+命令重试	ming ling zhong shi	11
+数据防泄漏	shu ju fang xie lou	11
+撤消原语	che xiao yuan yu	10

@@ -1,0 +1,15 @@
+# 一维输入法 · 分类词库「自然科学」：化学元素、数理化与天文术语
+# 由 scripts/data_gen/lexicon/build.py 生成，不要手改；来源与许可证见同目录 README.md
+# 设置 → 词库 →「分类词库」可整体或按领域关闭
+---
+name: yiwei.science
+version: "2026.11.10"
+sort: by_weight
+...
+氪气	ke qi	5550
+氙气	xian qi	5550
+暗能量	an neng liang	1150
+拉尼娜	la ni na	1150
+引力波	yin li bo	1150
+板块构造	ban kuai gou zao	970
+鉝	li	10

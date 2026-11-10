@@ -1,0 +1,215 @@
+# 一维输入法 · 分类词库「财经」：金融、证券、经济术语
+# 由 scripts/data_gen/lexicon/build.py 生成，不要手改；来源与许可证见同目录 README.md
+# 设置 → 词库 →「分类词库」可整体或按领域关闭
+---
+name: yiwei.finance
+version: "2026.11.10"
+sort: by_weight
+...
+上行	shang hang	14376
+总行	zong xing	5952
+放量	fang liang	4959
+高盛	gao sheng	4520
+宝钢	bao gang	4340
+永安	yong an	4278
+金桥	jin qiao	4254
+三联	san lian	3113
+金城	jin cheng	3080
+跨行	kua xing	2937
+联华	lian hua	2318
+长阳	zhang yang	2243
+张裕	zhang yu	2216
+亚信	ya xin	2172
+汇市	hui shi	2107
+典当行	dian dang xing	1816
+兼营	jian ying	1679
+安信	an xin	1564
+六合彩	lu he cai	1448
+银元	yin yuan	1328
+华新	hua xin	1247
+国华	guo hua	1119
+包钢	bao gang	1113
+方兴	fang xing	1093
+嘉实	jia shi	1067
+信达	xin da	993
+杜邦	du bang	982
+仁和	ren he	913
+中化	zhong hua	865
+金鼎	jin ding	837
+万华	wan hua	827
+苏泊尔	su po er	817
+安永	an yong	802
+金泰	jin tai	787
+重估	zhong gu	774
+长运	zhang yun	771
+华信	hua xin	769
+华源	hua yuan	762
+中集	zhong ji	749
+康达	kang da	643
+三立	san li	631
+民丰	min feng	604
+华光	hua guang	565
+晨鸣	chen ming	524
+建信	jian xin	520
+商网	shang wang	516
+长盛	zhang sheng	515
+鸿基	hong ji	509
+大化	da hua	487
+海纳	hai na	487
+绿景	lv jing	479
+耀华	yao hua	476
+华鼎	hua ding	413
+丰华	feng hua	412
+易宝	yi bao	411
+科达	ke da	402
+东盛	dong sheng	401
+东信	dong xin	396
+宏业	hong ye	391
+天海	tian hai	384
+英达	ying da	378
+泰格	tai ge	370
+小阳	xiao yang	370
+雷伊	lei yi	363
+湖山	hu shan	362
+健民	jian min	355
+金瑞	jin rui	354
+南化	nan hua	351
+大元	da yuan	345
+华富	hua fu	345
+三力	san li	336
+大摩	da mo	316
+金果	jin guo	302
+亚星	ya xing	302
+至高点	zhi gao dian	301
+天香	tian xiang	289
+厦华	sha hua	288
+金帝	jin di	282
+中恒	zhong heng	281
+金岭	jin ling	230
+金盘	jin pan	230
+海泰	hai tai	229
+宏盛	hong sheng	219
+惠天	hui tian	207
+宜华	yi hua	201
+国发	guo fa	188
+威达	wei da	188
+天富	tian fu	172
+思达	si da	170
+飚升	biao sheng	152
+银建	yin jian	147
+宝盈	bao ying	144
+海欣	hai xin	143
+博通	bo tong	127
+恒立	heng li	124
+宝信	bao xin	120
+维加	wei jia	118
+金普	jin pu	117
+苏宁环球	su ning huan qiu	111
+银率网	yin lv wang	111
+宝光	bao guang	107
+保网	bao wang	103
+澳优	ao you	93
+汇丽	hui li	91
+宝姿	bao zi	89
+昌源	chang yuan	88
+拓尔思	tuo er si	88
+信联	xin lian	86
+股分	gu fen	80
+方源	fang yuan	78
+嘉瑞	jia rui	78
+美雅	mei ya	77
+聚友	ju you	73
+仪化	yi hua	72
+国祥	guo xiang	71
+豪盛	hao sheng	71
+宝诚	bao cheng	69
+宝瑞通典当行	bao rui tong dian dang xing	69
+合会	he hui	68
+寰岛	huan dao	64
+海立	hai li	63
+钱经	qian jing	60
+联益	lian yi	59
+鲁银	lu yin	53
+金化	jin hua	52
+盛润	sheng run	52
+博信	bo xin	50
+利记	li ji	50
+哈里伯顿	ha li bo dun	49
+航天长峰	hang tian zhang feng	49
+洪都航空	hong dou hang kong	49
+凯马	kai ma	46
+前笔	qian bi	46
+中源	zhong yuan	43
+新都酒店	xin dou jiu dian	41
+运盛	yun sheng	41
+中鲁	zhong lu	40
+民化	min hua	37
+新华都	xin hua dou	36
+华陶	hua tao	35
+渤化	bo hua	31
+宏峰	hong feng	31
+鲁证	lu zheng	30
+詹姆斯邦德	zhan mu si bang de	30
+筑信	zhu xin	30
+禾嘉	he jia	29
+江力	jiang li	29
+转期	zhuan qi	23
+石炼	shi lian	21
+聚富	ju fu	20
+石岘	shi xian	20
+白页	bai ye	19
+葛州坝	ge zhou ba	19
+宏智	hong zhi	19
+兰光	lan guang	19
+仕奇	shi qi	19
+自仪	zi yi	19
+集琦	ji qi	18
+凯地	kai di	18
+长电	zhang dian	18
+金利来集团	jin li lai ji tuan	17
+康赛	kang sai	17
+洛玻	luo bo	16
+亿安	yi an	15
+饱和点	bao huo dian	14
+北旅	bei lv	14
+发卡银行	fa qia yin hang	14
+玉源	yu yuan	14
+沪建	hu jian	13
+乐电	le dian	13
+天仪	tian yi	13
+长盛同德	zhang sheng tong de	13
+利邦	li bang	12
+吉纸	ji zhi	11
+彼得林奇	bi de lin qi	10
+常胜网	chang sheng wang	10
+达创	da chuang	10
+多佳	duo jia	10
+鄂绒	e rong	10
+复旦复华	fu dan fu hua	10
+股歌	gu ge	10
+还款计划	hai kuan ji hua	10
+还款期	hai kuan qi	10
+河化	he hua	10
+华靖	hua jing	10
+佳纸	jia zhi	10
+锦港	jin gang	10
+锦化	jin hua	10
+炬力	ju li	10
+联油	lian you	10
+南证	nan zheng	10
+厦新	sha xin	10
+石炼化	shi lian hua	10
+苏物	su wu	10
+泰复	tai fu	10
+天伦置业	tian lun zhi ye	10
+拓日新能	tuo ri xin neng	10
+厦门厦工	xia men sha gong	10
+新太	xin tai	10
+鑫新	xin xin	10
+豫能	yu neng	10
+长盛环球	zhang sheng huan qiu	10
+长盛基金	zhang sheng ji jin	10
+长盛同禧	zhang sheng tong xi	10
+振新	zhen xin	10
+重单	zhong dan	10
+中辽	zhong liao	10

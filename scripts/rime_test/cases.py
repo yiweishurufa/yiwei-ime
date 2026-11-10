@@ -806,6 +806,49 @@ def correct_no_sentence_miscorrect(r):
 
 
 @case
+def spoken_sentences(r):
+    """用户 2026-11-10 报告「你吃点饭了」打不出来：没装语法模型时造句选了高频词「典范」（你吃典范了）。
+    一维口语短句词库（yiwei.spoken：吃点饭、喝点水……）让造句整块选中；常用词首选不被挤掉。"""
+    def first(code):
+        r.type(code); t = r.texts(3); r.clear(); return t[0] if t else ""
+    r.reopen("rime_ice")
+    for code, want in (("nichidianfanle", "你吃点饭了"), ("nichidianfan", "你吃点饭"), ("chidianfanle", "吃点饭了"),
+                       ("nichilema", "你吃了吗"), ("woxianzoule", "我先走了"), ("nidaonale", "你到哪了"),
+                       ("chidiandongxi", "吃点东西"), ("hedianshuiba", "喝点水吧"),
+                       ("nihao", "你好"), ("women", "我们"), ("shenme", "什么"), ("diushi", "丢失"), ("yingguo", "英国"),
+                       ("zhongguo", "中国"), ("xianzai", "现在"), ("dianfan", "典范"), ("fanle", "犯了")):
+        got = first(code)
+        assert got == want, (code, got)
+
+
+@case
+def domain_dicts(r):
+    """一维分类词库：国家/首都、多音字地名读音、词典挂载；用户文件夹放同名空词典（helper/Features/DomainDicts.cs 同一规则）即关闭该领域。"""
+    def top(code, n=3):
+        r.type(code); t = r.texts(n); r.clear(); return t
+    r.reopen("rime_ice")
+    for code, word in (("dongguan", "东莞"), ("xiamen", "厦门"), ("bishikaike", "比什凯克"), ("wulanbatuo", "乌兰巴托"),
+                       ("tananalifo", "塔那那利佛"), ("zhumulangmafeng", "珠穆朗玛峰")):
+        assert top(code, 1) == [word], (code, top(code))
+    for code, word in (("lu'an", "六安"), ("bengbu", "蚌埠"), ("lishui", "丽水"), ("hongtong", "洪洞"), ("changzhi", "长治")):
+        assert word in top(code), (code, top(code))
+    stub = os.path.join(r.user, "yiwei_dicts", "yiwei.spoken.dict.yaml")
+    os.makedirs(os.path.dirname(stub), exist_ok=True)
+    open(stub, "w", encoding="utf-8").write("# 一维输入法：分类词库已关闭（设置 → 词库 →「分类词库」可重新打开；删掉本文件也会恢复）\n"
+                                            "---\nname: yiwei.spoken\nversion: \"off\"\nsort: by_weight\n...\n")
+    try:
+        r.deploy(True)
+        r.reopen("rime_ice")
+        assert top("nichidianfanle", 1) != ["你吃点饭了"], top("nichidianfanle")
+        assert top("dongguan", 1) == ["东莞"]  # 别的领域不受影响
+    finally:
+        os.remove(stub)
+        r.deploy(True)
+    r.reopen("rime_ice")
+    assert top("nichidianfanle", 1) == ["你吃点饭了"]
+
+
+@case
 def blocked_words(r):
     """全局屏蔽词（yiwei/blocked.txt）：写入的词在任何拼音下都不出现，删掉文件后恢复。"""
     def texts(code):

@@ -1,0 +1,146 @@
+# 一维输入法 · 分类词库「世界地名」：国家、首都、世界主要城市
+# 由 scripts/data_gen/lexicon/build.py 生成，不要手改；来源与许可证见同目录 README.md
+# 设置 → 词库 →「分类词库」可整体或按领域关闭
+---
+name: yiwei.world
+version: "2026.11.10"
+sort: by_weight
+...
+巴林	ba lin	48990
+贝宁	bei ning	48990
+波黑	bo hei	48990
+不丹	bu dan	48990
+多哥	duo ge	48990
+斐济	fei ji	48990
+加蓬	jia peng	48990
+瑙鲁	nao lu	48990
+日本	ri ben	48990
+泰国	tai guo	48990
+马里	ma li	33820
+捷克	jie ke	25447
+伯利兹	bo li zi	12070
+佛得角	fu de jiao	12070
+冈比亚	gang bi ya	12070
+科摩罗	ke mo luo	12070
+尼泊尔	ni po er	12070
+苏里南	su li nan	12070
+图瓦卢	tu wa lu	12070
+安曼	an man	12040
+班吉	ban ji	12040
+大阪	da ban	12040
+帝力	di li	12040
+基多	ji duo	12040
+金奈	jin nai	12040
+科隆	ke long	12040
+里加	li jia	12040
+利马	li ma	12040
+拿骚	na sao	12040
+仁川	ren chuan	12040
+萨那	sa na	12040
+苏瓦	su wa	12040
+廷布	ting bu	12040
+芽庄	ya zhuang	12040
+巴巴多斯	ba ba duo si	10720
+格林纳达	ge lin na da	10720
+基里巴斯	ji li ba si	10720
+圣卢西亚	sheng lu xi ya	10720
+斯威士兰	si wei shi lan	10720
+尼斯	ni si	8690
+达卡	da ka	6465
+冲绳	chong sheng	4999
+罗索	luo suo	3815
+珀斯	po si	3510
+阿皮亚	a pi ya	3370
+埃里温	ai li wen	3370
+巴马科	ba ma ke	3370
+芭提雅	ba ti ya	3370
+班珠尔	ban zhu er	3370
+地拉那	di la na	3370
+杜尚别	du shang bie	3370
+多多马	duo duo ma	3370
+弗里敦	fu li dun	3370
+海参崴	hai shen wei	3370
+皇后镇	huang hou zhen	3370
+基加利	ji jia li	3370
+基特加	ji te jia	3370
+坎帕拉	kan pa la	3370
+拉巴特	la ba te	3370
+利隆圭	li long gui	3370
+里斯本	li si ben	3370
+卢萨卡	lu sa ka	3370
+路易港	lu yi gang	3370
+马拉博	ma la bo	3370
+马那瓜	ma na gua	3370
+马普托	ma pu tuo	3370
+马塞卢	ma sai lu	3370
+马朱罗	ma zhu luo	3370
+麦纳麦	mai na mai	3370
+莫罗尼	mo luo ni	3370
+内比都	nei bi dou	3370
+尼亚美	ni ya mei	3370
+圣多美	sheng duo mei	3370
+圣何塞	sheng he sai	3370
+苏克雷	su ke lei	3370
+太子港	tai zi gang	3370
+瓦杜兹	wa du zi	3370
+瓦莱塔	wa lai ta	3370
+维拉港	wei la gang	3370
+亚松森	ya song sen	3370
+雅温得	ya wen de	3370
+长滩岛	zhang tan dao	3370
+乍得	zha de	3315
+阿德莱德	a de lai de	3235
+阿斯马拉	a si ma la	3235
+安道尔城	an dao er cheng	3235
+巴拿马城	ba na ma cheng	3235
+巴斯特尔	ba si te er	3235
+班加罗尔	ban jia luo er	3235
+贝尔莫潘	bei er mo pan	3235
+比什凯克	bi shen kai ke	3235
+波多诺伏	bo duo nuo fu	3235
+的黎波里	de li bo li	3235
+恩贾梅纳	en jia mei na	3235
+梵蒂冈城	fan di gang cheng	3235
+哈博罗内	ha bo luo nei	3235
+霍尼亚拉	huo ni ya la	3235
+基希讷乌	ji xi ne wu	3235
+加德满都	jia de man dou	3235
+卡尔加里	ka er jia li	3235
+卡斯特里	ka si te li	3235
+科纳克里	ke na ke li	3235
+科威特城	ke wei te cheng	3235
+拉姆安拉	la mu an la	3235
+利伯维尔	li bo wei er	3235
+蒙罗维亚	meng luo wei ya	3235
+姆巴巴内	mu ba ba nei	3235
+尼科西亚	ni ke xi ya	3235
+帕利基尔	pa li ji er	3235
+萨格勒布	sa ge lei bu	3235
+圣多明各	sheng duo ming ge	3235
+斯科普里	si ke pu li	3235
+瓦加杜古	wa jia du gu	3235
+温得和克	wen de he ke	3235
+洪都拉斯	hong dou la si	2814
+朱巴	zhu ba	2015
+新山	xin shan	1425
+都柏林	dou bo lin	1407
+华沙	hua sha	1111
+戛纳	jia na	1111
+宿务	su wu	935
+岘港	xian gang	768
+阿什哈巴德	a shen ha ba de	185
+波德戈里察	bo de ge li cha	185
+布加勒斯特	bu jia lei si te	185
+布拉柴维尔	bu la chai wei er	185
+恩吉鲁穆德	en ji lu mu de	185
+蒙得维的亚	meng de wei de ya	185
+莫尔斯比港	mo er si bi gang	185
+帕拉马里博	pa la ma li bo	185
+塔那那利佛	ta na na li fu	185
+危地马拉城	wei di ma la cheng	185
+亚历山大港	ya li shan da gang	185
+亚穆苏克罗	ya mu su ke luo	185
+布拉迪斯拉发	bu la di si la fa	161
+斯里巴加湾市	si li ba jia wan shi	161
+亚的斯亚贝巴	ya de si ya bei ba	161
+都灵	dou ling	18
