@@ -433,6 +433,8 @@ namespace Yiwei
                 K.Toggle(S.AddWordHotkey, v => { S.AddWordHotkey = v; Save(); }), Ui.SymbolRegular.BookAdd24));
             p.Children.Add(K.Card("长按 Alt + E 符号与表情", "标点、数学、箭头、单位、序号、希腊字母、拼音声调、表情、颜文字，点一下上屏",
                 K.Toggle(S.SymbolsHotkey, v => { S.SymbolsHotkey = v; Save(); }), Ui.SymbolRegular.Emoji24));
+            p.Children.Add(K.Card("长按 Alt + Q 功能面板", "两列数字格子：计算、剪贴板、常用语、符号表情、翻译、截图识字、局域网互传、手写、设置；按数字直接打开（也在托盘菜单里）",
+                K.Toggle(S.QuickPanelHotkey, v => { S.QuickPanelHotkey = v; Save(); }), Ui.SymbolRegular.Grid24));
             var tapApps = new Ui.TextBox { PlaceholderText = "留空 = 所有程序；例如 code.exe, notepad.exe", MinWidth = 300, Text = string.Join(", ", S.AltTapApps ?? new List<string>()) };
             tapApps.LostFocus += (s, e) => { S.AltTapApps = AltTap.ParseApps(tapApps.Text); tapApps.Text = string.Join(", ", S.AltTapApps); Save(); };
             p.Children.Add(K.Card("单独按 Alt 切换中英", "轻按一下 Alt（不按别的键）就切换中/英，和按 Shift 一样；不会弹出程序的菜单栏。长按 Alt 手势照常可用",

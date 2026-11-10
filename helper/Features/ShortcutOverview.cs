@@ -41,7 +41,7 @@ namespace Yiwei
             Add("长按 Alt", "Alt + E", "符号与表情", alt && s.SymbolsHotkey);
             ToolsHub.EnsureRegistered();
             foreach (var a in ToolsHub.Actions.Where(a => a.AltKey != Keys.None))
-                Add("长按 Alt", "Alt + " + TextToolsMenu.KeyName(a.AltKey), a.Name, alt && t.AltGestures);
+                Add("长按 Alt", "Alt + " + TextToolsMenu.KeyName(a.AltKey), a.Name, alt && t.AltGestures && (a.Id != "quick-panel" || s.QuickPanelHotkey));
             Add("语音", s.VoiceKey == "ralt" ? "按住右 Alt" : s.VoiceKey == "rctrl" ? "按住右 Ctrl" : "（未设置）", "说话，松开上屏（需先下载语音模型）", s.VoiceKey == "ralt" || s.VoiceKey == "rctrl");
             foreach (var kv in t.Hotkeys.Where(kv => !string.IsNullOrEmpty(kv.Value)))
                 Add("自定义", kv.Value, ToolsHub.Find(kv.Key)?.Name ?? kv.Key);

@@ -14,6 +14,9 @@ namespace Yiwei
         {
             ToolsHub.Register(new ToolAction { Id = "text-menu", Name = "文字工具菜单", Group = "菜单", AltKey = Keys.T, InMenu = false, Run = TextToolsMenu.Show,
                 Help = "在光标处弹出文字工具菜单（翻译、拼音、繁简、大小写、Markdown…）" });
+            // 功能面板（候选条工具栏的键盘版）：长按 Alt + Q；设置 → 快捷输入 里可关
+            ToolsHub.Register(new ToolAction { Id = "quick-panel", Name = "功能面板", Group = "菜单", AltKey = Keys.Q, InMenu = false, Run = Program.ShowQuick,
+                Help = "两列数字格子：计算、剪贴板、常用语、符号表情、翻译、截图识字、局域网互传、手写、设置，按数字直接打开" });
             // W29 截图翻译 / 翻译选中文字
             ToolsHub.Register(new ToolAction { Id = "translate-shot", Name = "截图翻译", Group = "翻译", AltKey = Keys.S, Run = ScreenTranslate.Start,
                 Help = "框选屏幕上的文字，离线识别后翻译（中文→英文，其它→中文）" });

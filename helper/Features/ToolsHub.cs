@@ -159,6 +159,7 @@ namespace Yiwei
             EnsureRegistered();
             var a = Actions.FirstOrDefault(x => x.AltKey == vk && x.AltKey != Keys.None);
             if (a == null) return false;
+            if (a.Id == "quick-panel" && !Settings.Current.QuickPanelHotkey) return false;
             Program.Ui.BeginInvoke(new Action(() => Run(a.Id)));
             return true;
         }

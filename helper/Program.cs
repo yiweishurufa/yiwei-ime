@@ -26,6 +26,7 @@ namespace Yiwei
         static ImeToast _toast;
         static VoiceInput _voice;
         static SymbolPanel _symbols;
+        static QuickPanel _quick;
         static HandwritingPanel _hand;
         static DeployProgress _deployProgress;
         static KeyHook _hook;
@@ -74,15 +75,16 @@ namespace Yiwei
                 _toast = new ImeToast();
                 _voice = new VoiceInput();
                 _symbols = new SymbolPanel();
+                _quick = new QuickPanel();
                 _hand = new HandwritingPanel();
                 _deployProgress = new DeployProgress();
                 _hook = new KeyHook
                 {
-                    PanelOpen = () => _snippets.IsOpen || _symbols.IsOpen || _ai.WantsKeys || _hand.IsOpen,
-                    PanelKey = (k, alt) => _snippets.IsOpen ? _snippets.HandleKey(k, alt) : _symbols.IsOpen ? _symbols.HandleKey(k) : _hand.IsOpen ? _hand.HandleKey(k) : _ai.HandleKey(k, alt),
-                    ClosePanel = () => { _snippets.Close2(); _ai.Close2(); _symbols.Close2(); _hand.Close2(); },
-                    OnSnippets = c => { _ai.Close2(); _snippets.Open(c); },
-                    OnAi = () => { _snippets.Close2(); _ai.Open(); },
+                    PanelOpen = () => _snippets.IsOpen || _symbols.IsOpen || _quick.IsOpen || _ai.WantsKeys || _hand.IsOpen,
+                    PanelKey = (k, alt) => _snippets.IsOpen ? _snippets.HandleKey(k, alt) : _quick.IsOpen ? _quick.HandleKey(k) : _symbols.IsOpen ? _symbols.HandleKey(k) : _hand.IsOpen ? _hand.HandleKey(k) : _ai.HandleKey(k, alt),
+                    ClosePanel = () => { _snippets.Close2(); _ai.Close2(); _symbols.Close2(); _hand.Close2(); _quick.Close2(); },
+                    OnSnippets = c => { _ai.Close2(); _quick.Close2(); _snippets.Open(c); },
+                    OnAi = () => { _snippets.Close2(); _quick.Close2(); _ai.Open(); },
                     OnVoiceStart = () => { _snippets.Close2(); _ai.Close2(); _voice.Begin(); },
                     OnVoiceEnd = () => _voice.End(),
                     OnVoiceCancel = () => _voice.Cancel(),
@@ -239,6 +241,7 @@ namespace Yiwei
                     case "/share": ShowLanShare(); return;
                     case "/ocr": OcrCapture.Start(); return;
                     case "/symbols": ShowSymbols(); return;
+                    case "/quick": ShowQuick(); return;
                     case "/addword": AddWordWindow.ShowFor(""); return;
                     case "/handwrite": ShowHandwriting(); return;
                     case "/perfcheck": PerfCheck.RunToFile(); return;
@@ -267,7 +270,7 @@ namespace Yiwei
 
         public static void ShowHandwriting()
         {
-            _snippets.Close2(); _ai.Close2();
+            _snippets.Close2(); _ai.Close2(); _quick.Close2();
             _hand.Open();
         }
 
@@ -281,9 +284,20 @@ namespace Yiwei
 
         public static void ShowSymbols()
         {
-            _snippets.Close2(); _ai.Close2();
+            _snippets.Close2(); _ai.Close2(); _quick.Close2();
             _symbols.Open();
         }
+
+        /// <summary>功能面板（Alt+Q / 托盘 / /quick）：两列数字格子，一处进入常用功能。</summary>
+        public static void ShowQuick()
+        {
+            _snippets.Close2(); _ai.Close2(); _symbols.Close2(); _hand.Close2();
+            _quick.Open();
+        }
+
+        public static void ShowClipboard() { _ai.Close2(); _snippets.Open(SnippetPanel.ClipTab); }
+        public static void ShowSnippets(int category) { _ai.Close2(); _snippets.Open(category); }
+        public static void ShowAi() { _snippets.Close2(); _ai.Open(); }
 
         static LanShareWindow _lan;
 
@@ -426,6 +440,7 @@ namespace Yiwei
             menu.Items.Add("同步用户数据", null, (s, e) => System.Threading.Tasks.Task.Run(() => Deploy.Run("/sync", false)));
             menu.Items.Add("手写输入", null, (s, e) => Program.ShowHandwriting());
             menu.Items.Add("加词…", null, (s, e) => AddWordWindow.ShowFor(""));
+            menu.Items.Add("功能面板", null, (s, e) => Program.ShowQuick());
             menu.Items.Add("符号与表情", null, (s, e) => Program.ShowSymbols());
             menu.Items.Add("截图识字", null, (s, e) => OcrCapture.Start());
             menu.Items.Add("局域网互传", null, (s, e) => Program.ShowLanShare());

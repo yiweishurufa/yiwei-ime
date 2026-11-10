@@ -203,6 +203,8 @@ namespace Yiwei
         public bool AiHotkey { get; set; } = true;
         public bool OcrHotkey { get; set; } = true;
         public bool SymbolsHotkey { get; set; } = true;
+        /// <summary>长按 Alt + Q 打开功能面板（托盘菜单和 /quick 不受此开关影响）。</summary>
+        public bool QuickPanelHotkey { get; set; } = true;
         public bool AddWordHotkey { get; set; } = true;
         public bool HandwritingHotkey { get; set; } = true;
         public List<string> AltBlocklist { get; set; } = DefaultBlocklist();

@@ -331,6 +331,23 @@ namespace Yiwei
             Native.SendInput((uint)list.Count, list.ToArray(), Marshal.SizeOf(typeof(Native.INPUT)));
         }
 
+        /// <summary>用真实按键敲几个字母（大写自动按 Shift），让输入法当作用户打的字处理；只接受 a–z / A–Z。</summary>
+        public static void TapLetters(string letters)
+        {
+            if (string.IsNullOrEmpty(letters) || letters.Length > 16) return;
+            foreach (var c in letters) if (!(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')) return;
+            ReleaseModifiers();
+            var list = new System.Collections.Generic.List<Native.INPUT>();
+            foreach (var c in letters)
+            {
+                bool up = c >= 'A' && c <= 'Z';
+                if (up) list.Add(Key((ushort)Keys.ShiftKey, 0, 0));
+                AddVk(list, (ushort)(Keys.A + (char.ToUpperInvariant(c) - 'A')));
+                if (up) list.Add(Key((ushort)Keys.ShiftKey, 0, Native.KEYEVENTF_KEYUP));
+            }
+            Native.SendInput((uint)list.Count, list.ToArray(), Marshal.SizeOf(typeof(Native.INPUT)));
+        }
+
         static void AddVk(System.Collections.Generic.List<Native.INPUT> list, ushort vk)
         {
             list.Add(Key(vk, 0, 0)); list.Add(Key(vk, 0, Native.KEYEVENTF_KEYUP));
