@@ -849,6 +849,33 @@ def domain_dicts(r):
 
 
 @case
+def poetry_link(r):
+    """诗句联想（yiwei_poetry.lua）：上句首选不变、第 2 位补整联并注明出处；上句上屏后打下句首字母出下句；可关。"""
+    def page(code, n=4):
+        r.type(code); c = r.context(); r.clear(); return list(zip(c["page"], c["comments"]))[:n]
+    yiwei_file(r, "poetry.disabled")
+    wait_flags()
+    r.reopen("rime_ice")
+    p = page("chuangqianmingyueguang")
+    assert p[0][0] == "床前明月光", p
+    assert p[1][0] == "床前明月光，疑是地上霜" and "李白" in p[1][1], p
+    p = page("mingyuejishiyou")
+    assert p[0][0] == "明月几时有" and p[1][0] == "明月几时有，把酒问青天", p
+    r.type("chuangqianmingyueguang"); r.key(" "); assert r.commit() == "床前明月光"
+    p = page("ysdss", 2)
+    assert p[0] == ("疑是地上霜", "〔下句〕"), p
+    assert page("nihao", 1)[0][0] == "你好"
+    try:
+        yiwei_file(r, "poetry.disabled", "1")
+        wait_flags()
+        p = page("chuangqianmingyueguang", 6)
+        assert not any("，" in t for t, _ in p), p
+    finally:
+        yiwei_file(r, "poetry.disabled")
+        wait_flags()
+
+
+@case
 def blocked_words(r):
     """全局屏蔽词（yiwei/blocked.txt）：写入的词在任何拼音下都不出现，删掉文件后恢复。"""
     def texts(code):
