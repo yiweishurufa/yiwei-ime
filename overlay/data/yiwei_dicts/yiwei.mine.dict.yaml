@@ -1,0 +1,7 @@
+# 一维输入法 · 「我的词条」：在 设置 → 词库 →「我的词条」里编辑，保存后会在用户文件夹的 yiwei_dicts 里生成同名文件（优先于本文件）
+# 安装包里这份是空的，只为让 import 找得到
+---
+name: yiwei.mine
+version: "empty"
+sort: by_weight
+...

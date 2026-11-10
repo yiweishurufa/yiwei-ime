@@ -849,6 +849,28 @@ def domain_dicts(r):
 
 
 @case
+def custom_words(r):
+    """我的词条（helper/Features/CustomWords.cs 写的 yiwei_dicts/yiwei.mine.dict.yaml）：用户文件夹里的同名词典优先于安装包里的空词典，自写词出现在拼音候选里并按权重排前面；删掉文件即恢复。"""
+    def top(code, n=3):
+        r.type(code); t = r.texts(n); r.clear(); return t
+    path = os.path.join(r.user, "yiwei_dicts", "yiwei.mine.dict.yaml")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    r.reopen("rime_ice")
+    assert "壹维笔" not in top("yiweibi", 5), top("yiweibi", 5)
+    open(path, "w", encoding="utf-8").write("# 一维输入法 · 我的词条\n---\nname: yiwei.mine\nversion: \"user\"\nsort: by_weight\n...\n"
+                                            "壹维笔\tyi wei bi\t1000000\n")
+    try:
+        r.deploy(True)
+        r.reopen("rime_ice")
+        assert top("yiweibi", 1) == ["壹维笔"], top("yiweibi", 5)
+    finally:
+        os.remove(path)
+        r.deploy(True)
+    r.reopen("rime_ice")
+    assert "壹维笔" not in top("yiweibi", 5), top("yiweibi", 5)
+
+
+@case
 def poetry_link(r):
     """诗句联想（yiwei_poetry.lua）：上句首选不变、第 2 位补整联并注明出处；上句上屏后打下句首字母出下句；可关。"""
     def page(code, n=4):

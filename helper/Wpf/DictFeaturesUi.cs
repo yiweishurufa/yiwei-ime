@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,6 +34,9 @@ namespace Yiwei
             p.Children.Add(K.Card("诗句联想",
                 "打出诗句上句时，第 2 个候选是整联（注明作者和诗题）；上句上屏后接着打下句首字母（如 ysdss）直接出下句",
                 K.Toggle(CoreInput.Poetry, v => { CoreInput.Poetry = v; Toast(v ? "已开启诗句联想" : "已关闭诗句联想"); }), Ui.SymbolRegular.BookOpen24));
+
+            p.Children.Add(K.Block("我的词条", "一行一条「词 拼音 权重」，拼音和权重可省（拼音自动注音，权重默认 1000000，数字越大越靠前）。例：一维输入法 yi wei shu ru fa。保存后自动重新部署，雾凇每日更新不影响",
+                CustomWordsEditor(), Ui.SymbolRegular.BookAdd24));
 
             var info = K.Text(DictUpdater.Describe(), 12, true);
             var err = DictUpdater.Load();
@@ -87,6 +92,45 @@ namespace Yiwei
         }
 
         CancellationTokenSource _grammarCts;
+
+        FrameworkElement CustomWordsEditor()
+        {
+            var box = new TextBox { AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, MinHeight = 90, MaxHeight = 240, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+            try { box.Text = CustomWords.ToText(CustomWords.Load()); } catch (Exception ex) { Log.Write("custom words load: " + ex.Message); }
+            var msg = K.Text("", 12, true);
+            msg.TextWrapping = TextWrapping.Wrap;
+            Ui.Button save = null;
+            save = K.Btn("保存并生效", async () =>
+            {
+                var errors = new List<string>();
+                List<CustomWords.Entry> entries = null;
+                save.IsEnabled = false; msg.Text = "正在检查并注音…";
+                try { entries = await System.Threading.Tasks.Task.Run(() => CustomWords.Parse(box.Text, errors)); }
+                catch (Exception ex) { errors.Add("检查失败：" + ex.Message); }
+                if (errors.Count > 0)
+                {
+                    msg.Text = "没保存，请先改这几行：\n" + string.Join("\n", errors.Take(6)) + (errors.Count > 6 ? "\n…还有 " + (errors.Count - 6) + " 处" : "");
+                    save.IsEnabled = true; return;
+                }
+                try
+                {
+                    CustomWords.Save(entries);
+                    box.Text = CustomWords.ToText(entries); // 回显自动补上的拼音
+                    msg.Text = entries.Count == 0 ? "已清空" : "已保存 " + entries.Count + " 条，正在重新部署…";
+                    Rime.ApplySoon(100);
+                    Toast(msg.Text);
+                }
+                catch (Exception ex) { msg.Text = "保存失败：" + ex.Message; Log.Write("custom words save: " + ex); }
+                save.IsEnabled = true;
+            });
+            var sp = new StackPanel();
+            sp.Children.Add(box);
+            save.Margin = new Thickness(0, 8, 0, 0); save.HorizontalAlignment = HorizontalAlignment.Left;
+            sp.Children.Add(save);
+            msg.Margin = new Thickness(0, 6, 0, 0);
+            sp.Children.Add(msg);
+            return sp;
+        }
 
         void AddGrammarCards(StackPanel p)
         {

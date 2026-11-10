@@ -54,6 +54,7 @@ namespace Yiwei
         {
             var sb = new StringBuilder();
             sb.Append(Begin).Append('\n');
+            sb.Append("  - yiwei_dicts/yiwei.").Append(CustomWords.DictId).Append('\n'); // 我的词条放第一个，和 customize_data.py 一致
             foreach (var d in All) sb.Append("  - yiwei_dicts/yiwei.").Append(d.Id).Append('\n');
             sb.Append(End).Append('\n');
             return sb.ToString();

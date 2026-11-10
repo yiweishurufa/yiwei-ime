@@ -151,7 +151,8 @@ DOMAIN_END = "  # <<< 一维分类词库"
 
 
 def domain_import_block():
-    return "\n".join([DOMAIN_BEGIN] + ["  - yiwei_dicts/yiwei.%s" % d for d in DOMAIN_DICTS] + [DOMAIN_END]) + "\n"
+    # 「我的词条」(mine) 放第一个：用户自己写的词优先；安装包里是空词典，用户文件夹的同名文件优先（设置 → 词库 → 我的词条）
+    return "\n".join([DOMAIN_BEGIN] + ["  - yiwei_dicts/yiwei.%s" % d for d in ["mine"] + DOMAIN_DICTS] + [DOMAIN_END]) + "\n"
 
 
 def mount_domain_dicts(text):
