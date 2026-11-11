@@ -40,11 +40,25 @@ namespace Yiwei
             return issues;
         }
 
+        /// <summary>「我的词条」体检：格式问题，以及同时出现在屏蔽词里的词（屏蔽会让它永远不出现）。</summary>
+        public static List<string> CheckMine(IEnumerable<CustomWords.Entry> entries, string blockedText)
+        {
+            var issues = new List<string>();
+            var errs = new List<string>();
+            CustomWords.Parse(CustomWords.ToText(entries), errs);
+            foreach (var e in errs) issues.Add("我的词条" + e);
+            var blocked = new HashSet<string>((blockedText ?? "").Split('\n').Select(x => x.Trim()).Where(x => x.Length > 0 && !x.StartsWith("#")));
+            foreach (var w in entries.Select(x => x.Word).Distinct())
+                if (blocked.Contains(w)) issues.Add("我的词条「" + w + "」同时在屏蔽词里，不会出现");
+            return issues;
+        }
+
         public static string Run()
         {
             string Read(string f) { try { return File.Exists(f) ? File.ReadAllText(f, Encoding.UTF8) : ""; } catch { return ""; } }
             var issues = Check(Read(Paths.BlockedFile), Read(Paths.CorrectionsFile));
-            return issues.Count == 0 ? "屏蔽词和纠错规则没有发现问题 👍"
+            try { issues.AddRange(CheckMine(CustomWords.Load(), Read(Paths.BlockedFile))); } catch { }
+            return issues.Count == 0 ? "屏蔽词、纠错规则和我的词条没有发现问题 👍"
                 : "发现 " + issues.Count + " 处问题：\n· " + string.Join("\n· ", issues.Take(30));
         }
     }
