@@ -123,10 +123,32 @@ namespace Yiwei
                 catch (Exception ex) { msg.Text = "保存失败：" + ex.Message; Log.Write("custom words save: " + ex); }
                 save.IsEnabled = true;
             });
+            var imp = K.Btn("导入 txt…", () =>
+            {
+                var dlg = new Microsoft.Win32.OpenFileDialog { Filter = "文本文件 (*.txt)|*.txt|所有文件|*.*", Title = "导入词条（一行一条：词 拼音 权重）" };
+                if (dlg.ShowDialog() != true) return;
+                try
+                {
+                    var text = System.IO.File.ReadAllText(dlg.FileName, System.Text.Encoding.UTF8);
+                    int n = text.Split('\n').Count(l => l.Trim().Length > 0 && !l.TrimStart().StartsWith("#"));
+                    box.Text = (box.Text.Length > 0 && !box.Text.EndsWith("\n") ? box.Text + "\r\n" : box.Text) + text.TrimEnd();
+                    msg.Text = "已读入 " + n + " 行，检查后点「保存并生效」（重复的词会自动去掉）";
+                }
+                catch (Exception ex) { msg.Text = "导入失败：" + ex.Message; Log.Write("custom words import: " + ex.Message); }
+            });
+            var exp = K.Btn("导出 txt…", () =>
+            {
+                var dlg = new Microsoft.Win32.SaveFileDialog { Filter = "文本文件 (*.txt)|*.txt", FileName = "我的词条.txt", Title = "导出词条" };
+                if (dlg.ShowDialog() != true) return;
+                try { System.IO.File.WriteAllText(dlg.FileName, box.Text, new System.Text.UTF8Encoding(false)); msg.Text = "已导出到 " + dlg.FileName; }
+                catch (Exception ex) { msg.Text = "导出失败：" + ex.Message; Log.Write("custom words export: " + ex.Message); }
+            });
             var sp = new StackPanel();
             sp.Children.Add(box);
-            save.Margin = new Thickness(0, 8, 0, 0); save.HorizontalAlignment = HorizontalAlignment.Left;
-            sp.Children.Add(save);
+            var row = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 8, 0, 0) };
+            imp.Margin = new Thickness(8, 0, 0, 0); exp.Margin = new Thickness(8, 0, 0, 0);
+            row.Children.Add(save); row.Children.Add(imp); row.Children.Add(exp);
+            sp.Children.Add(row);
             msg.Margin = new Thickness(0, 6, 0, 0);
             sp.Children.Add(msg);
             return sp;
