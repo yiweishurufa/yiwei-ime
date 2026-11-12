@@ -151,6 +151,21 @@ namespace Yiwei
                 }
                 catch (Exception ex) { msg.Text = "学词失败：" + ex.Message; Log.Write("text learn: " + ex.Message); }
             });
+            var cell = K.Btn("导入细胞词库…", () =>
+            {
+                var dlg = new Microsoft.Win32.OpenFileDialog { Filter = "搜狗细胞词库 (*.scel)|*.scel", Title = "选一个 .scel 细胞词库（只在本机解析）" };
+                if (dlg.ShowDialog() != true) return;
+                try
+                {
+                    var lines = CellDict.Parse(System.IO.File.ReadAllBytes(dlg.FileName));
+                    var have = new HashSet<string>(box.Text.Split('\n').Select(l => l.Trim().Split(' ', '\t')[0]));
+                    lines = lines.Where(l => !have.Contains(l.Split(' ')[0])).ToList();
+                    if (lines.Count == 0) { msg.Text = "词库里没有可导入的新词"; return; }
+                    box.Text = (box.Text.Length > 0 && !box.Text.EndsWith("\n") ? box.Text + "\r\n" : box.Text) + string.Join("\r\n", lines);
+                    msg.Text = "读入 " + lines.Count + " 条，删掉不要的行，再点「保存并生效」";
+                }
+                catch (Exception ex) { msg.Text = "导入失败：" + ex.Message; Log.Write("scel import: " + ex.Message); }
+            });
             var exp = K.Btn("导出 txt…", () =>
             {
                 var dlg = new Microsoft.Win32.SaveFileDialog { Filter = "文本文件 (*.txt)|*.txt", FileName = "我的词条.txt", Title = "导出词条" };
@@ -162,7 +177,7 @@ namespace Yiwei
             sp.Children.Add(box);
             var row = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 8, 0, 0) };
             imp.Margin = new Thickness(8, 0, 0, 0); exp.Margin = new Thickness(8, 0, 0, 0);
-            row.Children.Add(save); row.Children.Add(imp); row.Children.Add(exp); learn.Margin = new Thickness(8, 0, 0, 0); row.Children.Add(learn);
+            row.Children.Add(save); row.Children.Add(imp); row.Children.Add(exp); learn.Margin = new Thickness(8, 0, 0, 0); row.Children.Add(learn); cell.Margin = new Thickness(8, 0, 0, 0); row.Children.Add(cell);
             sp.Children.Add(row);
             msg.Margin = new Thickness(0, 6, 0, 0);
             sp.Children.Add(msg);
