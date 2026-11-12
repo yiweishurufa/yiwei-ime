@@ -136,6 +136,21 @@ namespace Yiwei
                 }
                 catch (Exception ex) { msg.Text = "导入失败：" + ex.Message; Log.Write("custom words import: " + ex.Message); }
             });
+            var learn = K.Btn("从文章学词…", () =>
+            {
+                var dlg = new Microsoft.Win32.OpenFileDialog { Filter = "文本文件 (*.txt;*.md)|*.txt;*.md|所有文件|*.*", Title = "选一篇你常写的文章，找出反复出现的词" };
+                if (dlg.ShowDialog() != true) return;
+                try
+                {
+                    var words = TextLearn.Extract(System.IO.File.ReadAllText(dlg.FileName, System.Text.Encoding.UTF8));
+                    var have = new HashSet<string>(box.Text.Split('\n').Select(l => l.Trim().Split(' ', '\t')[0]));
+                    words = words.Where(w => !have.Contains(w)).ToList();
+                    if (words.Count == 0) { msg.Text = "没找到反复出现（≥3 次）的新词"; return; }
+                    box.Text = (box.Text.Length > 0 && !box.Text.EndsWith("\n") ? box.Text + "\r\n" : box.Text) + string.Join("\r\n", words);
+                    msg.Text = "找到 " + words.Count + " 个常出现的词已加到末尾，删掉不要的行，再点「保存并生效」（拼音自动注音）";
+                }
+                catch (Exception ex) { msg.Text = "学词失败：" + ex.Message; Log.Write("text learn: " + ex.Message); }
+            });
             var exp = K.Btn("导出 txt…", () =>
             {
                 var dlg = new Microsoft.Win32.SaveFileDialog { Filter = "文本文件 (*.txt)|*.txt", FileName = "我的词条.txt", Title = "导出词条" };
@@ -147,7 +162,7 @@ namespace Yiwei
             sp.Children.Add(box);
             var row = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 8, 0, 0) };
             imp.Margin = new Thickness(8, 0, 0, 0); exp.Margin = new Thickness(8, 0, 0, 0);
-            row.Children.Add(save); row.Children.Add(imp); row.Children.Add(exp);
+            row.Children.Add(save); row.Children.Add(imp); row.Children.Add(exp); learn.Margin = new Thickness(8, 0, 0, 0); row.Children.Add(learn);
             sp.Children.Add(row);
             msg.Margin = new Thickness(0, 6, 0, 0);
             sp.Children.Add(msg);
