@@ -70,7 +70,8 @@ namespace Yiwei
                     tok.RemoveAt(tok.Count - 1);
                 }
                 if (word.Length > 32) { errors.Add("第 " + no + " 行：词太长（最多 32 个字）"); continue; }
-                string py = string.Join(" ", tok).ToLowerInvariant();
+                string py = string.Join(" ", tok).ToLowerInvariant().Replace('\'', ' ').Replace('\u2019', ' ').Replace('\u00fc', 'v'); // xi'an、nü 也认
+                py = Regex.Replace(py, " {2,}", " ").Trim();
                 if (py.Length == 0)
                 {
                     if (!AddWord.Cjk.IsMatch(word)) { errors.Add("第 " + no + " 行「" + word + "」：不是纯汉字词，请写上拼音"); continue; }
