@@ -11,6 +11,7 @@ namespace Yiwei
         public static List<string> Parse(byte[] d)
         {
             var res = new List<string>();
+            var seen = new HashSet<string>();
             if (d.Length < 0x2700 || d[0] != 0x40 || d[1] != 0x15) throw new InvalidDataException("不是搜狗细胞词库（.scel）");
             var py = new Dictionary<int, string>();
             int p = 0x1540 + 4;
@@ -43,7 +44,7 @@ namespace Yiwei
                     var w = Encoding.Unicode.GetString(d, p, wl); p += wl;
                     if (p + 2 > d.Length) return res;
                     int el = BitConverter.ToUInt16(d, p); p += 2 + el;
-                    if (ok && w.Length >= 2 && w.Length == parts.Count) res.Add(w + " " + string.Join(" ", parts));
+                    if (ok && w.Length >= 2 && w.Length == parts.Count) { var line = w + " " + string.Join(" ", parts); if (seen.Add(line)) res.Add(line); }
                 }
             }
             return res;
