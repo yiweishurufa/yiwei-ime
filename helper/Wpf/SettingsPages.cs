@@ -161,15 +161,32 @@ namespace Yiwei
                 try
                 {
                     var lines = box.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).Where(x => x.Length > 0).Distinct().ToList();
+                    if (File.Exists(file)) File.Copy(file, file + ".prev", true);
                     File.WriteAllText(file, string.Join("\n", lines) + "\n", new System.Text.UTF8Encoding(false));
-                    Toast(okMsg);
+                    Toast(okMsg + "（点「撤销上次保存」可恢复保存前的内容）");
                 }
                 catch (Exception ex) { Toast("保存失败：" + ex.Message); }
             });
+            var undo = K.Btn("撤销上次保存", () =>
+            {
+                try
+                {
+                    var prev = file + ".prev";
+                    if (!File.Exists(prev)) { Toast("还没有可撤销的保存"); return; }
+                    var old = File.ReadAllText(prev);
+                    File.Copy(file, prev, true);
+                    File.WriteAllText(file, old, new System.Text.UTF8Encoding(false));
+                    box.Text = old;
+                    Toast("已恢复到上次保存之前的内容（再点一次可重做）");
+                }
+                catch (Exception ex) { Toast("撤销失败：" + ex.Message); }
+            });
             var sp = new StackPanel();
             sp.Children.Add(box);
-            save.Margin = new Thickness(0, 8, 0, 0); save.HorizontalAlignment = HorizontalAlignment.Left;
-            sp.Children.Add(save);
+            var row = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 8, 0, 0) };
+            undo.Margin = new Thickness(8, 0, 0, 0);
+            row.Children.Add(save); row.Children.Add(undo);
+            sp.Children.Add(row);
             return sp;
         }
 
