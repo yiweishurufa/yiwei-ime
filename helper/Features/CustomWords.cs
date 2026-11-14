@@ -58,7 +58,7 @@ namespace Yiwei
             foreach (var raw in (text ?? "").Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None))
             {
                 no++;
-                var line = raw.Trim();
+                var line = raw.Normalize(NormalizationForm.FormKC).Trim(); // 全角字母/数字/空格也认
                 if (line.Length == 0 || line[0] == '#') continue;
                 var tok = line.Split(new[] { ' ', '\t', '\u3000' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 var word = tok[0];
