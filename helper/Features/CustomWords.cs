@@ -80,7 +80,12 @@ namespace Yiwei
                 }
                 if (!Syllables.IsMatch(py)) { errors.Add("第 " + no + " 行「" + word + "」：拼音只能是小写字母，音节用空格隔开"); continue; }
                 if (AddWord.Cjk.IsMatch(word) && py.Split(' ').Length != word.Length) { errors.Add("第 " + no + " 行「" + word + "」：拼音音节数和字数不一致"); continue; }
-                if (!seen.Add(word + "\t" + py)) continue; // 同词同音只留第一条
+                if (!seen.Add(word + "\t" + py))
+                {   // 同词同音只留一条，权重取较大的
+                    var dup = result.First(x => x.Word == word && x.Pinyin == py);
+                    if (weight > dup.Weight) dup.Weight = weight;
+                    continue;
+                }
                 result.Add(new Entry { Word = word, Pinyin = py, Weight = weight });
             }
             return result;
