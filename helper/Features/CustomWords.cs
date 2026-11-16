@@ -50,6 +50,16 @@ namespace Yiwei
         /// 把编辑框文本解析成词条；格式或注音有问题的行收集到 <paramref name="errors"/>（带行号），不会抛异常。
         /// 一行：词 [拼音 ...] [权重]。词不能含空白；拼音只许小写字母和空格；权重是正整数，最后一项是纯数字才算权重。
         /// </summary>
+        /// <summary>去掉拼音声调符号（ǐ→i），ü/ǖ 系列统一成 v。</summary>
+        static string StripTones(string py)
+        {
+            if (py.All(c => c < 0x80)) return py;
+            var sb = new StringBuilder();
+            foreach (var c in py.Replace('\u01d6', 'v').Replace('\u01d8', 'v').Replace('\u01da', 'v').Replace('\u01dc', 'v').Normalize(NormalizationForm.FormD))
+                if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) != System.Globalization.UnicodeCategory.NonSpacingMark) sb.Append(c);
+            return sb.ToString().Normalize(NormalizationForm.FormC);
+        }
+
         public static List<Entry> Parse(string text, List<string> errors)
         {
             var result = new List<Entry>();
@@ -71,6 +81,7 @@ namespace Yiwei
                 }
                 if (word.Length > 32) { errors.Add("第 " + no + " 行：词太长（最多 32 个字）"); continue; }
                 string py = string.Join(" ", tok).ToLowerInvariant().Replace('\'', ' ').Replace('\u2019', ' ').Replace('\u00fc', 'v'); // xi'an、nü 也认
+                py = StripTones(py); // nǐ hǎo（带声调符号）也认
                 py = Regex.Replace(py, " {2,}", " ").Trim();
                 if (py.Length == 0)
                 {
