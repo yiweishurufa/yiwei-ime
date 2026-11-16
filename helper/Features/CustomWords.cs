@@ -78,6 +78,11 @@ namespace Yiwei
                     py = AddWord.Guess(word);
                     if (py.Length == 0) { errors.Add("第 " + no + " 行「" + word + "」：有字找不到读音，请写上拼音"); continue; }
                 }
+                if (py.Length > 0 && py.IndexOf(' ') < 0 && word.Length > 1 && AddWord.Cjk.IsMatch(word))
+                {   // 拼音连写（yiweishurufa）：和自动注音去掉空格后一致才拆开
+                    var g = AddWord.Guess(word);
+                    if (g.Length > 0 && g.Replace(" ", "") == py) py = g;
+                }
                 if (!Syllables.IsMatch(py)) { errors.Add("第 " + no + " 行「" + word + "」：拼音只能是小写字母，音节用空格隔开"); continue; }
                 if (AddWord.Cjk.IsMatch(word) && py.Split(' ').Length != word.Length) { errors.Add("第 " + no + " 行「" + word + "」：拼音音节数和字数不一致"); continue; }
                 if (!seen.Add(word + "\t" + py))
