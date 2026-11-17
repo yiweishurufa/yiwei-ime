@@ -4,10 +4,10 @@
     <title>一维输入法 更新</title>
     <link>https://github.com/yiweishurufa/yiwei-ime</link>
     <item>
-      <title>一维输入法 0.1.0.137</title>
-      <pubDate>Mon, 16 Nov 2026 11:39:35 +0000</pubDate>
+      <title>一维输入法 0.1.0.138</title>
+      <pubDate>Tue, 17 Nov 2026 02:42:11 +0000</pubDate>
       <sparkle:releaseNotesLink>https://github.com/yiweishurufa/yiwei-ime/releases/tag/nightly</sparkle:releaseNotesLink>
-      <enclosure url="https://github.com/yiweishurufa/yiwei-ime/releases/download/nightly/yiwei-ime-0.1.0.137-installer.exe" sparkle:version="0.1.0.137" sparkle:shortVersionString="0.1.0.137" sparkle:os="windows" length="27902522" sha256="e63da61242029066aea9e8afb26ef23e817b39eecdf4b2c0adc5007d4b90825d" type="application/octet-stream"/>
+      <enclosure url="https://github.com/yiweishurufa/yiwei-ime/releases/download/nightly/yiwei-ime-0.1.0.138-installer.exe" sparkle:version="0.1.0.138" sparkle:shortVersionString="0.1.0.138" sparkle:os="windows" length="27897249" sha256="49fe9d60d997d23e7679b8d227e9e3177aa39c3991c7e1d2190dc55a22883394" type="application/octet-stream"/>
     </item>
   </channel>
 </rss>
