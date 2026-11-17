@@ -80,7 +80,7 @@ namespace Yiwei
                     tok.RemoveAt(tok.Count - 1);
                 }
                 if (word.Length > 32) { errors.Add("第 " + no + " 行：词太长（最多 32 个字）"); continue; }
-                string py = string.Join(" ", tok).ToLowerInvariant().Replace('\'', ' ').Replace('\u2019', ' ').Replace('\u00fc', 'v').Replace('-', ' ').Replace(',', ' ').Replace('/', ' '); // 连字符/逗号/斜杠也当音节分隔；xi'an、nü 也认
+                string py = string.Join(" ", tok).ToLowerInvariant().Replace('\'', ' ').Replace('\u2019', ' ').Replace('\u00fc', 'v').Replace('-', ' ').Replace(',', ' ').Replace('/', ' ').Replace('\u3001', ' ').Replace(';', ' ').Replace('.', ' '); // 连字符/逗号/斜杠也当音节分隔；xi'an、nü 也认
                 py = StripTones(py); // nǐ hǎo（带声调符号）也认
                 py = Regex.Replace(py, " {2,}", " ").Trim();
                 if (py.Length == 0)
