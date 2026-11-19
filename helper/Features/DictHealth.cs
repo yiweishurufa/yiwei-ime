@@ -54,6 +54,9 @@ namespace Yiwei
             foreach (var e in entries)
             {
                 if (!AddWord.Cjk.IsMatch(e.Word)) continue;
+                // 纯汉字词条的拼音音节数和字数对不上：多半漏打或多打了音节
+                if (e.Word.All(c => c >= '\u4e00' && c <= '\u9fff') && e.Pinyin.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length != e.Word.Length)
+                { issues.Add("我的词条「" + e.Word + "」有 " + e.Word.Length + " 个字，拼音「" + e.Pinyin + "」却不是 " + e.Word.Length + " 个音节，可能漏打或多打"); continue; }
                 string g;
                 try { g = AddWord.Guess(e.Word); } catch { continue; }
                 if (g.Length > 0 && g != e.Pinyin && e.Pinyin.Split(' ').Length == e.Word.Length)
