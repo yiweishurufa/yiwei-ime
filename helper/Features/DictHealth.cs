@@ -50,6 +50,15 @@ namespace Yiwei
             var blocked = new HashSet<string>((blockedText ?? "").Split('\n').Select(x => x.Trim()).Where(x => x.Length > 0 && !x.StartsWith("#")));
             foreach (var w in entries.Select(x => x.Word).Distinct())
                 if (blocked.Contains(w)) issues.Add("我的词条「" + w + "」同时在屏蔽词里，不会出现");
+            // 拼音和自动注音不一致：可能打错（多音字、方言读音也会提示，仅供核对）
+            foreach (var e in entries)
+            {
+                if (!AddWord.Cjk.IsMatch(e.Word)) continue;
+                string g;
+                try { g = AddWord.Guess(e.Word); } catch { continue; }
+                if (g.Length > 0 && g != e.Pinyin && e.Pinyin.Split(' ').Length == e.Word.Length)
+                    issues.Add("我的词条「" + e.Word + "」拼音「" + e.Pinyin + "」和自动注音「" + g + "」不同，可能打错（多音字可忽略）");
+            }
             return issues;
         }
 
