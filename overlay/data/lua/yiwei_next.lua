@@ -8,7 +8,22 @@ local flags = require("yiwei_flags")
 local F = {}
 local GAP = 15          -- 两次上屏间隔秒数上限
 local LOOK = 8          -- 只在前几个候选里找
-local MAXFILE = 2000000 -- bigram.tsv 超过 2MB 不再追加
+local MAXFILE = 2000000 -- bigram.tsv 超过 2MB 时合并旧记录（丢掉只出现 1 次的）再追加
+
+-- 文件过大时合并成「前词\t后词\t次数」并丢掉只出现 1 次的，之后继续学。
+local function compact(env)
+  local lines, n = {}, 0
+  for a, row in pairs(env.big) do
+    for b, c in pairs(row) do
+      if c >= 2 then
+        local s = a .. "\t" .. b .. "\t" .. c .. "\n"
+        lines[#lines + 1] = s; n = n + #s
+      else row[b] = nil end
+    end
+  end
+  local f = io.open(flags.path("bigram.tsv"), "w")
+  if f then f:write(table.concat(lines)); f:close(); env.size = n end
+end
 
 local function isword(t)
   return t ~= "" and t:find("[\228-\233]") ~= nil and #t <= 24
@@ -21,10 +36,10 @@ function F.init(env)
   local f = io.open(flags.path("bigram.tsv"), "r")
   if f then
     for line in f:lines() do
-      local a, b = line:match("^([^\t]+)\t([^\t]+)$")
+      local a, b, c = line:match("^([^\t]+)\t([^\t]+)\t?(%d*)$")
       if a then
         local row = env.big[a]; if not row then row = {}; env.big[a] = row end
-        row[b] = (row[b] or 0) + 1
+        row[b] = (row[b] or 0) + (tonumber(c) or 1)
       end
       env.size = env.size + #line + 1
     end
@@ -39,6 +54,7 @@ function F.init(env)
       if l and now - l.at <= GAP and flags.exists("next.enabled") then
         local row = env.big[l.text]; if not row then row = {}; env.big[l.text] = row end
         row[t] = (row[t] or 0) + 1
+        if env.size >= MAXFILE then compact(env) end
         if env.size < MAXFILE then
           local f = io.open(flags.path("bigram.tsv"), "a")
           if f then
