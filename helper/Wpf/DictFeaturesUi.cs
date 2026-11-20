@@ -35,6 +35,10 @@ namespace Yiwei
                 "打出诗句上句时，第 2 个候选是整联（注明作者和诗题）；上句上屏后接着打下句首字母（如 ysdss）直接出下句",
                 K.Toggle(CoreInput.Poetry, v => { CoreInput.Poetry = v; Toast(v ? "已开启诗句联想" : "已关闭诗句联想"); }), Ui.SymbolRegular.BookOpen24));
 
+            p.Children.Add(K.Card("下一词联想",
+                "记住你连着打的两个词（只存本机），之后刚上屏某词、接着打拼音时，常跟在它后面的词会往前排并注〔联想〕。默认关；删除用户目录 yiwei\\bigram.tsv 可清空",
+                K.Toggle(CoreInput.NextWord, v => { CoreInput.NextWord = v; Toast(v ? "已开启下一词联想" : "已关闭下一词联想"); }), Ui.SymbolRegular.TextT24));
+
             p.Children.Add(K.Block("我的词条", "一行一条「词 拼音 权重」，拼音和权重可省（拼音自动注音，权重默认 1000000，数字越大越靠前）。例：一维输入法 yi wei shu ru fa。保存后自动重新部署，雾凇每日更新不影响",
                 CustomWordsEditor(), Ui.SymbolRegular.BookAdd24));
 

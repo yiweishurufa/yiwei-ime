@@ -898,6 +898,36 @@ def poetry_link(r):
 
 
 @case
+def next_word(r):
+    """下一词联想（yiwei_next.lua）：默认关；开启后连着打「你好」+某词多次，之后上屏「你好」再打同样拼音该词排第 1 并注〔联想〕。"""
+    def page(code, n=8):
+        r.type(code); c = r.context(); r.clear(); return list(zip(c["page"], c["comments"]))[:n]
+    import os
+    bp = os.path.join(r.user, "yiwei", "bigram.tsv")
+    if os.path.exists(bp):
+        os.remove(bp)
+    yiwei_file(r, "next.enabled", "1")
+    wait_flags()
+    r.reopen("rime_ice")
+    base = page("shi")
+    target = base[3][0]
+    assert base[0][0] != target, base
+    try:
+        for _ in range(4):
+            r.type("nihao"); r.key(" "); assert r.commit() == "你好"
+            r.type("shi"); c = r.context(); i = c["page"].index(target)
+            r.key(str(i + 1)); assert r.commit() == target, (target, c["page"][:6])
+        r.type("nihao"); r.key(" "); r.commit()
+        p = page("shi")
+        assert p[0] == (target, "〔联想〕"), p
+    finally:
+        yiwei_file(r, "next.enabled")
+        wait_flags()
+    r.type("nihao"); r.key(" "); r.commit()
+    assert not any(cm == "〔联想〕" for _, cm in page("shi")), "关闭后不应再出联想"
+
+
+@case
 def blocked_words(r):
     """全局屏蔽词（yiwei/blocked.txt）：写入的词在任何拼音下都不出现，删掉文件后恢复。"""
     def texts(code):

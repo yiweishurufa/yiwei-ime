@@ -133,7 +133,7 @@ def install_rime_ice():
         if ANDROID and os.path.basename(dirpath) == "yiwei_dicts":
             continue  # 分类词库只挂 Windows（安卓暂停维护）
         for fn in files:
-            if ANDROID and fn.startswith("yiwei_poetry"):
+            if ANDROID and (fn.startswith("yiwei_poetry") or fn == "yiwei_next.lua"):
                 continue
             src = os.path.join(dirpath, fn)
             dest = os.path.join(DATA, os.path.relpath(src, src_root))
@@ -358,6 +358,10 @@ def mount_into_schemas():
                               r"\n\2- lua_filter@*yiwei_poetry  # 一维输入法：诗句联想（上句补整联、下句简拼）\1", text, count=1)
             if n != 1:
                 raise SystemExit("rime_ice.schema.yaml: poetry filter mount failed")
+            text, n = re.subn(r"(\n(\s+)- lua_filter@\*yiwei_correct[^\n]*\n)",
+                              r"\n\2- lua_filter@*yiwei_next  # 一维输入法：下一词联想（本机二元词频，默认关）\1", text, count=1)
+            if n != 1:
+                raise SystemExit("rime_ice.schema.yaml: next filter mount failed")
         text = text.rstrip("\n") + "\n" + TECH_BLOCK + ("" if ANDROID else MIXED_BLOCK)
         open(path, "w", encoding="utf-8", newline="\n").write(text)
         count += 1

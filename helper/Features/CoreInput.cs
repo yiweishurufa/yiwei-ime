@@ -54,6 +54,8 @@ namespace Yiwei
         /// <summary>纠错结果可排第一（首选只是拼出来的句子时）。默认关：纠错只作备选，从第 2 位起。</summary>
         public static bool CorrectFirst { get => Has("correct_first.enabled"); set => Set("correct_first.enabled", value); }
         /// <summary>诗句联想（yiwei_poetry.lua）：打出上句补「上句，下句」候选；上句上屏后打下句首字母出下句。默认开。</summary>
+        /// <summary>下一词联想（yiwei_next.lua）：本机二元词频，刚上屏某词后常跟在它后面的词往前排，注〔联想〕。默认关。</summary>
+        public static bool NextWord { get => Has("next.enabled"); set => Set("next.enabled", value); }
         public static bool Poetry { get => !Has("poetry.disabled"); set => Set("poetry.disabled", !value); }
 
         // ---------- W12 自定义标点映射：yiwei/punct.txt，每行「按键<Tab或空格>输出」，# 开头为注释 ----------
