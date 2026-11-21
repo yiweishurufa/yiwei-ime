@@ -71,6 +71,7 @@ namespace Yiwei
                 new Cell { Icon = "⌨", Name = "快捷键总览", Hint = "Alt+K", Run = () => Program.ShowSettings("工具") },
                 new Cell { Icon = "🩺", Name = "词库体检", Hint = "查我的词条有没有打错", Run = () => Program.ShowSettings("工具") },
                 new Cell { Icon = "🎹", Name = "双拼键位图", Hint = "Alt+P", Run = () => ToolsHub.Run("shuangpin-map") },
+                new Cell { Icon = "⏱", Name = "性能体检", Hint = "候选卡顿时看看", Run = () => Program.ShowSettings("工具") },
             };
             return new[] { page1, page2 };
         }
