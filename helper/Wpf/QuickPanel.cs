@@ -42,6 +42,16 @@ namespace Yiwei
 
         public void Close2() { if (IsVisible) Hide(); }
 
+        static void OpenUserFile(string f)
+        {
+            try
+            {
+                if (!System.IO.File.Exists(f)) System.IO.File.WriteAllText(f, "", new System.Text.UTF8Encoding(false));
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("notepad.exe", "\"" + f + "\"") { UseShellExecute = true });
+            }
+            catch { }
+        }
+
         static List<Cell>[] BuildPages()
         {
             var s = Settings.Current;
@@ -75,6 +85,8 @@ namespace Yiwei
                 new Cell { Icon = "📂", Name = "用户文件夹", Hint = "词库、配置所在处", Run = () => { try { System.Diagnostics.Process.Start("explorer.exe", Paths.UserDir); } catch { } } },
                 new Cell { Icon = "🔄", Name = "重新部署", Hint = "改完词库后点一下", Run = () => System.Threading.Tasks.Task.Run(() => Deploy.Run("/deploy", false)) },
                 new Cell { Icon = "⬆", Name = "检查更新", Hint = "看有没有新版本", Run = () => { _ = AppUpdate.CheckAsync(true); } },
+                new Cell { Icon = "🛠", Name = "纠错规则", Hint = "我的纠错 corrections.txt", Run = () => OpenUserFile(Paths.CorrectionsFile) },
+                new Cell { Icon = "🚫", Name = "屏蔽词", Hint = "blocked.txt，一行一个", Run = () => OpenUserFile(Paths.BlockedFile) },
                 new Cell { Icon = "🧰", Name = "导出诊断", Hint = "反馈问题时用", Run = () => Diagnostics.ExportAndShow() },
             };
             return new[] { page1, page2 };
