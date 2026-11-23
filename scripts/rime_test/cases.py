@@ -971,3 +971,18 @@ def personal_correction_rules(r):
         yiwei_file(r, "corrections.txt")
         time.sleep(3.2)
     assert "你好" not in page("nxhao")[1:4]
+
+
+@case
+def pin_hide_undo(r):
+    """Ctrl+Delete 隐藏候选、Ctrl+Shift+Delete 撤销隐藏。"""
+    r.reopen("rime_ice")
+    r.type("nihao")
+    first = r.context()["page"][0]
+    r.key("Control+DEL")
+    after = r.context()["page"]
+    assert first not in after, (first, after[:5])
+    r.key("Control+Shift+DEL")
+    back = r.context()["page"]
+    assert first in back, (first, back[:5])
+    r.clear()

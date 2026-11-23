@@ -24,6 +24,7 @@ namespace Yiwei
             Add("打字", "1–" + (s.CandidateCount >= 10 ? "0" : s.CandidateCount.ToString()) + " / 空格", "选择候选（每页 " + s.CandidateCount + " 个）");
             Add("打字", "Ctrl+Backspace（刚上屏后）", "反悔重选：删掉刚上屏的词，拼音回到输入框");
             Add("打字", "Ctrl+T / Ctrl+Delete（候选高亮时）", "置顶 / 隐藏这个候选");
+            Add("打字", "Ctrl+Shift+Delete（候选高亮时）", "撤销刚才隐藏的候选");
             Add("打字", "Esc", "清空输入");
             foreach (var sw in RimeToggleKeys.Switches)
             {
