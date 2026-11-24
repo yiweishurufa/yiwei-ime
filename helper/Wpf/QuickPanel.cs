@@ -87,6 +87,7 @@ namespace Yiwei
                 new Cell { Icon = "⬆", Name = "检查更新", Hint = "看有没有新版本", Run = () => { _ = AppUpdate.CheckAsync(true); } },
                 new Cell { Icon = "🛠", Name = "纠错规则", Hint = "我的纠错 corrections.txt", Run = () => OpenUserFile(Paths.CorrectionsFile) },
                 new Cell { Icon = "🚫", Name = "屏蔽词", Hint = "blocked.txt，一行一个", Run = () => OpenUserFile(Paths.BlockedFile) },
+                new Cell { Icon = "📝", Name = "自定义短语", Hint = "custom_phrase.txt，编码→文字", Run = () => OpenUserFile(System.IO.Path.Combine(Paths.UserDir, "custom_phrase.txt")) },
                 new Cell { Icon = "🧰", Name = "导出诊断", Hint = "反馈问题时用", Run = () => Diagnostics.ExportAndShow() },
             };
             return new[] { page1, page2 };
