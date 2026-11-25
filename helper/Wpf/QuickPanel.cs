@@ -90,6 +90,7 @@ namespace Yiwei
                 new Cell { Icon = "📝", Name = "自定义短语", Hint = "custom_phrase.txt，编码→文字", Run = () => OpenUserFile(System.IO.Path.Combine(Paths.UserDir, "custom_phrase.txt")) },
                 new Cell { Icon = "🔗", Name = "联想记录", Hint = "bigram.tsv，可删行或清空", Run = () => OpenUserFile(System.IO.Path.Combine(Paths.UserDir, "bigram.tsv")) },
                 new Cell { Icon = "🗂", Name = "词库同步目录", Hint = "sync 文件夹，备份/迁移词库", Run = () => { try { var d = System.IO.Path.Combine(Paths.UserDir, "sync"); System.IO.Directory.CreateDirectory(d); System.Diagnostics.Process.Start("explorer.exe", d); } catch { } } },
+                new Cell { Icon = "📜", Name = "助手日志", Hint = "yiwei-helper.log，排查问题", Run = () => OpenUserFile(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "yiwei-helper.log")) },
                 new Cell { Icon = "🧰", Name = "导出诊断", Hint = "反馈问题时用", Run = () => Diagnostics.ExportAndShow() },
             };
             return new[] { page1, page2 };
