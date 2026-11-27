@@ -45,5 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="yiwei.ico" LogicalName="yiwei.ico" />
+    <!-- 设置 → 关于 →「更新内容」显示 CHANGELOG.md 最新一节 -->
+    <EmbeddedResource Include="..\CHANGELOG.md" LogicalName="CHANGELOG.md" Condition="Exists('..\CHANGELOG.md')" />
   </ItemGroup>
 </Project>

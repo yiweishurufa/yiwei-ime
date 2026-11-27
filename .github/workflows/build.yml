@@ -531,13 +531,17 @@ jobs:
           # The tag only labels the release (assets/appcast URLs do not depend on it), so a refused move must not block publishing.
           git tag -f nightly "$GITHUB_SHA"
           git push -f origin "refs/tags/nightly" || gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/tags/nightly" -f sha="$GITHUB_SHA" -F force=true >/dev/null || echo "::warning::nightly 标签未能移到 ${GITHUB_SHA::7}（缺 workflows 权限），继续发布资产"
+          # 发布说明 = 安装说明 + CHANGELOG.md 最新一节（用户看得懂的 新增 / 改进 / 修复 / 移除）
+          notes=$(mktemp)
+          printf '%s\n\n' "一维输入法 Windows 测试版（自动构建 #${{ github.run_number }}，提交 ${GITHUB_SHA::7}）。下载 $(basename "$f")，双击安装；不想安装可下 portable zip 绿色便携版（解压后运行「安装-注册输入法.cmd」）。支持 Windows 10/11。" > "$notes"
+          if [ -f CHANGELOG.md ]; then awk '/^## /{n++} n==1' CHANGELOG.md >> "$notes" || true; fi
           if gh release view nightly >/dev/null 2>&1; then
             for a in $(gh release view nightly --json assets --jq '.assets[].name'); do gh release delete-asset nightly "$a" -y; done
             gh release upload nightly "$f" --clobber
             for z in dist-extra/*.zip; do gh release upload nightly "$z" --clobber; done
-            gh release edit nightly --prerelease --latest=false --title "一维输入法 测试版" --notes "一维输入法 Windows 测试版（自动构建 #${{ github.run_number }}，提交 ${GITHUB_SHA::7}）。下载 $(basename "$f")，双击安装；不想安装可下 portable zip 绿色便携版（解压后运行「安装-注册输入法.cmd」）。支持 Windows 10/11。"
+            gh release edit nightly --prerelease --latest=false --title "一维输入法 测试版" --notes-file "$notes"
           else
-            gh release create nightly "$f" dist-extra/*.zip --verify-tag --prerelease --latest=false --title "一维输入法 测试版" --notes "一维输入法 Windows 测试版（自动构建 #${{ github.run_number }}，提交 ${GITHUB_SHA::7}）。下载 $(basename "$f")，双击安装；不想安装可下 portable zip 绿色便携版（解压后运行「安装-注册输入法.cmd」）。支持 Windows 10/11。"
+            gh release create nightly "$f" dist-extra/*.zip --verify-tag --prerelease --latest=false --title "一维输入法 测试版" --notes-file "$notes"
           fi
       - name: 发布正式版
         if: startsWith(github.ref, 'refs/tags/')

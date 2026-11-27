@@ -559,12 +559,45 @@ namespace Yiwei
 
         // ================= 关于 =================
 
+        /// <summary>内嵌 CHANGELOG.md 的最新一节，去掉 Markdown 记号（没有则 null）。</summary>
+        static string LatestNotes()
+        {
+            try
+            {
+                using (var st = typeof(SettingsWindow).Assembly.GetManifestResourceStream("CHANGELOG.md"))
+                {
+                    if (st == null) return null;
+                    var lines = new StreamReader(st, System.Text.Encoding.UTF8).ReadToEnd().Replace("\r", "").Split('\n');
+                    var sb = new System.Text.StringBuilder();
+                    int n = 0;
+                    foreach (var raw in lines)
+                    {
+                        if (raw.StartsWith("## ")) { if (++n > 1) break; sb.AppendLine(raw.Substring(3).Trim()); continue; }
+                        if (n != 1) continue;
+                        var l = raw.Replace("**", "");
+                        if (l.StartsWith("- ")) l = "· " + l.Substring(2);
+                        else if (l.StartsWith("  ")) l = "  " + l.Trim();
+                        sb.AppendLine(l);
+                    }
+                    var t = sb.ToString().Trim();
+                    return t.Length == 0 ? null : t;
+                }
+            }
+            catch (Exception e) { Log.Write("changelog: " + e.Message); return null; }
+        }
+
         StackPanel PageAbout()
         {
             var p = new StackPanel();
             p.Children.Add(K.PageTitle("关于"));
             var ver = AppUpdate.Current;
             p.Children.Add(K.Card("一维输入法 " + ver, "中文常新，自在表达。开源，注重隐私，基于 RIME。", K.Btn("检查更新", CheckAppUpdate, Ui.ControlAppearance.Primary), Ui.SymbolRegular.Info24));
+            var notes = LatestNotes();
+            if (notes != null)
+            {
+                var body = K.Text(notes, Tok.Body); body.LineHeight = 22;
+                p.Children.Add(K.Block("更新内容", "这一版改了什么", body, Ui.SymbolRegular.DocumentBulletList24));
+            }
             p.Children.Add(K.Card("自动检查更新", "每天检查一次新版本，有更新时在托盘提示，点一下就能升级（只访问 GitHub）",
                 K.Toggle(S.AppAutoUpdate, v => { S.AppAutoUpdate = v; Save(); }), Ui.SymbolRegular.ArrowSync24));
             p.Children.Add(K.Card("打开用户文件夹", Paths.UserDir, K.Btn("打开", () => { Directory.CreateDirectory(Paths.UserDir); Dialogs.Open(Paths.UserDir); }), Ui.SymbolRegular.FolderOpen24));
@@ -589,6 +622,7 @@ namespace Yiwei
                 ("OpenCC", "Apache-2.0", "简繁转换"),
                 ("AIME 艾么输入法", "MIT · © 2026 ZOOL LLC", "产品设计、配色与科技词库的来源"),
                 ("WPF-UI (lepoco/wpfui)", "MIT", "设置界面控件"),
+                ("Fluent System Icons（© Microsoft）", "MIT", "界面线性图标（随 WPF-UI 提供）"),
                 ("Costura.Fody", "MIT", "把依赖合并进单个程序文件"),
             })
             {
