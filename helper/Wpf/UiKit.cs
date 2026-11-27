@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Automation;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -54,6 +55,7 @@ namespace Yiwei
             try { ApplicationThemeManager.Apply(t, Ui.WindowBackdropType.None, false); } catch (Exception e) { Log.Write("theme: " + e.Message); }
             try { ApplicationAccentColorManager.Apply(Accent, t, false); } catch (Exception e) { Log.Write("accent: " + e.Message); }
             RefreshAccentBrushes();
+            try { K.RepaintTiles(); } catch (Exception e) { Log.Write("tiles: " + e.Message); }
             var app = Application.Current;
             if (app != null)
                 foreach (Window w in app.Windows)
@@ -88,45 +90,120 @@ namespace Yiwei
         public static Ui.WindowBackdropType Backdrop => SystemTheme.IsWindows11 ? Ui.WindowBackdropType.Mica : Ui.WindowBackdropType.None;
     }
 
-    /// <summary>Small builders for the settings and wizard pages.</summary>
+    /// <summary>Small builders for the settings and wizard pages (v2「澄澈」, docs/design/DESIGN-v2.md §7).</summary>
     static class K
     {
-        public static readonly FontFamily Font = new FontFamily("Segoe UI Variable Text, Microsoft YaHei UI, Segoe UI");
+        public static readonly FontFamily Font = Tok.Text;
+
+        /// <summary>每个设置页的图标和一句「这一页管什么」（页面头用；名字与 SettingsWindow 的页名一致）。</summary>
+        public static readonly Dictionary<string, (Ui.SymbolRegular Icon, string Desc)> PageInfo = new Dictionary<string, (Ui.SymbolRegular, string)>
+        {
+            ["常规"] = (Ui.SymbolRegular.Settings24, "输入习惯、隐私、提示和任务栏图标"),
+            ["输入方案"] = (Ui.SymbolRegular.Keyboard24, "全拼、双拼、笔画，以及模糊音、纠错、屏蔽词"),
+            ["快捷输入"] = (Ui.SymbolRegular.Flash24, "计算器、日期时间、Unicode、以词定字等 v 键和快捷编码"),
+            ["外观"] = (Ui.SymbolRegular.PaintBrush24, "候选窗配色、强调色、排列和字体"),
+            ["快捷键"] = (Ui.SymbolRegular.KeyboardShift24, "长按 Alt 的面板、反悔重选和各类功能热键"),
+            ["语音"] = (Ui.SymbolRegular.Mic24, "按住说话转文字的识别方式和按键"),
+            ["常用语"] = (Ui.SymbolRegular.TextBulletListSquare24, "Alt + 数字一键上屏的短语和分组"),
+            ["AI"] = (Ui.SymbolRegular.Sparkle24, "只在按快捷键时调用的 AI 帮写，接口和密钥只存本机"),
+            ["词库"] = (Ui.SymbolRegular.Library24, "雾凇词库更新、分类词库、语法模型和我的词条"),
+            ["工具"] = (Ui.SymbolRegular.Toolbox24, "词库体检、性能体检、备份导入和诊断"),
+            ["应用规则"] = (Ui.SymbolRegular.AppsList24, "在哪些程序里默认英文、关掉快捷键"),
+            ["统计"] = (Ui.SymbolRegular.DataTrending24, "只存本机的输入统计：字数、速度、常用词"),
+            ["关于"] = (Ui.SymbolRegular.Info24, "版本、更新内容、开源许可与隐私说明"),
+        };
 
         public static T Res<T>(T e, DependencyProperty p, string key) where T : FrameworkElement { e.SetResourceReference(p, key); return e; }
 
-        public static TextBlock Text(string t, double size = 14, bool secondary = false, FontWeight? weight = null)
+        public static TextBlock Text(string t, double size = Tok.Body, bool secondary = false, FontWeight? weight = null)
         {
             var tb = new TextBlock { Text = t, FontSize = size, TextWrapping = TextWrapping.Wrap, FontWeight = weight ?? FontWeights.Normal };
             tb.SetResourceReference(TextBlock.ForegroundProperty, secondary ? "TextFillColorSecondaryBrush" : "TextFillColorPrimaryBrush");
             return tb;
         }
 
-        /// <summary>Page title with the brand's one short stroke under it (the 「一」 of 一维).</summary>
+        /// <summary>36×36 的浅强调色圆角瓦片，里面一个线性图标（设置项、页面头、空状态）。</summary>
+        public static Border IconTile(Ui.SymbolRegular icon, double size = 36)
+        {
+            var glyph = new Ui.SymbolIcon { Symbol = icon, FontSize = Math.Round(size * 0.53), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = Tok.TileGlyphBrush };
+            var tile = new Border { Width = size, Height = size, CornerRadius = new CornerRadius(Tok.RCard), Background = Tok.TileBrush, Child = glyph, VerticalAlignment = VerticalAlignment.Center };
+            Tiles.Add(new WeakReference<Border>(tile));
+            return tile;
+        }
+
+        static readonly List<WeakReference<Border>> Tiles = new List<WeakReference<Border>>();
+
+        /// <summary>强调色 / 深浅色变了：重刷图标瓦片的颜色（瓦片用的是计算出的颜色，不是主题资源）。</summary>
+        public static void RepaintTiles()
+        {
+            Tiles.RemoveAll(w => !w.TryGetTarget(out _));
+            foreach (var w in Tiles)
+                if (w.TryGetTarget(out var t))
+                {
+                    t.Background = Tok.TileBrush;
+                    if (t.Child is Ui.SymbolIcon g) g.Foreground = Tok.TileGlyphBrush;
+                }
+        }
+
+        /// <summary>页面头：图标瓦片 + 28px 标题 + 一句这一页管什么。</summary>
         public static FrameworkElement PageTitle(string t)
         {
-            var p = new StackPanel { Margin = new Thickness(0, 0, 0, 20) };
-            p.Children.Add(Text(t, 24, false, FontWeights.SemiBold));
-            var bar = new Border { Width = 28, Height = 3, CornerRadius = new CornerRadius(1.5), HorizontalAlignment = HorizontalAlignment.Left, Margin = new Thickness(1, 8, 0, 0) };
-            bar.SetResourceReference(Border.BackgroundProperty, "AccentFillColorDefaultBrush");
-            p.Children.Add(bar);
-            return p;
+            var g = new Grid { Margin = new Thickness(0, 0, 0, Tok.S24) };
+            g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            PageInfo.TryGetValue(t, out var info);
+            if (info.Icon != Ui.SymbolRegular.Empty)
+            {
+                var tile = IconTile(info.Icon, 48);
+                tile.Margin = new Thickness(0, 0, Tok.S16, 0);
+                g.Children.Add(tile);
+            }
+            var texts = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+            var title = Text(t, Tok.Display28, false, FontWeights.SemiBold);
+            title.FontFamily = Tok.Display;
+            texts.Children.Add(title);
+            if (!string.IsNullOrEmpty(info.Desc)) { var d = Text(info.Desc, Tok.Body, true); d.Margin = new Thickness(0, 2, 0, 0); texts.Children.Add(d); }
+            Grid.SetColumn(texts, 1); g.Children.Add(texts);
+            return g;
         }
-        public static TextBlock Section(string t) { var x = Text(t, 13, true, FontWeights.SemiBold); x.Margin = new Thickness(2, 22, 0, 8); return x; }
+
+        /// <summary>分组标题（14px SemiBold），可带一句说明。</summary>
+        public static FrameworkElement Section(string t, string desc)
+        {
+            var sp = new StackPanel { Margin = new Thickness(2, Tok.S24, 0, Tok.S8) };
+            var h = Text(t, Tok.Body, false, FontWeights.SemiBold);
+            sp.Children.Add(h);
+            if (!string.IsNullOrEmpty(desc)) { var d = Text(desc, Tok.Caption, true); d.Margin = new Thickness(0, 2, 0, 0); sp.Children.Add(d); }
+            return sp;
+        }
+
+        public static TextBlock Section(string t)
+        {
+            var x = Text(t, Tok.Body, false, FontWeights.SemiBold);
+            x.Margin = new Thickness(2, Tok.S24, 0, Tok.S8);
+            return x;
+        }
 
         public static Border CardBorder(UIElement child, Thickness? pad = null)
         {
             var b = new Border
             {
-                CornerRadius = new CornerRadius(8), BorderThickness = new Thickness(1), Padding = pad ?? new Thickness(16, 12, 16, 12),
-                Margin = new Thickness(0, 0, 0, 4), Child = child,
+                CornerRadius = new CornerRadius(Tok.RCard), BorderThickness = new Thickness(1), Padding = pad ?? new Thickness(Tok.S16, Tok.S12, Tok.S16, Tok.S12),
+                Margin = new Thickness(0, 0, 0, Tok.S4), Child = child,
             };
             b.SetResourceReference(Border.BackgroundProperty, "CardBackgroundFillColorDefaultBrush");
             b.SetResourceReference(Border.BorderBrushProperty, "CardStrokeColorDefaultBrush");
             return b;
         }
 
-        /// <summary>A setting row: icon, title, one-line grey description, control on the right.</summary>
+        /// <summary>卡片悬停时换成次级卡片底（和 Windows 11 设置一样，不做位移）。</summary>
+        static void Hoverable(Border b)
+        {
+            b.MouseEnter += (s, e) => b.SetResourceReference(Border.BackgroundProperty, "CardBackgroundFillColorSecondaryBrush");
+            b.MouseLeave += (s, e) => b.SetResourceReference(Border.BackgroundProperty, "CardBackgroundFillColorDefaultBrush");
+        }
+
+        /// <summary>A setting row: icon tile, title, one-line grey description, control on the right.</summary>
         public static Border Card(string title, string desc, UIElement right, Ui.SymbolRegular icon = Ui.SymbolRegular.Empty)
         {
             var g = new Grid();
@@ -135,21 +212,28 @@ namespace Yiwei
             g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             if (icon != Ui.SymbolRegular.Empty)
             {
-                var ic = new Ui.SymbolIcon { Symbol = icon, FontSize = 20, Margin = new Thickness(0, 0, 14, 0), VerticalAlignment = VerticalAlignment.Center };
-                g.Children.Add(ic);
+                var tile = IconTile(icon);
+                tile.Margin = new Thickness(0, 0, Tok.S16, 0);
+                g.Children.Add(tile);
             }
             var texts = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
-            texts.Children.Add(Text(title, 14));
-            if (!string.IsNullOrEmpty(desc)) texts.Children.Add(Text(desc, 12, true));
+            texts.Children.Add(Text(title, Tok.Body));
+            if (!string.IsNullOrEmpty(desc)) { var d = Text(desc, Tok.Caption, true); d.Margin = new Thickness(0, 2, 0, 0); texts.Children.Add(d); }
             Grid.SetColumn(texts, 1); g.Children.Add(texts);
             if (right != null)
             {
-                if (right is FrameworkElement fe) { fe.VerticalAlignment = VerticalAlignment.Center; fe.Margin = new Thickness(16, 0, 0, 0); }
+                if (right is FrameworkElement fe)
+                {
+                    fe.VerticalAlignment = VerticalAlignment.Center; fe.Margin = new Thickness(Tok.S16, 0, 0, 0);
+                    if (string.IsNullOrEmpty(AutomationProperties.GetName(fe))) AutomationProperties.SetName(fe, title);
+                    if (!string.IsNullOrEmpty(desc) && string.IsNullOrEmpty(AutomationProperties.GetHelpText(fe))) AutomationProperties.SetHelpText(fe, desc);
+                }
                 Grid.SetColumn(right, 2); g.Children.Add(right);
             }
             var card = CardBorder(g);
-            card.MinHeight = 64;
+            card.MinHeight = 68;
             card.Tag = title + "\n" + desc;
+            Hoverable(card);
             return card;
         }
 
@@ -160,11 +244,51 @@ namespace Yiwei
             var head = Card(title, desc, null, icon).Child as Grid;
             ((Border)head.Parent).Child = null;
             sp.Children.Add(head);
-            if (body is FrameworkElement fe && fe.Margin == default(Thickness)) fe.Margin = new Thickness(0, 12, 0, 0);
+            if (body is FrameworkElement fe && fe.Margin == default(Thickness)) fe.Margin = new Thickness(0, Tok.S12, 0, 0);
             sp.Children.Add(body);
             var card = CardBorder(sp);
             card.Tag = title + "\n" + desc;
             return card;
+        }
+
+        /// <summary>空状态：大号线性图标 + 一句话 + 一句引导 + 可选操作（不用彩色圆底）。</summary>
+        public static FrameworkElement EmptyState(Ui.SymbolRegular icon, string title, string hint, UIElement action = null)
+        {
+            var sp = new StackPanel { HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, Tok.S24, 0, Tok.S24), MaxWidth = 420 };
+            var ic = new Ui.SymbolIcon { Symbol = icon, FontSize = 40, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 0, 0, Tok.S12) };
+            ic.SetResourceReference(Control.ForegroundProperty, "TextFillColorTertiaryBrush");
+            sp.Children.Add(ic);
+            var t = Text(title, Tok.Subtitle, false, FontWeights.SemiBold); t.TextAlignment = TextAlignment.Center; sp.Children.Add(t);
+            if (!string.IsNullOrEmpty(hint)) { var h = Text(hint, Tok.Body, true); h.TextAlignment = TextAlignment.Center; h.Margin = new Thickness(0, Tok.S4, 0, 0); sp.Children.Add(h); }
+            if (action is FrameworkElement fa) { fa.HorizontalAlignment = HorizontalAlignment.Center; fa.Margin = new Thickness(0, Tok.S16, 0, 0); sp.Children.Add(fa); }
+            return sp;
+        }
+
+        /// <summary>加载中：小号环形进度 + 文字。</summary>
+        public static FrameworkElement Loading(string text)
+        {
+            var sp = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, Tok.S8, 0, Tok.S8) };
+            sp.Children.Add(new Ui.ProgressRing { IsIndeterminate = true, Width = 18, Height = 18, Margin = new Thickness(0, 0, Tok.S12, 0), VerticalAlignment = VerticalAlignment.Center });
+            var t = Text(text, Tok.Body, true); t.VerticalAlignment = VerticalAlignment.Center; sp.Children.Add(t);
+            AutomationProperties.SetName(sp, text);
+            AutomationProperties.SetLiveSetting(sp, AutomationLiveSetting.Polite);
+            return sp;
+        }
+
+        /// <summary>出错：警示图标 + 原因 + 可选「重试」。</summary>
+        public static FrameworkElement ErrorState(string reason, Action retry = null)
+        {
+            var g = new Grid { Margin = new Thickness(0, Tok.S8, 0, Tok.S8) };
+            g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            var ic = new Ui.SymbolIcon { Symbol = Ui.SymbolRegular.ErrorCircle24, FontSize = 20, Margin = new Thickness(0, 0, Tok.S12, 0), VerticalAlignment = VerticalAlignment.Center };
+            ic.SetResourceReference(Control.ForegroundProperty, "SystemFillColorCriticalBrush");
+            g.Children.Add(ic);
+            var t = Text(reason, Tok.Body); t.VerticalAlignment = VerticalAlignment.Center; Grid.SetColumn(t, 1); g.Children.Add(t);
+            if (retry != null) { var b = Btn("重试", retry); b.Margin = new Thickness(Tok.S12, 0, 0, 0); Grid.SetColumn(b, 2); g.Children.Add(b); }
+            AutomationProperties.SetLiveSetting(g, AutomationLiveSetting.Assertive);
+            return g;
         }
 
         public static Ui.ToggleSwitch Toggle(bool value, Action<bool> changed)
@@ -216,7 +340,7 @@ namespace Yiwei
 
         public static ScrollViewer Page(StackPanel content)
         {
-            content.Margin = new Thickness(28, 20, 28, 28);
+            content.Margin = new Thickness(Tok.S32, Tok.S8, Tok.S32, Tok.S32);
             content.MaxWidth = 1000;
             return new ScrollViewer { Content = content, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled };
         }
@@ -236,27 +360,52 @@ namespace Yiwei
         }
     }
 
-    /// <summary>A small toast inside a window (bottom centre).</summary>
+    /// <summary>窗口底部居中的小提示（v2：卡片样式、跟随深浅色、带状态图标、淡入上移）。</summary>
     sealed class ToastHost : Border
     {
-        readonly TextBlock _text = new TextBlock { FontSize = 13, Foreground = Brushes.White, TextWrapping = TextWrapping.Wrap };
+        readonly TextBlock _text = new TextBlock { FontSize = Tok.Body, TextWrapping = TextWrapping.Wrap, VerticalAlignment = VerticalAlignment.Center, MaxWidth = 520 };
+        readonly Ui.SymbolIcon _icon = new Ui.SymbolIcon { FontSize = 18, Margin = new Thickness(0, 0, Tok.S8, 0), VerticalAlignment = VerticalAlignment.Center };
         readonly System.Windows.Threading.DispatcherTimer _timer = new System.Windows.Threading.DispatcherTimer();
 
         public ToastHost()
         {
-            CornerRadius = new CornerRadius(8); Padding = new Thickness(16, 10, 16, 10);
-            Background = new SolidColorBrush(Color.FromArgb(0xF0, 0x2B, 0x2F, 0x36));
+            CornerRadius = new CornerRadius(Tok.RCard); Padding = new Thickness(Tok.S16, 10, Tok.S16, 10); BorderThickness = new Thickness(1);
             HorizontalAlignment = HorizontalAlignment.Center; VerticalAlignment = VerticalAlignment.Bottom;
-            Margin = new Thickness(0, 0, 0, 24); Child = _text; Visibility = Visibility.Collapsed; IsHitTestVisible = false;
-            Effect = new System.Windows.Media.Effects.DropShadowEffect { BlurRadius = 16, ShadowDepth = 2, Opacity = 0.25 };
-            _timer.Tick += (s, e) => { _timer.Stop(); var a = new DoubleAnimation(0, TimeSpan.FromMilliseconds(250)); a.Completed += (x, y) => { if (!_timer.IsEnabled) Visibility = Visibility.Collapsed; }; BeginAnimation(OpacityProperty, a); };
+            Margin = new Thickness(0, 0, 0, Tok.S24); Visibility = Visibility.Collapsed; IsHitTestVisible = false;
+            var row = new StackPanel { Orientation = Orientation.Horizontal };
+            row.Children.Add(_icon); row.Children.Add(_text);
+            Child = row;
+            SetResourceReference(BackgroundProperty, "SolidBackgroundFillColorTertiaryBrush");
+            SetResourceReference(BorderBrushProperty, "SurfaceStrokeColorFlyoutBrush");
+            _text.SetResourceReference(TextBlock.ForegroundProperty, "TextFillColorPrimaryBrush");
+            AutomationProperties.SetLiveSetting(this, AutomationLiveSetting.Polite);
+            _timer.Tick += (s, e) =>
+            {
+                _timer.Stop();
+                if (!Motion.Enabled) { Visibility = Visibility.Collapsed; return; }
+                var a = new DoubleAnimation(0, Tok.Slow) { EasingFunction = Tok.Decelerate };
+                a.Completed += (x, y) => { if (!_timer.IsEnabled) Visibility = Visibility.Collapsed; };
+                BeginAnimation(OpacityProperty, a);
+            };
         }
 
         public void Show(string text, int ms = 2200)
         {
+            text = text ?? "";
+            // 状态不只靠颜色：成功 ✓ / 失败 ! / 进行中 ⋯ 各有自己的图标
+            bool ok = text.StartsWith("✓") || text.StartsWith("已");
+            bool bad = text.Contains("失败") || text.Contains("未完成") || text.Contains("出错");
+            bool busy = text.StartsWith("正在");
+            if (text.StartsWith("✓")) text = text.Substring(1).TrimStart();
+            _icon.Symbol = bad ? Ui.SymbolRegular.ErrorCircle24 : ok ? Ui.SymbolRegular.CheckmarkCircle24 : busy ? Ui.SymbolRegular.ArrowSync24 : Ui.SymbolRegular.Info24;
+            _icon.SetResourceReference(Control.ForegroundProperty, bad ? "SystemFillColorCriticalBrush" : ok ? "SystemFillColorSuccessBrush" : "TextFillColorSecondaryBrush");
             _text.Text = text;
+            AutomationProperties.SetName(this, text);
+            Effect = Tok.FlyoutShadow(UiTheme.Dark);
+            bool wasVisible = Visibility == Visibility.Visible && Opacity > 0.9;
             Visibility = Visibility.Visible;
-            BeginAnimation(OpacityProperty, new DoubleAnimation(1, TimeSpan.FromMilliseconds(150)));
+            BeginAnimation(OpacityProperty, null); Opacity = 1;
+            if (!wasVisible) Motion.FadeInUp(this, 8, Tok.Slow);
             _timer.Stop(); _timer.Interval = TimeSpan.FromMilliseconds(ms); _timer.Start();
         }
 
@@ -270,12 +419,82 @@ namespace Yiwei
         }
     }
 
+    /// <summary>
+    /// v2 对话框：圆角卡片、图标 + 标题 + 正文、右下主次按钮；Esc = 取消、回车 = 确定。
+    /// 只在 WPF 界面线程上用；其他线程回退系统 MessageBox（见 Dialogs.Show）。
+    /// </summary>
+    sealed class FluentDialog : Window
+    {
+        bool _ok;
+
+        FluentDialog(string text, string title, bool cancel, bool warn)
+        {
+            WindowStyle = WindowStyle.None; AllowsTransparency = true; Background = Brushes.Transparent; ResizeMode = ResizeMode.NoResize;
+            SizeToContent = SizeToContent.WidthAndHeight; WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            Topmost = true; ShowInTaskbar = true; Title = title; FontFamily = Tok.Text;
+            AutomationProperties.SetName(this, title);
+
+            var g = new Grid { MinWidth = 360, MaxWidth = 520 };
+            g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            g.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            g.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            g.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            var ic = new Ui.SymbolIcon { Symbol = warn ? Ui.SymbolRegular.Warning24 : Ui.SymbolRegular.Info24, FontSize = 24, Margin = new Thickness(0, 2, Tok.S12, 0), VerticalAlignment = VerticalAlignment.Top };
+            if (warn) ic.SetResourceReference(Control.ForegroundProperty, "SystemFillColorCautionBrush"); else ic.Foreground = Tok.TileGlyphBrush;
+            Grid.SetRowSpan(ic, 2); g.Children.Add(ic);
+            var head = K.Text(title, Tok.Title, false, FontWeights.SemiBold); head.FontFamily = Tok.Display;
+            Grid.SetColumn(head, 1); g.Children.Add(head);
+            var body = K.Text(text, Tok.Body); body.Margin = new Thickness(0, Tok.S8, 0, 0); body.LineHeight = 21;
+            var bodyScroll = new ScrollViewer { Content = body, MaxHeight = 420, VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+            Grid.SetColumn(bodyScroll, 1); Grid.SetRow(bodyScroll, 1); g.Children.Add(bodyScroll);
+
+            var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, Tok.S24, 0, 0) };
+            var okBtn = new Ui.Button { Content = "确定", Appearance = Ui.ControlAppearance.Primary, MinWidth = 96, IsDefault = true };
+            okBtn.Click += (s, e) => { _ok = true; Close(); };
+            if (cancel)
+            {
+                var c = new Ui.Button { Content = "取消", Appearance = Ui.ControlAppearance.Secondary, MinWidth = 96, IsCancel = true, Margin = new Thickness(0, 0, Tok.S8, 0) };
+                c.Click += (s, e) => Close();
+                buttons.Children.Add(c);
+            }
+            buttons.Children.Add(okBtn);
+            Grid.SetColumnSpan(buttons, 2); Grid.SetRow(buttons, 2); g.Children.Add(buttons);
+
+            var card = new Border { CornerRadius = new CornerRadius(Tok.RFlyout), BorderThickness = new Thickness(1), Padding = new Thickness(Tok.S24), Margin = new Thickness(Tok.S24), Child = g, Effect = Tok.FlyoutShadow(UiTheme.Dark) };
+            card.SetResourceReference(Border.BackgroundProperty, "SolidBackgroundFillColorBaseBrush");
+            card.SetResourceReference(Border.BorderBrushProperty, "SurfaceStrokeColorFlyoutBrush");
+            card.MouseLeftButtonDown += (s, e) => { try { DragMove(); } catch { } };
+            Content = card;
+            PreviewKeyDown += (s, e) => { if (e.Key == System.Windows.Input.Key.Escape) { _ok = false; Close(); e.Handled = true; } };
+            Loaded += (s, e) => { Motion.PopIn(card); okBtn.Focus(); };
+            ContentRendered += (s, e) => { try { Activate(); } catch { } };
+        }
+
+        public static bool Ask(string text, string title, bool cancel, bool warn)
+        {
+            var d = new FluentDialog(text, title, cancel, warn);
+            d.ShowDialog();
+            return d._ok;
+        }
+    }
+
     static class Dialogs
     {
         // 助手是后台进程，从语言栏菜单 / 管道命令弹出的对话框常被 Windows 压到其它窗口后面（只在任务栏闪），
-        // 用户会以为「点了没反应」。这里用一个置顶的隐形窗口当 owner，把对话框带到最前面。
+        // 用户会以为「点了没反应」。v2 对话框自带置顶；回退的系统框用一个置顶的隐形窗口当 owner。
         static MessageBoxResult Show(string text, string title, MessageBoxButton buttons, MessageBoxImage image)
         {
+            try
+            {
+                var app = Application.Current;
+                if (app != null && app.Dispatcher.CheckAccess())
+                {
+                    bool ok = FluentDialog.Ask(text, title, buttons == MessageBoxButton.OKCancel, image == MessageBoxImage.Warning);
+                    return ok ? MessageBoxResult.OK : MessageBoxResult.Cancel;
+                }
+            }
+            catch (Exception e) { Log.Write("dialog: " + e.Message); }
             Window owner = null;
             try
             {
@@ -362,9 +581,21 @@ namespace Yiwei
         public void ShowAt(Native.RECT anchor)
         {
             _anchor = anchor;
-            if (!IsVisible) { Show(); }
+            bool appearing = !IsVisible;
+            if (appearing) { Show(); }
             UpdateLayout();
             Place();
+            if (appearing && AnimateOpen && Content is UIElement c) Motion.FadeInUp(c, 8); // v2：面板打开时淡入上移
+        }
+
+        /// <summary>打开时是否淡入上移（中/英提示这类打字路径上的气泡关掉）。</summary>
+        protected virtual bool AnimateOpen => !_clickThrough;
+
+        /// <summary>重建内容后保持可见（换页时新内容也淡入，但幅度更小）。</summary>
+        protected void SwapContent(UIElement c, bool animate)
+        {
+            Content = c;
+            if (animate && IsVisible && AnimateOpen) Motion.FadeInUp(c, 4, Tok.Fast);
         }
 
         void Place()
@@ -380,24 +611,37 @@ namespace Yiwei
         }
     }
 
-    /// <summary>Colours for the floating panels: system light/dark + brand accent.</summary>
+    /// <summary>浮动面板的配色（v2「澄澈」，DESIGN-v2 §2.2）：系统深浅色 + 强调色。</summary>
     sealed class PanelPalette
     {
-        public Brush Back, Card, CardHover, Text, Dim, Accent, AccentText, Border, Del, DelText, Ins, InsText;
+        public bool Dark;
+        public Brush Back, Card, CardHover, CardPressed, Text, Dim, Faint, Accent, AccentText, AccentInk, AccentSoft, Border, Highlight, Focus, Del, DelText, Ins, InsText;
+        public Color BackColor, CardColor, CardHoverColor;
         public static PanelPalette Now()
         {
             bool dark = SystemTheme.IsDark;
             var acc = UiTheme.Accent;
+            if (dark) acc = Tok.Mix(acc, Colors.White, 0.30); // 深色档强调色提亮（与候选窗 v2 一致）
+            var back = dark ? Color.FromRgb(0x1D, 0x21, 0x29) : Color.FromRgb(0xF6, 0xF8, 0xFB);
+            var card = dark ? Color.FromRgb(0x27, 0x2C, 0x36) : Colors.White;
+            var hover = dark ? Color.FromRgb(0x31, 0x37, 0x44) : Color.FromRgb(0xEE, 0xF2, 0xF8);
             return new PanelPalette
             {
-                Back = K.Brush(dark ? Color.FromArgb(0xF7, 0x2A, 0x2C, 0x31) : Color.FromArgb(0xF7, 0xFB, 0xFB, 0xFC)),
-                Card = K.Brush(dark ? Color.FromRgb(0x35, 0x38, 0x3E) : Colors.White),
-                CardHover = K.Brush(dark ? Color.FromRgb(0x40, 0x43, 0x4A) : Color.FromRgb(0xF0, 0xF2, 0xF5)),
-                Text = K.Brush(dark ? Color.FromRgb(0xEC, 0xEE, 0xF1) : Color.FromRgb(0x1F, 0x23, 0x28)),
-                Dim = K.Brush(dark ? Color.FromRgb(0x9A, 0xA0, 0xA8) : Color.FromRgb(0x6B, 0x72, 0x80)),
+                Dark = dark, BackColor = back, CardColor = card, CardHoverColor = hover,
+                Back = K.Brush(Color.FromArgb((byte)(dark ? 0xF5 : 0xF7), back.R, back.G, back.B)),
+                Card = K.Brush(card),
+                CardHover = K.Brush(hover),
+                CardPressed = K.Brush(dark ? Color.FromRgb(0x3A, 0x41, 0x50) : Color.FromRgb(0xE4, 0xE9, 0xF1)),
+                Text = K.Brush(dark ? Color.FromRgb(0xEE, 0xF1, 0xF6) : Color.FromRgb(0x16, 0x1B, 0x26)),
+                Dim = K.Brush(dark ? Color.FromRgb(0xA4, 0xAD, 0xBE) : Color.FromRgb(0x5A, 0x64, 0x78)),
+                Faint = K.Brush(dark ? Color.FromRgb(0x7C, 0x85, 0x98) : Color.FromRgb(0x7A, 0x83, 0x98)),
                 Accent = K.Brush(acc),
-                AccentText = Brushes.White,
-                Border = K.Brush(dark ? Color.FromRgb(0x44, 0x47, 0x4E) : Color.FromRgb(0xE1, 0xE4, 0xE8)),
+                AccentText = K.Brush(Tok.OnAccent(acc)),
+                AccentInk = K.Brush(Tok.AccentText(UiTheme.Accent, dark, back)),
+                AccentSoft = K.Brush(Tok.WithAlpha(acc, (byte)(dark ? 0x33 : 0x1F))),
+                Border = K.Brush(dark ? Color.FromRgb(0x3A, 0x41, 0x50) : Color.FromRgb(0xE2, 0xE7, 0xEF)),
+                Highlight = K.Brush(dark ? Color.FromArgb(0x14, 0xFF, 0xFF, 0xFF) : Color.FromArgb(0xE6, 0xFF, 0xFF, 0xFF)),
+                Focus = K.Brush(acc),
                 Del = K.Brush(dark ? Color.FromArgb(0x55, 0xE0, 0x48, 0x3A) : Color.FromRgb(0xFD, 0xE2, 0xDF)),
                 DelText = K.Brush(dark ? Color.FromRgb(0xFF, 0x9C, 0x92) : Color.FromRgb(0xB4, 0x23, 0x18)),
                 Ins = K.Brush(dark ? Color.FromArgb(0x55, 0x0F, 0x9D, 0x8A) : Color.FromRgb(0xD8, 0xF3, 0xEC)),

@@ -8,7 +8,7 @@ using System.Windows.Threading;
 namespace Yiwei
 {
     /// <summary>
-    /// The small 中 / A bubble shown near the caret for ~600 ms when the input mode changes.
+    /// The small 中 / A bubble shown near the caret for ~600 ms when the input mode changes（打字路径上：不做出现动画）.
     /// Triggered by the pipe command "toast:中" / "toast:A" (sent by the IME only when the user toggled with a key; automatic switches send "mode:…" and do not flash), or by the optional IMM poller.
     /// </summary>
     sealed class ImeToast : FloatingWindow
@@ -21,8 +21,8 @@ namespace Yiwei
         {
             _bubble = new Border
             {
-                Width = 30, Height = 30, CornerRadius = new CornerRadius(8), Child = _text, Margin = new Thickness(6),
-                Effect = new System.Windows.Media.Effects.DropShadowEffect { BlurRadius = 10, ShadowDepth = 1, Opacity = 0.25 },
+                Width = 32, Height = 32, CornerRadius = new CornerRadius(9), Child = _text, Margin = new Thickness(Tok.S8),
+                Effect = new System.Windows.Media.Effects.DropShadowEffect { BlurRadius = 12, ShadowDepth = 2, Direction = 270, Opacity = 0.22 },
             };
             Content = _bubble;
             _timer.Tick += (s, e) =>
@@ -37,10 +37,14 @@ namespace Yiwei
         public void Flash(bool chinese)
         {
             if (!Settings.Current.ImeToast) return;
-            bool dark = SystemTheme.IsDark;
             _text.Text = chinese ? "中" : "A";
-            _bubble.Background = new SolidColorBrush(chinese ? UiTheme.Accent : (dark ? Color.FromRgb(0x3A, 0x3D, 0x44) : Color.FromRgb(0x2B, 0x2F, 0x36)));
-            _text.Foreground = Brushes.White;
+            // v2：与托盘 / 语言栏图标同一造型——中 = 实心强调色，A = 空心描边（不靠颜色也能分清）
+            var p = PanelPalette.Now();
+            _bubble.Background = chinese ? p.Accent : K.Brush(p.CardColor);
+            _bubble.BorderBrush = chinese ? Brushes.Transparent : p.AccentInk;
+            _bubble.BorderThickness = new Thickness(chinese ? 0 : 1.5);
+            _text.Foreground = chinese ? p.AccentText : p.AccentInk;
+            _text.FontFamily = Tok.Text;
             _bubble.BeginAnimation(OpacityProperty, null);
             _bubble.Opacity = 1;
             ShowAtCaret();

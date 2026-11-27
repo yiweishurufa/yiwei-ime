@@ -127,7 +127,7 @@ namespace Yiwei
             {
                 int idx = i;
                 var t = new TextBlock { FontSize = 18 };
-                t.Inlines.Add(new System.Windows.Documents.Run((i + 1) + " ") { FontSize = 11, Foreground = i == 0 ? _p.AccentText : _p.Accent });
+                t.Inlines.Add(new System.Windows.Documents.Run((i + 1) + " ") { FontSize = 11, Foreground = i == 0 ? _p.AccentText : _p.AccentInk });
                 t.Inlines.Add(new System.Windows.Documents.Run(_results[i]) { Foreground = i == 0 ? _p.AccentText : _p.Text });
                 var b = new Border { Child = t, Padding = new Thickness(10, 2, 10, 4), Margin = new Thickness(0, 0, 4, 4), CornerRadius = new CornerRadius(8), Background = i == 0 ? _p.Accent : Brushes.Transparent, Cursor = Cursors.Hand };
                 b.MouseLeftButtonUp += (s, e) => Commit(idx);

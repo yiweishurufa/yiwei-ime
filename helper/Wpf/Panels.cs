@@ -15,25 +15,44 @@ namespace Yiwei
 {
     static class PanelParts
     {
-        public static Border Shell(PanelPalette p, UIElement child) => new Border
+        /// <summary>
+        /// 浮动面板外壳（v2）：12px 圆角、柔和大阴影、顶部 1px 高光边（呼应相册 v2 的玻璃边）。打开时淡入上移由调用方的
+        /// <see cref="FloatingWindow"/> 统一处理。
+        /// </summary>
+        public static Border Shell(PanelPalette p, UIElement child)
         {
-            Background = p.Back, BorderBrush = p.Border, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(10),
-            Padding = new Thickness(12), Margin = new Thickness(14), Child = child,
-            Effect = new DropShadowEffect { BlurRadius = 18, ShadowDepth = 3, Opacity = 0.22, Direction = 270 },
-        };
-
-        public static Border Chip(PanelPalette p, string text, bool on)
-        {
+            var inner = new Border
+            {
+                CornerRadius = new CornerRadius(Tok.RFlyout - 1), BorderThickness = new Thickness(0, 1, 0, 0), BorderBrush = p.Highlight,
+                Padding = new Thickness(Tok.S12), Child = child,
+            };
             return new Border
             {
-                CornerRadius = new CornerRadius(6), Padding = new Thickness(8, 3, 8, 3), Margin = new Thickness(0, 0, 4, 0),
-                Background = on ? p.Accent : Brushes.Transparent, Cursor = Cursors.Hand,
-                Child = new TextBlock { Text = text, FontSize = 12, Foreground = on ? p.AccentText : p.Dim },
+                Background = p.Back, BorderBrush = p.Border, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(Tok.RFlyout),
+                Margin = new Thickness(Tok.S16), Child = inner, Effect = Tok.FlyoutShadow(p.Dark),
             };
         }
 
+        /// <summary>页签 / 小按钮：选中 = 强调色底 + 强调色上的文字；悬停有底色。</summary>
+        public static Border Chip(PanelPalette p, string text, bool on)
+        {
+            var b = new Border
+            {
+                CornerRadius = new CornerRadius(Tok.RCard - 2), Padding = new Thickness(10, 4, 10, 4), Margin = new Thickness(0, 0, Tok.S4, 0),
+                Background = on ? p.Accent : Brushes.Transparent, Cursor = Cursors.Hand,
+                Child = new TextBlock { Text = text, FontSize = Tok.Caption, FontWeight = on ? FontWeights.SemiBold : FontWeights.Normal, Foreground = on ? p.AccentText : p.Dim },
+            };
+            System.Windows.Automation.AutomationProperties.SetName(b, text);
+            if (!on)
+            {
+                b.MouseEnter += (s, e) => b.Background = p.CardHover;
+                b.MouseLeave += (s, e) => b.Background = Brushes.Transparent;
+            }
+            return b;
+        }
+
         public static TextBlock Hint(PanelPalette p, string text) =>
-            new TextBlock { Text = text, FontSize = 11, Foreground = p.Dim, Margin = new Thickness(2, 8, 0, 0), TextTrimming = TextTrimming.CharacterEllipsis };
+            new TextBlock { Text = text, FontSize = 11, Foreground = p.Faint, Margin = new Thickness(2, Tok.S8, 0, 0), TextTrimming = TextTrimming.CharacterEllipsis };
 
         public static string OneLine(string s) => (s ?? "").Replace("\r", "").Replace("\n", " ⏎ ");
     }
@@ -110,7 +129,7 @@ namespace Yiwei
                     int i = _page * 9 + k;
                     if (i >= items.Count) break;
                     bool hi = k == _sel;
-                    var num = new TextBlock { Text = (k + 1).ToString(), FontWeight = FontWeights.SemiBold, FontSize = 12, Foreground = hi ? _p.AccentText : _p.Accent, Margin = new Thickness(0, 0, 0, 2) };
+                    var num = new TextBlock { Text = (k + 1).ToString(), FontWeight = FontWeights.SemiBold, FontSize = 12, Foreground = hi ? _p.AccentText : _p.AccentInk, Margin = new Thickness(0, 0, 0, 2) };
                     var text = new TextBlock
                     {
                         Text = items[i].Text.Replace("\r", ""), FontSize = 13, Foreground = hi ? _p.AccentText : _p.Text,
@@ -267,7 +286,7 @@ namespace Yiwei
         {
             var root = new StackPanel { Width = 480 };
             var tabs = new WrapPanel { Margin = new Thickness(0, 0, 0, 8) };
-            var title = new TextBlock { Text = "AI", FontWeight = FontWeights.SemiBold, Foreground = _p.Accent, FontSize = 12, Margin = new Thickness(2, 3, 10, 0) };
+            var title = new TextBlock { Text = "AI", FontWeight = FontWeights.SemiBold, Foreground = _p.AccentInk, FontSize = 12, Margin = new Thickness(2, 3, 10, 0) };
             tabs.Children.Add(title);
             for (int i = 0; i < _modes.Count; i++)
             {
