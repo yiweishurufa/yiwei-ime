@@ -178,7 +178,7 @@ namespace Yiwei
                 catch (Exception ex) { msg.Text = "导出失败：" + ex.Message; Log.Write("custom words export: " + ex.Message); }
             });
             var sp = new StackPanel();
-            sp.Children.Add(box);
+            sp.Children.Add(K.WithPlaceholder(box, "还没有自己的词条。一行一条，例如：一维输入法 yi wei shu ru fa\n也可以点下面的「导入 txt」「从文章学词」「导入细胞词库」。"));
             var row = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 8, 0, 0) };
             imp.Margin = new Thickness(8, 0, 0, 0); exp.Margin = new Thickness(8, 0, 0, 0);
             row.Children.Add(save); row.Children.Add(imp); row.Children.Add(exp); learn.Margin = new Thickness(8, 0, 0, 0); row.Children.Add(learn); cell.Margin = new Thickness(8, 0, 0, 0); row.Children.Add(cell);

@@ -264,6 +264,21 @@ namespace Yiwei
             return sp;
         }
 
+        /// <summary>多行输入框的空状态：框里没字时显示一句灰色引导（不占用文字，不影响读屏读到的内容）。</summary>
+        public static Grid WithPlaceholder(TextBox box, string hint)
+        {
+            var g = new Grid();
+            var ph = Text(hint, Tok.Body, true);
+            ph.IsHitTestVisible = false; ph.Margin = new Thickness(12, 8, 12, 8); ph.VerticalAlignment = VerticalAlignment.Top;
+            ph.SetResourceReference(TextBlock.ForegroundProperty, "TextFillColorTertiaryBrush");
+            void Sync() => ph.Visibility = string.IsNullOrEmpty(box.Text) ? Visibility.Visible : Visibility.Collapsed;
+            box.TextChanged += (s, e) => Sync();
+            if (string.IsNullOrEmpty(AutomationProperties.GetHelpText(box))) AutomationProperties.SetHelpText(box, hint);
+            g.Children.Add(box); g.Children.Add(ph);
+            Sync();
+            return g;
+        }
+
         /// <summary>加载中：小号环形进度 + 文字。</summary>
         public static FrameworkElement Loading(string text)
         {

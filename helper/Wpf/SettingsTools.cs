@@ -209,20 +209,49 @@ namespace Yiwei
             yield return K.Card("更新通道", "测试版：每次构建都推送，新功能最快；稳定版：经过验证后才推送（稳定版发布前选它暂时收不到更新）",
                 K.Combo(new[] { KS("beta", "测试版"), KS("stable", "稳定版") }, T.UpdateChannel ?? "beta", v => { T.UpdateChannel = v; SaveTools(); }, 160), Ui.SymbolRegular.ArrowSync24);
             yield return K.CardBorder(K.Row(K.Btn("现在回收内存", () => { LowSpec.Trim(); Refresh(); }), mem));
-            // 34 性能体检
-            var report = K.Text("测内存、每次按键出候选的耗时、词库大小，并给出建议（只在本机计算）", 12, true);
-            yield return K.Card("性能体检", "", K.Btn("开始体检", () =>
+            // 34 性能体检 / #10 词库体检（v2：未开始 → 正在检查 → 结果 / 没问题 / 出错 三种状态）
+            yield return CheckBlock("性能体检", "测内存、每次按键出候选的耗时、词库大小，并给出建议（只在本机计算）", "开始体检", Ui.SymbolRegular.HeartPulse24,
+                "正在体检，约几秒…", () => PerfCheck.Run().ToString(), null, false);
+            yield return CheckBlock("词库体检", "检查屏蔽词、个人纠错规则和我的词条里的重复、格式错误（只读，不改文件）", "检查", Ui.SymbolRegular.Stethoscope24,
+                "正在检查词库…", () => DictHealth.Run(), r => r.Contains("没有发现问题"), true);
+        }
+
+        /// <summary>一个「点按钮 → 检查 → 显示结果」的卡片：加载中、出错（可重试）、没问题（空状态）三种状态都有样子。</summary>
+        Border CheckBlock(string title, string desc, string button, Ui.SymbolRegular icon, string busy, Func<string> run, Func<string, bool> clean, bool background)
+        {
+            var body = new ContentControl();
+            Ui.Button go = null;
+            async void Go()
             {
-                try { report.Text = PerfCheck.Run().ToString(); } catch (Exception e) { report.Text = "体检失败：" + e.Message; }
-            }), Ui.SymbolRegular.HeartPulse24);
-            yield return K.CardBorder(report);
-            // #10 用户词库体检
-            var dh = K.Text("检查屏蔽词和个人纠错规则里的重复、格式错误（只读，不改文件）", 12, true);
-            yield return K.Card("词库体检", "", K.Btn("检查", () =>
-            {
-                try { dh.Text = DictHealth.Run(); } catch (Exception e) { dh.Text = "检查失败：" + e.Message; }
-            }), Ui.SymbolRegular.HeartPulse24);
-            yield return K.CardBorder(dh);
+                go.IsEnabled = false;
+                body.Content = K.Loading(busy);
+                string result = null; Exception err = null;
+                try
+                {
+                    if (background) result = await System.Threading.Tasks.Task.Run(run);
+                    else
+                    {
+                        await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.Background); // 先把「正在…」画出来
+                        result = run();
+                    }
+                }
+                catch (Exception e) { err = e; Log.Write(title + ": " + e); }
+                if (err != null) body.Content = K.ErrorState(title + "失败：" + err.GetBaseException().Message, Go);
+                else if (clean != null && clean(result ?? "")) body.Content = K.EmptyState(Ui.SymbolRegular.CheckmarkCircle24, "没有发现问题", (result ?? "").Replace("👍", "").Trim());
+                else { var t = K.Text(result ?? "", Tok.Body); t.Margin = new Thickness(0, Tok.S4, 0, 0); body.Content = t; }
+                Motion.FadeInUp((UIElement)body.Content, 6, Tok.Fast);
+                go.IsEnabled = true; go.Content = "再查一次";
+            }
+            go = K.Btn(button, Go);
+            var card = K.Card(title, desc, go, icon);
+            // 结果放在卡片下半部
+            var grid = (Grid)card.Child; card.Child = null;
+            var sp = new StackPanel();
+            sp.Children.Add(grid);
+            body.Margin = new Thickness(52, Tok.S8, 0, 0);
+            sp.Children.Add(body);
+            card.Child = sp;
+            return card;
         }
 
         /// <summary>W47：输入法开关（简繁、全半角、中英标点、Emoji、切换方案）的快捷键，写进 default.custom.yaml 由 RIME 处理。</summary>
