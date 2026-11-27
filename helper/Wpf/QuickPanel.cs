@@ -93,6 +93,7 @@ namespace Yiwei
                 new Cell { Icon = "📜", Name = "助手日志", Hint = "yiwei-helper.log，排查问题", Run = () => OpenUserFile(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "yiwei-helper.log")) },
                 new Cell { Icon = "⚙", Name = "方案定制", Hint = "default.custom.yaml，已有才打开", Run = () => { try { if (System.IO.File.Exists(Paths.DefaultCustom)) OpenUserFile(Paths.DefaultCustom); else System.Diagnostics.Process.Start("explorer.exe", Paths.UserDir); } catch { } } },
                 new Cell { Icon = "📁", Name = "程序目录", Hint = "安装目录，查看版本与数据", Run = () => { try { System.Diagnostics.Process.Start("explorer.exe", Paths.InstallDir); } catch { } } },
+                new Cell { Icon = "🎨", Name = "外观定制", Hint = "weasel.custom.yaml，已有才打开", Run = () => { try { if (System.IO.File.Exists(Paths.WeaselCustom)) OpenUserFile(Paths.WeaselCustom); else System.Diagnostics.Process.Start("explorer.exe", Paths.UserDir); } catch { } } },
                 new Cell { Icon = "🧰", Name = "导出诊断", Hint = "反馈问题时用", Run = () => Diagnostics.ExportAndShow() },
             };
             return new[] { page1, page2 };
