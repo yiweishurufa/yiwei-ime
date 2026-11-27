@@ -1,0 +1,6 @@
+{"conclusion":"success","name":"rime-test","steps":[]}
+{"conclusion":"failure","name":"build","steps":["获取 RIME 引擎"]}
+{"conclusion":"success","name":"screens","steps":[]}
+{"conclusion":"skipped","name":"release","steps":[]}
+{"conclusion":"skipped","name":"smoke","steps":[]}
+{"conclusion":null,"name":"report","steps":[]}

@@ -1,0 +1,18 @@
+105:2026-11-27T19:40:52.4332851Z ##[group]Run $ErrorActionPreference = 'Stop'
+106:2026-11-27T19:40:52.4333338Z [36;1m$ErrorActionPreference = 'Stop'[0m
+172:2026-11-27T19:41:11.6653892Z ##[group]Run $ErrorActionPreference = 'Stop'
+173:2026-11-27T19:41:11.6654330Z [36;1m$ErrorActionPreference = 'Stop'[0m
+197:2026-11-27T19:41:13.0767501Z   fail-on-cache-miss: false
+219:2026-11-27T19:41:35.4540315Z ##[group]Run $ErrorActionPreference = 'Stop'
+220:2026-11-27T19:41:35.4540759Z [36;1m$ErrorActionPreference = 'Stop'[0m
+250:2026-11-27T19:41:42.6332636Z   fail-on-cache-miss: false
+318:2026-11-27T19:41:44.0318743Z ##[group]Run $ErrorActionPreference = 'Stop'
+319:2026-11-27T19:41:44.0319179Z [36;1m$ErrorActionPreference = 'Stop'[0m
+384:2026-11-27T19:41:44.3777740Z ##[group]Run $ErrorActionPreference = 'Stop'
+385:2026-11-27T19:41:44.3778167Z [36;1m$ErrorActionPreference = 'Stop'[0m
+393:2026-11-27T19:41:44.3780742Z [36;1mif (-not (Test-Path .\include\rime_api.h)) { throw "获取 RIME 引擎失败" }[0m
+458:2026-11-27T19:43:16.4278195Z [31;1mException: [0mD:\a\_temp\20b04889-1d49-4cc4-916d-b75dbd7ff7ce.ps1:10[0m
+460:2026-11-27T19:43:16.4280639Z [31;1m[0m[36;1m[36;1m  10 | [0m if (-not (Test-Path .\include\rime_api.h)) { [36;1mthrow "获取 RIME 引擎失败"[0m }[0m
+463:2026-11-27T19:43:16.4516609Z ##[error]Process completed with exit code 1.
+466:2026-11-27T19:43:16.4680472Z [36;1mGet-ChildItem weasel -Filter *.log -ErrorAction SilentlyContinue | Copy-Item -Destination build-logs[0m
+467:2026-11-27T19:43:16.4681371Z [36;1mGet-ChildItem weasel\output -Recurse -Include *.exe,*.dll -ErrorAction SilentlyContinue | Select-Object FullName | Out-File build-logs\output-files.txt[0m
