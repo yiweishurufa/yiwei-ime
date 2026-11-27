@@ -16,7 +16,8 @@ namespace Yiwei
     sealed class VoiceInput : FloatingWindow
     {
         public const int MaxSeconds = 60;
-        static readonly Color Blue = Color.FromRgb(0x2B, 0x5B, 0xD7);
+        // v2：跟随当前强调色；胶囊上是白字，强调色太亮（如黄色）时压暗到白字看得清
+        static Color Blue { get { var a = UiTheme.Accent; return Tok.OnAccent(a) == Colors.White ? a : Tok.Mix(a, Color.FromRgb(0x0B, 0x0F, 0x17), 0.5); } }
 
         readonly Border _pill;
         readonly TextBlock _label = new TextBlock { Foreground = Brushes.White, FontSize = 13, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(8, 0, 2, 0) };

@@ -26,8 +26,6 @@ namespace Yiwei
         double _estimate;
         bool _firstTime, _externalSeen;
 
-        static readonly Color Blue = Color.FromRgb(0x2B, 0x5B, 0xD7);
-
         public DeployProgress() : base(clickThrough: true)
         {
             var stack = new StackPanel { Width = 300 };
@@ -36,7 +34,7 @@ namespace Yiwei
             stack.Children.Add(_bar);
             _card = new Border
             {
-                CornerRadius = new CornerRadius(10), Padding = new Thickness(16, 12, 16, 14), Margin = new Thickness(14),
+                CornerRadius = new CornerRadius(Tok.RFlyout), Padding = new Thickness(Tok.S16, Tok.S12, Tok.S16, 14), Margin = new Thickness(Tok.S16),
                 BorderThickness = new Thickness(1), Child = stack,
                 Effect = new System.Windows.Media.Effects.DropShadowEffect { BlurRadius = 18, ShadowDepth = 2, Opacity = 0.22 },
             };
@@ -59,13 +57,15 @@ namespace Yiwei
 
         void Paint()
         {
-            bool dark = SystemTheme.IsDark;
-            _card.Background = new SolidColorBrush(dark ? Color.FromRgb(0x20, 0x23, 0x2C) : Color.FromRgb(0xFB, 0xFC, 0xFA));
-            _card.BorderBrush = new SolidColorBrush(dark ? Color.FromRgb(0x36, 0x3A, 0x45) : Color.FromRgb(0xDD, 0xE3, 0xDF));
-            _title.Foreground = new SolidColorBrush(dark ? Color.FromRgb(0xE8, 0xEC, 0xE9) : Color.FromRgb(0x1F, 0x24, 0x21));
-            _detail.Foreground = new SolidColorBrush(dark ? Color.FromRgb(0x9A, 0xA3, 0x9E) : Color.FromRgb(0x6A, 0x73, 0x6E));
-            _bar.Foreground = new SolidColorBrush(Blue);
-            _bar.Background = new SolidColorBrush(dark ? Color.FromRgb(0x36, 0x3A, 0x45) : Color.FromRgb(0xE6, 0xEB, 0xF7));
+            // v2：与浮动面板同一套中性色，进度条用当前强调色
+            var p = PanelPalette.Now();
+            _card.Background = p.Back;
+            _card.BorderBrush = p.Border;
+            _card.Effect = Tok.FlyoutShadow(p.Dark);
+            _title.Foreground = p.Text;
+            _detail.Foreground = p.Dim;
+            _bar.Foreground = p.Accent;
+            _bar.Background = p.AccentSoft;
         }
 
         void Started()
