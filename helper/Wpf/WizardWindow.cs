@@ -41,11 +41,11 @@ namespace Yiwei
             root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             root.Children.Add(new Ui.TitleBar { Title = "一维输入法 · 首次引导", ShowMaximize = false, ShowMinimize = false });
-            var scroll = new ScrollViewer { Content = _host, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Padding = new Thickness(40, 8, 40, 8) };
+            var scroll = new ScrollViewer { Content = _host, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Padding = new Thickness(48, 8, 48, 8) };
             Grid.SetRow(scroll, 1); root.Children.Add(scroll);
             Grid.SetRow(_toast, 1); root.Children.Add(_toast);
 
-            var footer = new Grid { Margin = new Thickness(32, 8, 32, 20) };
+            var footer = new Grid { Margin = new Thickness(Tok.S32, Tok.S12, Tok.S32, Tok.S24) };
             footer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             footer.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             footer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -74,16 +74,26 @@ namespace Yiwei
             try { content = _steps[_step](); }
             catch (Exception e) { Log.Write("wizard step: " + e); content = K.Text("这一步加载失败：" + e.Message, 13, true); }
             _host.Content = content;
+            Motion.FadeInUp(content, 16); // v2：每一步淡入上移
             _back.Visibility = _step == 0 ? Visibility.Hidden : Visibility.Visible;
             _skip.Visibility = _step == 0 || _step == _steps.Length - 1 ? Visibility.Hidden : Visibility.Visible;
             _next.Content = _step == 0 ? "开始设置" : _step == _steps.Length - 1 ? "完成" : "下一步";
             _dots.Children.Clear();
+            // v2 步骤条：走过的是强调色短条、当前是长条、没到的是灰点；下面一行「第 n 步，共 m 步 · 名称」（不只靠颜色）
+            var bar = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center };
             for (int i = 0; i < _steps.Length; i++)
             {
-                var d = new Border { Width = i == _step ? 22 : 8, Height = 8, CornerRadius = new CornerRadius(4), Margin = new Thickness(3, 0, 3, 0), ToolTip = _titles[i] };
-                if (i == _step) d.Background = new SolidColorBrush(UiTheme.Accent); else d.SetResourceReference(Border.BackgroundProperty, "ControlStrongFillColorDisabledBrush");
-                _dots.Children.Add(d);
+                var d = new Border { Width = i == _step ? 24 : 8, Height = 6, CornerRadius = new CornerRadius(3), Margin = new Thickness(3, 0, 3, 0), ToolTip = _titles[i] };
+                if (i <= _step) d.SetResourceReference(Border.BackgroundProperty, "AccentFillColorDefaultBrush"); else d.SetResourceReference(Border.BackgroundProperty, "ControlStrongFillColorDisabledBrush");
+                if (i < _step) d.Opacity = 0.45;
+                bar.Children.Add(d);
             }
+            var stepText = K.Text("第 " + (_step + 1) + " 步，共 " + _steps.Length + " 步 · " + _titles[_step], Tok.Caption, true);
+            stepText.HorizontalAlignment = HorizontalAlignment.Center; stepText.Margin = new Thickness(0, 6, 0, 0);
+            var col = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+            col.Children.Add(bar); col.Children.Add(stepText);
+            _dots.Children.Add(col);
+            System.Windows.Automation.AutomationProperties.SetName(_dots, stepText.Text);
         }
 
         void Changed() { _changed = true; try { S.Save(); } catch { } }
@@ -97,25 +107,29 @@ namespace Yiwei
 
         static StackPanel Head(string title, string sub)
         {
-            var sp = new StackPanel { Margin = new Thickness(0, 12, 0, 18) };
-            sp.Children.Add(K.Text(title, 26, false, FontWeights.SemiBold));
-            var s = K.Text(sub, 14, true); s.Margin = new Thickness(0, 6, 0, 0);
+            var sp = new StackPanel { Margin = new Thickness(0, Tok.S12, 0, Tok.S24) };
+            var h = K.Text(title, Tok.Display28, false, FontWeights.SemiBold); h.FontFamily = Tok.Display;
+            sp.Children.Add(h);
+            var s = K.Text(sub, Tok.Body, true); s.Margin = new Thickness(0, Tok.S8, 0, 0);
             sp.Children.Add(s);
             return sp;
         }
 
         static Border Pick(UIElement content, bool selected)
         {
-            var b = K.CardBorder(content, new Thickness(16));
-            b.Margin = new Thickness(0, 0, 10, 10);
+            var b = K.CardBorder(content, new Thickness(Tok.S16));
+            b.Margin = new Thickness(0, 0, Tok.S12, Tok.S12);
             b.Cursor = Cursors.Hand;
             Select(b, selected);
+            Motion.Pressable(b);
+            b.MouseEnter += (s, e) => b.SetResourceReference(Border.BackgroundProperty, "CardBackgroundFillColorSecondaryBrush");
+            b.MouseLeave += (s, e) => b.SetResourceReference(Border.BackgroundProperty, "CardBackgroundFillColorDefaultBrush");
             return b;
         }
 
         static void Select(Border b, bool on)
         {
-            if (on) { b.BorderBrush = new SolidColorBrush(UiTheme.Accent); b.BorderThickness = new Thickness(2); }
+            if (on) { b.SetResourceReference(Border.BorderBrushProperty, "AccentFillColorDefaultBrush"); b.BorderThickness = new Thickness(2); }
             else { b.SetResourceReference(Border.BorderBrushProperty, "CardStrokeColorDefaultBrush"); b.BorderThickness = new Thickness(1); }
         }
 
@@ -124,7 +138,7 @@ namespace Yiwei
         UIElement Welcome()
         {
             var sp = new StackPanel { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 40, 0, 0) };
-            var logo = new Image { Width = 72, Height = 72, HorizontalAlignment = HorizontalAlignment.Left };
+            var logo = new Image { Width = 80, Height = 80, HorizontalAlignment = HorizontalAlignment.Left, Margin = new Thickness(0, 0, 0, Tok.S8) };
             try
             {
                 using (var big = new System.Drawing.Icon(Program.AppIcon, 256, 256))
