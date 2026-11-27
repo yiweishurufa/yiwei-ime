@@ -436,30 +436,39 @@ namespace Yiwei
 
         public static void Setup()
         {
-            var menu = new ContextMenuStrip();
+            // v2（DESIGN-v2 §7.6）：分组 + 「工具」「帮助」子菜单，自绘圆角高亮、深浅色跟随系统；原有每一项都在
+            var menu = new ContextMenuStrip { Renderer = new TrayMenuRenderer(), Font = TrayMenuRenderer.MenuFont, ShowImageMargin = true, Padding = new Padding(4) };
             var schemas = new ToolStripMenuItem("切换方案");
             var themes = new ToolStripMenuItem("换主题");
             schemas.DropDownItems.Add("…"); themes.DropDownItems.Add("…");
             menu.Items.Add(schemas);
             menu.Items.Add(themes);
             menu.Items.Add(new ToolStripSeparator());
-            menu.Items.Add("重新部署", null, (s, e) => Rime.ApplySoon(50));
-            menu.Items.Add("同步用户数据", null, (s, e) => System.Threading.Tasks.Task.Run(() => Deploy.Run("/sync", false)));
-            menu.Items.Add("手写输入", null, (s, e) => Program.ShowHandwriting());
-            menu.Items.Add("加词…", null, (s, e) => AddWordWindow.ShowFor(""));
             menu.Items.Add("功能面板", null, (s, e) => Program.ShowQuick());
+            menu.Items.Add("手写输入", null, (s, e) => Program.ShowHandwriting());
             menu.Items.Add("符号与表情", null, (s, e) => Program.ShowSymbols());
             menu.Items.Add("截图识字", null, (s, e) => OcrCapture.Start());
-            menu.Items.Add("局域网互传", null, (s, e) => Program.ShowLanShare());
-            menu.Items.Add("用户文件夹", null, (s, e) => { try { System.Diagnostics.Process.Start("explorer.exe", "\"" + Paths.UserDir + "\""); } catch { } });
+            menu.Items.Add("加词…", null, (s, e) => AddWordWindow.ShowFor(""));
+            menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add("设置", null, (s, e) => Program.ShowSettings());
-            menu.Items.Add("检查更新", null, (s, e) => { _ = AppUpdate.CheckAsync(true); });
-            menu.Items.Add("导出诊断信息", null, (s, e) => Diagnostics.ExportAndShow());
-            menu.Items.Add("首次引导", null, (s, e) => Program.ShowWizard());
+            menu.Items.Add("用户文件夹", null, (s, e) => { try { System.Diagnostics.Process.Start("explorer.exe", "\"" + Paths.UserDir + "\""); } catch { } });
+            var tools = new ToolStripMenuItem("工具");
+            tools.DropDownItems.Add("重新部署", null, (s, e) => Rime.ApplySoon(50));
+            tools.DropDownItems.Add("同步用户数据", null, (s, e) => System.Threading.Tasks.Task.Run(() => Deploy.Run("/sync", false)));
+            tools.DropDownItems.Add("局域网互传", null, (s, e) => Program.ShowLanShare());
+            menu.Items.Add(tools);
+            var help = new ToolStripMenuItem("帮助");
+            help.DropDownItems.Add("检查更新", null, (s, e) => { _ = AppUpdate.CheckAsync(true); });
+            help.DropDownItems.Add("导出诊断信息", null, (s, e) => Diagnostics.ExportAndShow());
+            help.DropDownItems.Add("首次引导", null, (s, e) => Program.ShowWizard());
+            menu.Items.Add(help);
             menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add("退出", null, (s, e) => Program.Quit());
+            foreach (var sub in new[] { schemas, themes, tools, help }) TrayMenuRenderer.Style(sub.DropDown);
+            menu.Opened += (s, e) => TrayMenuRenderer.RoundCorners(menu.Handle);
             menu.Opening += (s, e) =>
             {
+                ((TrayMenuRenderer)menu.Renderer).Refresh();
                 var st = Settings.Current;
                 schemas.DropDownItems.Clear();
                 foreach (var sc in Rime.Schemas)
@@ -523,8 +532,12 @@ namespace Yiwei
         {
             _zh = chinese;
             int size = Math.Max(16, System.Windows.Forms.SystemInformation.SmallIconSize.Width * 2);
-            // 托盘状态（与安卓版标志同一枚蓝）：中 = 蓝底白字；英 = 白底蓝框蓝字。
-            var blue = Color.FromArgb(0x2B, 0x5B, 0xD7);
+            // v2（与 assets/zh.ico、en.ico 同一造型，scripts/design/win_icons_v2.py）：中 = 实心强调色方块 + 强调色上的字色；
+            // 英 = 白底、灰蓝描边、灰蓝字。实心 vs 空心，不靠颜色也能分清。强调色跟随当前配色（v2 = Windows 强调色）。
+            uint rgb = Brand.Current.Rgb;
+            var accent = Color.FromArgb((int)(0xFF000000 | rgb));
+            var slate = Color.FromArgb(0x3E, 0x4C, 0x66);
+            uint on = Brand.OnAccent(0xFF000000 | rgb);
             using (var bmp = new Bitmap(size, size))
             {
                 using (var g = Graphics.FromImage(bmp))
@@ -532,16 +545,25 @@ namespace Yiwei
                 {
                     g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                     g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-                    float stroke = chinese ? 0 : Math.Max(1.5f, size * 0.08f);
-                    float inset = stroke / 2, w = size - 1 - stroke, r = size * 0.44f;
+                    float stroke = chinese ? 0 : Math.Max(1.5f, size * 0.09f);
+                    float inset = stroke / 2, w = size - 1 - stroke, r = size * 0.45f;
                     path.AddArc(inset, inset, r, r, 180, 90); path.AddArc(inset + w - r, inset, r, r, 270, 90);
                     path.AddArc(inset + w - r, inset + w - r, r, r, 0, 90); path.AddArc(inset, inset + w - r, r, r, 90, 90);
                     path.CloseFigure();
-                    using (var fill = new SolidBrush(chinese ? blue : Color.White)) g.FillPath(fill, path);
-                    if (!chinese) using (var pen = new Pen(blue, stroke)) g.DrawPath(pen, path);
-                    using (var font = new Font("Microsoft YaHei UI", size * 0.58f, FontStyle.Bold, GraphicsUnit.Pixel))
+                    if (chinese)
+                    {
+                        // 竖向渐变：上亮下沉，与应用图标的「玻璃方块」呼应
+                        var top = Color.FromArgb(Math.Min(255, accent.R + 24), Math.Min(255, accent.G + 24), Math.Min(255, accent.B + 24));
+                        using (var fill = new System.Drawing.Drawing2D.LinearGradientBrush(new RectangleF(0, 0, size, size), top, accent, 90f)) g.FillPath(fill, path);
+                    }
+                    else
+                    {
+                        using (var fill = new SolidBrush(Color.White)) g.FillPath(fill, path);
+                        using (var pen = new Pen(slate, stroke)) g.DrawPath(pen, path);
+                    }
+                    using (var font = new Font("Microsoft YaHei UI", size * (chinese ? 0.6f : 0.56f), FontStyle.Bold, GraphicsUnit.Pixel))
                     using (var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-                    using (var ink = new SolidBrush(chinese ? Color.White : blue))
+                    using (var ink = new SolidBrush(chinese ? Color.FromArgb((int)on) : slate))
                         g.DrawString(chinese ? "中" : "英", font, ink, new RectangleF(0, -size * 0.03f, size, size), sf);
                 }
                 var h = bmp.GetHicon();
@@ -603,6 +625,106 @@ namespace Yiwei
                 _icon.ShowBalloonTip(4000, title, text, ToolTipIcon.Info);
             }
             catch { }
+        }
+    }
+
+    /// <summary>
+    /// 托盘菜单 v2 渲染：深浅色跟随系统、28px 行高、圆角高亮、细分隔线；Windows 11 上菜单窗口本身也是圆角（DWM）。
+    /// </summary>
+    sealed class TrayMenuRenderer : ToolStripProfessionalRenderer
+    {
+        public static readonly Font MenuFont = new Font("Microsoft YaHei UI", 9f);
+        bool _dark;
+        Color Back => _dark ? Color.FromArgb(0x2B, 0x2D, 0x33) : Color.FromArgb(0xF9, 0xFA, 0xFC);
+        Color Hover => _dark ? Color.FromArgb(0x3A, 0x3E, 0x47) : Color.FromArgb(0xEA, 0xEE, 0xF4);
+        Color Fore => _dark ? Color.FromArgb(0xEE, 0xF1, 0xF6) : Color.FromArgb(0x16, 0x1B, 0x26);
+        Color Dim => _dark ? Color.FromArgb(0x7C, 0x85, 0x98) : Color.FromArgb(0x7A, 0x83, 0x98);
+        Color Line => _dark ? Color.FromArgb(0x3A, 0x41, 0x50) : Color.FromArgb(0xE2, 0xE7, 0xEF);
+
+        public TrayMenuRenderer() : base(new ProfessionalColorTable { UseSystemColors = false }) { RoundedEdges = true; Refresh(); }
+
+        public void Refresh() { _dark = SystemTheme.IsDark; }
+
+        /// <summary>子菜单用同一个渲染器、同样的字体和留白。</summary>
+        public static void Style(ToolStripDropDown d)
+        {
+            d.Font = MenuFont; d.Padding = new Padding(4);
+            d.Opened += (s, e) => { if (s is ToolStripDropDown dd) RoundCorners(dd.Handle); };
+        }
+
+        [System.Runtime.InteropServices.DllImport("dwmapi.dll")]
+        static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int value, int size);
+
+        /// <summary>Windows 11：菜单窗口圆角（DWMWA_WINDOW_CORNER_PREFERENCE = 33，DWMWCP_ROUNDSMALL = 3）；Windows 10 忽略。</summary>
+        public static void RoundCorners(IntPtr hwnd)
+        {
+            try { int pref = 3; DwmSetWindowAttribute(hwnd, 33, ref pref, sizeof(int)); } catch { }
+        }
+
+        protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
+        {
+            using (var b = new SolidBrush(Back)) e.Graphics.FillRectangle(b, e.AffectedBounds);
+        }
+
+        protected override void OnRenderImageMargin(ToolStripRenderEventArgs e)
+        {
+            using (var b = new SolidBrush(Back)) e.Graphics.FillRectangle(b, e.AffectedBounds);
+        }
+
+        protected override void OnRenderToolStripBorder(ToolStripRenderEventArgs e)
+        {
+            var r = new Rectangle(0, 0, e.ToolStrip.Width - 1, e.ToolStrip.Height - 1);
+            using (var p = new Pen(Line)) e.Graphics.DrawRectangle(p, r);
+        }
+
+        protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+        {
+            if (!e.Item.Selected || !e.Item.Enabled) return;
+            var g = e.Graphics;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            var r = new RectangleF(2, 1, e.Item.Width - 4, e.Item.Height - 2);
+            using (var path = new System.Drawing.Drawing2D.GraphicsPath())
+            {
+                float d = 8;
+                path.AddArc(r.X, r.Y, d, d, 180, 90); path.AddArc(r.Right - d, r.Y, d, d, 270, 90);
+                path.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90); path.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
+                path.CloseFigure();
+                using (var b = new SolidBrush(Hover)) g.FillPath(b, path);
+            }
+        }
+
+        protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+        {
+            e.TextColor = e.Item.Enabled ? Fore : Dim;
+            base.OnRenderItemText(e);
+        }
+
+        protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
+        {
+            e.ArrowColor = Dim;
+            base.OnRenderArrow(e);
+        }
+
+        protected override void OnRenderItemCheck(ToolStripItemImageRenderEventArgs e)
+        {
+            // 勾选：强调色小圆点 + 勾（不只靠颜色）
+            var g = e.Graphics;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            var r = e.ImageRectangle; if (r.Width <= 0) r = new Rectangle(6, (e.Item.Height - 16) / 2, 16, 16);
+            if (e.Item.Image != null)
+            {
+                // 带色块的项（换主题）：色块外加一圈描边表示选中
+                using (var ring = new Pen(Fore, 1.6f)) g.DrawEllipse(ring, r.X - 1, r.Y - 1, r.Width + 1, r.Height + 1);
+                return;
+            }
+            using (var p = new Pen(Fore, 1.6f) { StartCap = System.Drawing.Drawing2D.LineCap.Round, EndCap = System.Drawing.Drawing2D.LineCap.Round })
+                g.DrawLines(p, new[] { new PointF(r.X + r.Width * 0.22f, r.Y + r.Height * 0.52f), new PointF(r.X + r.Width * 0.42f, r.Y + r.Height * 0.72f), new PointF(r.X + r.Width * 0.78f, r.Y + r.Height * 0.3f) });
+        }
+
+        protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)
+        {
+            int y = e.Item.Height / 2;
+            using (var p = new Pen(Line)) e.Graphics.DrawLine(p, 10, y, e.Item.Width - 10, y);
         }
     }
 }
