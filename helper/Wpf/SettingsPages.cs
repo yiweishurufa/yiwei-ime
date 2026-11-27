@@ -27,6 +27,7 @@ namespace Yiwei
         {
             var p = new StackPanel();
             p.Children.Add(K.PageTitle("常规"));
+            p.Children.Add(K.Section("输入习惯", "打字时的小帮手，全部在本机完成"));
             p.Children.Add(K.Card("括号自动配对", "中文标点下输入（ 【 《 「 “ ‘ 时自动补上右半边，光标停在中间；终端、代码编辑器和游戏里不配对",
                 K.Toggle(S.AutoPair, v => { S.AutoPair = v; }), Ui.SymbolRegular.Document24));
             p.Children.Add(K.Block("配对哪些括号", "取消勾选的那种只输入左半边，不自动补右半边（总开关打开时才生效）", AutoPairChoices(), Ui.SymbolRegular.Document24));
@@ -35,16 +36,19 @@ namespace Yiwei
             p.Children.Add(K.Card("反悔重选快捷键", "默认 Ctrl+Shift+Z；Ctrl+Backspace 是旧版的按法",
                 K.Combo(new[] { new KeyValuePair<string, string>("shiftz", "Ctrl+Shift+Z"), new KeyValuePair<string, string>("backspace", "Ctrl+Backspace"), new KeyValuePair<string, string>("both", "两个都可以") },
                     S.RegretKey, v => { S.RegretKey = v; }, 160), Ui.SymbolRegular.KeyboardShift24));
+            p.Children.Add(K.Card("中英之间自动加空格", "打「用 Windows 写代码」这类中英混排时，自动在中文和英文、数字之间留一个空格",
+                K.Toggle(S.PanguSpacing, v => { S.PanguSpacing = v; }), Ui.SymbolRegular.TextGrammarWand24));
+            p.Children.Add(K.Section("隐私", "在这些地方，一维不学词、不记录"));
             p.Children.Add(K.Card("密码框自动切英文", "光标进入密码框时自动切到英文，离开后切回中文（浏览器网页里的密码框也算）",
                 K.Toggle(S.PasswordAscii, v => { S.PasswordAscii = v; Save(); }), Ui.SymbolRegular.Password24));
             p.Children.Add(K.Card("无痕窗口不学词、不统计", "浏览器无痕 / InPrivate 窗口里选的词不进用户词库，也不计入输入统计和剪贴板历史",
                 K.Toggle(S.PrivateNoLearn, v => { S.PrivateNoLearn = v; Save(); }), Ui.SymbolRegular.EyeOff24));
-            p.Children.Add(K.Card("中英之间自动加空格", "打「用 Windows 写代码」这类中英混排时，自动在中文和英文、数字之间留一个空格",
-                K.Toggle(S.PanguSpacing, v => { S.PanguSpacing = v; }), Ui.SymbolRegular.TextGrammarWand24));
+            p.Children.Add(K.Section("提示", "切换中英文时的光标旁提示"));
             p.Children.Add(K.Card("中/英切换提示", "切换中英文时，在光标旁短暂显示一维的「中」或「A」（只弹这一个；关掉就都不弹）",
                 K.Toggle(S.ImeToast, v => { S.ImeToast = v; Save(); }), Ui.SymbolRegular.Chat24));
             p.Children.Add(K.Card("从输入法状态检测切换（实验）", "部分应用里输入法不会主动通知时，靠轮询检测中英状态；可能有误报",
                 K.Toggle(S.ImeToastPolling, v => { S.ImeToastPolling = v; Save(); }), Ui.SymbolRegular.Lightbulb24));
+            p.Children.Add(K.Section("显示与输出", null));
             p.Children.Add(K.Card("默认输出繁体", "简繁转换由 OpenCC 在本机完成，不需要联网",
                 K.Toggle(S.Traditional, v => { S.Traditional = v; Save(true); }), Ui.SymbolRegular.Translate24));
             p.Children.Add(K.Card("在输入框里显示拼音", "内嵌编码：拼音直接显示在光标处，而不是候选窗上方",
@@ -59,7 +63,7 @@ namespace Yiwei
 
             AddSyncSection(p);
 
-            p.Children.Add(K.Section("危险操作"));
+            p.Children.Add(K.Section("危险操作", "操作前会再确认一次；常用语、统计和词库不受影响"));
             p.Children.Add(Danger("重置设置", "所有设置恢复默认（常用语、统计和词库不受影响）", "重置…", () =>
             {
                 if (!Dialogs.Confirm("把一维输入法的所有设置恢复为默认值？\n\n常用语、输入统计和用户词库不会被删除。AI 密钥会被清除。")) return;
@@ -94,7 +98,7 @@ namespace Yiwei
         /// </summary>
         void AddTaskbarSection(StackPanel p)
         {
-            p.Children.Add(K.Section("任务栏图标"));
+            p.Children.Add(K.Section("任务栏图标", "默认只在输入指示器旁显示一个 中/英 图标"));
             p.Children.Add(K.Card("在通知区域显示一维图标", "默认不显示：任务栏输入指示器旁的 中/英 图标就是一维的状态图标，左键切中英，右键打开设置、手写、符号、截图识字等全部功能",
                 K.Toggle(S.TrayIcon, v => { S.TrayIcon = v; Save(); Tray.SetVisible(v); }), Ui.SymbolRegular.Apps24));
 

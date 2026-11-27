@@ -15,11 +15,11 @@ namespace Yiwei
     {
         sealed class PageDef
         {
-            public string Name; public Ui.SymbolRegular Icon; public Func<StackPanel> Build;
-            public ScrollViewer View; public ListBoxItem Nav;
+            public string Name, Group; public Ui.SymbolRegular Icon; public Func<StackPanel> Build;
+            public ScrollViewer View; public ListBoxItem Nav; public Border Bar;
         }
 
-        sealed class SearchEntry { public string Page, Title, Text; public Border Card; public override string ToString() => Title + "　·　" + Page; }
+        sealed class SearchEntry { public string Page, Title, Text; public Border Card; public override string ToString() => string.IsNullOrEmpty(Page) ? Title : Title + "　·　" + Page; }
 
         readonly Settings S = Settings.Current;
         readonly List<PageDef> _pages = new List<PageDef>();
@@ -27,9 +27,9 @@ namespace Yiwei
         readonly ListBox _nav = new ListBox { BorderThickness = new Thickness(0), Background = Brushes.Transparent };
         readonly ContentControl _host = new ContentControl();
         readonly ToastHost _toast = new ToastHost();
-        readonly Ui.TextBox _search = new Ui.TextBox { PlaceholderText = "搜索设置", Width = 300, Icon = new Ui.SymbolIcon { Symbol = Ui.SymbolRegular.Search24 } };
+        readonly Ui.TextBox _search = new Ui.TextBox { PlaceholderText = "搜索设置（Ctrl+F）", Icon = new Ui.SymbolIcon { Symbol = Ui.SymbolRegular.Search24 } };
         readonly Popup _results = new Popup { StaysOpen = false, Placement = PlacementMode.Bottom, AllowsTransparency = true };
-        readonly ListBox _resultList = new ListBox { MaxHeight = 320, MinWidth = 300 };
+        readonly ListBox _resultList = new ListBox { MaxHeight = 360, MinWidth = 320 };
         string _buildingPage;
 
         public SettingsWindow()
@@ -43,74 +43,103 @@ namespace Yiwei
             WindowBackdropType = UiTheme.Backdrop;
             WindowCornerPreference = Ui.WindowCornerPreference.Round;
 
-            Add("常规", Ui.SymbolRegular.Settings24, PageGeneral);
-            Add("输入方案", Ui.SymbolRegular.Keyboard24, PageSchema);
-            Add("快捷输入", Ui.SymbolRegular.Flash24, PageFeatures);
-            Add("外观", Ui.SymbolRegular.PaintBrush24, PageAppearance);
-            Add("快捷键", Ui.SymbolRegular.KeyboardShift24, PageHotkeys);
-            Add("语音", Ui.SymbolRegular.Mic24, PageVoice);
-            Add("常用语", Ui.SymbolRegular.TextBulletListSquare24, PageSnippets);
-            Add("AI", Ui.SymbolRegular.Sparkle24, PageAi);
-            Add("词库", Ui.SymbolRegular.Library24, PageDicts);
-            Add("工具", Ui.SymbolRegular.Toolbox24, PageTools);
-            Add("应用规则", Ui.SymbolRegular.AppsList24, PageApps);
-            Add("统计", Ui.SymbolRegular.DataTrending24, PageStats);
-            Add("关于", Ui.SymbolRegular.Info24, PageAbout);
+            // v2 信息架构：13 页按任务分 4 组（DESIGN-v2 §7.1）；页名不变，GoTo / 托盘 / 管道命令照旧
+            Add("常规", PageGeneral, "输入");
+            Add("输入方案", PageSchema, "输入");
+            Add("快捷输入", PageFeatures, "输入");
+            Add("快捷键", PageHotkeys, "输入");
+            Add("语音", PageVoice, "输入");
+            Add("外观", PageAppearance, "个性化");
+            Add("常用语", PageSnippets, "个性化");
+            Add("词库", PageDicts, "个性化");
+            Add("AI", PageAi, "智能与工具");
+            Add("工具", PageTools, "智能与工具");
+            Add("应用规则", PageApps, "智能与工具");
+            Add("统计", PageStats, "数据与关于");
+            Add("关于", PageAbout, "数据与关于");
 
             var root = new Grid();
             root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(220) });
+            root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(248) });
             root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
             var title = new Ui.TitleBar { Title = "一维输入法设置", ShowMaximize = true };
             Grid.SetColumnSpan(title, 2);
             root.Children.Add(title);
 
-            var left = new DockPanel { Margin = new Thickness(8, 4, 4, 8) };
-            var brand = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(12, 4, 0, 14) };
-            // 「墨线」品牌标：墨色方块上的一笔横，和安装包、任务栏图标是同一个。
-            var dot = new Image { Width = 24, Height = 24, Margin = new Thickness(0, 0, 10, 0) };
-            try { dot.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(Program.AppIcon.Handle, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromWidthAndHeight(48, 48)); } catch { }
+            // 左栏：品牌标 → 搜索 → 分组导航
+            var left = new DockPanel { Margin = new Thickness(Tok.S12, 0, Tok.S4, Tok.S12) };
+            var brand = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(Tok.S8, Tok.S4, 0, Tok.S16) };
+            // 品牌标：渐变方块上的一笔横和一点，和安装包、任务栏图标是同一个。
+            var dot = new Image { Width = 28, Height = 28, Margin = new Thickness(0, 0, Tok.S12, 0) };
+            try { dot.Source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(Program.AppIcon.Handle, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromWidthAndHeight(64, 64)); } catch { }
             RenderOptions.SetBitmapScalingMode(dot, BitmapScalingMode.HighQuality);
             brand.Children.Add(dot);
-            brand.Children.Add(K.Text("一维输入法", 15, false, FontWeights.SemiBold));
+            var brandText = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+            var brandName = K.Text("一维输入法", Tok.Subtitle, false, FontWeights.SemiBold); brandName.FontFamily = Tok.Display;
+            brandText.Children.Add(brandName);
+            brandText.Children.Add(K.Text("设置", Tok.Caption, true));
+            brand.Children.Add(brandText);
             DockPanel.SetDock(brand, Dock.Top);
             left.Children.Add(brand);
+            _search.Margin = new Thickness(Tok.S4, 0, Tok.S8, Tok.S12);
+            System.Windows.Automation.AutomationProperties.SetName(_search, "搜索设置");
+            DockPanel.SetDock(_search, Dock.Top);
+            left.Children.Add(_search);
+            ScrollViewer.SetHorizontalScrollBarVisibility(_nav, ScrollBarVisibility.Disabled);
+            System.Windows.Automation.AutomationProperties.SetName(_nav, "设置分类");
             left.Children.Add(_nav);
             Grid.SetRow(left, 1);
             root.Children.Add(left);
 
             var right = new Grid();
-            right.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            right.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            var searchRow = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(28, 4, 28, 0) };
-            searchRow.Children.Add(_search);
-            right.Children.Add(searchRow);
-            Grid.SetRow(_host, 1);
             right.Children.Add(_host);
-            Grid.SetRow(_toast, 1);
             right.Children.Add(_toast);
             Grid.SetRow(right, 1); Grid.SetColumn(right, 1);
             root.Children.Add(right);
 
             Content = root;
 
+            string group = null;
             foreach (var p in _pages)
             {
-                var item = new ListBoxItem { Padding = new Thickness(10, 8, 10, 8), Tag = p };
-                var row = new StackPanel { Orientation = Orientation.Horizontal };
-                row.Children.Add(new Ui.SymbolIcon { Symbol = p.Icon, FontSize = 18, Margin = new Thickness(0, 0, 12, 0) });
-                row.Children.Add(K.Text(p.Name, 14));
-                item.Content = row;
+                if (p.Group != group)
+                {
+                    group = p.Group;
+                    // 组名：不可选、不可聚焦的小标题
+                    var head = K.Text(group, Tok.Caption, true, FontWeights.SemiBold);
+                    head.Margin = new Thickness(Tok.S12, _nav.Items.Count == 0 ? 0 : Tok.S16, 0, Tok.S4);
+                    _nav.Items.Add(new ListBoxItem { Content = head, IsEnabled = false, Focusable = false, IsHitTestVisible = false, Padding = new Thickness(0), Background = Brushes.Transparent });
+                }
+                var item = new ListBoxItem { Padding = new Thickness(0), Tag = p, Margin = new Thickness(0, 1, 0, 1) };
+                System.Windows.Automation.AutomationProperties.SetName(item, p.Name);
+                System.Windows.Automation.AutomationProperties.SetHelpText(item, K.PageInfo.TryGetValue(p.Name, out var info) ? info.Desc : "");
+                var g = new Grid { Height = 38 };
+                g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(14) });
+                g.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                g.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                // 选中条：强调色 3×16 竖条，选中时从中间展开（DESIGN-v2 §6）
+                p.Bar = new Border { Width = 3, Height = 16, CornerRadius = new CornerRadius(1.5), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, RenderTransformOrigin = new Point(0.5, 0.5), RenderTransform = new ScaleTransform(1, 0) };
+                p.Bar.SetResourceReference(Border.BackgroundProperty, "AccentFillColorDefaultBrush");
+                g.Children.Add(p.Bar);
+                var ic = new Ui.SymbolIcon { Symbol = p.Icon, FontSize = 18, Margin = new Thickness(0, 0, Tok.S12, 0), VerticalAlignment = VerticalAlignment.Center };
+                Grid.SetColumn(ic, 1); g.Children.Add(ic);
+                var name = K.Text(p.Name, Tok.Body); name.VerticalAlignment = VerticalAlignment.Center; name.TextWrapping = TextWrapping.NoWrap;
+                Grid.SetColumn(name, 2); g.Children.Add(name);
+                item.Content = g;
                 p.Nav = item;
                 _nav.Items.Add(item);
             }
-            _nav.SelectionChanged += (s, e) => { if (_nav.SelectedItem is ListBoxItem it && it.Tag is PageDef p) ShowPage(p); };
+            _nav.SelectionChanged += (s, e) =>
+            {
+                if (_nav.SelectedItem is ListBoxItem it && it.Tag is PageDef p) ShowPage(p);
+                else if (_nav.SelectedItem is ListBoxItem hdr && hdr.Tag == null && e.RemovedItems.Count > 0) _nav.SelectedItem = e.RemovedItems[0]; // 组名不能选中
+            };
 
             // build every page once so search can see every setting
             foreach (var p in _pages) BuildPage(p);
-            _nav.SelectedIndex = 0;
+            _nav.SelectedItem = _pages[0].Nav;
 
             _results.Child = K.CardBorder(_resultList, new Thickness(4));
             _results.PlacementTarget = _search;
@@ -131,7 +160,8 @@ namespace Yiwei
             Closed += (s, e) => UiTheme.Changed -= RepaintVisuals;
         }
 
-        void Add(string name, Ui.SymbolRegular icon, Func<StackPanel> build) => _pages.Add(new PageDef { Name = name, Icon = icon, Build = build });
+        void Add(string name, Func<StackPanel> build, string group) =>
+            _pages.Add(new PageDef { Name = name, Group = group, Icon = K.PageInfo.TryGetValue(name, out var i) ? i.Icon : Ui.SymbolRegular.Settings24, Build = build });
 
         void BuildPage(PageDef p)
         {
@@ -143,7 +173,7 @@ namespace Yiwei
                 Log.Write("page " + p.Name + ": " + e);
                 content = new StackPanel();
                 content.Children.Add(K.PageTitle(p.Name));
-                content.Children.Add(K.Text("这一页加载失败：" + e.Message, 13, true));
+                content.Children.Add(K.ErrorState("这一页加载失败：" + e.Message + "。可以导出诊断信息反馈给我们。"));
             }
             p.View = K.Page(content);
             foreach (var card in FindCards(content))
@@ -163,12 +193,30 @@ namespace Yiwei
             }
         }
 
+        PageDef _current;
+
         void ShowPage(PageDef p)
         {
+            bool changed = _current != p;
             _host.Content = p.View;
             p.View.ScrollToTop();
+            if (changed)
+            {
+                Motion.FadeInUp(p.View, 12); // 页面切换：淡入 + 上移 12px（系统关了动画效果时直接显示）
+                foreach (var x in _pages) SetBar(x, x == p);
+                _current = p;
+            }
             if (p.Name == "统计") RefreshStats();
             if (_nav.SelectedItem != p.Nav) _nav.SelectedItem = p.Nav;
+        }
+
+        static void SetBar(PageDef p, bool on)
+        {
+            if (p.Bar?.RenderTransform is ScaleTransform st)
+            {
+                if (!Motion.Enabled) { st.BeginAnimation(ScaleTransform.ScaleYProperty, null); st.ScaleY = on ? 1 : 0; return; }
+                st.BeginAnimation(ScaleTransform.ScaleYProperty, new System.Windows.Media.Animation.DoubleAnimation(on ? 1 : 0, on ? Tok.Slow : Tok.Fast) { EasingFunction = Tok.Decelerate });
+            }
         }
 
         public void GoTo(string page)
@@ -187,7 +235,7 @@ namespace Yiwei
             if (q.Length == 0) { _results.IsOpen = false; return; }
             foreach (var e in _index.Where(x => x.Text.Contains(q)).OrderBy(x => x.Title.ToLowerInvariant().Contains(q) ? 0 : 1).Take(12))
                 _resultList.Items.Add(e);
-            if (_resultList.Items.Count == 0) _resultList.Items.Add(new SearchEntry { Title = "没有找到相关设置", Page = "" });
+            if (_resultList.Items.Count == 0) _resultList.Items.Add(new SearchEntry { Title = "没有找到「" + _search.Text.Trim() + "」，换个说法试试（如：配色、双拼、剪贴板）", Page = "" });
             _results.IsOpen = true;
         }
 
