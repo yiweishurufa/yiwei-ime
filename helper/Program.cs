@@ -288,7 +288,7 @@ namespace Yiwei
             _symbols.Open();
         }
 
-        /// <summary>功能面板（Alt+Q / 托盘 / /quick）：两列数字格子，一处进入常用功能。</summary>
+        /// <summary>功能面板（Alt+Q / 托盘 / /quick）：常用 / 词库 / 工具 / 文件 4 页数字格子，一处进入全部本机功能。</summary>
         public static void ShowQuick()
         {
             _snippets.Close2(); _ai.Close2(); _symbols.Close2(); _hand.Close2();
