@@ -45,7 +45,7 @@ namespace Yiwei
             FormattedText F(string s, double sz, Color c) => new FormattedText(s, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, face, sz, new SolidColorBrush(c), dip);
 
             var pre = F("yi'wei", small, text);
-            var items = Cands.Select((s, i) => (label: F((i + 1) + ".", small, i == 0 ? hiLabel : label), word: F(s, size, i == 0 ? hiText : cand))).ToList();
+            var items = Cands.Select((s, i) => (label: F((i + 1).ToString(), small, i == 0 ? hiLabel : label), word: F(s, size, i == 0 ? hiText : cand))).ToList();
             double pad = 8, gap = 6, itemPadX = 8, rowH = Math.Max(items[0].word.Height, items[0].label.Height) + 8;
             double w, h;
             var widths = items.Select(x => x.label.Width + 4 + x.word.Width + itemPadX * 2).ToList();
@@ -57,7 +57,9 @@ namespace Yiwei
             var area = new Rect(0, 0, ActualWidth, Height);
             dc.DrawRoundedRectangle(new SolidColorBrush(UiTheme.Dark ? Color.FromRgb(0x1B, 0x1C, 0x1F) : Color.FromRgb(0xEE, 0xF0, 0xF2)), null, area, 8, 8);
             var box = new Rect(24, 16, w, h);
-            dc.DrawGeometry(new SolidColorBrush(Color.FromArgb(0x22, 0, 0, 0)), null, Round(new Rect(box.X + 1, box.Y + 3, box.Width, box.Height), Radius));
+            // v2 柔和阴影：近处一层 + 远处一层（DESIGN-v2 §4）
+            dc.DrawGeometry(new SolidColorBrush(Color.FromArgb(0x12, 0, 0, 0)), null, Round(new Rect(box.X - 1, box.Y + 4, box.Width + 2, box.Height + 2), Radius + 2));
+            dc.DrawGeometry(new SolidColorBrush(Color.FromArgb(0x1C, 0, 0, 0)), null, Round(new Rect(box.X, box.Y + 1.5, box.Width, box.Height), Radius));
             dc.DrawGeometry(new SolidColorBrush(back), new Pen(new SolidColorBrush(border), 1), Round(box, Radius));
             dc.DrawText(pre, new Point(box.X + pad + 2, box.Y + pad));
             double x = box.X + pad, y = box.Y + pad + pre.Height + 6;

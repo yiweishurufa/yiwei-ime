@@ -5,12 +5,15 @@ using Microsoft.Win32;
 
 namespace Yiwei
 {
-    /// <summary>One of the five 一维 brand colours. Rgb is 0xRRGGBB.</summary>
+    /// <summary>One of the 一维 brand colours. Rgb is 0xRRGGBB（v2 澄澈的颜色是运行时读到的系统强调色）.</summary>
     public sealed class BrandColor
     {
         public string Id, Name;
-        public uint Rgb;
-        public BrandColor(string id, string name, uint rgb) { Id = id; Name = name; Rgb = rgb; }
+        readonly uint _rgb;
+        readonly Func<uint> _dynamic;
+        public uint Rgb => _dynamic != null ? _dynamic() : _rgb;
+        public BrandColor(string id, string name, uint rgb) { Id = id; Name = name; _rgb = rgb; }
+        public BrandColor(string id, string name, Func<uint> rgb) { Id = id; Name = name; _dynamic = rgb; }
         public byte R => (byte)(Rgb >> 16);
         public byte G => (byte)(Rgb >> 8);
         public byte B => (byte)Rgb;
@@ -24,7 +27,9 @@ namespace Yiwei
     {
         public static readonly BrandColor[] Palette =
         {
-            // 默认：蓝色胶囊（白底深字，高亮候选是 #2B5BD7 胶囊白字；深色版底 #20232C）
+            // 默认（2026-11 v2「澄澈」，docs/design/DESIGN-v2.md §8）：近白 / 石墨蓝底，高亮块 = Windows 强调色
+            new BrandColor("v2", "v2 澄澈", () => SystemAccentRgb()),
+            // 蓝色胶囊（v1 默认，保留可选）（白底深字，高亮候选是 #2B5BD7 胶囊白字；深色版底 #20232C）
             new BrandColor("pill", "蓝色胶囊", 0x2B5BD7),
             new BrandColor("moblue", "墨蓝", 0x2B5BD7),
             new BrandColor("qingbi", "青碧", 0x0E8C7A),
@@ -34,6 +39,36 @@ namespace Yiwei
         };
 
         public static BrandColor Default => Palette[0];
+
+        /// <summary>v2 澄澈配色（light 或 dark）：高亮块跟随系统强调色。</summary>
+        public static bool IsV2(string scheme) => FromScheme(scheme)?.Id == "v2";
+
+        /// <summary>读不到系统强调色时用的颜色（Windows 默认蓝）。</summary>
+        public const uint FallbackAccent = 0x0067C0;
+
+        /// <summary>
+        /// Windows 的强调色（设置 → 个性化 → 颜色），0xRRGGBB。Windows 10/11 都写在 HKCU\…\DWM\AccentColor（0xAABBGGRR）。
+        /// 读不到、或接近纯白 / 纯黑（当高亮色看不清）时用 <see cref="FallbackAccent"/>。
+        /// </summary>
+        public static uint SystemAccentRgb()
+        {
+            try
+            {
+                using (var k = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\DWM"))
+                {
+                    var v = k?.GetValue("AccentColor");
+                    if (v is int i)
+                    {
+                        uint abgr = unchecked((uint)i);
+                        uint rgb = ((abgr & 0xFF) << 16) | (abgr & 0xFF00) | ((abgr >> 16) & 0xFF);
+                        double l = (0.2126 * ((rgb >> 16) & 0xFF) + 0.7152 * ((rgb >> 8) & 0xFF) + 0.0722 * (rgb & 0xFF)) / 255.0;
+                        if (l > 0.06 && l < 0.92) return rgb;
+                    }
+                }
+            }
+            catch { }
+            return FallbackAccent;
+        }
 
         /// <summary>The 蓝色胶囊 scheme (light or dark): its highlight is drawn as a capsule.</summary>
         public static bool IsPill(string scheme) => FromScheme(scheme)?.Id == "pill";
@@ -81,6 +116,7 @@ namespace Yiwei
         {
             // 「墨线」：纸色底、墨色字；品牌色只用在高亮候选上，其余退成灰（与 scripts/brand_schemes.py 一致）。
             if (c.Id == "pill") return PillArgb(dark);
+            if (c.Id == "v2") return V2Argb(c.Rgb, dark);
             uint acc = Argb(c.Rgb);
             const uint White = 0xFFFFFFFF, Paper = 0xFFFBFCFA, Ink = 0xFF1F2421, Night = 0xFF1B1F1D, Moon = 0xFFE8ECE9;
             bool g = c.Id == "shimo";
@@ -121,6 +157,60 @@ namespace Yiwei
                 d["hilited_comment_text_color"] = Mix(glow, lift, 0.35);
                 d["hilited_label_color"] = Mix(glow, lift, 0.2);
             }
+            return d;
+        }
+
+        static double Lum(uint rgb)
+        {
+            double Ch(uint v) { var x = (v & 0xFF) / 255.0; return x <= 0.03928 ? x / 12.92 : Math.Pow((x + 0.055) / 1.055, 2.4); }
+            return 0.2126 * Ch(rgb >> 16) + 0.7152 * Ch(rgb >> 8) + 0.0722 * Ch(rgb);
+        }
+
+        static double Contrast(uint a, uint b)
+        {
+            double la = Lum(a), lb = Lum(b);
+            return (Math.Max(la, lb) + 0.05) / (Math.Min(la, lb) + 0.05);
+        }
+
+        /// <summary>强调色底上的文字：白或近黑 #0B0F17，取对比度高的（与 Tok.OnAccent、contrast_v2.py 一致）。</summary>
+        public static uint OnAccent(uint accentArgb) => Contrast(0xFFFFFF, accentArgb) >= Contrast(0x0B0F17, accentArgb) ? 0xFFFFFFFF : 0xFF0B0F17;
+
+        /// <summary>
+        /// 一维 v2 澄澈（DESIGN-v2 §2.2 / §8）：近白（深色：石墨蓝）底、墨色字、灰色小号序号；高亮块 = 强调色（深色档提亮 30%），
+        /// 高亮字取白 / 近黑中对比度高的。与 scripts/brand_schemes.py v2() 一致。
+        /// </summary>
+        static Dictionary<string, uint> V2Argb(uint accentRgb, bool dark)
+        {
+            uint acc = Argb(accentRgb);
+            var d = new Dictionary<string, uint>();
+            uint back, text, dim, faint;
+            if (!dark)
+            {
+                back = 0xFFF6F8FB; text = 0xFF161B26; dim = 0xFF5A6478; faint = 0xFF7A8398;
+                d["back_color"] = WithAlpha(back, 0xF7);
+                d["border_color"] = 0xFFDFE4EC;
+                d["shadow_color"] = 0x2A101828;
+            }
+            else
+            {
+                acc = Mix(acc, 0xFFFFFFFF, 0.30);
+                back = 0xFF1D2129; text = 0xFFEEF1F6; dim = 0xFFA4ADBE; faint = 0xFF7C8598;
+                d["back_color"] = WithAlpha(back, 0xF5);
+                d["border_color"] = 0xFF353C4A;
+                d["shadow_color"] = 0x66000000;
+            }
+            uint on = OnAccent(acc);
+            d["text_color"] = dim;
+            d["hilited_text_color"] = text;
+            d["hilited_back_color"] = back;
+            d["preedit_back_color"] = back;
+            d["candidate_text_color"] = text;
+            d["comment_text_color"] = faint;
+            d["label_color"] = faint;
+            d["hilited_candidate_back_color"] = acc;
+            d["hilited_candidate_text_color"] = on;
+            d["hilited_comment_text_color"] = Mix(on, acc, 0.25);
+            d["hilited_label_color"] = Mix(on, acc, 0.20);
             return d;
         }
 
@@ -185,6 +275,10 @@ namespace Yiwei
         /// <summary>Raised on the UI thread when Windows switches between light and dark apps.</summary>
         public static event Action<bool> Changed;
 
+        /// <summary>Raised on the UI thread when the Windows accent colour changes（v2 澄澈跟随它）.</summary>
+        public static event Action AccentChanged;
+        static uint _lastAccent;
+
         public static bool IsDark
         {
             get
@@ -203,9 +297,17 @@ namespace Yiwei
             if (_watching) return;
             _watching = true;
             _last = IsDark;
+            _lastAccent = Brand.SystemAccentRgb();
             SystemEvents.UserPreferenceChanged += (s, e) =>
             {
                 if (e.Category != UserPreferenceCategory.General && e.Category != UserPreferenceCategory.VisualStyle && e.Category != UserPreferenceCategory.Color) return;
+                var acc = Brand.SystemAccentRgb();
+                if (acc != _lastAccent)
+                {
+                    _lastAccent = acc;
+                    try { Program.Ui.BeginInvoke(new Action(() => { try { AccentChanged?.Invoke(); } catch (Exception ex) { Log.Write("accent changed: " + ex.Message); } })); }
+                    catch { }
+                }
                 var now = IsDark;
                 if (now == _last) return;
                 _last = now;

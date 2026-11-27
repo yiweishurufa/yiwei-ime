@@ -97,6 +97,13 @@ namespace Yiwei
                     // 只有旧版本写的文件（把深色配色写进了 color_scheme）才需要重写一次。
                     if (!WeaselConfig.UpToDateForDarkMode(Settings.Current)) Rime.ApplySoon(1500);
                 };
+                SystemTheme.AccentChanged += () =>
+                {
+                    // v2 澄澈跟随 Windows 强调色：设置窗口、面板、托盘「中」立即换色；候选窗配色在空闲时重写并后台部署
+                    UiTheme.Apply();
+                    Tray.Repaint();
+                    if (Brand.IsV2(Settings.Current.ColorScheme) || Settings.Current.Accent == "v2") Rime.ApplyWhenIdle();
+                };
                 Stats.StartAppTracking();
                 ClipHistory.Start();
                 GameMode.Start();
@@ -145,7 +152,7 @@ namespace Yiwei
                 {
                     // Upgrade from 0.1: add the brand colour schemes to the generated file.
                     var y = File.ReadAllText(Paths.WeaselCustom, Encoding.UTF8);
-                    if (y.Contains("由「一维输入法设置」生成") && (!y.Contains("yiwei_qingbi") || !WeaselConfig.UpToDateForDarkMode(Settings.Current) || !WeaselConfig.HasShowNotifications(y))) Rime.ApplyWhenIdle();
+                    if (y.Contains("由「一维输入法设置」生成") && (!y.Contains("yiwei_qingbi") || !WeaselConfig.UpToDateForDarkMode(Settings.Current) || !WeaselConfig.HasShowNotifications(y) || WeaselConfig.AccentStale(Settings.Current, y))) Rime.ApplyWhenIdle();
                 }
             }
             catch (Exception e) { Log.Write("first run: " + e.Message); }

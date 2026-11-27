@@ -211,17 +211,17 @@ namespace Yiwei
         public bool AltSkipBorderlessFullscreen { get; set; } = false;
 
         // 外观
-        public string Accent { get; set; } = "pill";
+        public string Accent { get; set; } = "v2";
         public bool FollowSystemDark { get; set; } = true;
         public int CandidateCount { get; set; } = 5;
-        public string ColorScheme { get; set; } = "yiwei_pill";
-        public string ColorSchemeDark { get; set; } = "yiwei_pill_dark";
+        public string ColorScheme { get; set; } = "yiwei_v2";
+        public string ColorSchemeDark { get; set; } = "yiwei_v2_dark";
         public bool Horizontal { get; set; } = true;
         public bool VerticalText { get; set; } = false;
         public int FontPoint { get; set; } = 12;
         public string FontFace { get; set; } = "Microsoft YaHei UI";
-        public int CornerRadius { get; set; } = 8;
-        public int HilitedCornerRadius { get; set; } = 6;
+        public int CornerRadius { get; set; } = 12;
+        public int HilitedCornerRadius { get; set; } = 8;
         public bool InlinePreedit { get; set; } = true;
 
         // 应用
@@ -343,12 +343,26 @@ namespace Yiwei
                         s.SettingsVersion = 4;
                         if (existed) { try { s.Save(); } catch { } Rime.ApplyWhenIdle(); }
                     }
+                    if (s.SettingsVersion < 5)
+                    {
+                        // 2026-11 v2「澄澈」改版（docs/design/DESIGN-v2.md §8）：仍是旧默认「蓝色胶囊」的换成 v2 澄澈，挑过别的配色的不动；
+                        // 圆角仍是旧默认（窗 8 / 高亮 6）的换成 12 / 8。想回到胶囊：设置 → 外观 → 候选窗配色。
+                        bool v2 = false;
+                        if (s.ColorScheme == "yiwei_pill" && s.Accent == "pill")
+                        {
+                            s.ColorScheme = "yiwei_v2"; s.Accent = "v2"; v2 = true;
+                            if (string.IsNullOrEmpty(s.ColorSchemeDark) || s.ColorSchemeDark == "yiwei_pill_dark") s.ColorSchemeDark = "yiwei_v2_dark";
+                        }
+                        if (s.CornerRadius == 8 && s.HilitedCornerRadius == 6) { s.CornerRadius = 12; s.HilitedCornerRadius = 8; v2 = true; }
+                        s.SettingsVersion = 5;
+                        if (existed) { try { s.Save(); } catch { } if (v2) Rime.ApplyWhenIdle(); }
+                    }
                     if (s.AltBlocklist == null) s.AltBlocklist = DefaultBlocklist();
                     if (s.AiActions == null || s.AiActions.Count == 0) s.AiActions = DefaultActions();
                     if (s.AppAscii == null) s.AppAscii = new Dictionary<string, bool>();
                     if (s.ImportedThemes == null) s.ImportedThemes = new Dictionary<string, Dictionary<string, string>>();
                     if (s.CandidateCount < 5 || s.CandidateCount > 10) s.CandidateCount = 5; // 5–10（W17）
-                    if (Brand.Find(s.Accent) == null) s.Accent = "pill";
+                    if (Brand.Find(s.Accent) == null) s.Accent = "v2";
                     return _current = s;
                 }
             }
@@ -599,6 +613,20 @@ namespace Yiwei
         /// </summary>
         public const string ShowNotifications = "[schema, ascii_punct, full_shape, traditionalization, emoji, search_single_char]";
 
+        /// <summary>
+        /// 用 v2 澄澈时，生成的文件里的高亮色是不是当前的系统强调色（换了强调色、或在别的电脑上同步过来时需要重写一次）。
+        /// </summary>
+        public static bool AccentStale(Settings s, string yaml)
+        {
+            try
+            {
+                if (!Brand.IsV2(s.ColorScheme) || yaml == null || !yaml.Contains(Marker)) return false;
+                var want = Brand.ToWeasel(Brand.SchemeArgb(Brand.Find("v2"), false)["hilited_candidate_back_color"]);
+                return !yaml.Contains("yiwei_v2") || !yaml.Contains(want);
+            }
+            catch { return false; }
+        }
+
         /// <summary>Whether a generated file predates the single 中/英 tip (needs rewriting once after an upgrade).</summary>
         public static bool HasShowNotifications(string yaml) => yaml.Contains("\"show_notifications\": " + ShowNotifications);
 
@@ -640,14 +668,20 @@ namespace Yiwei
             P("style/text_orientation", Q(s.VerticalText ? "vertical" : "horizontal"));
             P("style/inline_preedit", B(s.InlinePreedit));
             P("style/font_point", s.FontPoint.ToString());
-            bool pill = Brand.IsPill(light);
-            P("style/label_font_point", Math.Max(8, s.FontPoint - (pill ? 3 : 2)).ToString()); // 胶囊：序号小号灰色
+            bool pill = Brand.IsPill(light), v2 = Brand.IsV2(light);
+            P("style/label_font_point", Math.Max(8, s.FontPoint - (pill || v2 ? 3 : 2)).ToString()); // 胶囊 / v2：序号小号灰色
             P("style/comment_font_point", Math.Max(8, s.FontPoint - 2).ToString());
             P("style/font_face", Q(RimeFeatures.FontFaceChain(s)));
             P("style/comment_font_face", Q(RimeFeatures.FontFaceChain(s)));
             P("style/layout/corner_radius", s.CornerRadius.ToString());
             P("style/layout/round_corner", HilitedRadius(s).ToString()); // 小狼毫把超过半高的圆角收成半高，99 = 胶囊
-            if (pill) P("style/layout/hilite_padding_x", "8");
+            if (pill || v2) P("style/layout/hilite_padding_x", "8");
+            if (v2)
+            {
+                // v2 澄澈：更柔的阴影（DESIGN-v2 §4 / §8）
+                P("style/layout/shadow_radius", "8");
+                P("style/layout/shadow_offset_y", "3");
+            }
             foreach (var b in Brand.Palette)
                 foreach (var d in new[] { false, true })
                     P("preset_color_schemes/" + Brand.SchemeId(b.Id, d), Brand.WeaselScheme(b, d));

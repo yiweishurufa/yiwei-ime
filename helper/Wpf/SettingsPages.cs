@@ -282,7 +282,7 @@ namespace Yiwei
                 var sw = new Border
                 {
                     Width = 30, Height = 30, CornerRadius = new CornerRadius(15), Margin = new Thickness(0, 0, 8, 0), Cursor = System.Windows.Input.Cursors.Hand,
-                    Background = new SolidColorBrush(Color.FromRgb(b.R, b.G, b.B)), ToolTip = b.Name, Tag = id,
+                    Background = new SolidColorBrush(Color.FromRgb(b.R, b.G, b.B)), ToolTip = id == "v2" ? "跟随 Windows 强调色" : b.Name, Tag = id,
                     BorderThickness = new Thickness(S.Accent == id || (id == "moblue" && S.Accent == "pill") ? 3 : 0),
                 };
                 sw.SetResourceReference(Border.BorderBrushProperty, "TextFillColorPrimaryBrush");
@@ -294,7 +294,8 @@ namespace Yiwei
                 };
                 swList.Add(sw); swatches.Children.Add(sw);
             }
-            p.Children.Add(K.Card("强调色", "设置窗口、面板和提示气泡使用的颜色", swatches, Ui.SymbolRegular.Color24));
+            foreach (var x in swList) System.Windows.Automation.AutomationProperties.SetName(x, (string)x.Tag == "v2" ? "跟随 Windows 强调色" : (string)x.ToolTip);
+            p.Children.Add(K.Card("强调色", "设置窗口、面板和提示气泡使用的颜色；第一个跟随 Windows 强调色（个性化 → 颜色）", swatches, Ui.SymbolRegular.Color24));
 
             // scheme cards
             var schemeGrid = new WrapPanel();
@@ -316,7 +317,7 @@ namespace Yiwei
                 schemeCards.Add(card); schemeGrid.Children.Add(card);
             }
             var cardSchemes = new Border { Child = schemeGrid };
-            p.Children.Add(K.Block("候选窗配色", "默认是蓝色胶囊；另有五种墨线配色。深色模式下自动换成对应的深色版", cardSchemes, Ui.SymbolRegular.PaintBrush24));
+            p.Children.Add(K.Block("候选窗配色", "默认是 v2 澄澈（高亮跟随 Windows 强调色）；旧版的蓝色胶囊和五种墨线配色都还在。深色模式下自动换成对应的深色版", cardSchemes, Ui.SymbolRegular.PaintBrush24));
 
             var others = WeaselConfig.BuiltinSchemes().Where(kv => Brand.FromScheme(kv.Key) == null).ToList();
             other = K.Combo(others, S.ColorScheme, id => { if (id != null) SelectScheme(id); });
@@ -373,20 +374,22 @@ namespace Yiwei
         {
             Brush B(string k) => new SolidColorBrush(UiTheme.Rgb(c[k] | 0xFF000000));
             var row = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 6, 0, 0) };
-            row.Children.Add(new Border { Background = B("hilited_candidate_back_color"), CornerRadius = new CornerRadius(4), Padding = new Thickness(6, 2, 6, 2), Child = new TextBlock { Text = "1 一维", Foreground = B("hilited_candidate_text_color"), FontSize = 12 } });
+            row.Children.Add(new Border { Background = B("hilited_candidate_back_color"), CornerRadius = new CornerRadius(5), Padding = new Thickness(6, 2, 6, 2), Child = new TextBlock { Text = "1 一维", Foreground = B("hilited_candidate_text_color"), FontSize = 12 } });
             row.Children.Add(new TextBlock { Text = "  2 依偎", Foreground = B("candidate_text_color"), FontSize = 12, VerticalAlignment = VerticalAlignment.Center });
             var inner = new StackPanel();
             inner.Children.Add(new TextBlock { Text = "yi'wei", Foreground = B("text_color"), FontSize = 11 });
             inner.Children.Add(row);
-            var sample = new Border { Background = B("back_color"), BorderBrush = B("border_color"), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(6), Padding = new Thickness(8, 6, 8, 6), Child = inner };
+            var sample = new Border { Background = B("back_color"), BorderBrush = B("border_color"), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(Tok.RCard), Padding = new Thickness(10, 6, 10, 8), Child = inner };
             var sp = new StackPanel();
             sp.Children.Add(sample);
             var label = K.Text(name, 12); label.Margin = new Thickness(2, 6, 0, 0);
             sp.Children.Add(label);
             var card = K.CardBorder(sp, new Thickness(10));
             card.Margin = new Thickness(0, 0, 8, 8);
-            card.Width = 150;
+            card.Width = 156;
             card.Cursor = System.Windows.Input.Cursors.Hand;
+            System.Windows.Automation.AutomationProperties.SetName(card, name);
+            Motion.Pressable(card);
             return card;
         }
 

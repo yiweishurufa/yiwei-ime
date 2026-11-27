@@ -53,7 +53,47 @@ def pill(dark):
     return d
 
 
+V2_ACCENT = 0x0067C0  # 共享 weasel.yaml 里的回退色（Windows 默认蓝）；助手运行时换成系统强调色（Brand.SystemAccentRgb）
+
+
+def _lum(rgb):
+    def ch(v):
+        x = (v & 255) / 255
+        return x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4
+    return 0.2126 * ch(rgb >> 16) + 0.7152 * ch(rgb >> 8) + 0.0722 * ch(rgb)
+
+
+def _contrast(a, b):
+    la, lb = _lum(a), _lum(b)
+    return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+
+
+def on_accent(acc):
+    """强调色底上的文字：白或近黑，取对比度高的（与 helper/Brand.cs OnAccent 一致）。"""
+    return 0xFFFFFFFF if _contrast(0xFFFFFF, acc) >= _contrast(0x0B0F17, acc) else 0xFF0B0F17
+
+
+def v2(dark, accent=V2_ACCENT):
+    """一维 v2 澄澈（docs/design/DESIGN-v2.md §8）：近白 / 石墨蓝底，高亮块 = 强调色。与 helper/Brand.cs V2Argb 一致。"""
+    acc = 0xFF000000 | accent
+    if not dark:
+        back, text, dim, faint = 0xFFF6F8FB, 0xFF161B26, 0xFF5A6478, 0xFF7A8398
+        d = dict(back_color=(back & 0xFFFFFF) | 0xF7000000, border_color=0xFFDFE4EC, shadow_color=0x2A101828)
+    else:
+        acc = mix(acc, W, .30)
+        back, text, dim, faint = 0xFF1D2129, 0xFFEEF1F6, 0xFFA4ADBE, 0xFF7C8598
+        d = dict(back_color=(back & 0xFFFFFF) | 0xF5000000, border_color=0xFF353C4A, shadow_color=0x66000000)
+    on = on_accent(acc)
+    d.update(text_color=dim, hilited_text_color=text, hilited_back_color=back, preedit_back_color=back,
+             candidate_text_color=text, comment_text_color=faint, label_color=faint,
+             hilited_candidate_back_color=acc, hilited_candidate_text_color=on,
+             hilited_comment_text_color=mix(on, acc, .25), hilited_label_color=mix(on, acc, .20))
+    return d
+
+
 def all_schemes():
+    for dark in (False, True):
+        yield ("yiwei_v2%s" % ("_dark" if dark else ""), "一维 · v2 澄澈%s" % ("（深色）" if dark else ""), v2(dark))
     for dark in (False, True):
         yield ("yiwei_pill%s" % ("_dark" if dark else ""), "一维 · 蓝色胶囊%s" % ("（深色）" if dark else ""), pill(dark))
     for bid, name, rgb in BRANDS:

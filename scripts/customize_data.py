@@ -44,16 +44,17 @@ ASCII_APPS = ["cmd.exe", "conhost.exe", "WindowsTerminal.exe", "OpenConsole.exe"
               "devenv.exe", "WindowsPowerShell_ISE.exe", "PowerToys.PowerLauncher.exe", "Everything.exe"]
 
 STYLE = {
-    "color_scheme": "yiwei_pill", "color_scheme_dark": "yiwei_pill_dark",
+    "color_scheme": "yiwei_v2", "color_scheme_dark": "yiwei_v2_dark",
     "font_face": '"Microsoft YaHei UI"', "label_font_face": '"Segoe UI"', "comment_font_face": '"Microsoft YaHei UI"',
     "font_point": "12", "label_font_point": "9", "comment_font_point": "10",
     "horizontal": "true", "inline_preedit": "true", "label_format": '"%s"', "display_tray_icon": "false",
 }
 # 小狼毫状态提示：不含 ascii_mode（中/英提示由一维助手显示，避免光标旁同时弹出两个「中」）
 SHOW_NOTIFICATIONS = "[schema, ascii_punct, full_shape, traditionalization, emoji, search_single_char]"
+# v2 澄澈（docs/design/DESIGN-v2.md §8）：外框圆角 12、高亮圆角 8、更柔的阴影
 LAYOUT = {"border_width": "1", "margin_x": "10", "margin_y": "8", "spacing": "8", "candidate_spacing": "10",
-          "hilite_spacing": "4", "hilite_padding": "4", "round_corner": "99", "corner_radius": "10",
-          "shadow_radius": "6", "shadow_offset_x": "0", "shadow_offset_y": "2", "min_width": "120"}
+          "hilite_spacing": "4", "hilite_padding": "4", "round_corner": "8", "corner_radius": "12",
+          "shadow_radius": "8", "shadow_offset_x": "0", "shadow_offset_y": "3", "min_width": "120"}
 
 
 def set_key(text, indent, key, value):
@@ -81,7 +82,7 @@ def customize_weasel_yaml():
         schemes += '  %s:\n    name: "%s"\n    author: "一维输入法"\n    color_format: argb\n' % (sid, name)
         schemes += "".join("    %s: 0x%s\n" % (k, v) for k, v in zip(KEYS, c))
         schemes += "    shadow_color: 0x1A000000\n"
-    # 五个品牌色及深色版（默认青碧）
+    # v2 澄澈（默认）、蓝色胶囊、五个品牌色及深色版
     sys.path.insert(0, HERE)
     from brand_schemes import all_schemes
     for sid, name, cols in all_schemes():
