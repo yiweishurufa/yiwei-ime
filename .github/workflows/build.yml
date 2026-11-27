@@ -122,9 +122,11 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           # 带令牌访问 GitHub API，避免共享 IP 触发 403 限流；失败重试 3 次
+          # 固定 librime 1.17.0：1.18.0（2026-11-25）的发行包改名为 rime-1.18.0-Windows-msvc-x64.7z，
+          # 小狼毫 82b50c9 的 get-rime.ps1 只认 rime-<提交号>-… 的旧名字，取「最新」会找不到包（#158–#160 因此失败）
           $authorization = $env:GH_TOKEN
           for ($i = 1; $i -le 3; $i++) {
-            .\get-rime.ps1 -use dev
+            .\get-rime.ps1 -use dev -tag 1.17.0
             if (Test-Path .\include\rime_api.h) { break }
             Write-Host "get-rime 第 $i 次失败，30 秒后重试"; Start-Sleep 30
           }
