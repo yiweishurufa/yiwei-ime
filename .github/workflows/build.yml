@@ -11,6 +11,11 @@ permissions:
   contents: write
   actions: read
 
+# 同一分支的构建排队：新提交会取代还在排队的旧提交，避免并行构建把自动更新清单写回旧版本
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   WEASEL_REPO: https://github.com/rime/weasel.git
   WEASEL_SHA: 82b50c9e9b9ee0bd31357db6f25ddc804546c7f7
